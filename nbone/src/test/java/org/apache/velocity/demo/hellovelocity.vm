@@ -1,0 +1,53 @@
+#parse("org/apache/velocity/demo/hello2.vm")
+--------------------------------------------------------
+#include("org/apache/velocity/demo/hello2.vm")
+
+#set( $test = "test================" )
+#set( $!iAmVariable = "good! $test" )
+#set( $array = ["chen","thinking"] )
+#set( $map = {"id":"001","name":"chen2222222"} )
+Welcome $name to velocity.com
+today is $date.
+==========================================$list.get(1)
+==========================================$list[1]
+==========================================$array.get(1)
+==========================================$array[1]
+==========================================$map.get("id")
+==========================================$map["id"]
+==========================================$map.id
+#foreach ($i in ${list})
+$velocityCount == velocityCount
+$i
+#end
+
+#foreach ($i in ${map})
+$i     -------------------------foreach map
+#end
+
+
+${name.substring(1)} -------------------substring
+$iAmVariable
+${dateO.getTime()}
+${dateO.time}
+${dateO.getClass()} -----------------calss
+$!{iAmVariable}
+${user.id}
+$user.Id
+$user.getId()
+$staticUser.getChen()
+$staticUser
+${app_chen}
+$date.get('yyyy-M-d H:m:s')
+$application
+$list      -------------------list
+
+#if($user)
+	date is not null....................
+	#else
+		date is  null....................
+#end
+
+
+
+
+

@@ -1,0 +1,5 @@
+#set( $test = "test================" )
+<div>
+	kkkkkkkkkkkkk ${test}
+	${user.id}
+</div>

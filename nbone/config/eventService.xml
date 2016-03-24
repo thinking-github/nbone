@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:module="http://www.sgcc.com.cn/schema/platform/module" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  http://www.sgcc.com.cn/schema/platform/module http://www.sgcc.com.cn/schema/platform/module/module.xsd">  
+  <!--<bean id="com.sgcc.uap.mda.eventManager" class="com.sgcc.uap.eventhandler.EventManager">
+		<property name="agent">
+			<map>
+			</map>
+		</property>
+
+	</bean>-->
+  <!--<service id="nboneplatform.eventService" beanId="com.sgcc.uap.mda.eventManager" targetName="com.sgcc.uap.eventhandler.EventManager"/>-->
+</beans>

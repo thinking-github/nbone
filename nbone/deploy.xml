@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<platform-dynamic-module>
+  <web>
+    <bundle-context-path>/nboneplatform</bundle-context-path>
+    <servlet-extensions>/rest/*</servlet-extensions>
+    <resource extension-names="/*.xml,/*.jpg,/*.jar,/*.swf,/*.fla,/*.html,/*.xsl,/*.properties,/*.png,/*.eot,/*.js,/*.xsd,/*.css,/*.ini,/*.gif,/*.htm">
+      <virtual-resource context-path="/mx">
+        <location extension-names="/*.eot,/*.js,/*.jpg,/*.swf,/*.xsl,/*.html,/*.css,/*.png,/*.gif,/*.htm">mx</location>
+      </virtual-resource>
+    </resource>
+    <use-platform-component>true</use-platform-component>
+  </web>
+</platform-dynamic-module>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!-- <classPathEntry location="./mysql-connector-java-5.1.25.jar"/> -->
+    <context id="my" targetRuntime="MyBatis3">
+    	
+    	  <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+    	 
+        <commentGenerator>
+            <property name="suppressDate" value="false"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        
+			<!--casm-tradecenter       casm-goodscenter-->
+	  <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
+	  	              connectionURL="jdbc:mysql://14.14.97.69:3306/casm-goodscenter?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull" 
+	  	              userId="root" password="root">
+		</jdbcConnection>
+    
+				 
+        <javaModelGenerator targetPackage="com.camelot.basecenter.dto"
+                            targetProject="./src">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="com.camelot.basecenter"
+                         targetProject="./src">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator targetPackage="com.camelot.basecenter.dao"
+                             targetProject="./src" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+         <!--
+               enableCountByExample="false" 
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" 
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"
+         -->
+    
+
+        <table tableName="ts_service_project" domainObjectName="TsServiceProjectDTO"
+        	
+        	     enableCountByExample="false" 
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" 
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"
+               >
+            <!--<columnRenamingRule searchString="^D_"
+                                replaceString=""/>-->
+        </table>
+        
+         <table tableName="%"  
+        	
+        	   enableCountByExample="false" 
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" 
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"
+               >
+               
+        </table>
+
+    </context>
+</generatorConfiguration>
