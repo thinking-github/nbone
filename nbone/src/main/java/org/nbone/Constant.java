@@ -15,6 +15,8 @@ public interface Constant {
 	public final static int exception =0;
 	public final static int framework =0;
 	public final static int persistence =0;
+	
+	
 	/**
 	 * 代表、代理
 	 */
