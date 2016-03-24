@@ -3,7 +3,6 @@ package org.nbone;
  * 常用IT变量
  * @author thinking
  * @since 2015-12-12
- * test 2016-12-12-----------------------------------
  *
  */
 public interface Constant {
