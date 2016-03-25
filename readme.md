@@ -1,13 +1,13 @@
 ##项目基于maven构建，此项目提供如下功能:
 
-#####方便集成spring springMVC                                --springframework 2.5 以上 建议3.2
-
-#####方便集成hibernate,封装hiberanteDao                      --hibernate 3.2以上
-
-#####方便集成mybatis                                         --mybatis 3.0以上         
-
-#####提供对Javamail的封装，简化邮件发送，                    --javamail1.4
-
+####框架集成:
+	方便集成spring springMVC                                --springframework 2.5 以上 建议3.2
+	
+	方便集成hibernate,封装hiberanteDao                      --hibernate 3.2以上
+	
+	方便集成mybatis                                         --mybatis 3.0以上         
+	
+	提供对Javamail的封装，简化邮件发送，                    --javamail1.4
 
 ####提供丰富的工具箱:
 	提供对Jsonlib的封装，提供对jackson的封装;
