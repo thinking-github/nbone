@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 /**
  * get Spring ApplicationContext bean<br>
- * use  ComponentFactory must IOC Spring
+ * 
+ * note: use  ComponentFactory must IOC Spring
  * @author Thinking
  * @version 1.0 2014-05-14
  *
