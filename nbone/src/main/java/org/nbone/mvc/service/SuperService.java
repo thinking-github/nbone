@@ -1,3 +1,6 @@
+/*
+ * https://github.com/thinking-github/nbone
+ */
 package org.nbone.mvc.service;
 
 import java.io.Serializable;
@@ -8,8 +11,9 @@ import java.io.Serializable;
  * @since 2015年12月12日下午1:45:26
  *
  * @param <T>
+ * @param <IdType>
  */
-public interface SuperService<T> {
+public interface SuperService<T,IdType extends Serializable> {
 	
 	/**
 	 * 
@@ -37,12 +41,12 @@ public interface SuperService<T> {
 	 * @param id
 	 * @return
 	 */
-	public int delete(Serializable id);
+	public int delete(IdType id);
 	/**
 	 * 
 	 * @param id
 	 * @return
 	 */
-	public T get(Serializable id);
+	public T get(IdType id);
 
 }

@@ -267,4 +267,6 @@
 	</distributionManagement>
 
   
+  	<description>clean package
+clean deploy </description>
 </project>
