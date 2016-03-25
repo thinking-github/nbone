@@ -1,19 +1,22 @@
-ÏîÄ¿»ùÓÚmaven¹¹½¨£¬´ËÏîÄ¿Ìá¹©ÈçÏÂ¹¦ÄÜ:
-·½±ã¼¯³Éspring springMVC                                --springframework 2.5 ÒÔÉÏ ½¨Òé3.2
-·½±ã¼¯³Éhibernate,·â×°hiberanteDao                      --hibernate 3.2ÒÔÉÏ
-·½±ã¼¯³Émybatis                                         --mybatis 3.0ÒÔÉÏ            
-Ìá¹©¶ÔJavamailµÄ·â×°£¬¼ò»¯ÓÊ¼ş·¢ËÍ£¬                    --javamail1.4
-Ìá¹©·á¸»µÄ¹¤¾ßÏä:
-	Ìá¹©¶ÔJsonlibµÄ·â×°£¬Ìá¹©¶ÔjacksonµÄ·â×°£¬
-	Ìá¹©¶ÔXML¶ÔÏó»¥Ïà×ª»¯µÄ·â×°£¬
-	Ìá¹©properties¶¯Ì¬»º´æ¼ÓÔØ¹¦ÄÜ£¬
-	Ìá¹©¶ÔhttpclientµÄ·â×°
-	Ìá¹©×Ö·ûĞ£Ñé¹¤¾ßÀà:ÊÖ»úºÅ/µç»°/ÓÊÏä/Éí·İÖ¤ºÅ/IP/µÈĞ£Ñé¹¦ÄÜ¡£
-	Ìá¹©datagrid,tree pageµÈÄ£ĞÍ
+é¡¹ç›®åŸºäºmavenæ„å»ºï¼Œæ­¤é¡¹ç›®æä¾›å¦‚ä¸‹åŠŸèƒ½:
 
-##×÷ÕßĞÅÏ¢
+æ–¹ä¾¿é›†æˆspring springMVC                                --springframework 2.5 ä»¥ä¸Š å»ºè®®3.2
+æ–¹ä¾¿é›†æˆhibernate,å°è£…hiberanteDao                      --hibernate 3.2ä»¥ä¸Š
+æ–¹ä¾¿é›†æˆmybatis                                         --mybatis 3.0ä»¥ä¸Š            
+æä¾›å¯¹Javamailçš„å°è£…ï¼Œç®€åŒ–é‚®ä»¶å‘é€ï¼Œ                    --javamail1.4
 
-- ×÷Õß:     thinking lang9
-- ×÷ÕßÓÊÏä£ºchenyicheng00@gmail.com
+
+æä¾›ä¸°å¯Œçš„å·¥å…·ç®±:
+	æä¾›å¯¹Jsonlibçš„å°è£…ï¼Œæä¾›å¯¹jacksonçš„å°è£…ï¼Œ
+	æä¾›å¯¹XMLå¯¹è±¡äº’ç›¸è½¬åŒ–çš„å°è£…ï¼Œ
+	æä¾›propertiesåŠ¨æ€ç¼“å­˜åŠ è½½åŠŸèƒ½ï¼Œ
+	æä¾›å¯¹httpclientçš„å°è£…
+	æä¾›å­—ç¬¦æ ¡éªŒå·¥å…·ç±»:æ‰‹æœºå·/ç”µè¯/é‚®ç®±/èº«ä»½è¯å·/IP/ç­‰æ ¡éªŒåŠŸèƒ½ã€‚
+	æä¾›datagrid,tree pageç­‰æ¨¡å‹
+
+##ä½œè€…ä¿¡æ¯
+
+- ä½œè€…:     thinking lang9
+- ä½œè€…é‚®ç®±ï¼šchenyicheng00@gmail.com
 - create by 2016-03-01 thinking ChenYiCheng (create repository)
 - create by 2016-03-24 thinking ChenYiCheng (upload project)
