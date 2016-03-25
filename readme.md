@@ -11,7 +11,7 @@
 	  
 	集成JPA自定义持久层,简化数据持久化方案                           
 	
-	提供对Javamail的封装，简化邮件发送                            --javamail1.4
+	提供对Javamail的封装，简化邮件发送                             --javamail1.4
 
 ####提供丰富的工具箱:
 	提供对Jsonlib的封装,简化 Java Object 和 JSON 之间的转化;
@@ -38,3 +38,6 @@
 - 作者邮箱：chenyicheng00@gmail.com
 - create by 2016-03-01 thinking ChenYiCheng (create repository)
 - create by 2016-03-24 thinking ChenYiCheng (upload project)
+
+### git 地址：
+- git@github.com:thinking-github/nbone.git
