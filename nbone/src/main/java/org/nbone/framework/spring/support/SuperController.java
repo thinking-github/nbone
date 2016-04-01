@@ -4,12 +4,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nbone.constant.ContentType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * Spring MVC 控制层超级基类，用于实现控制类的基本操作
@@ -19,12 +22,21 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @serial 1.0
  */
 
-public abstract class SuperBaseController implements ContentType{
+public abstract class SuperController implements ContentType{
+	
+	protected static Log logger = LogFactory.getLog(SuperController.class);
 	
 	protected HttpServletRequest request;  
     protected HttpServletResponse response;  
     protected HttpSession session; 
+    
     protected Model model;
+    /**
+     * spring package  HttpServletRequest
+     */
+    protected WebRequest webRequest;
+    
+    
     
     /**
      * ModelAttribute 此注解用于http事件请求时第一个执行的方法
@@ -32,41 +44,21 @@ public abstract class SuperBaseController implements ContentType{
      * @param response
      */
     @ModelAttribute
-    public void doExecuteSetReqAndRes(HttpServletRequest request, HttpServletResponse response,Model model){  
+    public void doExecuteSetReqAndRes(HttpServletRequest request, HttpServletResponse response){  
         this.request = request;  
         this.response = response;  
-        this.model = model;
+        
         if(request != null) {
         	this.session = request.getSession();  
         }
         
     }  
-    
-	public HttpServletRequest getRequest() {
-		return request;
-	}
+    @ModelAttribute
+    public void doExecuteController(WebRequest webRequest,Model model){
+    	this.webRequest = webRequest;
+    	this.model = model;
+    }
 
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	public HttpServletResponse getResponse() {
-		return response;
-	}
-
-	public void setResponse(HttpServletResponse response) {
-		this.response = response;
-	}
-
-	public HttpSession getSession() {
-		return session;
-	}
-
-	public void setSession(HttpSession session) {
-		this.session = session;
-	}
-
-	
 	//----------------------------------------------
 	public static void test(){
     	

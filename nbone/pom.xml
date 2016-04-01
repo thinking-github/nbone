@@ -6,20 +6,41 @@
   
   <properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	  	<spring.version>3.2.1.RELEASE</spring.version>
+	  	<spring.version>4.0.3.RELEASE</spring.version>
+	  	<spring-boot.version>1.0.0.RELEASE</spring-boot.version>
 	  	<hibernate.version>3.6.10.Final</hibernate.version>
 	  	<mybatis.version>3.2.3</mybatis.version>
 	  	<mybatis-spring.version>1.2.1</mybatis-spring.version>
   </properties>
   
-
+    <name>thinking</name>
+    <url>https://github.com/thinking-github/nbone</url>
+  	<organization>
+  		<name>nbone</name>
+  	</organization>
+  	<description>clean package
+				  clean deploy </description>
+  	<scm>
+  		<url>https://github.com/thinking-github/nbone</url>
+  		<developerConnection>thinking</developerConnection>
+  		<tag>master</tag>
+  		<connection>git@github.com:thinking-github/nbone.git</connection>
+  	</scm>
+  	<developers>
+  		<developer>
+  			<id></id>
+  			<name>thinking</name>
+  			<email>chenyicheng00@gmail.com</email>
+  		</developer>
+  	</developers>
+  
   
   <dependencies>
-		  <dependency>
-	        <groupId>javax.servlet</groupId>
-	        <artifactId>servlet-api</artifactId>
-	        <version>2.5</version>
-	        <scope>provided</scope>
+	      <dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
+				<scope>provided</scope>
 	      </dependency>
 	      <dependency>
 	        <groupId>javax.servlet.jsp</groupId>
@@ -52,9 +73,27 @@
 	      <dependency>
 		       <groupId>org.springframework</groupId>
 		       <artifactId>spring-jdbc</artifactId>
-		       <version>${spring.version}</version>
-		    </dependency>
-		
+		       <version>${spring.version}</version><!--$NO-MVN-MAN-VER$-->
+		  </dependency>
+		  <!-- spring  boot-->
+		 <dependency>
+		       <groupId>org.springframework.boot</groupId>
+		       <artifactId>spring-boot-starter-web</artifactId>
+		       <version>${spring-boot.version}</version>
+		       <!-- spring  boot web tomcat-->
+		       <!-- <exclusions>
+			       <exclusion>
+				       <groupId>org.springframework.boot</groupId>
+				       <artifactId>spring-boot-starter-tomcat</artifactId>
+			       </exclusion>
+		       </exclusions> -->
+    	</dependency>
+    	 <!-- spring  boot web jetty-->
+    	<!-- <dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-jetty</artifactId>
+		    <version>${spring-boot.version}</version>
+		 </dependency> -->
 		   
 		   <!-- apache -->
 		   <dependency>
@@ -140,12 +179,37 @@
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
 				<version>1.9.8</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-mapper-asl</artifactId>
 				<version>1.9.8</version>
+				<scope>provided</scope>
 			</dependency>
+			
+			<!-- jackson2 JSON -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.5.4</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.5.4</version>
+				<scope>provided</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.codehaus.castor</groupId>
+				<artifactId>castor-xml</artifactId>
+				<version>1.3.3</version>
+				<scope>provided</scope>
+			</dependency>
+			
+			
 			
 			<!-- net.sf.json-lib JSON -->
 			<dependency>
@@ -199,7 +263,7 @@
 		     <groupId>junit</groupId>
 		     <artifactId>junit</artifactId>
 		     <version>4.11</version>
-		     <scope>test</scope>
+		     <scope>provided</scope>
       </dependency>
   	 <dependency>
 			<groupId>org.apache.velocity</groupId>
@@ -234,7 +298,14 @@
 		<scope>test</scope>
 	</dependency>
 	<!--  dependency  test end-->
-	
+
+
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>3.2.1.RELEASE</version>
+		<scope>provided</scope>
+	</dependency>
 	
   </dependencies>
   
@@ -266,7 +337,4 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-  
-  	<description>clean package
-clean deploy </description>
 </project>

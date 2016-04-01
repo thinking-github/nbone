@@ -9,30 +9,31 @@
     	
     	  <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
     	 
-        <commentGenerator>
-            <property name="suppressDate" value="false"/>
-            <property name="suppressAllComments" value="true"/>
+        <commentGenerator type="org.nbone.framework.mybatis.generator.CustomCommentGenerator">
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="false"/>
         </commentGenerator>
         
 			<!--casm-tradecenter       casm-goodscenter-->
 	  <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
-	  	              connectionURL="jdbc:mysql://14.14.97.69:3306/casm-goodscenter?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull" 
+	  	              connectionURL="jdbc:mysql://172.21.110.51:3306/casm-goodscenter?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull" 
 	  	              userId="root" password="root">
 		</jdbcConnection>
     
 				 
-        <javaModelGenerator targetPackage="com.camelot.basecenter.dto"
+        <javaModelGenerator targetPackage="com.camelot.goodscenter.domain.ts"
                             targetProject="./src">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="com.camelot.basecenter"
+        <sqlMapGenerator targetPackage="com.camelot.goodscenter"
                          targetProject="./src">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
-
-        <javaClientGenerator targetPackage="com.camelot.basecenter.dao"
+        <!--  org.nbone.framework.mybatis.generator.CustomIntrospectedTable-->
+        <!--  type=""  XMLMAPPER MIXEDMAPPER ANNOTATEDMAPPER-->
+        <javaClientGenerator targetPackage="com.camelot.goodscenter.dao.ts"
                              targetProject="./src" type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
@@ -43,7 +44,6 @@
                enableSelectByExample="false"
                selectByExampleQueryId="false"
          -->
-    
 
         <table tableName="ts_service_project" domainObjectName="TsServiceProjectDTO"
         	
@@ -57,7 +57,7 @@
                                 replaceString=""/>-->
         </table>
         
-         <table tableName="%"  
+<!--          <table tableName="%"  
         	
         	   enableCountByExample="false" 
                enableUpdateByExample="false"
@@ -66,7 +66,7 @@
                selectByExampleQueryId="false"
                >
                
-        </table>
+        </table> -->
 
     </context>
 </generatorConfiguration>

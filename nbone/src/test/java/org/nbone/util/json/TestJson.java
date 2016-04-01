@@ -1,7 +1,6 @@
 package org.nbone.util.json;
 
-import org.nbone.util.json.JSONOperUtils;
-import org.nbone.util.json.JsonUtils;
+import org.nbone.util.json.jackson.JsonUtils;
 
 public class TestJson {
 	

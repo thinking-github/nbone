@@ -44,6 +44,11 @@ public interface Constant {
 	
 	public final static int configuration =0;
 	
+	public final static int description =0;
+	
+	public final static int custom =0;
+	public final static int merge =0;
+	
 	public final static int prefix =0;
 	public final static int suffix =0;
 

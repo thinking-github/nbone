@@ -4,7 +4,16 @@ public class User {
 	
 	private String id;
 	private String name;
+	private String password;
 	
+	public User(String id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
+	public User() {
+	}
+
 	public String getId() {
 		System.out.println("---------------------getid");
 		return id;
@@ -16,8 +25,14 @@ public class User {
 		return name;
 	}
 	public void setName(String name) {
-		System.out.println("======"+name);
 		this.name = name;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 	public static  String getChen(){

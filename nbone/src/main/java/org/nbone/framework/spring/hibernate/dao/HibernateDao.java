@@ -25,8 +25,7 @@ public class HibernateDao extends HibernateDaoSupportX {
 		return  super.getSessionFactory().openSession();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Object> queryForBean(Object bean) {
+	public List<?> queryForBean(Object bean) {
 		String hql = HibernateClassUtils.getSimpleHQL(bean);
 		return super.getHibernateTemplate().find(hql);
 	}

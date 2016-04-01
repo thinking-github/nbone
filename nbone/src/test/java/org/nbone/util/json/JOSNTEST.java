@@ -4,20 +4,16 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.codehaus.jackson.type.TypeReference;
-import org.nbone.test.User1;
+import org.nbone.pojo.User;
 import org.nbone.test.UserTest;
-import org.nbone.util.json.JSONOperUtils;
-import org.nbone.util.json.JsonUtils;
-import org.nbone.web.support.ListWebResultWrapper;
+import org.nbone.util.json.jackson.JsonUtils;
 import org.nbone.web.support.WebResultWrapper;
+
+import net.sf.json.JSONArray;
 
 public class JOSNTEST {
 
@@ -30,7 +26,7 @@ public class JOSNTEST {
 		stringList.add("777777");
 		stringList.add("888888");
 		UserTest user = UserTest.getUser("001");
-		user.setUser1(new User1("user1..", "user1=="));
+		user.setUser1(new User("user1..", "user1=="));
 		//user.setStringlist(stringList);
 		//List<UserTest> resultUserList = new ArrayList<UserTest>();
 		List resultUserList = new ArrayList();

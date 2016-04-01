@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.nbone.pojo.User;
+
 public class UserTest {
 	public static int count = 0;
 	private String id;
@@ -16,7 +18,7 @@ public class UserTest {
 	private Date dates = new  Date();
 	private Timestamp times = new Timestamp(dates.getTime());
 	
-	private User1 user1 ;
+	private User user1 ;
 	
 	private List<String> stringlist;
 	
@@ -90,10 +92,10 @@ public class UserTest {
 	public void setTimes(Timestamp times) {
 		this.times = times;
 	}*/
-	public User1 getUser1() {
+	public User getUser() {
 		return user1;
 	}
-	public void setUser1(User1 user1) {
+	public void setUser1(User user1) {
 		this.user1 = user1;
 	}
 	public List<String> getStringlist() {
