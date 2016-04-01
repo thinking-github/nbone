@@ -1,17 +1,18 @@
 ##项目基于maven构建，此项目提供如下功能:
 
 ####框架集成:
-	方便集成spring springMVC                                      --springframework 2.5 以上 建议4.0以上,可以使用spring boot 
+	方便集成spring springMVC                                 --springframework 2.5 以上 
+	                                                         --建议4.0以上,可以使用spring boot 
 	                                                              
 	方便集成springJDBC,提供springJDBCDao方便使用
 	 
-	方便集成hibernate,提供hiberanteDao方便使用                    --hibernate 3.2以上
+	方便集成hibernate,提供hiberanteDao方便使用               --hibernate 3.2以上
 	
-	方便集成mybatis                                               --mybatis 3.0以上    
+	方便集成mybatis                                          --mybatis 3.0以上    
 	  
 	集成JPA自定义持久层,简化数据持久化方案                           
 	
-	提供对Javamail的封装，简化邮件发送                             --javamail1.4
+	提供对Javamail的封装，简化邮件发送                       --javamail1.4
 
 ####提供丰富的工具箱:
 	提供对Jsonlib的封装,简化 Java Object 和 JSON 之间的转化;
