@@ -15,8 +15,9 @@ import com.opensymphony.xwork2.ActionSupport;
 
 /**
  * struts2 Action超级基类，用于实现控制类的基本操作
- * @author Thinking 
- * @version 1.0 2014-06-19
+ * @author thinking 
+ * @version 1.0 
+ * @since 2014-06-19
  */
 public abstract class SuperBaseAction extends ActionSupport implements ContentType{
 	
@@ -45,9 +46,9 @@ public abstract class SuperBaseAction extends ActionSupport implements ContentTy
 		}
 		HttpServletResponse response = ServletActionContext.getResponse();
 		Assert.notNull(response);
-		String charsetPrefix = ";charset=";
+		
 		//"text/html;charset=utf-8"
-		String contentHead = (new StringBuilder()).append(contentType).append(charsetPrefix).append(charset).toString();
+		String contentHead = (new StringBuilder()).append(contentType).append(SUB_CHARSET_PREFIX).append(charset).toString();
 		response.setContentType(contentHead);
 		PrintWriter writer = response.getWriter();
 		String strData = "null";

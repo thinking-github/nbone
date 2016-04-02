@@ -2,6 +2,8 @@ package org.nbone.framework.spring.boot.web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
+@EnableConfigurationProperties           //application.properties
+//@IntegrationTest({"server.port=8081"})
 public class WebApplication {
 	
 	public static void main(String[] args) throws Exception {
