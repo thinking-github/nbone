@@ -3,6 +3,9 @@ package org.nbone.constant;
 /**
  * 
  * @author thinking 2014-10-10
+ * @since  2014-10-10
+ * @see org.springframework.http.MediaType
+ * @see org.springframework.util.MimeTypeUtils
  *
  */
 public interface ContentType extends CharsetConstant {
@@ -45,16 +48,13 @@ public interface ContentType extends CharsetConstant {
 	public final static  String ZIP = "application/zip";
 	
 	
+	
+	public final static String SUB_CHARSET_PREFIX = ";charset=";
+	
 	/**
-	 * 字符编码
+	 * "text/json;charset=utf-8"
 	 */
-	public final static String CHARSET_ISO_8859_1 ="ISO-8859-1";
-	public final static String CHARSET_UTF8 ="UTF-8";
-	public final static String CHARSET_GBK = "GBK";
-	public final static String CHARSET_GB2312 = "GB2312";
-	
-	
-	public final static String SUB_CHARSET = ";charset=";
+	public final static String TEXT_JSON_UTF_8 =new StringBuilder(TEXT_JSON).append(SUB_CHARSET_PREFIX).append(CHARSET_UTF8).toString();
 	
 
 }
