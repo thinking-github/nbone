@@ -142,6 +142,12 @@
 				<version>3.6.10.Final</version>
 				<scope>provided</scope>
 		   </dependency>
+		   
+		   <dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>4.3.2.Final</version>
+			</dependency>
 						
 		   <!-- MyBatis -->
 			<dependency>
@@ -232,6 +238,13 @@
 				<version>1.2.10</version>
 			</dependency>
 			
+			<!-- alibaba  fastjson-->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.4</version>
+			</dependency>
+			
   	
 	  	<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
@@ -306,6 +319,8 @@
 		<version>3.2.1.RELEASE</version>
 		<scope>provided</scope>
 	</dependency>
+
+
 	
   </dependencies>
   

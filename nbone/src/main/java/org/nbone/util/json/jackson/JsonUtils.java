@@ -10,6 +10,8 @@ import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.map.module.SimpleModule;
 import org.codehaus.jackson.map.ser.StdSerializerProvider;
 import org.codehaus.jackson.type.TypeReference;
@@ -26,6 +28,8 @@ public class JsonUtils implements DateConstant{
 	private static JsonUtils jsonUtil;
 	private ObjectMapper mapper;
 	
+	private static ObjectMapper mapper1 = new ObjectMapper();
+	
 	private JsonUtils(ObjectMapper mapper){
 		this.mapper = mapper;
 	}
@@ -34,7 +38,11 @@ public class JsonUtils implements DateConstant{
 	private static JsonUtils getInstance() {
 		if(jsonUtil == null){
 			ObjectMapper mapper = new ObjectMapper();
+			
+			mapper.setSerializationInclusion(Inclusion.ALWAYS);
 			//mapper.configure(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES, false);
+			//mapper.getSerializerProvider().setNullValueSerializer(new NullValueSerializer());
+			
 			SimpleModule module = new SimpleModule("JsonUtil", new Version(1, 0, 0, null));
 			//JavaObject to JSONString
 			module.addSerializer(new ToJsonLongSerializer());
@@ -107,7 +115,19 @@ public class JsonUtils implements DateConstant{
 	
 	
 	public static String pojoToJson(Object value) throws Exception {
-		return getInstance().getMapper().writeValueAsString(value);
+		ObjectMapper mapper =  getInstance().getMapper();
+		mapper.setSerializationInclusion(Inclusion.ALWAYS);
+		return mapper.writeValueAsString(value);
+	}
+	/**
+	 * pojo to json string (值为空的不进行序列化)
+	 * @param value
+	 * @return
+	 * @throws Exception
+	 */
+	public static String pojoToJsonFilter(Object value) throws Exception {
+		mapper1.setSerializationInclusion(Inclusion.NON_NULL);
+		return mapper1.writeValueAsString(value);
 	}
 	
 	
@@ -120,8 +140,8 @@ public class JsonUtils implements DateConstant{
 	    	//Base by UAP
 	        StdSerializerProvider sp = new StdSerializerProvider();
 	        objectMapper = new ObjectMapper(null, sp, null);
-	        //objectMapper.configure(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES, false);
-	        //objectMapper.setSerializationInclusion(Inclusion.ALWAYS);
+	        objectMapper.configure(SerializationConfig.Feature.WRITE_NULL_MAP_VALUES, false);
+	        objectMapper.setSerializationInclusion(Inclusion.ALWAYS);
 	        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 	        SimpleModule module = new SimpleModule("myCustomerModule", new Version(1, 0, 0, null));
 	        module.addDeserializer(Date.class, new CustomDateDeSerializer(Date.class,DEFAULT_FORMATS));

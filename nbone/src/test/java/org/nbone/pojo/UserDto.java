@@ -1,6 +1,6 @@
 package org.nbone.pojo;
 
-public class UserDto {
+public class UserDto  extends User{
 	
 	private String id;
 	private String name;

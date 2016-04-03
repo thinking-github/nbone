@@ -2,16 +2,21 @@ package org.nbone.util.json;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
-import java.util.*;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.nbone.constant.DateConstant;
 
 import net.sf.ezmorph.MorpherRegistry;
-import net.sf.ezmorph.object.DateMorpher;
-import net.sf.json.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 import net.sf.json.util.JSONUtils;
 
@@ -219,20 +224,36 @@ public class JSONOperUtils implements DateConstant{
      * @param obj
      * @return
      */
-	public static String pojoToJSON(Object obj) {
+	public static String pojoToJSON(Object obj,JsonConfig jsonConfig) {
 		String jsonStr = null;
 		
 		if (obj == null)
 			return "{}";
 		if ((obj instanceof Collection) || (obj instanceof Object[]) || obj.getClass().isArray())
-			jsonStr = JSONArray.fromObject(obj, jsonCfg).toString();
+			jsonStr = JSONArray.fromObject(obj, jsonConfig).toString();
 		else
-			jsonStr = JSONObject.fromObject(obj, jsonCfg).toString();
+			jsonStr = JSONObject.fromObject(obj, jsonConfig).toString();
 		return jsonStr;
 	}
 	
 	
+	public static String pojoToJSON(Object obj) {
+		return pojoToJSON(obj,jsonCfg);
+		
+	}
+	/**
+	 * pojo to json string (值为空的不进行序列化)
+	 * @param obj
+	 * @return
+	 */
+	public static String pojoToJSONFilter(Object obj) {
+		
+		return pojoToJSON(obj,jsonCfg1);
+	}
+	
+	
 	static JsonConfig jsonCfg;
+	static JsonConfig jsonCfg1;
 	static {
 		//JavaObject to JSON String 
 		jsonCfg = new JsonConfig();
@@ -240,6 +261,10 @@ public class JSONOperUtils implements DateConstant{
 		jsonCfg.registerJsonValueProcessor(Date.class,toJSONProcessor);
 		jsonCfg.registerJsonValueProcessor(Timestamp.class,toJSONProcessor);
 		jsonCfg.registerJsonValueProcessor(java.sql.Date.class,toJSONProcessor);
+		
+		//jsonCfg.setJsonPropertyFilter(new NullToPropertyFilter());
+		
+		
 		
 		//JSON String to JavaObject
 		MorpherRegistry mr = JSONUtils.getMorpherRegistry();
@@ -255,6 +280,10 @@ public class JSONOperUtils implements DateConstant{
 		mr.registerMorpher(dateMorpher);
 		mr.registerMorpher(timestampMorpher);
 		mr.registerMorpher(sqlDateMorpher);
+		
+		//--------------------------------------------------
+		jsonCfg1 = new JsonConfig();
+		jsonCfg1.setJsonPropertyFilter(new NullValuePropertyFilter());
 	}
 	
 	
