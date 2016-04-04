@@ -1,14 +1,14 @@
 
-package org.nbone.exception;
+package org.nbone.mvc.exception;
 
 /**
  * 
  * 业务系统异常处理类<br>
  * 并返回错误码errorCode
  * 
- * @author Thinking
- * @version 1.0 2014-05-08
- * @serial  1.0
+ * @author thinking
+ * @version 1.0 
+ * @serial  2014-05-08
  */
 public class BizcSystemException extends Exception {
 

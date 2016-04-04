@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nbone.mvc.ISuper;
 
 /**
  * Supper Service interface
@@ -16,38 +17,9 @@ import org.apache.commons.logging.LogFactory;
  * @param <T>
  * @param <IdType>
  */
-public interface SuperService<T,IdType extends Serializable> {
+public interface SuperService<T,IdType extends Serializable> extends ISuper<T, IdType> {
 	
 	static Log logger = LogFactory.getLog(SuperService.class);
-	/**
-	 * 
-	 * @param object
-	 * @return 返回主键id
-	 */
-	public IdType save(T object);
-	
-	/**
-	 * 
-	 * <p></p>
-	 * @param object
-	 * @return 返回含有Id实体Bean
-	 */
-	public T add(T object);
-	
-	/**
-	 * 
-	 * <p></p>
-	 * @param object
-	 * @return 返回插入的行数
-	 */
-	public int insert(T object);
-	
-	/**
-	 * 
-	 * @param object
-	 * @return
-	 */
-	public int update(T object);
 	
 	/**
 	 * 有选择的更新，只更新含有值得属性 Selective
@@ -56,17 +28,7 @@ public interface SuperService<T,IdType extends Serializable> {
 	 */
 	public int updateNotNull(T object);
 	
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public int delete(IdType id);
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public T get(IdType id);
+	
+	
 
 }

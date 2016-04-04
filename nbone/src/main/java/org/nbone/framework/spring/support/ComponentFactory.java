@@ -3,20 +3,24 @@ package org.nbone.framework.spring.support;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 /**
- * get Spring ApplicationContext bean<br>
+ * 以静态变量保存Spring ApplicationContext, 可在任何代码任何地方任何时候中取出ApplicaitonContext.<p>
+ * get Spring ApplicationContext bean<br> <p>
  * 
  * note: use  ComponentFactory must IOC Spring
- * @author Thinking
- * @version 1.0 2014-05-14
+ * @author thinking
+ * @version 1.0 
+ * @since 2013-12-14
  *
  */
 @Component
-public class ComponentFactory implements ApplicationContextAware {
+public class ComponentFactory implements ApplicationContextAware,InitializingBean,DisposableBean {
 	
 	private static Log logger =  LogFactory.getLog(ComponentFactory.class);
 	private static ApplicationContext applicationContext;
@@ -24,14 +28,19 @@ public class ComponentFactory implements ApplicationContextAware {
 
 	public ComponentFactory() {
 	}
-
+    /**
+     * {@inheritDoc}     
+     */
+	@Override
 	public void setApplicationContext(ApplicationContext context)throws BeansException {
 		applicationContext = context;
+		logger.debug("注入ApplicationContext到SpringContextHolder:"+ applicationContext);
 	}
 
 	public static ApplicationContext getContext() {
 		return applicationContext;
 	}
+	
 	public static  Object getBean(String id){
 		if(id == null){
          return null;
@@ -43,7 +52,7 @@ public class ComponentFactory implements ApplicationContextAware {
 	}
 	
 	/**
-	 * 以后尽量使用含泛型的方法,方便使用不用强制类型转换
+	 * 尽量使用含泛型的方法,方便使用不用强制类型转换
 	 * @param name
 	 * @param requiredType
 	 * @return
@@ -73,6 +82,12 @@ public class ComponentFactory implements ApplicationContextAware {
 		
 		return bean;
 	}
+	/**
+	 * 清除SpringContextHolder中的ApplicationContext为Null.
+	 */
+	public static void clear() {
+		applicationContext = null;
+	}
 	
 	
 	
@@ -96,6 +111,21 @@ public class ComponentFactory implements ApplicationContextAware {
 		}
 		
 		return instance;
+	}
+	/**
+	 * 实现DisposableBean接口,在Context关闭时清理静态变量.
+	 */
+	@Override
+	public void destroy() throws Exception {
+		clear();
+	}
+	/**
+	 * 实现InitializingBean接口,在Context初始化后加载自定义变量.
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
     
 	

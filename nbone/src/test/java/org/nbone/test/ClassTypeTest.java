@@ -1,11 +1,11 @@
 package org.nbone.test;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
-public class TTT {
-
-	/**
-	 * @param args
-	 */
+public class ClassTypeTest {
+	
 	public static void main(String[] args) {
 
 		String[] toSmcsiteArray = new String[6]; 
@@ -18,6 +18,13 @@ public class TTT {
 	     System.out.println("==========================");
 	     System.out.println(new Integer(0).getClass() == new Integer(21).getClass());
 	     System.out.println(new Integer(0).getClass() == Integer.class);
+	     
+	     
+	     
+	 	System.out.println(Date.class.isPrimitive());
+		System.out.println(Integer.class.isPrimitive());
+		System.out.println(Locale.getDefault().toString());
+		System.out.println(Calendar.class);
 	     
 	     
 	}

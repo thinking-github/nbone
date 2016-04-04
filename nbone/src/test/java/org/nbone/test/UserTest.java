@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.nbone.pojo.User;
 
 public class UserTest {
@@ -105,5 +107,17 @@ public class UserTest {
 		this.stringlist = stringlist;
 	}
 
+	
+	public static void main(String[] args) {
+		
+		UserTest user  = UserTest.getUser("001");
+		
+		System.out.println(user);
+		
+		System.out.println(ToStringBuilder.reflectionToString(user,ToStringStyle.MULTI_LINE_STYLE));
+		
+		
+		
+	}
 
 }

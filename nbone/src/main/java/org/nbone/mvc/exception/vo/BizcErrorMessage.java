@@ -1,9 +1,10 @@
-package org.nbone.exception.vo;
+package org.nbone.mvc.exception.vo;
 
 /**
  * 业务系统处理异常代码映射消息
- * @author Thinking
- * @version 1.0  2014-05-08 
+ * @author thinking
+ * @version 1.0  
+ * @since  2014-05-08 
  *
  */
 public class BizcErrorMessage {

@@ -11,7 +11,7 @@ public class JsonObjectNullTest {
 		
 		
 		
-		UserJson user = UserJson.getUserJson();
+		UserJson user = UserJson.getUserJson("001");
 		user.setPassword("");
 		String json1= JSONOperUtils.pojoToJSON(user);
 		String json1Filter= JSONOperUtils.pojoToJSONFilter(user);

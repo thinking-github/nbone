@@ -90,6 +90,19 @@ public class DateFPUtils implements DateConstant {
 	public static Date parseDate(String strDateTime) {
 		return parseDate(strDateTime, new String[] { DEFAULT_DATE_PATTERN });
 	}
+	
+	/**
+	 * 
+	 * 将时间字符串转换成默认格式的日期
+	 * 
+	 * @author thinking
+	 * @see #parseDate(String, String[])
+	 */
+	public static Date parseFullDate(String strDateTime) {
+		return parseDate(strDateTime, new String[] { DEFAULT_DATETIME_PATTERN });
+	}
+	
+	
 
 	/**
 	 * @author thinking
@@ -213,6 +226,36 @@ public class DateFPUtils implements DateConstant {
 		return parseDateByLongString(strDateTime);
 	}
 
+	
+	/**
+	 * 根据时间获得时间所属季度
+	 * @param date
+	 * @return
+	 */
+	public final static String formatDateToJidu(Date date) {
+		if (date == null) {
+			return "";
+		}
+		String nowDate =formatDate(date, DEFAULT_DATE_PATTERN);
+		String months = nowDate.substring(5, 7);
+		String jidu = "";
+		if(months.equals("01")||months.equals("02")||months.equals("03")){
+			jidu = "1";
+		}else if(months.equals("04")||months.equals("05")||months.equals("06")){
+			jidu = "2";
+		}else if(months.equals("07")||months.equals("08")||months.equals("09")){
+			jidu = "3";
+		}else if(months.equals("10")||months.equals("11")||months.equals("12")){
+			jidu = "4";
+		}
+		return jidu;
+	}
+	
+	public final static String formatDateToNiandu(Date date){
+		String nowDate =formatDate(date, DEFAULT_DATE_PATTERN);
+		return nowDate.substring(0,4);
+	}
+	
 	/**
 	 * Base by Uap
 	 * 

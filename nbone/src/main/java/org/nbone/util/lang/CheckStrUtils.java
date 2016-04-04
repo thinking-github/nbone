@@ -1,8 +1,14 @@
-package org.nbone.util;
+package org.nbone.util.lang;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * 
+ * @author thinking
+ * @version 1.0
+ * @since   2013-12-12
+ *
+ */
 public class CheckStrUtils {
 
 

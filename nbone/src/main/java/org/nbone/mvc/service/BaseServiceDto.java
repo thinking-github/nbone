@@ -1,6 +1,7 @@
 package org.nbone.mvc.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.nbone.framework.mybatis.SupperMapper;
 
@@ -29,7 +30,8 @@ public  class BaseServiceDto<T,IdType extends Serializable> implements SuperServ
 
 	@Override
 	public T add(T object) {
-		return null;
+		insert(object);
+		return object;
 	}
 
 	@Override
@@ -38,8 +40,8 @@ public  class BaseServiceDto<T,IdType extends Serializable> implements SuperServ
 	}
 
 	@Override
-	public int update(T object) {
-		return superMapper.updateByPrimaryKey(object);
+	public void update(T object) {
+		superMapper.updateByPrimaryKey(object);
 	}
 
 	@Override
@@ -48,13 +50,31 @@ public  class BaseServiceDto<T,IdType extends Serializable> implements SuperServ
 	}
 
 	@Override
-	public int delete(IdType id) {
-		return superMapper.deleteByPrimaryKey(id);
+	public void delete(IdType id) {
+		superMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public T get(IdType id) {
 		return superMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public void saveOrUpdate(T object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(T object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<T> getAll() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

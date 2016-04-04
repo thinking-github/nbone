@@ -1,5 +1,6 @@
 package org.nbone.util.json;
 
+import org.nbone.pojo.UserJson;
 import org.nbone.util.json.jackson.JsonUtils;
 
 public class TestJson {
@@ -19,7 +20,7 @@ public class TestJson {
 	
 	public static void test(String id) throws Exception{
 		
-         UserJSONDataType user  = UserJSONDataType.getUser(id);
+		UserJson user  = UserJson.getUserJson(id);
 		
 		long start1 = System.currentTimeMillis();
 		String userString = "{}";
@@ -37,13 +38,13 @@ public class TestJson {
 		System.out.println(userString2);
 		
 		long start3 = System.currentTimeMillis();
-		UserJSONDataType user2 =  JSONOperUtils.JSONToObject(userString2, UserJSONDataType.class);
+		UserJson user2 =  JSONOperUtils.JSONToObject(userString2, UserJson.class);
 		long end3 = System.currentTimeMillis();
 		System.out.println("JSONLIB---"+(end3-start3));
 		
 		
 		long start4 = System.currentTimeMillis();
-		UserJSONDataType user1= JsonUtils.toObjectFromJson(userString2, UserJSONDataType.class);
+		UserJson user1= JsonUtils.toObjectFromJson(userString2, UserJson.class);
 		long end4 = System.currentTimeMillis();
 		System.out.println("objectmap---"+(end4-start4));
 		
