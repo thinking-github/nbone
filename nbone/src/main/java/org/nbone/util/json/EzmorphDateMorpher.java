@@ -88,7 +88,7 @@ public class EzmorphDateMorpher  extends AbstractObjectMorpher  {
 	  }
 	  
 	  protected Date doMorph(Object value){
-		    if (value == null) {
+		    if (value == null || value.toString().trim().equals("")) {
 			      return null;
 			}
 		    if(value instanceof Date){

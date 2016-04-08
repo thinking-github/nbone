@@ -26,6 +26,8 @@ public abstract class SuperController implements ContentType{
 	
 	protected static Log logger = LogFactory.getLog(SuperController.class);
 	
+	protected String  redirectStr = "redirect:";  
+	
 	protected HttpServletRequest request;  
     protected HttpServletResponse response;  
     protected HttpSession session; 

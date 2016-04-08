@@ -5,9 +5,9 @@ package org.nbone.mvc.service;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nbone.mvc.ISuper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Supper Service interface
@@ -19,7 +19,7 @@ import org.nbone.mvc.ISuper;
  */
 public interface SuperService<T,IdType extends Serializable> extends ISuper<T, IdType> {
 	
-	static Log logger = LogFactory.getLog(SuperService.class);
+	static Logger logger = LoggerFactory.getLogger(SuperService.class);
 	
 	/**
 	 * 有选择的更新，只更新含有值得属性 Selective

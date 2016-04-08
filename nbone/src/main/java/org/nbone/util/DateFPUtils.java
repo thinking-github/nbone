@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -37,6 +38,9 @@ public class DateFPUtils implements DateConstant {
 	 * @return parse Date Exception return null
 	 */
 	public static Date parseDateByLongString(String longtimeStr) {
+		if(StringUtils.isBlank(longtimeStr)){
+			return null;
+		}
 		try {
 			// Date#getTime()
 			// 1452223274050
@@ -66,6 +70,9 @@ public class DateFPUtils implements DateConstant {
 	 * @author thinking
 	 */
 	public static Date parseDate(String strDateTime, String[] formats) {
+		if(StringUtils.isBlank(strDateTime)){
+			return null;
+		}
 		try {
 			Date parseDate = DateUtils.parseDate(strDateTime, formats);
 			return parseDate;

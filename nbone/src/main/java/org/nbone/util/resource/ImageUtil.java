@@ -7,21 +7,7 @@
 package org.nbone.util.resource;
 
 import java.awt.Dimension;
-import java.awt.image.AreaAveragingScaleFilter;
-import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageProducer;
-import java.awt.image.PixelGrabber;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * 图像操作类
@@ -72,7 +58,7 @@ public class ImageUtil {
      *                转换后的高度
      * @return 转换是否成功 true=转换成功 false=转换失败
      */
-    public static boolean convert(String oldName, String newSummName,
+   /* public static boolean convert(String oldName, String newSummName,
             int width, int height) {
         BufferedImage bufferedImage = new BufferedImage(width, height, 1);
         Object uc = null;
@@ -117,6 +103,6 @@ public class ImageUtil {
             return false;
         }
         return true;
-    }
+    }*/
 
 }

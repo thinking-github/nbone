@@ -57,6 +57,6 @@ public class GenericsUtils {
 			log.warn(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
 			return Object.class;
 		}
-		return (Class) params[index];
+		return (Class<?>) params[index];
 	}
 }

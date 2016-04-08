@@ -1,5 +1,6 @@
 package org.nbone.test;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -25,6 +26,8 @@ public class ClassTypeTest {
 		System.out.println(Integer.class.isPrimitive());
 		System.out.println(Locale.getDefault().toString());
 		System.out.println(Calendar.class);
+		Serializable chen = 1;
+		System.out.println(chen.getClass());
 	     
 	     
 	}

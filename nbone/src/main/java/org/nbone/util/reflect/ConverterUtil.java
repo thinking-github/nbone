@@ -6,7 +6,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
+/**
+ * 
+ * <p></p>
+ * @author  ChenYiCheng
+ * @version 1.0 
+ * @since 2014-12-12
+ * @see Axis1
+ */
 public class ConverterUtil {
 	
 	 private static boolean isCustomClassPresent = false;
