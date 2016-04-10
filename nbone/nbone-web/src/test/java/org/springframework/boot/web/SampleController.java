@@ -2,10 +2,10 @@ package org.springframework.boot.web;
 
 import java.util.Map;
 
-import org.nbone.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.web.test.User;
 import org.springframework.boot.web.test.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
