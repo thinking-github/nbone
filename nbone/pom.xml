@@ -1,8 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nbone</groupId>
   <artifactId>nbone</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  
+  <modules>
+    <module>nbone-core</module>
+    <module>nbone-parent</module>
+    <module>nbone-web</module>
+  </modules>
   
   <properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,7 +36,7 @@
   	</scm>
   	<developers>
   		<developer>
-  			<id></id>
+  			<id/>
   			<name>thinking</name>
   			<email>chenyicheng00@gmail.com</email>
   		</developer>
@@ -48,6 +56,14 @@
 	        <version>2.1</version>
 	        <scope>provided</scope>
 	      </dependency>
+	      
+		 <dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>javax.jms-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
   
    		<!-- springframework -->
   	   <dependency>
@@ -75,6 +91,16 @@
 		       <artifactId>spring-jdbc</artifactId>
 		       <version>${spring.version}</version><!--$NO-MVN-MAN-VER$-->
 		  </dependency>
+		  <dependency>
+			   <groupId>org.springframework</groupId>
+			   <artifactId>spring-jms</artifactId>
+			   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>1.6.1.RELEASE</version>
+		</dependency>
 		  <!-- spring  boot-->
 		 <dependency>
 		       <groupId>org.springframework.boot</groupId>
@@ -127,13 +153,35 @@
 				<scope>provided</scope>
 		   </dependency>
 		   
+		   <dependency>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-json-plugin</artifactId>
+				<version>2.3.20</version>
+				<scope>provided</scope>
+			</dependency>
+		   
+		   <dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-core</artifactId>
+				<version>5.7.0</version>
+			</dependency>
+		   
 		   
 		    <!-- Java JPA -->
+		    
+		    <!--   
+		    <dependency>
+				<groupId>javax.persistence</groupId>
+				<artifactId>persistence-api</artifactId>
+				<version>1.0</version>
+		   </dependency> 
+		   -->
+		   
 		   <dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-		   </dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+				<version>1.0.0.Final</version>
+		    </dependency>
 		   
 		   <!-- hibernate -->
 		   <dependency>
@@ -250,6 +298,20 @@
 			<version>2.6.12</version>
 			<scope>provided</scope>
 	  	</dependency>
+	  	<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10.1</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!--     <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-words</artifactId>
+            <version>15.6.0</version>
+            <classifier>jdk16</classifier>
+        </dependency> -->
+		
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
@@ -319,10 +381,11 @@
 	</dependency>
 
 
+
 	
   </dependencies>
   
-    <build>
+   <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -332,6 +395,27 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+      
+      <!-- 要将源码放上去，需要加入这个插件 -->
+	  <!-- 		
+		<plugin>
+			<artifactId>maven-source-plugin</artifactId>
+			<version>2.2</version>
+			<configuration>
+				<attach>true</attach>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>compile</phase>
+				<goals>
+					<goal>jar</goal>
+				</goals>
+				</execution>
+			</executions>
+		</plugin> 
+		-->
+      
+      
     </plugins>
   </build>
   
@@ -349,5 +433,18 @@
     		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	 <repositories>
+        <repository>
+            <id>aspose-maven-repository</id>
+            <url>http://maven.aspose.com/repository/repo/</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+    </repositories>
+
 
 </project>
