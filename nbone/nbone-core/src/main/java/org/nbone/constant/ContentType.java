@@ -5,7 +5,7 @@ package org.nbone.constant;
  * @author thinking 2014-10-10
  * @since  2014-10-10
  * @see org.springframework.http.MediaType
- * @see org.springframework.http.HttpHeaders 
+ * @see org.springframework.http.HttpHeaders  
  * @see org.springframework.util.MimeTypeUtils
  *
  */
@@ -22,7 +22,7 @@ public interface ContentType extends CharsetConstant {
 	/**
 	 * 普通的文本文件
 	 */
-	public final static String TXT ="text/plain";
+	public final static String TXT  ="text/plain";
 	public final static String JAVA ="text/plain";
 	
 	/**
@@ -41,7 +41,7 @@ public interface ContentType extends CharsetConstant {
 	
 	public final static String TEXT_HTML ="text/html";
 	public final static String TEXT_JSON ="text/json";
-	public final static  String TEXT_XML = "text/xml";
+	public final static String TEXT_XML  = "text/xml";
 	
 	/**
 	 * 字节流
@@ -57,7 +57,7 @@ public interface ContentType extends CharsetConstant {
 	/**
 	 * "text/json;charset=utf-8"
 	 */
-	public final static String TEXT_JSON_UTF_8 =new StringBuilder(TEXT_JSON).append(SUB_CHARSET_PREFIX).append(CHARSET_UTF8).toString();
+	public final static String TEXT_JSON_UTF_8        =new StringBuilder(TEXT_JSON).append(SUB_CHARSET_PREFIX).append(CHARSET_UTF8).toString();
 	public final static String APPLICATION_JSON_UTF_8 =new StringBuilder(APPLICATION_JSON_VALUE).append(SUB_CHARSET_PREFIX).append(CHARSET_UTF8).toString();
 	
 

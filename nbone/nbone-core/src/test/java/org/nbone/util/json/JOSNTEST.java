@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
-import org.nbone.pojo.User;
 import org.nbone.test.UserTest;
+import org.nbone.test.domain.User;
 import org.nbone.util.json.jackson.JsonUtils;
 import org.nbone.web.support.WebResultWrapper;
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.nbone.pojo.User;
+import org.nbone.test.domain.User;
 
 public class UserTest {
 	public static int count = 0;

@@ -12,7 +12,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.nbone.pojo.User;
+import org.nbone.test.domain.User;
 
 public class HelloVelocity {
 	

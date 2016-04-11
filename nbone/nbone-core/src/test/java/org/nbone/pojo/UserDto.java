@@ -1,5 +1,7 @@
 package org.nbone.pojo;
 
+import org.nbone.test.domain.User;
+
 public class UserDto  extends User{
 	
 	private String id;

@@ -2,9 +2,8 @@ package org.nbone.util.bean;
 
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.nbone.pojo.User;
 import org.nbone.pojo.UserDto;
-import org.springframework.beans.BeanUtils;
+import org.nbone.test.domain.User;
 
 public class BeanTest {
 

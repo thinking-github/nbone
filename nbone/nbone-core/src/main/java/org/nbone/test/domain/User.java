@@ -1,4 +1,4 @@
-package org.springframework.boot.web.test;
+package org.nbone.test.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

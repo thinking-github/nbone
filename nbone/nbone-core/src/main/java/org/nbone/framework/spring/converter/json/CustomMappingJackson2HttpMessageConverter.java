@@ -2,27 +2,27 @@ package org.nbone.framework.spring.converter.json;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.module.SimpleModule;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 
-/**
- * <p> spring 3.1之前版本
+/** 
  * @author thinking
  * @since 2012-9-25
- * @see   CustomMappingJackson2HttpMessageConverter
+ * @since spring 3.1.2
+ * @since jackson 2.x
  */
-@Deprecated 
-public class CustomMappingJacksonHttpMessageConverter extends MappingJacksonHttpMessageConverter implements InitializingBean {
+public class CustomMappingJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter implements InitializingBean {
 	
 	private JsonSerializer<?>[] jsonSerializers;
 
-	public CustomMappingJacksonHttpMessageConverter() {
+	public CustomMappingJackson2HttpMessageConverter() {
 		super();
 	}
 

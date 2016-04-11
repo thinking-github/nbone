@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nbone.mvc.dto.Range;
+import org.nbone.test.domain.User;
 
 public class UserJson extends User { 
      
