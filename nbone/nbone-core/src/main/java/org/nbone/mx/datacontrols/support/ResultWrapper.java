@@ -12,6 +12,10 @@ import java.io.Serializable;
 public class ResultWrapper  implements Serializable{
 	
 	/**
+	 * <p>
+	 */
+	private static final long serialVersionUID = -6185220705468269585L;
+	/**
 	 *  DEFAULT error code 0
 	 */
 	public static final int DEFAULT_ERRCODE_FAILED = 0;

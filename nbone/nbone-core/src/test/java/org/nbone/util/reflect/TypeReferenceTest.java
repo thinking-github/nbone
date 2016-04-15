@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
+import org.nbone.mx.datacontrols.datapage.PagerModel;
 import org.nbone.test.UserTest;
 
 
@@ -30,7 +31,7 @@ public class TypeReferenceTest {
 		Type[] type1 = ParameterizedTypeUtils.getActualTypeArguments(list.getClass());
 		Type[] type2 = ParameterizedTypeUtils.getActualTypeArguments(map.getClass());
 		
-		Page page  = new Page();		
+		PagerModel<Object> page  = new PagerModel<Object>();		
 		Class<?> class1 = GenericsUtils.getSuperClassGenricType(page.getClass());
 		Type type_1 = ParameterizedTypeUtils.getActualTypeArgument(page.getClass());
 		

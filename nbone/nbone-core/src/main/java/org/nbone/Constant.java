@@ -51,5 +51,8 @@ public interface Constant {
 	
 	public final static int prefix =0;
 	public final static int suffix =0;
+	
+	
+	public final static int Converter =0;
 
 }

@@ -9,6 +9,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.nbone.test.domain.User;
 
 public class UserTest {
+	
 	public static int count = 0;
 	private String id;
 	private String userName;

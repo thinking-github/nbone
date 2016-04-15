@@ -54,17 +54,7 @@ public class TestMain {
 		}
 		System.out.println("------------");
 		
-		new TestThread();
-	    for (int i = 0; i < 10; i++) {
-	    	TestThread ll =	new TestThread();
-			ll.start();
-		}
 		System.out.println("===========================");
-		TestRunnable run = new TestRunnable();
-		for (int i = 0; i < 10; i++) {
-			Thread t1 = new Thread(run);
-			t1.start();
-		}
 			
 		
 	}

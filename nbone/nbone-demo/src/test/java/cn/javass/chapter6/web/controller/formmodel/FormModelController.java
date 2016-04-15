@@ -1,4 +1,4 @@
-package cn.javass.chapter6.web.controller.formmodel;
+/*package cn.javass.chapter6.web.controller.formmodel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,3 +64,4 @@ public class FormModelController {
         return "redirect:/success";        
     }
 }
+*/

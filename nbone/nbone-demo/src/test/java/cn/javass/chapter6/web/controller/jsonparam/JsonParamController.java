@@ -1,4 +1,4 @@
-package cn.javass.chapter6.web.controller.jsonparam;
+/*package cn.javass.chapter6.web.controller.jsonparam;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,3 +123,4 @@ public class JsonParamController {
     
 
 }
+*/
