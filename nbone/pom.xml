@@ -34,5 +34,35 @@
   			<email>chenyicheng00@gmail.com</email>
   		</developer>
   	</developers>
+  	
+  	  <!--Maven私服配置 -->
+  
+    <distributionManagement>
+		<repository>
+			<id>releases</id>
+    		<name>Releases</name>
+    		<url>http://172.21.1.81:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Snapshots</name>
+    		<url>http://172.21.1.81:8081/nexus/content/repositories/snapshots</url>
+    		<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
+    
+<!--   	<distributionManagement>
+		<repository>
+			<id>releases</id>
+    		<name>Releases</name>
+    		<url>http://121.42.168.19:8081/nexus/content/repositories/releases</url>
+		</repository>
+		
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Snapshots</name>
+    		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement> -->
 
 </project>

@@ -370,6 +370,7 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       
@@ -396,20 +397,9 @@
     </plugins>
   </build>
   
-  <!--Maven私服配置 -->
-  	<distributionManagement>
-		<repository>
-			<id>releases</id>
-    		<name>Releases</name>
-    		<url>http://121.42.168.19:8081/nexus/content/repositories/releases</url>
-		</repository>
-		
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Snapshots</name>
-    		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+
+	
+
 	
 	 <repositories>
         <repository>

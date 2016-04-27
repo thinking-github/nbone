@@ -3,7 +3,7 @@ package org.nbone.mx.datacontrols.support;
 import java.io.Serializable;
 
 /**
- * 用于系统交互时数据包装 <p>
+ *  <p> 系统交互时数据结果集包装
  *  Base ResultWrapper
  *  @author thinking
  *  @since 2013-08-08
@@ -62,6 +62,10 @@ public class ResultWrapper  implements Serializable{
 	
 	
 	public ResultWrapper() {
+	}
+	
+	public ResultWrapper(boolean isSuccess) {
+		this(isSuccess,null,"");
 	}
 	
 	public ResultWrapper(boolean isSuccess, Object data, String resultHint) {
@@ -124,7 +128,7 @@ public class ResultWrapper  implements Serializable{
 	 * @param message
 	 * @return
 	 */
-	public static ResultWrapper failedWrappedResult(int errCode,String message) {
+	public static ResultWrapper failedResultWrapped(int errCode,String message) {
 		return failedResultWraped(message,errCode,message);
 	}
     

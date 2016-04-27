@@ -74,8 +74,7 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
 	//----------------------------------------------
 	public static void test(){
     	
-    	ServletRequestAttributes servlet = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
-		RequestAttributes RequestA = RequestContextHolder.getRequestAttributes();
+		ServletActionContext.getRequest();
     	
     }
 
