@@ -1,7 +1,8 @@
 ##项目基于maven构建，此项目提供如下功能:
 
 ####框架集成:
-	方便集成spring springMVC spring-boot                     --springframework 2.5 以上 
+	方便集成spring springMVC spring-boot                     --springframework 3.1.1 以上 
+	                                                         --spring 3.1 方便使用springmvc
 	                                                         --建议4.0以上,可以使用spring boot 
 	                                                              
 	方便集成springJDBC,提供springJDBCDao方便使用
