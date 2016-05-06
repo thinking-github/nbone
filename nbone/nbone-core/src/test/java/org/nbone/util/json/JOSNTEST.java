@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
+import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.nbone.test.UserTest;
 import org.nbone.test.domain.User;
 import org.nbone.util.json.jackson.JsonUtils;
@@ -33,7 +34,7 @@ public class JOSNTEST {
 		//resultUserList.add("999");
 		resultUserList.add(UserTest.getUser("002"));
 		resultUserList.add(user);
-		WebResultWrapper resultS = WebResultWrapper.successResultWraped(resultUserList);
+		ResultWrapper resultS = WebResultWrapper.successResultWraped(resultUserList);
 		String webResultWrapperString = JSONOperUtils.pojoToJSON(resultS);
 		
 		String resultUserListS = JSONOperUtils.pojoToJSON(resultUserList);

@@ -25,7 +25,7 @@
  *
  */
 
-package org.nbone.util;
+package org.nbone.util.lang;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;

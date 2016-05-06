@@ -21,6 +21,12 @@
 	<mvc:argument-resolvers >
 		<bean class="org.nbone.framework.spring.web.method.annotation.JsonRequestParamMethodArgumentResolver"></bean>
 	</mvc:argument-resolvers>
+	
+	
+	<mvc:return-value-handlers>
+			<bean class="org.nbone.framework.spring.web.method.annotation.ItemRequestResponseBodyMethodProcessor"></bean>
+			<bean class="org.nbone.framework.spring.web.method.annotation.RawResponseBodyMethodProcessor"></bean>
+	</mvc:return-value-handlers>
 </mvc:annotation-driven>
 
 

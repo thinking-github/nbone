@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 import org.nbone.framework.spring.web.MapWapper;
 import org.nbone.framework.spring.web.bind.annotation.JsonRequestParam;
+import org.nbone.util.json.jackson.JsonUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -32,7 +33,7 @@ import org.springframework.web.method.annotation.AbstractNamedValueMethodArgumen
  */
 public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver implements WebArgumentResolver {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = JsonUtils.getInstance();
     
 	public JsonRequestParamMethodArgumentResolver() {
 		super(null);
@@ -40,10 +41,7 @@ public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMe
 	
 	public boolean supportsParameter(MethodParameter parameter) {
 
-	    if (parameter.hasParameterAnnotation(JsonRequestParam.class)) {
-		    return true;
-		}
-		return false;
+		return parameter.hasParameterAnnotation(JsonRequestParam.class);
 	}
 
 	@Override
@@ -101,7 +99,7 @@ public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMe
             }
             
         } catch (Exception e) {
-            throw new JsonMappingException("Could not read request json parameter", e);
+            throw new ServletRequestBindingException("Could not read request json parameter .thinking", e);
         }
 
         throw new UnsupportedOperationException(

@@ -2,9 +2,16 @@ package org.nbone.web.support;
 
 import org.nbone.mx.datacontrols.support.ResultWrapper;
 
-
+/**
+ *  @author uap
+ *  @author thinking
+ *  @since 2013-08-08
+ */
 public class WebResultWrapper extends ResultWrapper {
-	
+	/**
+	 * <p>
+	 */
+	private static final long serialVersionUID = -9000676943889689407L;
 	
 	public static final String TYPE_ERROR = "ERROR";
 	public static final String TYPE_INFO = "INFO";
@@ -28,23 +35,7 @@ public class WebResultWrapper extends ResultWrapper {
 		this.errorPage = errorPage;
 		this.type = type;
 	}
-	/**
-	 * 用作成功结果集返回
-	 * @param data
-	 * @return
-	 */
-	public static WebResultWrapper successResultWraped(Object data) {
-		return new WebResultWrapper(true, data, "", "", "");
-	}
-    /**
-     * 用作失败返回消息提示
-     * @param exMessage 提示消息
-     * @return
-     * @see #
-     */
-	public static WebResultWrapper failedResultWraped(String message) {
-		return failedResultWraped(message,null);
-	}
+ 
     /**
      * 用作失败返回消息提示
      * @param exMessage  提示消息
