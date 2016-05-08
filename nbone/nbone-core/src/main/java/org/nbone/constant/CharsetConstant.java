@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
  * 字符编码常量
  * @author thinking
  * @since 2013-12-12
+ * 
+ * @see com.google.common.base.Charsets
  *
  */
 public interface CharsetConstant {

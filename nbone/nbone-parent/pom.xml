@@ -99,7 +99,14 @@
 		    <artifactId>spring-boot-starter-jetty</artifactId>
 		    <version>${spring-boot.version}</version>
 		 </dependency> -->
-		   
+		 
+		 <!-- google core -->
+		 <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version>
+       	 </dependency>
+        
 		   <!-- apache -->
 		   <dependency>
 				<groupId>org.apache.commons</groupId>
@@ -305,6 +312,20 @@
 			<artifactId>ognl</artifactId>
 			<version>3.0.6</version>
 		</dependency>
+		
+        <!-- 时间相关 -->
+        <!--日期美化-->
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime</artifactId>
+            <version>3.2.3.Final</version>
+        </dependency>
+        <!-- joda time 相关jar包 -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+        </dependency>
 		
 		
   	

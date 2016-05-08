@@ -12,6 +12,10 @@ public class IPUtils {
 	 * @return
 	 */
 	public  static String getRemoteVerityIP(HttpServletRequest request) {
+		if (request == null) {
+            return "request is null. unknown";
+        }
+		
 		// 集群环境下负载均衡器的’x-forwarded-for‘的属性值应该设置为on否则只能获得代理服务器的ip不是客户端真实的ip
 		String remoteAddr = request.getHeader("X-Real-IP");
 		String ip = request.getHeader("x-forwarded-for");
@@ -21,6 +25,10 @@ public class IPUtils {
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("WL-Proxy-Client-IP");
 		}
+		//XXX:2016-05-08
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+        }
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getRemoteAddr();
 		}
