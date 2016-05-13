@@ -3,7 +3,23 @@ package org.nbone.util.escape;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.web.util.HtmlUtils;
 
+import com.google.common.html.HtmlEscapers;
+import com.google.common.xml.XmlEscapers;
+
+/**
+ * @author thinking
+ * @version 1.0 
+ * @since 2013-12-12
+ * @see  com.google.common.html.HtmlEscapers
+ * @see  com.google.common.xml.XmlEscapers
+ * @see  org.springframework.web.util.HtmlUtils
+ * @see  org.springframework.web.util.JavaScriptUtils
+ * @see  org.apache.commons.lang3.StringEscapeUtils
+ * @see  org.apache.commons.lang3.StringEscapeUtils
+ *
+ */
 public class UnsafeStringEscape {
 	
 
@@ -11,27 +27,26 @@ public class UnsafeStringEscape {
 	/**
 	 * 大颗粒标签过滤(含<>)
 	 * @param value
-	 * @return
+	 * @return 返回转义后的字符
 	 */
 	public String largeGrainedTagFilter(String value) {
 		 //标准脚本和HTML<script>alert(999)</script>
-		Pattern scriptPattern = Pattern.compile("<(.*?)>(.*)</(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        value = scriptPattern.matcher(value).replaceAll("");
+		 //简化脚本和HTML<script type="" src=""/>
+		 //</script>
+		Pattern scriptPattern = Pattern.compile("(<(.*?)>(.*)</(.*?)>|<(.*?)/>|</(.*?)>)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+	    //value = scriptPattern.matcher(value).replaceAll("");
+		boolean boo = scriptPattern.matcher(value).find();
+        if(boo){
+        	value =	HtmlUtils.htmlEscape(value);
+        }
         System.out.println("1:"+value);
-        
-   	  	//简化脚本和HTML<script type="" src=""/>
-   		scriptPattern = Pattern.compile("<(.*?)/>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-         value = scriptPattern.matcher(value).replaceAll("");
-         System.out.println(value);
-         
-        //</script>
-        scriptPattern = Pattern.compile("</(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        value = scriptPattern.matcher(value).replaceAll("");
-        System.out.println(value);
         
         //不规范的脚本<script>
         scriptPattern = Pattern.compile("<(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        value = scriptPattern.matcher(value).replaceAll("");
+        boo = scriptPattern.matcher(value).find();
+        if(boo){
+        	value =	HtmlUtils.htmlEscape(value);
+        }
         System.out.println(value);
         
         return value;
@@ -145,7 +160,7 @@ public class UnsafeStringEscape {
 	
 	//---------------------------------------------------------
 	public static void main(String[] args) {
-	    String value = "</script><script%00>kkkkkkkkkkkkk</script><img src='9999' -- javascript:alert'\\\\'";
+	    String value = "<script/></script><script%00>kkkkkkkkkkkkk</script><img src='9999' id=\"chen\" -- javascript:alert'\\\\'";
 	    
 	    String value1 = "111111</script><script>9999<script%00>kkkkkkkkkkkkk</script></script><script>88888";
 	    
@@ -158,6 +173,23 @@ public class UnsafeStringEscape {
 	    //System.out.println(StringEscapeUtils.escapeJavaScript(value));
 	    //System.out.println(StringEscapeUtils.escapeSql(value));
 	    System.out.println(new UnsafeStringEscape().escapeSqlFilter(value3));
+	    
+	    
+	    System.out.println("-------------largeGrainedTagFilter----------------------");
+	    System.out.println(new UnsafeStringEscape().largeGrainedTagFilter(value));
+	    
+	    
+	    System.out.println("-------------StringEscapeUtils----------------------");
+	    System.out.println(kk);
+	    
+	    
+	    System.out.println("-------------HtmlEscapers----------------------");
+	    System.out.println(HtmlEscapers.htmlEscaper().escape(value));
+	    
+	    System.out.println("-------------XmlEscapers----------------------");
+	    System.out.println(XmlEscapers.xmlContentEscaper().escape(value));
+	    
+	    
 }
 	
 	

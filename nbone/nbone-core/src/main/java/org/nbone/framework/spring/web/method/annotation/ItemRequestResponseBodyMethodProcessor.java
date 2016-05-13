@@ -18,8 +18,6 @@ import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.nbone.util.lang.StringArrayUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -40,11 +38,7 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
 	
   private Map<String, String[]> ignoreFieldsCache = new HashMap();
   
-  /*默认的Json 转换器*/
-  static List<HttpMessageConverter<?>> messageConverters  = new ArrayList<HttpMessageConverter<?>>(2);
-  static{
-	  messageConverters.add(json2MessageConverter);
-  }
+  protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) msgConverters;
   
  /**
   * 
@@ -52,6 +46,7 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
   * 
   */
   protected ItemRequestResponseBodyMethodProcessor(){
+	  
 	  super(messageConverters);
   }
   /**

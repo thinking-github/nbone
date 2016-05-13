@@ -13,6 +13,7 @@
     <groupId>org.nbone</groupId>
     <artifactId>nbone-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+     <relativePath>../nbone-parent/pom.xml</relativePath>
   </parent>
   
   

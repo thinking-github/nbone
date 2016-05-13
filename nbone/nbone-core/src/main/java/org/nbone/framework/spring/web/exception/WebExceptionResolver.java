@@ -18,6 +18,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
+
+import com.google.common.base.Throwables;
 /**
  *  @author uap
  *  @author thinking
@@ -30,16 +32,14 @@ public class WebExceptionResolver extends ExceptionHandlerExceptionResolver impl
 	  private final Map<Class<?>, ExceptionHandlerMethodResolver> exceptionHandlerMethodResolvers = new ConcurrentHashMap();
 	  private static final String EXCEPTION_KEY = "CUSTOM_EXCEPTION";
 	  private Map<String, String> exMap = new HashMap<String, String>();
-	  private static final String C_SEPARATOR = ";";
-	  private static final String E_SEPARATOR = ",";
-	  private static final String K_SEPARATOR = ":";
 	  private Map<String, String> defaultMap = new HashMap<String, String>();
 	  private static final String DEFAULT_KEY = "default";
 	  private static final String DEFAULT_STATCK_KEY = "showstack";
 	  private Map<String, String> stackMap = new HashMap<String, String>();
 	  
 	  
-	  private List<HttpMessageConverter<?>> messageConverters;
+	  @SuppressWarnings("unchecked")
+	  protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) msgConverters;
 	  
 
 	  /**
@@ -48,8 +48,7 @@ public class WebExceptionResolver extends ExceptionHandlerExceptionResolver impl
 	   * 
 	   */
 	  public WebExceptionResolver() {
-			this.messageConverters = new ArrayList<HttpMessageConverter<?>>();
-			this.messageConverters.add(json2MessageConverter);
+		  this.setMessageConverters(messageConverters);
 		  
 	  }	
 
@@ -74,6 +73,8 @@ public class WebExceptionResolver extends ExceptionHandlerExceptionResolver impl
 	  public ResultWrapper getFailedResult(Exception exception)
 	  {
 	    this.logger.error(ExceptionUtils.getFullStackTrace(exception));
+	    
+	    this.logger.error("RootCause.thinking",Throwables.getRootCause(exception));
 
 	    String exMessage = exception.getMessage();
 	    if (exMessage == null)

@@ -12,6 +12,9 @@ import java.util.List;
  * 
  * @author Thinking  2014-10-24
  * @see com.google.common.io.ByteStreams#toByteArray(InputStream)
+ * @see com.google.common.io.ByteStreams#copy(InputStream, OutputStream)
+ * @see com.google.common.io.CharStreams#toString(Readable)
+ * @see com.google.common.io.CharStreams#copy(Readable, Appendable)
  *
  */
 public abstract class IOUtils {

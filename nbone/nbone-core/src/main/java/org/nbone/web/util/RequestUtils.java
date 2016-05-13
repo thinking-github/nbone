@@ -3,7 +3,11 @@ package org.nbone.web.util;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Thinking  2014-7-16
+ * @author thinking  
+ * @since 2014-7-16
+ * @version 1.0
+ * @see org.apache.struts2.RequestUtils
+ * 
  */
 public class RequestUtils {
 	

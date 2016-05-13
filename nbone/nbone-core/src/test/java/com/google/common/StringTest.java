@@ -1,6 +1,7 @@
 package com.google.common;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.CharMatcher;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
@@ -16,6 +17,14 @@ public class StringTest {
 		HashFunction hf = Hashing.md5();
 
 		System.out.println(hf);
+		System.out.println("-----------------------");
+		System.out.println(CaseFormat.UPPER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE).convert("ConstantName"));;
+		
+	
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.trimFrom("UUUkkk"));
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.removeFrom("UUUkkk"));
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.retainFrom("UUUkkk"));
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.replaceFrom("UUUkkk","u"));
 		
 		
 	}

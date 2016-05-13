@@ -7,6 +7,8 @@ package org.nbone.constant;
  * @see org.springframework.http.MediaType
  * @see org.springframework.http.HttpHeaders  
  * @see org.springframework.util.MimeTypeUtils
+ * @see com.google.common.net.MediaType
+ * @see com.google.common.net.HttpHeaders
  *
  */
 public interface ContentType extends CharsetConstant {

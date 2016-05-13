@@ -1,6 +1,5 @@
 package org.nbone.framework.spring.web.method.annotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.nbone.framework.spring.web.bind.annotation.RawResponseBody;
@@ -18,22 +17,20 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConv
  * @since 2013-08-12
  * @since spring 3.1
  */
+@SuppressWarnings("unchecked")
 public class RawResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor implements JsonProcessor
 {
+	protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) msgConverters;
 	
-  /*默认的Json 转换器*/
-  static List<HttpMessageConverter<?>> messageConverters  = new ArrayList<HttpMessageConverter<?>>(2);
-  static{
-	  messageConverters.add(json2MessageConverter);
-  }
   /**
    * 
    * 默认的构造器使用默认的 Json 转换器
    * 
    */
+
   protected RawResponseBodyMethodProcessor()
   {
-    super(messageConverters);
+	 super(messageConverters);
   }
   
  

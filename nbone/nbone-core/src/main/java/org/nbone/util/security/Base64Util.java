@@ -1,5 +1,6 @@
 package org.nbone.util.security;
 
+import com.google.common.io.BaseEncoding;
 import com.sun.mail.util.BASE64EncoderStream;
 
 
@@ -8,6 +9,7 @@ import com.sun.mail.util.BASE64EncoderStream;
  *@author Thinking  2014-04-26
  *@see com.sun.mail.util.BASE64EncoderStream
  *@see com.sun.mail.util.BASE64DecoderStream
+ *@see com.google.common.io.BaseEncoding
  */
 
 public class Base64Util extends AbstractASCII{
@@ -202,11 +204,21 @@ public class Base64Util extends AbstractASCII{
 		System.out.println("BASE64EncoderStream:=#"+new String(test));
 		System.out.println("BASE64Util:=#"+new String(name));
 		
+		
+		
 		String resultName = new String(Base64Util.encode(name));
 		String resultPwd = new String(Base64Util.encode(pwd));
 		System.out.println("加密后的用户名="+resultName);
 		System.out.println("加密后的密码="+resultPwd);
 		//System.out.println("解密后"+new String(Base64Util.decode(new String(Base64Util.decode(new String("dGVzdOa1i+ivlTIzMzM="))))));
 		//System.out.println(new String(Base64Util.decode(new String("dGVzdOa1i+ivlTIzMzM="))));
+		
+		
+		
+		System.out.println("--------------BaseEncoding.base64()-------------------");
+		String demo1 = BaseEncoding.base64().encode(input_USER_NAME.getBytes());
+		System.out.println(demo1);
+		System.out.println(BaseEncoding.base64().encode(demo1.getBytes()));
+		
 	}
 }

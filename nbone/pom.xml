@@ -13,8 +13,18 @@
     <module>nbone-demo</module>
   </modules>
 
-  
-    <name>thinking</name>
+	<properties>
+		 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		 <project.build.source.version>1.6</project.build.source.version>
+		 <project.build.target.version>1.6</project.build.target.version>
+		 
+		 <java.version>1.7</java.version>
+		 <java.target.version>1.6</java.target.version>
+	
+	</properties>
+	
+  	
+    <name>nbone-thinking</name>
     <url>https://github.com/thinking-github/nbone</url>
   	<organization>
   		<name>nbone</name>
@@ -34,6 +44,136 @@
   			<email>chenyicheng00@gmail.com</email>
   		</developer>
   	</developers>
+  	<inceptionYear>2013</inceptionYear>
+
+
+  	
+  	<build>
+  	 	<pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.tomcat.maven</groupId>
+          <artifactId>tomcat6-maven-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.tomcat.maven</groupId>
+          <artifactId>tomcat7-maven-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  	
+  	
+     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>${project.build.source.version}</source>
+          <target>${project.build.target.version}</target>
+          <encoding>UTF-8</encoding>
+          <verbose>thinking</verbose>
+        </configuration>
+      </plugin>
+      
+      
+      
+      <plugin>  
+		    <groupId>org.apache.maven.plugins</groupId>  
+		    <artifactId>maven-javadoc-plugin</artifactId>  
+		    <version>2.9.1</version>  
+		    <configuration>  
+		        <aggregate>true</aggregate>
+		        <charset>UTF-8</charset>
+				<encoding>UTF-8</encoding>
+		    </configuration>  
+		   <executions>
+				<execution>
+					<phase>package</phase>
+				<goals>
+					<goal>help</goal>
+				</goals>
+				</execution>
+			</executions>
+	 </plugin>  
+      
+      <!-- 要将源码放上去，需要加入这个插件 -->
+	  		
+		<plugin>
+			<artifactId>maven-source-plugin</artifactId>
+			<version>2.2</version>
+			<configuration>
+				<attach>true</attach>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>package</phase>
+				<goals>
+					<goal>help</goal>
+				</goals>
+				</execution>
+			</executions>
+		</plugin> 
+		
+		  <plugin>
+          	<artifactId>maven-dependency-plugin</artifactId>
+          	<configuration>
+          	</configuration>
+          	<executions>  
+                <execution>  
+                    <phase>package</phase>  
+                    <goals>  
+                        <goal>tree</goal>  
+                        <goal>help</goal>
+                    </goals>  
+                    <configuration>  
+	                   <outputDirectory>  
+	                           ${project.build.directory}/lib  
+	                   </outputDirectory>  
+	               </configuration>  
+                </execution>  
+             
+            </executions>  
+        </plugin>
+        
+       	<plugin>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-maven-plugin</artifactId>
+			<version>8.1.14.v20131031</version>
+			<!-- <version>8.1.0.RC0</version> -->
+			<configuration>
+				<scanIntervalSeconds>0</scanIntervalSeconds>
+				<webAppConfig>
+					<contextPath>/${project.artifactId}</contextPath>
+				</webAppConfig>
+			</configuration>
+		</plugin>
+		
+		 <plugin>
+          <groupId>org.apache.tomcat.maven</groupId>
+          <artifactId>tomcat6-maven-plugin</artifactId>
+          <version>2.2</version>
+          <configuration>
+          </configuration>
+        </plugin>
+        
+        <plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-pdf-plugin</artifactId>
+        	<version>1.3</version>
+        	<configuration>
+        		<outputDirectory>
+        			${project.build.directory}/doc
+        		</outputDirectory>
+        	</configuration>
+        </plugin>
+	
+      
+      
+    </plugins>
+  </build>
+  
   	
   	  <!--Maven私服配置 -->
   
@@ -64,5 +204,18 @@
     		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement> -->
+	
+	<repositories>
+        <repository>
+            <id>aspose-maven-repository</id>
+            <url>http://maven.aspose.com/repository/repo/</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+    </repositories>
 
+	
 </project>
