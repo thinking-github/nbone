@@ -1,11 +1,17 @@
 ##项目基于maven构建，此项目提供如下功能:
 
 ####框架集成:
-	方便集成spring springMVC spring-boot                     --springframework 3.1.1 以上 
-	                                                         --spring 3.1 方便使用springmvc
-	                                                         --建议4.0以上,可以使用spring boot 
-	                                                              
-	方便集成springJDBC,提供springJDBCDao方便使用
+	方便集成spring  spring-boot                     
+	增强springMVC功能 增加@JsonRequestParam注解解析JSON参数
+	增加@ClassMethodNameRequestMapping注解 默认支持类短名和方法名称映射  
+	增加@ItemResponseBody注解 包装JavaObject To JSON结果集
+	增加@RawResponseBody注解  返回原始JavaObject to JSON结果集
+	方便集成springJDBC,提供springJDBCDao方便使用  
+	                                          
+	--springframework 3.1.1 以上                                              
+	--spring 3.1 方便使用springmvc,可以升级至3.2功能更佳 
+	--建议4.0以上,可以使用spring boot     
+	                                       
 	 
 	方便集成hibernate,提供hiberanteDao方便使用               --hibernate 3.2以上
 	
