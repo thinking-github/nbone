@@ -10,6 +10,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author thinking
  * @version 1.0 
  * @since 2015-06-06
+ * 
+ * @see org.springframework.web.context.request.RequestContextListener
+ * @see org.springframework.web.filter.RequestContextFilter
+ * @see org.springframework.web.servlet.DispatcherServlet
+ * @see org.springframework.web.context.request.RequestContextHolder
+ * @since spring 2.0
  */
 public class ServletActionContext {
 	

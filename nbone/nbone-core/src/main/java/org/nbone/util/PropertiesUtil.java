@@ -29,6 +29,7 @@ import org.springframework.util.ClassUtils;
  * @serial 2014-05-29
  * @author Thinking  2014-8-9 修改动态加载问题
  * @author thinking  2015-09-15 完善动态加载机制
+ * @see org.springframework.core.io.support.PropertiesLoaderUtils
  *
  */
 @SuppressWarnings("unused")

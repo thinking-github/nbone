@@ -1,5 +1,5 @@
 package org;
-import static org.springframework.util.Assert.notNull;
+
 public class Test {
 	public  Test1 tt= new Test1();
 	static{
@@ -8,8 +8,10 @@ public class Test {
 	{System.out.println("------------------");}
 	public static void main(String[] args) {
 		//notNull(null);
-		System.out.println(Test.class);
-		Test ll = new Test();
+		
+		String[] ss = {};
+		System.out.println(ss.length);
+		System.out.println(ss);
 
 	}
 

@@ -50,7 +50,7 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
      * @param response
      */
     @ModelAttribute
-    public void doExecuteSetReqAndRes(HttpServletRequest request, HttpServletResponse response){  
+    protected void doExecuteSetReqAndRes(HttpServletRequest request, HttpServletResponse response){  
         this.request = request;  
         this.response = response;  
         
@@ -60,13 +60,13 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
         
     }  
     @ModelAttribute
-    public void doExecuteController(WebRequest webRequest,Model model){
+    protected void doExecuteController(WebRequest webRequest,Model model){
     	this.webRequest = webRequest;
     	this.model = model;
     }
     
     
-	public void sendToClientWithJson(Object object) throws IOException {
+	protected void sendToClientWithJson(Object object) throws IOException {
 		this.sendToClientWithJson(request, response, object);
 	}
     

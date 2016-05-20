@@ -28,7 +28,8 @@
 						   
 						   ">
 						   
-						   
+						 <import resource="classpath*:/configuration/spring/spring-holder.xml"/>  
+						 <import resource="classpath:/configuration/spring/spring-holder.xml"/>  
 						   
 
 </beans>

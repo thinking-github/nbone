@@ -18,12 +18,17 @@ import org.springframework.util.Assert;
  * @author thinking
  * @version 1.0 
  * @since 2013-12-14
+ * 
+ * @see ApplicationContextAware
+ * @see org.springframework.context.support.ApplicationObjectSupport
+ * @see org.springframework.beans.factory.BeanFactoryAware
+ * @see org.springframework.beans.factory.config.BeanFactoryPostProcessor
  *
  */
 @Component
 public class ComponentFactory implements ApplicationContextAware,InitializingBean,DisposableBean {
 	
-	private static Log logger =  LogFactory.getLog(ComponentFactory.class);
+	protected static Log logger =  LogFactory.getLog(ComponentFactory.class);
 	private static ApplicationContext applicationContext;
     private static String message = "请先将ComponentFactory注入到spring container.thinking";
 

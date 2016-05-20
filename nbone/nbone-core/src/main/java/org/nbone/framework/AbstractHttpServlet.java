@@ -69,7 +69,7 @@ public abstract class AbstractHttpServlet  implements ContentType {
 			
 	}
 	
-	public void sendToClientWithJson(HttpServletRequest request ,HttpServletResponse response,Object object) throws IOException {
+	protected void sendToClientWithJson(HttpServletRequest request ,HttpServletResponse response,Object object) throws IOException {
 		this.sendToClient(request, response, object, TEXT_JSON, CHARSET_UTF8, transformationType_JSON);
 	}
 		

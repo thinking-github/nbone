@@ -11,6 +11,7 @@
     <module>nbone-parent</module>
     <module>nbone-web</module>
     <module>nbone-demo</module>
+    <module>nbone-security</module>
   </modules>
 
 	<properties>

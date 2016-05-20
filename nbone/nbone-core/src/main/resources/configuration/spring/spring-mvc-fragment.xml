@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						   http://www.springframework.org/schema/beans/spring-beans.xsd
+						   http://www.springframework.org/schema/context
+						   http://www.springframework.org/schema/context/spring-context.xsd
+						   http://www.springframework.org/schema/mvc
+						   http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+						   
+						   http://www.springframework.org/schema/util
+						   http://www.springframework.org/schema/mvc/spring-util.xsd
+						   
+						   ">
+ 
+
+    <import resource="spring-holder.xml"/>
+
+
+	<bean class="org.nbone.framework.spring.web.exception.WebExceptionResolver"></bean>   
+	
+	<bean id="classMethodNameHandlerMapping" class="org.nbone.framework.spring.web.method.annotation.ClassMethodNameHandlerMapping">
+	
+	</bean> 
+	
+	 <!-- URL和文件名称匹配映射 -->
+	 <bean name="/views/**" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+	 </bean>
+	 
+	 
+	
+	<mvc:view-controller path="/indexkk" view-name="index"/>
+   
+    
+    <!-- 静态资源文件，不会被Spring MVC拦截 --><!-- 24 * 3600 * 10 -->
+	<mvc:resources location="/assets/" mapping="/assets/**"	cache-period="864000" />
+	<mvc:resources location="/static/" mapping="/static/**" />
+						   
+						   
+						   
+
+</beans>
