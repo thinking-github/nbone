@@ -18,7 +18,7 @@
   
   
   <dependencies>
-
+  
   <dependency>
   	<groupId>org.nbone</groupId>
   	<artifactId>nbone-core</artifactId>
@@ -26,6 +26,45 @@
   </dependency>
   </dependencies>
   <build>
-    <finalName>nbone-web</finalName>
+    
+     <plugins>
+       	  
+     
+
+       	  	<plugin>
+          	<artifactId>maven-dependency-plugin</artifactId>
+          	<version>2.8</version>
+          	<configuration>
+          	
+          	<artifactItems>
+	          	<artifactItem>
+		          	<groupId>org.nbone</groupId>
+				  	<artifactId>nbone-core</artifactId>
+				  	<version>1.0.0-SNAPSHOT</version>
+	          	</artifactItem>
+          	</artifactItems>
+	          	
+          	</configuration>
+          	<executions>  
+                <execution>  
+                    <phase>package</phase>  
+                    <goals>  
+                        <goal>copy</goal>  
+                        <goal>help</goal>
+                    </goals>  
+                    <configuration>  
+	                   <outputDirectory>  
+	                           ./src/main/webapp/WEB-INF/lib 
+	                   </outputDirectory>  
+	                  
+	               </configuration>  
+                </execution>  
+             
+            </executions>  
+        </plugin>
+        
+     </plugins>
+
+      
   </build>
 </project>

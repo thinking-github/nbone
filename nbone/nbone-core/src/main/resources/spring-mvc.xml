@@ -28,10 +28,6 @@
 			<bean class="org.nbone.framework.spring.web.method.annotation.RawResponseBodyMethodProcessor"></bean>
 	</mvc:return-value-handlers>
 </mvc:annotation-driven>
-
-
-						   
-
 						   
 						   
 						   

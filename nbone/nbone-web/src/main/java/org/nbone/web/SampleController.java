@@ -33,7 +33,7 @@ public class SampleController {
         return user;
     }
     
-    @Bean(name="user01")
+    //@Bean(name="user01")
     public User getUser(){
     	return new User();
     }

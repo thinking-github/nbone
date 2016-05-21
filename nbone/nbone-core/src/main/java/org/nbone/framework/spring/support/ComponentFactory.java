@@ -41,7 +41,7 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 	@Override
 	public void setApplicationContext(ApplicationContext context)throws BeansException {
 		applicationContext = context;
-		logger.debug("注入ApplicationContext到SpringContextHolder:"+ applicationContext);
+		logger.info("注入ApplicationContext到SpringContextHolder:"+ applicationContext);
 	}
 
 	public static ApplicationContext getContext() {
