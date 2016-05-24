@@ -16,7 +16,7 @@
 						   
 						   ">
  
-	<bean class="org.nbone.web.InitializingBeanDemo"></bean>
+	<bean class="org.nbone.web.demo.InitializingBeanDemo"></bean>
 
 						   
 

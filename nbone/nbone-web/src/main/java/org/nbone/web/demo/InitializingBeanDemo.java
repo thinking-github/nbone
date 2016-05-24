@@ -1,4 +1,4 @@
-package org.nbone.web;
+package org.nbone.web.demo;
 
 import org.springframework.beans.factory.InitializingBean;
 

@@ -32,6 +32,8 @@ public class HelloVelocity {
 	 ve.setApplicationAttribute("app_chen", "app--------------------------");
 	 Template t = ve.getTemplate("org/apache/velocity/demo/hellovelocity.vm");
 	 //Template t = ve.getTemplate("D:/hellovelocity.vm");
+	 
+	 
 	 VelocityContext ctx = new VelocityContext();
 	 
 	 ctx.put("name", "velocity");

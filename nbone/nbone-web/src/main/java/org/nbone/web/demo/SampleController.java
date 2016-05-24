@@ -1,4 +1,4 @@
-package org.nbone.web;
+package org.nbone.web.demo;
 
 import java.util.List;
 import java.util.Map;

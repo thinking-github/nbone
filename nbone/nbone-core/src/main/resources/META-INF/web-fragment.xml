@@ -11,6 +11,11 @@
 	 </before>
  </ordering>
  
+<welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+  <welcome-file>default.jsp</welcome-file>
+</welcome-file-list>
+ 
  <!-- spring  -->
  <context-param>  
     <param-name>contextConfigLocation</param-name>  
@@ -21,10 +26,10 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 </listener>
 
-<!-- spring mvc  -->
+<!-- spring mvc  org.springframework.web.servlet.DispatcherServlet -->
 <servlet>
     <servlet-name>springmvc</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <servlet-class>org.nbone.framework.spring.web.servlet.ViewDispatcherServlet</servlet-class>
     <!-- 可以自定义servlet.xml配置文件的位置和名称，默认为WEB-INF目录下，名称为[<servlet-name>]-servlet.xml，如spring-servlet.xml-->
     <init-param>
         <param-name>contextConfigLocation</param-name>
@@ -41,7 +46,7 @@
 </servlet-mapping>
 
 <!-- characterEncodingFilter  -->
-<filter>
+<!-- <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <init-param>
@@ -56,8 +61,9 @@
     
 <filter-mapping>
     <filter-name>characterEncodingFilter</filter-name>
+    <servlet-name>springmvc</servlet-name>
     <url-pattern>/*</url-pattern>
-</filter-mapping>
+</filter-mapping> -->
    
     
 </web-fragment> 
