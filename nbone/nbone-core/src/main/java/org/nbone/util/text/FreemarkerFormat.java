@@ -3,8 +3,6 @@ package org.nbone.util.text;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +17,9 @@ import freemarker.template.Template;
  * @author  thinking
  * @version 1.0 
  * @since 2015-12-12
- * @see  java.text.MessageFormat
- * @see  java.text.Format
+ * @see org.springframework.ui.freemarker.FreeMarkerTemplateUtils
  */
-public class FreemarkerFormat extends Format implements CharsetConstant {
+public class FreemarkerFormat extends BaseFormat implements CharsetConstant {
 	
 	private static final long serialVersionUID = 3343475495847994770L;
 	
@@ -64,10 +61,6 @@ public class FreemarkerFormat extends Format implements CharsetConstant {
 		return out;
 	}
 
-	@Override
-	public Object parseObject(String source, ParsePosition pos) {
-		return null;
-	}
 	
 	static {
 		 Configuration cfg = new Configuration();   

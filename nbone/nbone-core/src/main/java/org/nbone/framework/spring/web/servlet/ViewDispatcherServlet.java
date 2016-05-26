@@ -11,6 +11,8 @@ public class ViewDispatcherServlet extends DispatcherServlet {
 	private static final long serialVersionUID = -8945766024955551868L;
 	
 	protected String viewEngine;
+	
+	protected String framework = "SSM";
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
