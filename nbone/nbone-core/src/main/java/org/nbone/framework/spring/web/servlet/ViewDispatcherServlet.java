@@ -13,15 +13,26 @@ public class ViewDispatcherServlet extends DispatcherServlet {
 	protected String viewEngine;
 	
 	protected String framework = "SSM";
+	
+	protected String encoding;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext sc = config.getServletContext();
 		//sc.addFilter("characterEncodingFilter", CharacterEncodingFilter.class);
+		
 		this.viewEngine = sc.getInitParameter("viewEngine");
+		this.framework = sc.getInitParameter("framework");
+		this.encoding  = sc.getInitParameter("encoding");
 		
 		
 		super.init(config);
+		
+		sc.log("========================================================================");
+		sc.log("current WebApplication config set viewEngine: "+viewEngine+" .thinking");
+		sc.log("current WebApplication config set framework: " +framework +" .thinking");
+		sc.log("current WebApplication config set character encoding: "+ encoding +" .thinking");
+		sc.log("========================================================================");
 	}
 
 	@Override

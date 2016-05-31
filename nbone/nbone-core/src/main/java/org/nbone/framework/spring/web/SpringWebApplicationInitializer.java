@@ -30,7 +30,11 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		String encoding  = servletContext.getInitParameter("encoding");
-		servletContext.log("current WebApplication set character encoding: "+ encoding +" .thinking");
+		servletContext.log("===============================================================================");
+		servletContext.log("current WebApplication config  set character encoding: "+ encoding +" .thinking");
+		
+		servletContext.log("===============================================================================");
+		
 		if(!StringUtils.hasText(encoding)){
 			encoding = CharsetConstant.CHARSET_UTF8;
 			servletContext.log("current WebApplication use default character encoding: "+ encoding  +" .thinking");
