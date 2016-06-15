@@ -1,3 +1,8 @@
+/*
+ * ${nbone.copyright}
+ * ${nbone.license}
+ * 
+ */
 package org.nbone.util.lang;
 /**
  * 
@@ -6,6 +11,7 @@ package org.nbone.util.lang;
  * @version 1.0 
  * @since   2015-12-12
  * @see org.apache.commons.lang3.BooleanUtils
+ * @see org.springframework.beans.propertyeditors.CustomBooleanEditor
  */
 public class BooleanUtils {
 	

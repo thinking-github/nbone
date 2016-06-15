@@ -61,19 +61,26 @@ public  class BaseServiceDto<T,IdType extends Serializable> implements SuperServ
 
 	@Override
 	public void saveOrUpdate(T object) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void delete(T object) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public List<T> getAll() {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> getForList(T object) {
+		return null;
+	}
+
+	@Override
+	public List<T> queryForList(T object) {
 		return null;
 	}
 

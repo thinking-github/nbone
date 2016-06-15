@@ -1,9 +1,7 @@
-package org.nbone.framework.spring.web.method.annotation;
+package org.nbone.web.support;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.nbone.framework.spring.web.support.DicItems;
 
 /**
  * @author uap

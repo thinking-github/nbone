@@ -1,4 +1,4 @@
-package org.nbone.framework.spring.web.support;
+package org.nbone.web.support;
 
 import java.util.List;
 import java.util.Map;

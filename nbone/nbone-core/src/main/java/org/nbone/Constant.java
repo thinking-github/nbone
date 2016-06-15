@@ -1,3 +1,8 @@
+/*
+ * ${nbone.copyright}
+ * ${nbone.license}
+ * 
+ */
 package org.nbone;
 /**
  * 常用IT变量

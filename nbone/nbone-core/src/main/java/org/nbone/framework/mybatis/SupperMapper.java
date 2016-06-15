@@ -4,6 +4,7 @@
 package org.nbone.framework.mybatis;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * mybatis generator tool super mapper
@@ -60,6 +61,13 @@ public interface SupperMapper<T,IdType extends Serializable> {
 	     * @return
 	     */
 	    T selectByPrimaryKey(IdType id);
+	    
+	    /**
+	     * 根据实体Bean 字段含有值的进行查询
+	     * @param object
+	     * @return
+	     */
+	    List<T> queryForList(T object);
 	
 	
 

@@ -1,7 +1,6 @@
 package org.nbone.framework.spring.web.exception;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.nbone.framework.spring.web.method.annotation.JsonProcessor;
 import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.nbone.web.support.WebResultWrapper;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;

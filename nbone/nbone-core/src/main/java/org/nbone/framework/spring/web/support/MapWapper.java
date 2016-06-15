@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.nbone.framework.spring.web;
+package org.nbone.framework.spring.web.support;
 
 import java.util.Collection;
 import java.util.HashMap;

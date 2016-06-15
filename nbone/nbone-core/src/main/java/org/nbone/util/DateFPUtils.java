@@ -89,6 +89,18 @@ public class DateFPUtils implements DateConstant {
 
 	/**
 	 * 
+	 * 将时间字符串转换成默认格式的日期(多种模式匹配)
+	 * 
+	 * @author thinking
+	 * @see #parseDate(String, String[])
+	 * @see #DEFAULT_FORMATS
+	 */
+	public static Date parseDateMultiplePattern(String strDateTime) {
+		return parseDate(strDateTime,DEFAULT_FORMATS);
+	}
+	
+	/**
+	 * 
 	 * 将时间字符串转换成默认格式的日期
 	 * 
 	 * @author thinking
@@ -305,7 +317,7 @@ public class DateFPUtils implements DateConstant {
 		String longtime = "1452232280151";
 		// Date date = dateFormat.parse(longtime);
 		System.out.println("jjjjjjjjjjj==" + dateFormat.format(new Date()));
-		// DateUtils.parseDate(longtime,DateConstant.DEFAULT_FORMATS);
+		 DateUtils.parseDate(longtime,DateConstant.DEFAULT_FORMATS);
 		System.out.println(System.currentTimeMillis());
 		System.out.println(1452232280151L);
 	}

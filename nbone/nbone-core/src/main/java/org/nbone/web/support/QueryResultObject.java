@@ -1,4 +1,4 @@
-package org.nbone.framework.spring.web.support;
+package org.nbone.web.support;
 
 import java.util.ArrayList;
 import java.util.List;

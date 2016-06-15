@@ -6,6 +6,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * <p> Class Name auto mapping 
+ * <p> Method Name auto mapping
+ * @author  thining
+ * @version 1.0 
+ * @since spring 3.1
+ */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

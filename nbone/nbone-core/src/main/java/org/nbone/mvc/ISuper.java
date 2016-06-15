@@ -74,6 +74,20 @@ public interface ISuper<T,PK extends Serializable> {
 	 */
 	public List<T> getAll();
 	
+	/**
+	 * 按照实体中的参数查询实体列表
+	 * @param object
+	 * @return {@link List}
+	 */
+	public List<T> getForList(T object);
+	
+	/**
+	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式）
+	 * @param object
+	 * @return  {@link List}
+	 */
+	public List<T> queryForList(T object);
+	
 	
 	
 	

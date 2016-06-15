@@ -13,9 +13,10 @@ import java.util.Map;
 
 import org.nbone.framework.spring.web.bind.annotation.ItemResponseBody;
 import org.nbone.framework.spring.web.bind.annotation.ItemsRequestBody;
-import org.nbone.framework.spring.web.support.QueryResultObject;
 import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.nbone.util.lang.StringArrayUtils;
+import org.nbone.web.support.QueryResultObject;
+import org.nbone.web.support.WrapedItems;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
