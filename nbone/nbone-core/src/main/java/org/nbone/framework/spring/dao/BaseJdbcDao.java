@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -24,14 +29,15 @@ import org.springframework.stereotype.Repository;
  * @version v1.1 
  * 
  */
-@Repository("jdbcDao")
-public class JdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
+@Repository("baseJdbcDao")
+public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
+	
 	
 	/**
 	 * 当扩展的方法无法实现新的需求是可用此方法获取Spring SuperJdbcTemplate
 	 */
 	public Connection getSuperConnection(){
-		return super.getConnection();
+		return this.getConnection();
 	}
 	
 	/**
@@ -39,7 +45,7 @@ public class JdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	 */
 	public JdbcTemplate getSuperJdbcTemplate(){
 		
-		return super.getJdbcTemplate();
+		return this.getJdbcTemplate();
 	}
 	  //**************************************queryForBean*************************************************
       

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.context.system.SystemContext;
@@ -15,12 +17,21 @@ import org.springframework.stereotype.Repository;
 /**
  * 
  * page Jdbc Dao 封装
- * @author Thinking 2014-08-04
+ * @author Thinking 
+ * @since 2014-08-04
  *
  */
 @Repository
-public class PagerJdbcDao extends JdbcDaoSupportX implements IPagerJdbcDao{
+public class PagerJdbcDao implements IPagerJdbcDao{
    
+	@Resource(name="baseJdbcDao")
+	private BaseJdbcDao baseJdbcDao;
+	
+	
+	public JdbcTemplate getJdbcTemplate(){
+		return baseJdbcDao.getJdbcTemplate();
+	}
+	
 	private Log logger = LogFactory.getLog(getClass());
 	
 	

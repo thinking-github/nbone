@@ -2,6 +2,7 @@ package org.nbone.persistence.jdbc;
 
 import javax.sql.DataSource;
 
+import org.nbone.framework.spring.dao.JdbcDaoSupportX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository(value="jdbcDao")
-public class JdbcDao extends JdbcDaoSupport {
+public class JdbcDao extends JdbcDaoSupportX {
 	private JdbcTemplate jdbcTemplate;
 	
 	/**
