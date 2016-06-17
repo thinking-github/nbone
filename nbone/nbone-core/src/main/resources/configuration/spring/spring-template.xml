@@ -20,16 +20,17 @@
 						   http://www.springframework.org/schema/mvc/spring-mvc.xsd
 						   
 						   http://www.springframework.org/schema/tool
-						   http://www.springframework.org/schema/mvc/spring-tool.xsd
+						   http://www.springframework.org/schema/tool/spring-tool.xsd
 						   http://www.springframework.org/schema/util
-						   http://www.springframework.org/schema/mvc/spring-util.xsd
+						   http://www.springframework.org/schema/util/spring-util.xsd
 						   http://www.springframework.org/schema/oxm
-						   http://www.springframework.org/schema/mvc/spring-oxm.xsd
+						   http://www.springframework.org/schema/oxm/spring-oxm.xsd
 						   
 						   ">
 						   
 						 <import resource="classpath*:/configuration/spring/spring-holder.xml"/>  
-						 <import resource="classpath:/configuration/spring/spring-holder.xml"/>  
+						 <import resource="classpath:/configuration/spring/spring-holder.xml"/> 
+						
 						   
 
 </beans>

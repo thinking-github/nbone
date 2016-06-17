@@ -41,8 +41,7 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 	protected void initDataSource(){
 		try {
 			JdbcTemplate jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
-			DataSource dataSource = jdbcTemplate.getDataSource();
-			super.setDataSource(dataSource);
+			super.setJdbcTemplate(jdbcTemplate);
 			
 		} catch (Exception e) {
 			logger.warn("application not config JdbcTemplate.thinking",e);

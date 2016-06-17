@@ -13,6 +13,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /**
+ * Spring expression  language (SPEl)
+ * <p>#{expression?:default value}
+ * <p> 安全的用法 #!{expression?:default value}
+ * <p>${property:default value}
  * @author  thinking
  * @version 1.0 
  * @since 2015-12-12
@@ -119,7 +123,7 @@ public class SpringelFormat extends BaseFormat {
 		 Map<String, Object> ctx = new HashMap<String, Object>();
 		 ctx.put("name", "SpringelFormat");
 		 ctx.put("date1", (new Date()).toString());
-		 String content = "6666666666666,,${#name},${ #date1 } --${1+2} 1+2";
+		 String content = "6666666666666,,${#name},${ #date1 } --  ${#name1}--${1+2} 1+2";
 	
 		 System.out.println(SpringelFormat.format(content, ctx));
 		 System.out.println(SpringelFormat.format("1+3*2", Long.class));

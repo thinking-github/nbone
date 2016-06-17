@@ -12,6 +12,7 @@
     <module>nbone-web</module>
     <module>nbone-demo</module>
     <module>nbone-security</module>
+    <module>nbone-toolbox</module>
   </modules>
 
 	<properties>
