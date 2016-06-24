@@ -1,10 +1,14 @@
-package org.nbone.constant;
+package org.nbone.constants;
 
 import java.net.URI;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
-
+/**
+ * 
+ * @author thinking
+ * @version 1.0 
+ */
 public interface SimpleTypeConstant {
     
     /**

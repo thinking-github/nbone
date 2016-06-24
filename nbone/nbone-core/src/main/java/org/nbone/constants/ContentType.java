@@ -1,14 +1,15 @@
-package org.nbone.constant;
+package org.nbone.constants;
 
 /**
  * 
- * @author thinking 2014-10-10
- * @since  2014-10-10
+ * @author thinking 
  * @see org.springframework.http.MediaType
  * @see org.springframework.http.HttpHeaders  
  * @see org.springframework.util.MimeTypeUtils
  * @see com.google.common.net.MediaType
  * @see com.google.common.net.HttpHeaders
+ * @version 1.0
+ * @since  2014-10-10
  *
  */
 public interface ContentType extends CharsetConstant {

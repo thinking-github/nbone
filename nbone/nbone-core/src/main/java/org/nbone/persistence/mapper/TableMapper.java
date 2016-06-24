@@ -1,19 +1,32 @@
 package org.nbone.persistence.mapper;
 
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Table;
+
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.StringUtils;
 
 /**
  * 描述java对象的数据库映射信息（数据库表的映射、字段的映射）<br>
  * 
  * @author thinking
  * @since 2015-12-12
+ * @see javax.persistence.Entity
+ * @see javax.persistence.Table
+ * @see org.springframework.jdbc.core.RowMapper
  * 
  */
-public class TableMapper<E> {
+public class TableMapper<T> {
     /**
      * 当使用注解定义实体Bean时使用
      */
@@ -21,7 +34,7 @@ public class TableMapper<E> {
     /**
      * 数据库表主键类型：（单个字段的唯一键）（几个字段组合起来的唯一键）
      */
-    private String[] primaryKeys;
+    private List<String> primaryKeys = new ArrayList<String>(1);
     
     /**
      * 映射实体Bean的全名称(包含包名称)<br>
@@ -36,25 +49,42 @@ public class TableMapper<E> {
     /**
      * 映射实体Bean classs
      */
-    private Class<E> entityClazz;
+    private Class<T> entityClazz;
     
     /**
-     * 以数据库字段为Key 
+     * 以数据库字段为Key , 最好使用LinkedHashMap保证key的顺序
      */
-    private Map<String, FieldMapper> fieldMapperCache;
+    private Map<String, FieldMapper> fieldMapperCache = new LinkedHashMap<String, FieldMapper>();
+    
+    /**
+     * 以JavaBean属性为Key
+     */
+    private Map<String, PropertyDescriptor> mappedPropertys= new HashMap<String, PropertyDescriptor>();
+    
     /**
      * 数据库表字段映射列表
      */
-    private List<FieldMapper> fieldMapperList;
+    private List<FieldMapper> fieldMapperList =  new  ArrayList<FieldMapper>();
+    /**
+     * 数据库列名称数组
+     */
+    private String[] columnNames;
+    /**
+     * id,name,age
+     */
+    private String   commaDelimitedColumns;
+    
+    /**
+     * Spring Jdbc
+     */
+    private RowMapper<T> rowMapper;
     
     
 
-	public TableMapper(Class<E> entityClazz) {
+	public TableMapper(Class<T> entityClazz) {
 		this.entityClazz = entityClazz;
 		this.entityName = entityClazz.getName();
 	}
-
-	
 	
 	public Annotation getTableMapperAnnotation() {
 		return tableMapperAnnotation;
@@ -65,17 +95,36 @@ public class TableMapper<E> {
 	}
 
 	public String[] getPrimaryKeys() {
-		return primaryKeys;
+		if(primaryKeys == null || primaryKeys.size() == 0){
+			for (FieldMapper fieldMapper : fieldMapperList) {
+				if(fieldMapper.isPrimaryKey()){
+					primaryKeys.add(fieldMapper.getDbFieldName());
+				}
+			}
+		}
+		
+		String[] pks = new String[primaryKeys.size()];
+		pks = primaryKeys.toArray(pks);
+		return pks;
 	}
 
 	public void setPrimaryKeys(String[] primaryKeys) {
+		this.primaryKeys = Arrays.asList(primaryKeys);
+	}
+	public void setPrimaryKeys(List<String> primaryKeys) {
 		this.primaryKeys = primaryKeys;
 	}
 
 	public String getEntityName() {
 		return entityName;
 	}
-
+    
+	/**
+	 * <li> 优先使用 dbTableName设置的表名称
+	 * <li> 次之使用 注解映射的表名称
+	 * <li> 次之最后使用 entityClazz的短名称
+	 * @return TableName
+	 */
 	public String getDbTableName() {
 		//当没有设置dbTableName时 使用注解映射的名称
 		//1.
@@ -98,6 +147,10 @@ public class TableMapper<E> {
 				Table table  = (Table) tableMapperAnnotation;
 				dbTableName = table.name();
 			}
+			//4.
+			if(dbTableName == null){
+				dbTableName = entityClazz.getSimpleName();
+			}
 		}
 		
 		return dbTableName;
@@ -107,33 +160,122 @@ public class TableMapper<E> {
 		this.dbTableName = dbTableName;
 	}
 
-	public Class<E> getEntityClazz() {
+	public Class<T> getEntityClazz() {
 		return entityClazz;
 	}
 
-	public void setEntityClazz(Class<E> entityClazz) {
+	public void setEntityClazz(Class<T> entityClazz) {
 		this.entityClazz = entityClazz;
 	}
-
+    /**
+     * @see #fieldMapperCache
+     */
 	public Map<String, FieldMapper> getFieldMapperCache() {
+		
 		return fieldMapperCache;
 	}
 
 	public void setFieldMapperCache(Map<String, FieldMapper> fieldMapperCache) {
-		this.fieldMapperCache = fieldMapperCache;
+		this.fieldMapperCache.putAll(fieldMapperCache);
+		for (Map.Entry<String,FieldMapper> entry : fieldMapperCache.entrySet()) {
+			this.fieldMapperList.add(entry.getValue());
+		}
+	}
+	
+	public FieldMapper getFieldMapper(String dbFieldName) {
+		return fieldMapperCache.get(dbFieldName);
+	}
+	
+	/**
+	 * 
+	 * @param dbFieldName
+	 * @param fieldMapper
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public TableMapper addFieldMapper(String dbFieldName,FieldMapper fieldMapper) {
+		this.fieldMapperCache.put(dbFieldName, fieldMapper);
+		this.fieldMapperList.add(fieldMapper);
+		
+		return this;
 	}
 
+	
+	
+    public Map<String, PropertyDescriptor> getMappedPropertys() {
+		return mappedPropertys;
+	}
+
+	public void setMappedPropertys(Map<String, PropertyDescriptor> mappedPropertys) {
+		this.mappedPropertys = mappedPropertys;
+	}
+	
+	public PropertyDescriptor getPropertyDescriptor(String fieldName) {
+		return mappedPropertys.get(fieldName);
+	}
+	@SuppressWarnings("rawtypes")
+	public TableMapper addPropertyDescriptor(String fieldName,PropertyDescriptor pd) {
+		this.mappedPropertys.put(fieldName, pd);
+		return this;
+	}
+
+	
+	
 	public List<FieldMapper> getFieldMapperList() {
-		return fieldMapperList;
+		return Collections.unmodifiableList(fieldMapperList);
+	}
+	
+	public FieldMapper getFieldMapper(int index) {
+		return fieldMapperList.get(index);
 	}
 
-	public void setFieldMapperList(List<FieldMapper> fieldMapperList) {
-		this.fieldMapperList = fieldMapperList;
-	}
-    
-    
-    
 
-   
+	/**
+     * @see #columnNames
+     */
+	public String[] getColumnNames() {
+		if(columnNames == null || columnNames.length == 0){
+			Set<String> keys = fieldMapperCache.keySet();
+			String[] temp =  new String[keys.size()];
+			temp = keys.toArray(temp);
+			columnNames = temp;
+			return columnNames;
+		}
+		return columnNames;
+	}
+
+
+	public void setColumnNames(String[] columnNames) {
+		this.columnNames = columnNames;
+	}
+
+    /**
+     * @see #commaDelimitedColumns
+     */
+	public String getCommaDelimitedColumns() {
+		if(commaDelimitedColumns == null){
+			String[] names = getColumnNames();
+			commaDelimitedColumns = StringUtils.arrayToCommaDelimitedString(names);
+			return commaDelimitedColumns;
+		}
+		
+		return commaDelimitedColumns;
+	}
+
+	public void setCommaDelimitedColumns(String commaDelimitedColumns) {
+		this.commaDelimitedColumns = commaDelimitedColumns;
+	}
+
+	
+	
+	public <T> RowMapper<T> getRowMapper() {
+		return (RowMapper<T>) rowMapper;
+	}
+	
+
+	public void setRowMapper(RowMapper<T> rowMapper) {
+		this.rowMapper = rowMapper;
+	}
+	
 
 }

@@ -13,7 +13,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
-import org.nbone.constant.CharsetConstant;
+import org.nbone.constants.CharsetConstant;
 
 /**
  * @author  thinking

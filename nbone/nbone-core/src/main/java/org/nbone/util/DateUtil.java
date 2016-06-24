@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.nbone.constant.DateConstant;
+import org.nbone.constants.DateConstant;
 import org.springframework.util.Assert;
 
 /**

@@ -11,6 +11,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.context.system.SystemContext;
 import org.nbone.mx.datacontrols.datapage.PagerModel;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -19,9 +21,12 @@ import org.springframework.stereotype.Repository;
  * page Jdbc Dao 封装
  * @author Thinking 
  * @since 2014-08-04
+ * @see org.nbone.framework.spring.dao.BaseJdbcDao
  *
  */
 @Repository
+@Primary
+@Lazy
 public class PagerJdbcDao implements IPagerJdbcDao{
    
 	@Resource(name="baseJdbcDao")

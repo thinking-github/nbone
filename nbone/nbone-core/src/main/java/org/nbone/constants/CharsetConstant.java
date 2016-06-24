@@ -1,11 +1,11 @@
-package org.nbone.constant;
+package org.nbone.constants;
 
 import java.nio.charset.Charset;
 /**
  * 字符编码常量
  * @author thinking
+ * @version 1.0
  * @since 2013-12-12
- * 
  * @see com.google.common.base.Charsets
  *
  */

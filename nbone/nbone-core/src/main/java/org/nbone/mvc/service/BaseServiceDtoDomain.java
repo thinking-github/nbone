@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nbone.framework.mybatis.SupperMapper;
+import org.nbone.mvc.BaseObject;
 import org.nbone.mvc.service.SuperService;
 import org.nbone.util.reflect.GenericsUtils;
 import org.springframework.beans.BeanUtils;
@@ -18,11 +19,7 @@ import org.springframework.beans.BeanUtils;
  * @param <P> DomainClass 
  * @param <IdType> 
  */
-public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> implements SuperService<T, IdType>{
-	
-	
-	public static  String inputParameters ="The method of input parameters";
-	public static  String outputParameters = "The method of output parameters";
+public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> extends BaseObject  implements SuperService<T, IdType>{
 	
 
 	private SupperMapper<P,IdType> superMapper;
@@ -49,13 +46,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> imp
 	protected void setSuperMapper(SupperMapper<P,IdType> superMapper) {
 		this.superMapper = superMapper;
 		this.dtoClass = (Class<T>) GenericsUtils.getSuperClassGenricType(this.getClass(), 0);
-		this.targetClass = (Class<P>) GenericsUtils.getSuperClassGenricType(this.getClass(), 1);;
+		this.targetClass = (Class<P>) GenericsUtils.getSuperClassGenricType(this.getClass(), 1);
 	}
 	
-	protected <E> E newInstance(Class<E> clazz){
-		E instance = BeanUtils.instantiate(clazz);
-		return instance;	
-	}
+
 	
     //--------------------------------------------------------------------
 	@Override

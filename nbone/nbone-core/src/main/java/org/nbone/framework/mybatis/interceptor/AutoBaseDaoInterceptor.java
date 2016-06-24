@@ -103,15 +103,15 @@ public class AutoBaseDaoInterceptor implements Interceptor {
             String resultMapId =  name+resultMapIdSuffix;
             boolean boo = resultMapId.equals("AddressBaseDTOMapper");
             
-            TableMapper<?>  tableMapper = MybatisSqlBuilder.buildTableMapper(entityClass,resultMapId);
+             MybatisSqlBuilder.buildTableMapper(entityClass,resultMapId);
             if ("insert".equals(id) || "insertAuto".equals(id)) {
-            	model = MybatisSqlBuilder.oxm_me.buildInsertSql(parameterObject,tableMapper);
+            	model = MybatisSqlBuilder.oxm_me.buildInsertSql(parameterObject);
             } else if ("update".equals(id)|| "updateAuto".equals(id)) {
-            	model = MybatisSqlBuilder.oxm_me.buildUpdateSql(parameterObject,tableMapper);
+            	model = MybatisSqlBuilder.oxm_me.buildUpdateSql(parameterObject);
             } else if ("delete".equals(id) || "deleteAuto".equals(id)) {
-            	model = MybatisSqlBuilder.oxm_me.buildDeleteSql(parameterObject,tableMapper);
+            	model = MybatisSqlBuilder.oxm_me.buildDeleteSql(parameterObject);
             } else if ("select".equals(id) || "get".equals(id)) {
-            	model = MybatisSqlBuilder.oxm_me.buildSelectSql(parameterObject,tableMapper);
+            	model = MybatisSqlBuilder.oxm_me.buildSelectSql(parameterObject);
             }
             logger.info("================AutoCRUDInterceptor==========================");
             logger.info(model.getSql());

@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -29,6 +31,8 @@ import org.springframework.stereotype.Repository;
  * @version v1.1 
  * 
  */
+@Primary
+@Lazy
 @Repository("baseJdbcDao")
 public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	

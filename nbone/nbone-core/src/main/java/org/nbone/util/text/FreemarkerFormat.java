@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nbone.constant.CharsetConstant;
+import org.nbone.constants.CharsetConstant;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;

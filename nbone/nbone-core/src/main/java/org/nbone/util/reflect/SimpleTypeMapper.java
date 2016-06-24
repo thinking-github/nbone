@@ -29,7 +29,7 @@ import java.util.Date;
 
 import javax.activation.DataHandler;
 
-import org.nbone.constant.SimpleTypeConstant;
+import org.nbone.constants.SimpleTypeConstant;
 
 public class SimpleTypeMapper implements SimpleTypeConstant {
     

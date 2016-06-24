@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.nbone.constant.ContentType;
+import org.nbone.constants.ContentType;
 import org.nbone.framework.AbstractHttpServlet;
 import org.nbone.util.json.JSONOperUtils;
 import org.springframework.util.Assert;

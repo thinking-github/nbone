@@ -37,8 +37,6 @@ public class MyMapperUtils {
 		TableMapper<E> tableMapper = new TableMapper<E>(entityClass);
 		
 		logger.warn("mybatis resultMap not has table name mapping.--thinking");
-		List<FieldMapper> fieldMappers =  new ArrayList<FieldMapper>();
-		Map<String,FieldMapper> fieldMapperCache = new HashMap<String, FieldMapper>();
 		//primary key
 		List<String> primaryList = new ArrayList<String>(1);
 		for (ResultMapping resultMapping : idsResultMapping) {
@@ -52,7 +50,7 @@ public class MyMapperUtils {
 		tableMapper.setPrimaryKeys(primaryKeys);
 		//field 
 		for (ResultMapping resultMapping : attrsResultMapping) {
-			FieldMapper fieldMapper = new FieldMapper();
+			FieldMapper fieldMapper = new FieldMapper(null);
 			String fieldName  = resultMapping.getProperty();
 			String dbFieldName  = resultMapping.getColumn();
 			fieldMapper.setFieldName(fieldName);
@@ -63,12 +61,8 @@ public class MyMapperUtils {
                 		break;
                 	}
 				}
-			
-			fieldMapperCache.put(dbFieldName, fieldMapper);
-			fieldMappers.add(fieldMapper);
+				tableMapper.addFieldMapper(dbFieldName, fieldMapper);
 		}
-		tableMapper.setFieldMapperCache(fieldMapperCache);
-		tableMapper.setFieldMapperList(fieldMappers);
 		
 		return tableMapper;
 	}

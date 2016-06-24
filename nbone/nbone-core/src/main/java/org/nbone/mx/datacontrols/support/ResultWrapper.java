@@ -2,6 +2,9 @@ package org.nbone.mx.datacontrols.support;
 
 import java.io.Serializable;
 
+import static org.nbone.constants.NboneConstants.DEFAULT_ERRCODE_FAILED;
+import static org.nbone.constants.NboneConstants.DEFAULT_ERRCODE_SUCCESS;
+
 /**
  *  <p> 系统交互时数据结果集包装
  *  Base ResultWrapper
@@ -12,25 +15,7 @@ import java.io.Serializable;
 
 public class ResultWrapper  implements Serializable{
 	
-	/**
-	 * <p>
-	 */
 	private static final long serialVersionUID = -6185220705468269585L;
-	/**
-	 *  DEFAULT error code 0
-	 */
-	public static final int DEFAULT_ERRCODE_FAILED = 0;
-	/**
-	 * DEFAULT SUCCESS code 1
-	 */
-	public static final int DEFAULT_ERRCODE_SUCCESS = 1;
-	
-	
-	public static final String FLAG_ADD     = "add";
-	public static final String FLAG_UPDATE  = "update";
-	public static final String FLAG_DELETE  = "delete";
-	public static final String FLAG_QUERY   = "query";
-	
 	
 	/**
 	 * successful=true表示成功;否则失败
@@ -41,19 +26,24 @@ public class ResultWrapper  implements Serializable{
 	 * 返回的结果集
 	 */
 	private Object resultValue;
-	/**
-	 * 提示消息
-	 */
-	private String resultHint;
 	
 	/** 
 	 *  errCode and message对应，默认当errCode:1时表示成功;否则失败
 	 */
 	private int errCode;
 	/**
-	 * 提示消息
+	 * 提示消息 resultHint
 	 */
 	private String message;
+	
+	/**
+	 * debug 
+	 */
+	private boolean debug;
+	/**
+	 * debug模式系统交互时返回Throwable
+	 */
+	private Throwable cause;
 	
 	/**
 	 * 用于特殊场景标记(save中区分 add/update)
@@ -70,7 +60,7 @@ public class ResultWrapper  implements Serializable{
 	}
 	
 	public ResultWrapper(boolean isSuccess, Object data, String resultHint) {
-		this(isSuccess, data, resultHint,DEFAULT_ERRCODE_SUCCESS,resultHint);
+		this(isSuccess, data,DEFAULT_ERRCODE_SUCCESS,resultHint);
 		this.message = resultHint;
 		if(isSuccess){
 			this.setErrCode(DEFAULT_ERRCODE_SUCCESS);
@@ -78,10 +68,9 @@ public class ResultWrapper  implements Serializable{
 	
 	}
 	
-	public ResultWrapper(boolean isSuccess, Object data, String resultHint,int errCode,String message) {
+	public ResultWrapper(boolean isSuccess, Object data,int errCode,String message) {
 		this.successful = isSuccess;
 		this.resultValue = data;
-		this.resultHint = resultHint;
 		this.errCode = errCode;
 		this.message = message;
 		if(isSuccess){
@@ -141,7 +130,7 @@ public class ResultWrapper  implements Serializable{
 	 * @return
 	 */
 	public static ResultWrapper failedResultWraped(String resultHint,int errCode,String message) {
-		return new ResultWrapper(false,null, resultHint, errCode, message);
+		return new ResultWrapper(false,null, errCode, message);
 	}
 	
 	
@@ -171,12 +160,16 @@ public class ResultWrapper  implements Serializable{
 	public void setResultValue(Object resultValue) {
 		this.resultValue = resultValue;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getResultValue(Class<T> targetClass) {
+		return (T) resultValue;
+	}
+	
 	public String getResultHint() {
-		return resultHint;
+		return message;
 	}
-	public void setResultHint(String resultHint) {
-		this.resultHint = resultHint;
-	}
+	
 	public String getMessage() {
 		return message;
 	}
@@ -184,6 +177,26 @@ public class ResultWrapper  implements Serializable{
 		this.message = message;
 	}
 
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
+	public Throwable getCause() {
+		return cause;
+	}
+
+	public ResultWrapper setCause(Throwable cause) {
+		if(debug){
+			this.cause = cause;
+		}
+		return this;
+	}
+
+	
 	public String getOperationFlag() {
 		return operationFlag;
 	}

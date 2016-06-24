@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.nbone.framework.mybatis.SupperMapper;
+import org.nbone.mvc.BaseObject;
 
 /**
  * 
@@ -13,14 +14,16 @@ import org.nbone.framework.mybatis.SupperMapper;
  * @param <T>
  * @param <IdType>
  */
-public  class BaseServiceDto<T,IdType extends Serializable> implements SuperService<T, IdType>{
+public  class BaseServiceDto<T,IdType extends Serializable> extends BaseObject implements SuperService<T, IdType>{
 
 	private SupperMapper<T, IdType> superMapper;
-	
 
-	protected void setSuperMapper(SupperMapper<T, IdType> superMapper) {
+	protected void setSuperMapperWithEntity(SupperMapper<T, IdType> superMapper) {
 		this.superMapper = superMapper;
 	}
+	
+	
+	
 	
     //--------------------------------------------------------------------
 	@Override

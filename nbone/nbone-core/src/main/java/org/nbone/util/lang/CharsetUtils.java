@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import org.nbone.constant.CharsetConstant;
+import org.nbone.constants.CharsetConstant;
 
 /**
  * reference apache <br>

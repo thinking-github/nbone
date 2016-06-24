@@ -1,6 +1,6 @@
 package org.nbone.util.json.jackson2;
 
-import org.nbone.constant.DateConstant;
+import org.nbone.constants.DateConstant;
 
 /**
  * 使用 jackson2

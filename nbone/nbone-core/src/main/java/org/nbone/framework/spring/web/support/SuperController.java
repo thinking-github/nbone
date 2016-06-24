@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nbone.constant.ContentType;
+import org.nbone.constants.ContentType;
 import org.nbone.framework.AbstractHttpServlet;
 import org.nbone.util.DateFPUtils;
 import org.springframework.ui.Model;
@@ -98,6 +98,11 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
 	}
     
 	
+	protected String redirect(String url){
+		StringBuilder urlsb = new StringBuilder("redirect:");
+		urlsb.append(url);
+		return redirectStr.toString();
+	}
 	
     
 	protected void sendToClientWithJson(Object object) throws IOException {

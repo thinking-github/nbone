@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.nbone.constant.DateConstant;
+import org.nbone.constants.DateConstant;
 import org.nbone.util.DateFPUtils;
 
 public class DateTest {

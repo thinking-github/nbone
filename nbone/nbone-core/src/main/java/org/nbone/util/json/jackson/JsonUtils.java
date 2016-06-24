@@ -16,7 +16,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.map.module.SimpleModule;
 import org.codehaus.jackson.map.ser.StdSerializerProvider;
 import org.codehaus.jackson.type.TypeReference;
-import org.nbone.constant.DateConstant;
+import org.nbone.constants.DateConstant;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 

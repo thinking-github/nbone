@@ -1,4 +1,4 @@
-package org.nbone.constant;
+package org.nbone.constants;
 /**
  * @author thinking
  * @version 1.0 

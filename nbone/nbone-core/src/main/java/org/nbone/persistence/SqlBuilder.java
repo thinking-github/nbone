@@ -1,6 +1,9 @@
 package org.nbone.persistence;
 
-import org.nbone.persistence.mapper.TableMapper;
+import java.io.Serializable;
+import java.util.Map;
+
+import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
 
 /**
@@ -11,13 +14,14 @@ import org.nbone.persistence.model.SqlModel;
  */
 public interface SqlBuilder {
 	
+	
 	/**
 	 * 由传入的对象生成insert sql语句
 	 * @param object
 	 * @return {@link SqlModel}
 	 * @throws Exception
 	 */
-	 public SqlModel buildInsertSql(Object object,TableMapper<?> tableMapper) throws Exception;
+	 public SqlModel<Object> buildInsertSql(Object object) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的对象生成update sql语句
@@ -25,7 +29,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws Exception
 	  */
-	 public SqlModel buildUpdateSql(Object object,TableMapper<?> tableMapper) throws Exception;
+	 public SqlModel<Object> buildUpdateSql(Object object) throws BuilderSQLException;
 	 
 	 
 	 /**
@@ -35,7 +39,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws Exception
 	  */
-	 public SqlModel buildUpdateSql(Object object,TableMapper<?> tableMapper,boolean safeAttr) throws Exception;
+	 public SqlModel<Object> buildUpdateSql(Object object,boolean safeAttr) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的对象生成delete sql语句
@@ -43,14 +47,50 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws Exception
 	  */
-	 public SqlModel buildDeleteSql(Object object,TableMapper<?> tableMapper) throws Exception;
+	 public SqlModel<Object> buildDeleteSql(Object object) throws BuilderSQLException;
 	 
 	 /**
-	  * 
+	  * 根据主键Id删除
+	  * @param entityClass
+	  * @param id
+	  * @return
+	  * @throws BuilderSQLException
+	  * @author:ChenYiCheng
+	  */
+	 public <T> SqlModel<Map<String,?>> buildDeleteSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException;
+	
+	 /**
+	  * 根据主键Id查询
+	  * @param id
+	  * @param entityClass
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public <T> SqlModel<Map<String,?>> buildSelectSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException;
+	 /**
+	  * 根据实体中的主键Id查询
+	  * @param object
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public SqlModel<Object> buildSelectSqlById(Object object) throws BuilderSQLException;
+	 /**
+	  * 查询全表sql(小数量时使用)
+	  * @param entityClass
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public <T> SqlModel<T> buildSelectAllSql(Class<T> entityClass) throws BuilderSQLException;
+	 
+	 /**
+	  * 根据实体中的参数查询
 	  * @param object
 	  * @return
 	  * @throws Exception
 	  */
-	 public SqlModel buildSelectSql(Object object,TableMapper<?> tableMapper) throws Exception;
+	 public SqlModel<Object> buildSelectSql(Object object) throws BuilderSQLException;
+	 
+	 
+	 
 
 }

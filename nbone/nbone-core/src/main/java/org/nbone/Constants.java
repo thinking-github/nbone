@@ -8,9 +8,11 @@ package org.nbone;
  * 常用IT变量
  * @author thinking
  * @since 2015-12-12
+ * @see com.alibaba.dubbo.common.Constants
  *
  */
-public interface Constant {
+//@SuppressWarnings({"rawtypes","unchecked"})
+public interface Constants {
 	
 	public final static int engine =0;
 	public final static int default_ =0;

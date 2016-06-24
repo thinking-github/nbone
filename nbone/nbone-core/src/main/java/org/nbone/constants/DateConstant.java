@@ -1,9 +1,9 @@
-package org.nbone.constant;
+package org.nbone.constants;
 
 /**
  * DateConstant
  * @author thinking 2014-06-09
- *
+ * @version 1.0
  */
 public interface DateConstant {
 	

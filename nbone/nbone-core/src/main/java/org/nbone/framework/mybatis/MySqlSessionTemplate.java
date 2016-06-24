@@ -72,9 +72,48 @@ public class MySqlSessionTemplate extends SqlSessionTemplate implements SqlSessi
 	}
 
 	@Override
-	public <T> List<T> getByBeanParams(Class<T> clazz) {
-		// TODO Auto-generated method stub
+	public <T> List<T> getAll(Class<T> clazz) {
 		return null;
 	}
+
+	@Override
+	public List<?> getForList(Object object) {
+		return null;
+	}
+
+	@Override
+	public List<?> queryForList(Object object) {
+		return null;
+	}
+
+	@Override
+	public List<?> findForList(Object object) {
+		return null;
+	}
+
+	@Override
+	public Serializable save(Object object) {
+		return null;
+	}
+
+	@Override
+	public Object add(Object object) {
+		return null;
+	}
+
+	@Override
+	public int updateSelective(Object object) {
+		return 0;
+	}
+
+	@Override
+	public void saveOrUpdate(Object object) {
+	}
+
+	@Override
+	public <T> T get(Object object) {
+		return null;
+	}
+
 
 }

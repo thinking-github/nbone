@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nbone.constant.ContentType;
+import org.nbone.constants.ContentType;
 import org.nbone.util.json.JSONOperUtils;
 import org.springframework.util.Assert;
 /**

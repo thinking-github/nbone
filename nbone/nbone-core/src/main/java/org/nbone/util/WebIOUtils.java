@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nbone.constant.ContentType;
+import org.nbone.constants.ContentType;
 
 /**
  * 
