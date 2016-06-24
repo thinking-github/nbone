@@ -6,8 +6,8 @@
 	增加@ClassMethodNameRequestMapping注解 默认支持类短名和方法名称映射  
 	增加@ItemResponseBody注解 包装JavaObject To JSON结果集
 	增加@RawResponseBody注解  返回原始JavaObject to JSON结果集
-	方便集成springJDBC,提供springJDBCDao方便使用  
-	                                          
+	集成springJDBC,提供springJDBCDao 
+	封装SimpleJdbcDao NamedJdbcDao可以实现基于对象单表增删改查                                     
 	--springframework 3.1.1 以上                                              
 	--spring 3.1 方便使用springmvc,可以升级至3.2功能更佳 
 	--建议4.0以上,可以使用spring boot     
