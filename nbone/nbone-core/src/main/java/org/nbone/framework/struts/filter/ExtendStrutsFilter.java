@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter;
 import org.nbone.context.system.SystemContext;
+import org.nbone.persistence.JdbcConstants;
 import org.nbone.web.util.EasyuiUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -48,7 +49,7 @@ public class ExtendStrutsFilter extends StrutsPrepareAndExecuteFilter {
 		
 		ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(sc);
 		SystemContext.setAppicationContext(ac);
-		SystemContext.currentUse_DB_TYPE = SystemContext.DB_TYPE_ORACLE;
+		SystemContext.CurrentUse_DB_TYPE = JdbcConstants.ORACLE;
 		
 		super.init(filterConfig);
 		

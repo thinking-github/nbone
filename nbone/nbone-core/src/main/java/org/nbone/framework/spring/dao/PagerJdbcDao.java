@@ -11,6 +11,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.context.system.SystemContext;
 import org.nbone.mx.datacontrols.datapage.PagerModel;
+import org.nbone.persistence.JdbcConstants;
+import org.nbone.persistence.support.PageSuport;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -69,7 +71,7 @@ public class PagerJdbcDao implements IPagerJdbcDao{
 	public <T> PagerModel<T> findByPage(String sql, Object[] datas, int[] types,RowMapper<T> rm, int offset, int pageSize) throws SQLException {
 		PagerModel<T> pm = new PagerModel<T>();
 		JdbcTemplate dao = this.getJdbcTemplate();
-		String countSql = getCountSqlString(sql);
+		String countSql = PageSuport.getCountSqlString(sql);
 		Integer total = 0;
 		total = (datas != null) ? ((types != null) ? dao.queryForInt(countSql, datas, types) 
 				: dao.queryForInt(countSql, datas)) 
@@ -79,45 +81,35 @@ public class PagerJdbcDao implements IPagerJdbcDao{
 		// }
 		pm.setTotal(total);
 		List list_obj = new ArrayList();
-		StringBuilder sbSql = new StringBuilder();
+		String pageSql  = "";
 
-		if (SystemContext.DB_TYPE_MYSQL.equals(SystemContext.currentUse_DB_TYPE)) {
-			sbSql.append("select sys_tempp.* from ( " + sql+ " )  sys_tempp LIMIT " + pageSize * (offset-1) + ","+ pageSize);
-		}
-
-		if (SystemContext.DB_TYPE_ORACLE.equals(SystemContext.currentUse_DB_TYPE)) {
-
-			sbSql.append("select system_temp.*  from (select  temp.*  ,rownum as rownums   from (");
-			sbSql.append(sql).append(" ) temp ) system_temp  where  system_temp.rownums >");
-			sbSql.append(pageSize * (offset - 1));  
-			// 加了个等号,不然会少查一条记录
-			sbSql.append(" and system_temp.rownums <= ");
-			sbSql.append(pageSize * (offset));
+		if (JdbcConstants.MYSQL.equals(SystemContext.CurrentUse_DB_TYPE)) {
+			pageSql = PageSuport.toMysqlPage(sql, offset, pageSize);
+			
+		}else  if (JdbcConstants.ORACLE.equals(SystemContext.CurrentUse_DB_TYPE)) {
+			
+			pageSql = PageSuport.toOraclePage(sql, offset, pageSize);
 		}
       
 		if (datas != null) {
-			list_obj = (types != null) ? ((rm != null) ? dao.query(sbSql.toString(), datas, types, rm)
-					: dao.queryForList(sbSql.toString(), datas, types))
-					: ((rm != null) ? dao.query(sbSql.toString(), datas, rm)
-					: dao.queryForList(sbSql.toString(), datas));
+			list_obj = (types != null) ? ((rm != null) ? dao.query(pageSql, datas, types, rm)
+					: dao.queryForList(pageSql, datas, types))
+					: ((rm != null) ? dao.query(pageSql, datas, rm)
+					: dao.queryForList(pageSql, datas));
 		} else {
-			list_obj = (rm != null) ? dao.query(sbSql.toString(), rm)
-					: dao.queryForList(sbSql.toString());
+			list_obj = (rm != null) ? dao.query(pageSql, rm) : dao.queryForList(pageSql);
 		}
 		pm.setPageNow(offset);
 		pm.setPageSize(pageSize);
 		pm.setRows(list_obj);
 		if(logger.isDebugEnabled()){
-			logger.debug("findByPage Sql: "+sbSql);
+			logger.debug("findByPage Sql: "+pageSql);
 		}
 		
 		return pm;
 	}
 	
 	
-	public static String getCountSqlString(String sql) {
-		return "select count(*) as total  from ( " + sql + " ) sysT";
-	}
 
 
 }

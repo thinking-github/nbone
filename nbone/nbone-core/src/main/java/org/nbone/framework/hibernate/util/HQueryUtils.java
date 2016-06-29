@@ -10,7 +10,7 @@ import org.hibernate.Query;
 public class HQueryUtils {
 	
 	
-	@SuppressWarnings({ "unused", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	public Query setParameter(Query query, Map<String, Object> map) {  
         if (map != null) {  
             Set<String> keySet = map.keySet();  

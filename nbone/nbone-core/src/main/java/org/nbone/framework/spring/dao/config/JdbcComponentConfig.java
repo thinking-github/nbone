@@ -9,17 +9,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.framework.spring.SpringEnv;
 import org.nbone.framework.spring.dao.JdbcDaoSupportX;
+import org.nbone.framework.spring.support.ComponentFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -42,6 +42,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @ComponentScan(basePackages="org.nbone.framework.spring.dao")
 @PropertySource(name="jdbcComponentConig",value="classpath:/org/nbone/framework/spring/dao/config/jdbc-comp.properties")
 @Lazy
+@Import(ComponentFactory.class)
 public class JdbcComponentConfig implements ApplicationContextAware,InitializingBean{
 	
 	protected Log logger  =  LogFactory.getLog(JdbcComponentConfig.class);

@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HqlConfig {
+import org.nbone.persistence.SqlConfig;
+/**
+ * 
+ * @author thinking
+ * @version 1.0 
+ */
+@SuppressWarnings("rawtypes")
+public class HqlConfig  extends SqlConfig{
 	
-	    public static final int PrimaryMode = 0 ;
-	    public static final int MiddleMode = 1 ;
-	    public static final int HighMode = 2 ;
 	    
 		private String aliasName = " tempA";  
 		
@@ -39,7 +43,8 @@ public class HqlConfig {
 	    private Map<String,String> inStringFieldsMap;
 	    private Map<String,String> notinStringFieldsMap;
 	    
-	    private List dtField;
+	   
+		private List dtField;
         /**
          * 初中高级通用
          */

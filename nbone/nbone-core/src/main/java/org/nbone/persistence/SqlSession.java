@@ -22,11 +22,19 @@ public interface SqlSession  extends QueryOperations{
 	public int insert(Object object);
 	
 	/**
+	 * 批量添加
+	 * @param objects
+	 * @return
+	 */
+	public int[] batchInsert(Object[] objects);
+	
+	/**
 	 * 保存数据
 	 * @param object
 	 * @return 返回主键id
 	 */
 	public Serializable save(Object object);
+	
 	
 	/**
 	 *  单表操作增加一条记录
@@ -44,6 +52,14 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public int update(Object object);
+	
+	/**
+	 * 批量更新
+	 * @param objects
+	 * @return
+	 * @author:ChenYiCheng
+	 */
+	public int[] batchUpdate(Object[] objects);
 	
 	/**
 	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)
@@ -74,6 +90,13 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public int delete(Class<?> clazz, Serializable id);
+	/**
+	 * 根据主键列表ids删除
+	 * @param clazz
+	 * @param ids
+	 * @return
+	 */
+	public <T> int delete(Class<T> clazz, Object[] ids);
 	/**
 	 * 根据主键获取一条记录   <br>
 	 * 参照 hibernate get method

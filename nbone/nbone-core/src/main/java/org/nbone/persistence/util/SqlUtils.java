@@ -1,4 +1,6 @@
-package org.nbone.util;
+package org.nbone.persistence.util;
+
+import java.util.Collection;
 
 public class SqlUtils {
 	
@@ -56,6 +58,24 @@ public class SqlUtils {
          return notinsb.toString();
     }
     
+    public static StringBuilder list2In(String name,Collection<?> values){
+		return list2In(name,values.toArray());
+    }
+    /**
+     * [1,2,3] ---> id in (?,?,?)
+     * @param name
+     * @param values
+     * @return
+     */
+    public static StringBuilder list2In(String name,Object[] values){
+   	  StringBuilder sql = new StringBuilder(" ").append(name).append(" in ").append("(");
+   	  int length = values.length;
+   	  for (int i = 0; i <  length -1; i++) {
+   		 sql.append(" ?, ");
+	  }
+      sql.append("? )");
+	  return sql;
+   }
     
     //Like Match Char _ %
     public static boolean isLikeMatchChar(String value)

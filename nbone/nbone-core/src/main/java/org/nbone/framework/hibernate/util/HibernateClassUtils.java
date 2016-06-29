@@ -9,9 +9,13 @@ import java.util.Map;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nbone.util.SqlUtils;
+import org.nbone.persistence.util.SqlUtils;
 import org.nbone.util.reflect.SimpleTypeMapper;
-
+/**
+ * 
+ * @author thinking
+ * @version 1.0 
+ */
 public class HibernateClassUtils {
 
 	protected  static Log logger = LogFactory.getLog(HibernateClassUtils.class);

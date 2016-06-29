@@ -6,7 +6,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+/**
+ * 
+ * @author thinking
+ * @version 1.0 
+ */
 @SuppressWarnings("rawtypes")
 public class HqlQuery {
 	protected  static Log logger = LogFactory.getLog(HqlQuery.class);

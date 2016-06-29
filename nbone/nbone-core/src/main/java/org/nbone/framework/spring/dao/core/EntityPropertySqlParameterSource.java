@@ -34,7 +34,7 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 	
 	public EntityPropertySqlParameterSource(Object object) {
 		this.tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
-		this.dbFieldNameMap = tableMapper.getFieldMapperCache();
+		this.dbFieldNameMap = tableMapper.getFieldMappers();
 		this.beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(object);
 		
 	}

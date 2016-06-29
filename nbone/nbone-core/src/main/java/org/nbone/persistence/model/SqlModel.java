@@ -16,10 +16,14 @@ public class SqlModel<T> {
 	private String sql ;
 	/**
 	 * sql占位符参数 ,可为空<br>
-	 * 占位符是  ? 时,参数时可以是 Object[]/List <br>
 	 * 占位符是 name时, 参数可以是 Map/Javabean
 	 */
 	private T parameter;
+	
+	/**
+	 * 占位符是  ? 时,参数时可以是 Object[]/List <br>
+	 */
+	private Object[] parameterArray;
 	
 	/**
 	 *实体映射信息
@@ -72,7 +76,13 @@ public class SqlModel<T> {
 		this.parameter = parameter;
 	}
 
+	public Object[] getParameterArray() {
+		return parameterArray;
+	}
 
+	public void setParameterArray(Object[] parameterArray) {
+		this.parameterArray = parameterArray;
+	}
 
 	public TableMapper<?> getTableMapper() {
 		return  tableMapper;

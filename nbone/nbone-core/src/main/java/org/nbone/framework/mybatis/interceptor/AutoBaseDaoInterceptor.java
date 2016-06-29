@@ -103,7 +103,7 @@ public class AutoBaseDaoInterceptor implements Interceptor {
             String resultMapId =  name+resultMapIdSuffix;
             boolean boo = resultMapId.equals("AddressBaseDTOMapper");
             
-             MybatisSqlBuilder.buildTableMapper(entityClass,resultMapId);
+             MybatisSqlBuilder.buildTableMapper(entityClass,"",resultMapId);
             if ("insert".equals(id) || "insertAuto".equals(id)) {
             	model = MybatisSqlBuilder.oxm_me.buildInsertSql(parameterObject);
             } else if ("update".equals(id)|| "updateAuto".equals(id)) {

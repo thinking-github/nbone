@@ -54,7 +54,7 @@ public class TableMapper<T> {
     /**
      * 以数据库字段为Key , 最好使用LinkedHashMap保证key的顺序
      */
-    private Map<String, FieldMapper> fieldMapperCache = new LinkedHashMap<String, FieldMapper>();
+    private Map<String, FieldMapper> fieldMappers = new LinkedHashMap<String, FieldMapper>();
     
     /**
      * 以JavaBean属性为Key
@@ -170,20 +170,20 @@ public class TableMapper<T> {
     /**
      * @see #fieldMapperCache
      */
-	public Map<String, FieldMapper> getFieldMapperCache() {
+	public Map<String, FieldMapper> getFieldMappers() {
 		
-		return fieldMapperCache;
+		return fieldMappers;
 	}
 
-	public void setFieldMapperCache(Map<String, FieldMapper> fieldMapperCache) {
-		this.fieldMapperCache.putAll(fieldMapperCache);
-		for (Map.Entry<String,FieldMapper> entry : fieldMapperCache.entrySet()) {
+	public void setFieldMappers(Map<String, FieldMapper> fieldMappers) {
+		this.fieldMappers.putAll(fieldMappers);
+		for (Map.Entry<String,FieldMapper> entry : fieldMappers.entrySet()) {
 			this.fieldMapperList.add(entry.getValue());
 		}
 	}
 	
 	public FieldMapper getFieldMapper(String dbFieldName) {
-		return fieldMapperCache.get(dbFieldName);
+		return fieldMappers.get(dbFieldName);
 	}
 	
 	/**
@@ -194,7 +194,7 @@ public class TableMapper<T> {
 	 */
 	@SuppressWarnings("rawtypes")
 	public TableMapper addFieldMapper(String dbFieldName,FieldMapper fieldMapper) {
-		this.fieldMapperCache.put(dbFieldName, fieldMapper);
+		this.fieldMappers.put(dbFieldName, fieldMapper);
 		this.fieldMapperList.add(fieldMapper);
 		
 		return this;
@@ -235,7 +235,7 @@ public class TableMapper<T> {
      */
 	public String[] getColumnNames() {
 		if(columnNames == null || columnNames.length == 0){
-			Set<String> keys = fieldMapperCache.keySet();
+			Set<String> keys = fieldMappers.keySet();
 			String[] temp =  new String[keys.size()];
 			temp = keys.toArray(temp);
 			columnNames = temp;

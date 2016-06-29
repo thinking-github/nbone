@@ -25,12 +25,17 @@ public class FieldMapper {
      * 是否是数据库表主键
      */
     private boolean primaryKey;
-    
+    /**
+     * 实体属性类型
+     */
+    private Class<?> propertyType;
     /**
      * 数据库字段对应的jdbc类型
      */
     private JdbcType jdbcType;
     
+    
+     
     private  boolean nullable   = true;
     private  boolean insertable = true;
     private  boolean updatable  =true;
@@ -75,6 +80,20 @@ public class FieldMapper {
 	public void setPrimaryKey(boolean primaryKey) {
 		this.primaryKey = primaryKey;
 	}
+
+	public Class<?> getPropertyType() {
+		if(propertyType == null){
+			propertyType = propertyDescriptor.getPropertyType();
+		}
+		
+		return propertyType;
+	}
+
+
+	public void setPropertyType(Class<?> propertyType) {
+		this.propertyType = propertyType;
+	}
+
 
 	public JdbcType getJdbcType() {
         return jdbcType;

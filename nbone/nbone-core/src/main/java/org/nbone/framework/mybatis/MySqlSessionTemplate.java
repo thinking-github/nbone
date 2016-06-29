@@ -1,11 +1,13 @@
 package org.nbone.framework.mybatis;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.nbone.persistence.SqlSession;
+import org.springframework.data.domain.Page;
 /**
  * 
  * @author thinking
@@ -18,7 +20,6 @@ public class MySqlSessionTemplate extends SqlSessionTemplate implements SqlSessi
 	}
 
 	public int insert(Object object,String resultMapId) {
-		
 		
 		// TODO Auto-generated method stub
 		return 0;
@@ -75,19 +76,27 @@ public class MySqlSessionTemplate extends SqlSessionTemplate implements SqlSessi
 	public <T> List<T> getAll(Class<T> clazz) {
 		return null;
 	}
-
+	
 	@Override
-	public List<?> getForList(Object object) {
+	public <T> List<T> getAll(Class<T> clazz, Collection<?> ids) {
+		return null;
+	}
+	@Override
+	public <T> List<T> getAll(Class<T> clazz, Object[] ids) {
+		return null;
+	}
+	@Override
+	public <T> List<T> getForList(Object object) {
 		return null;
 	}
 
 	@Override
-	public List<?> queryForList(Object object) {
+	public <T> List<T> queryForList(Object object) {
 		return null;
 	}
 
 	@Override
-	public List<?> findForList(Object object) {
+	public <T> List<T> findForList(Object object) {
 		return null;
 	}
 
@@ -114,6 +123,28 @@ public class MySqlSessionTemplate extends SqlSessionTemplate implements SqlSessi
 	public <T> T get(Object object) {
 		return null;
 	}
+
+	@Override
+	public int[] batchInsert(Object[] objects) {
+		return null;
+	}
+
+	@Override
+	public int[] batchUpdate(Object[] objects) {
+		return null;
+	}
+
+	@Override
+	public <T> int delete(Class<T> clazz, Object[] ids) {
+		return 0;
+	}
+
+	@Override
+	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize) {
+		return null;
+	}
+
+
 
 
 }

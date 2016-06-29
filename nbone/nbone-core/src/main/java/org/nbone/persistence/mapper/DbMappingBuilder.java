@@ -117,7 +117,7 @@ public class DbMappingBuilder {
                 }
             	  FieldMapper fieldMapper = new FieldMapper(pd);
                   fieldMapper.setFieldName(field.getName());
-                  
+                  fieldMapper.setPropertyType(field.getType());
                   Annotation[] fieldAnnotations = field.getDeclaredAnnotations();
                   if (fieldAnnotations.length == 0) {
                       //continue;

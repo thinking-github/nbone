@@ -3,6 +3,7 @@ package org.nbone.context.system;
 
 import javax.servlet.FilterConfig;
 
+import org.nbone.persistence.JdbcConstants;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
  
@@ -157,17 +158,11 @@ public class SystemContext {
 	public static String rootPath = null;
 
 	//******************************************database info begin*******************************************//
-	/**
-	 * 数据库类型
-	 */
-	public static final String DB_TYPE_MYSQL = "mysql";
-	public static final String DB_TYPE_ORACLE = "oracle";
-	public static final String DB_TYPE_MSSERVER = "msserver";
 	
 	/**
 	 * 当前系统使用的数据库。默认是oracle
 	 */
-	public static String currentUse_DB_TYPE = DB_TYPE_ORACLE;
+	public static String CurrentUse_DB_TYPE = JdbcConstants.ORACLE;
 	
 	/**
 	 * 数据库insert记录数

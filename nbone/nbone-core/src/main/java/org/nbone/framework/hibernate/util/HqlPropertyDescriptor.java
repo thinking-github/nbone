@@ -5,7 +5,11 @@ import java.util.Set;
 
 import org.nbone.persistence.criterion.QueryOperator;
 
-
+/**
+ * 
+ * @author thinking
+ * @version 1.0 
+ */
 public class HqlPropertyDescriptor  implements QueryOperator{
     
 	
