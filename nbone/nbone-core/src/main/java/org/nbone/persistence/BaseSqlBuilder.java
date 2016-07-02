@@ -1,20 +1,11 @@
 package org.nbone.persistence;
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.apache.commons.beanutils.PropertyUtils;
 import org.nbone.framework.mybatis.util.MyMapperUtils;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.exception.BuilderSQLException;
@@ -25,8 +16,6 @@ import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.util.SqlUtils;
 import org.nbone.util.PropertyUtil;
 import org.nbone.util.reflect.SimpleTypeMapper;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.Assert;

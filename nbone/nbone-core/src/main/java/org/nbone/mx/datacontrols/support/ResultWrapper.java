@@ -27,6 +27,8 @@ public class ResultWrapper  implements Serializable{
 	 */
 	private Object resultValue;
 	
+	private String resultHint;
+	
 	/** 
 	 *  errCode and message对应，默认当errCode:1时表示成功;否则失败
 	 */
@@ -167,7 +169,7 @@ public class ResultWrapper  implements Serializable{
 	}
 	
 	public String getResultHint() {
-		return message;
+		return resultHint;
 	}
 	
 	public String getMessage() {

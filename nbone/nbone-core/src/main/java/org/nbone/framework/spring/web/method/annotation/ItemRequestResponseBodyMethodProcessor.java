@@ -35,11 +35,11 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConv
  * 
  */
 @SuppressWarnings({ "unchecked", "rawtypes" ,"unused"})
-public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor implements JsonProcessor {
+public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor {
 	
   private Map<String, String[]> ignoreFieldsCache = new HashMap();
   
-  protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) msgConverters;
+  protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) JsonProcessor.msgConverters;
   
  /**
   * 

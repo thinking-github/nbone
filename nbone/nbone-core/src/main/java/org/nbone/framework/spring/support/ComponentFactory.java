@@ -8,6 +8,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 /**
@@ -44,6 +45,11 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 		logger.info("注入ApplicationContext到SpringContextHolder:"+ applicationContext);
 	}
 
+	public static void setContext(ApplicationContext context) {
+		applicationContext = context;
+		logger.info("手动注入ApplicationContext到SpringContextHolder:"+ applicationContext);
+	}
+	
 	public static ApplicationContext getContext() {
 		return applicationContext;
 	}

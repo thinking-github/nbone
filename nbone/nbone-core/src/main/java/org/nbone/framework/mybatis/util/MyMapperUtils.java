@@ -31,8 +31,13 @@ public class MyMapperUtils {
 			 MySqlSessionTemplate	mySqlSessionTemplate = ComponentFactory.getBean(MySqlSessionTemplate.class);
 			 configuration = mySqlSessionTemplate.getConfiguration();
 		} catch (Exception e) {
-			SqlSessionFactory	sessionFactory = ComponentFactory.getBean(SqlSessionFactory.class);
-			configuration = sessionFactory.getConfiguration();
+			try {
+				SqlSessionFactory	sessionFactory = ComponentFactory.getBean(SqlSessionFactory.class);
+				configuration = sessionFactory.getConfiguration();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		
 			
 		}
 	

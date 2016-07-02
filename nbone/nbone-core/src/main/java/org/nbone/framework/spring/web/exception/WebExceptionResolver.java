@@ -25,7 +25,7 @@ import com.google.common.base.Throwables;
  *  @see org.springframework.web.servlet.handler.SimpleMappingExceptionResolver
  *  @see ExceptionHandlerExceptionResolver
  */
-public class WebExceptionResolver extends ExceptionHandlerExceptionResolver implements JsonProcessor{
+public class WebExceptionResolver extends ExceptionHandlerExceptionResolver {
 	
 	  private final Map<Class<?>, ExceptionHandlerMethodResolver> exceptionHandlerMethodResolvers = new ConcurrentHashMap();
 	  private static final String EXCEPTION_KEY = "CUSTOM_EXCEPTION";
@@ -37,7 +37,7 @@ public class WebExceptionResolver extends ExceptionHandlerExceptionResolver impl
 	  
 	  
 	  @SuppressWarnings("unchecked")
-	  protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) msgConverters;
+	  protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) JsonProcessor.msgConverters;
 	  
 
 	  /**

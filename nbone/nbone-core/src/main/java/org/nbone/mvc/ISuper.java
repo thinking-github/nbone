@@ -61,6 +61,8 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @param id
 	 */
 	public void delete(PK id);
+	
+	public void delete(PK[] ids);
 	/**
 	 * 按id获取数据
 	 * @param id
@@ -73,6 +75,8 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return
 	 */
 	public List<T> getAll();
+	
+	public List<T> getAll(PK[] ids);
 	
 	/**
 	 * 按照实体中的参数查询实体列表

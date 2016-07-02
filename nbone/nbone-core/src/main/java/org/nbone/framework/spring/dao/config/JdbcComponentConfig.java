@@ -38,7 +38,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @since spring 3.1
  * 
  */
-@Configuration
+@Configuration("jdbcComponent")
 @ComponentScan(basePackages="org.nbone.framework.spring.dao")
 @PropertySource(name="jdbcComponentConig",value="classpath:/org/nbone/framework/spring/dao/config/jdbc-comp.properties")
 @Lazy

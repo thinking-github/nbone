@@ -3,6 +3,7 @@ package org.nbone.framework.spring.web.method.annotation;
 import java.util.Arrays;
 import java.util.List;
 
+import org.nbone.util.json.jackson2.JsonUtils;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
@@ -18,15 +19,14 @@ import com.google.common.collect.Lists;
  * @see ItemRequestResponseBodyMethodProcessor
  * @see RawResponseBodyMethodProcessor
  */
-public interface JsonProcessor {
+@SuppressWarnings("unchecked")
+public class JsonProcessor {
 	
 	 /*默认的Json 转换器*/
-	  HttpMessageConverter<?> json2MessageConverter =  new MappingJackson2HttpMessageConverter();
+	 public final static HttpMessageConverter<?> json2MessageConverter;
 	  
 	  //HttpMessageConverter<?> fastJsonConverter =  new FastJsonHttpMessageConverter();
-	  
-	  @SuppressWarnings("unchecked")
-	  List<?>  msgConverters  = Arrays.asList(json2MessageConverter);
+	 public final static List<?>  msgConverters ;
 	  
 	  /*@SuppressWarnings("unchecked")
 	  List<?>  msgConverters1  = Lists.newArrayList(json2MessageConverter);
@@ -34,6 +34,13 @@ public interface JsonProcessor {
 	  List<?>  msgConverters2  = ImmutableList.of(json2MessageConverter);
 	  
 	  */
+	  static {
+		  MappingJackson2HttpMessageConverter json= new MappingJackson2HttpMessageConverter();
+		  json2MessageConverter = json;
+		  
+		  msgConverters = Arrays.asList(json2MessageConverter);
+		  
+	  }
 	  
 	  
 	  

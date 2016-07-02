@@ -30,10 +30,8 @@ public class CustomMappingJackson2HttpMessageConverter extends MappingJackson2Ht
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
 		if(jsonSerializers != null && jsonSerializers.length > 0){
-			SimpleModule module = new SimpleModule("customMappingJacksonHttpMessageConverter", 
-					new Version(1, 0, 0, null));
+			SimpleModule module = new SimpleModule("customMappingJacksonHttpMessageConverter", new Version(1, 0, 0, null));
 			for(JsonSerializer<?> serializer : jsonSerializers){
 				module.addSerializer(serializer);
 			}
@@ -48,7 +46,6 @@ public class CustomMappingJackson2HttpMessageConverter extends MappingJackson2Ht
 	protected Object readInternal(Class<? extends Object> clazz,
 			HttpInputMessage inputMessage) throws IOException,
 			HttpMessageNotReadableException {
-		// TODO Auto-generated method stub
 		return super.readInternal(clazz, inputMessage);
 	}
 	

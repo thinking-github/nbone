@@ -1,5 +1,6 @@
 package org.nbone.mvc;
 
+import org.nbone.util.lang.ToStringUtils;
 import org.springframework.beans.BeanUtils;
 /**
  * 
@@ -17,6 +18,22 @@ public abstract class BaseObject {
 		E instance = BeanUtils.instantiate(clazz);
 		return instance;	
 	}
+	
+	protected <E> E copyProperties(Object source, Class<E> targetClass){
+		E target = newInstance(targetClass);
+		BeanUtils.copyProperties(source, target);
+		return target;
+	}
+
+	
+	
+	
+	@Override
+	public String toString() {
+		return ToStringUtils.toString(this);
+	}
+	
+	
 	
 	
 

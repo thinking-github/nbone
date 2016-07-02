@@ -18,9 +18,9 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConv
  * @since spring 3.1
  */
 @SuppressWarnings("unchecked")
-public class RawResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor implements JsonProcessor
+public class RawResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor
 {
-	protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) msgConverters;
+	protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) JsonProcessor.msgConverters;
 	
   /**
    * 

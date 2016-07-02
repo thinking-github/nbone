@@ -33,25 +33,6 @@ public interface QueryOperator extends IQueryTransfer
 	//-----------------------------------------------------------------
 	//left blank/right blank 
 	//------------------------------------------------------------------
-	public static final String eq_lr_blank = " = ";
-	public static final String not_eq_lr_blank = " <> ";
-	public static final String lt_lr_blank = " < ";
-	public static final String gt_lr_blank = " > ";
-	public static final String lt_eq_lr_blank = " <= ";
-	public static final String gt_eq_lr_blank = " >= ";
-	
-	public static final String in_lr_blank = " in ";
-	public static final String not_in_lr_blank = " not in ";
-	public static final String between_lr_blank = " between ";
-	public static final String like_lr_blank = " like ";
-	public static final String is_null_lr_blank = " is null ";
-	public static final String is_not_null_lr_blank = " is not null ";
-	public static final String and_lr_blank = " and ";
-	public static final String or_lr_blank = " or ";
-	public static final String not_lr_blank = " not ";
-	
-	public static final String ASC_LR_BLANK = " asc ";
-	public static final String DESC_LR_BLANK = " desc ";
 	
 
 	

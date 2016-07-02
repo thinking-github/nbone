@@ -20,6 +20,7 @@
 <mvc:annotation-driven >
 	<mvc:argument-resolvers >
 		<bean class="org.nbone.framework.spring.web.method.annotation.JsonRequestParamMethodArgumentResolver"></bean>
+		<bean class="org.nbone.framework.spring.web.method.annotation.JsonRequestBodyMethodProcessor"></bean>
 		<bean class="org.nbone.framework.spring.web.method.annotation.FormModelMethodArgumentResolver"></bean>
 	</mvc:argument-resolvers>
 	
