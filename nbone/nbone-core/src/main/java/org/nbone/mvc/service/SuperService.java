@@ -21,12 +21,6 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	
 	static Logger logger = LoggerFactory.getLogger(SuperService.class);
 	
-	/**
-	 * 有选择的更新，只更新含有值得属性 Selective
-	 * @param object
-	 * @return
-	 */
-	public int updateNotNull(T object);
 	
 	
 	

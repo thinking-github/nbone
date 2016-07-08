@@ -145,6 +145,8 @@ public interface SqlBuilder {
 	  */
 	 public <T> SqlModel<T> buildHighModeSelectSql(Object object) throws BuilderSQLException;
 	 
+	 public  SqlModel<Map<String,Object>> buildObjectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
+	 
 	 
 	 
 

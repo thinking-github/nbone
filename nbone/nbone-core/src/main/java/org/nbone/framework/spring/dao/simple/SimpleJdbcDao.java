@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
+import org.nbone.persistence.SqlConfig;
+import org.nbone.persistence.SqlPropertyDescriptors;
 import org.nbone.persistence.SqlSession;
 import org.nbone.persistence.mapper.DbMappingBuilder;
 import org.nbone.persistence.mapper.FieldMapper;
@@ -181,6 +183,12 @@ public class SimpleJdbcDao  implements SqlSession,InitializingBean{
 
 	@Override
 	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize) {
+		return null;
+	}
+
+
+	@Override
+	public <T> List<T> queryForList(Object object, SqlConfig sqlConfig) {
 		return null;
 	}
 

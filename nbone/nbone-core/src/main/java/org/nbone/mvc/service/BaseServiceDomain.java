@@ -132,13 +132,13 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		namedJdbcDao.updateSelective(object);
 	}
-
+	
 	@Override
-	public int updateNotNull(P object) {
+	public void updateSelective(P object) {
 		checkBuilded();
-		int row = namedJdbcDao.updateSelective(object);
-		return row;
+		namedJdbcDao.updateSelective(object);
 	}
+
 
 	@Override
 	public void delete(IdType id) {
@@ -199,6 +199,10 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		List<P> beans = namedJdbcDao.getAll(targetClass, ids);
 		return beans;
 	}
+
+
+
+
 
 
 

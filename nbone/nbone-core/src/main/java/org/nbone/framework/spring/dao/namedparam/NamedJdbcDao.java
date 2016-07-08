@@ -13,6 +13,8 @@ import org.nbone.framework.spring.dao.core.CachedEntityPropertyRowMapper;
 import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.SqlBuilder;
+import org.nbone.persistence.SqlConfig;
+import org.nbone.persistence.SqlPropertyDescriptors;
 import org.nbone.persistence.SqlSession;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.model.SqlModel;
@@ -243,6 +245,18 @@ public class NamedJdbcDao implements SqlSession,InitializingBean{
 			
 			RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
 			List<T> list = jdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
+		return list;
+		}
+		return new ArrayList<T>(0);
+	}
+	
+	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
+		
+		SqlModel<Map<String,Object>> sqlModel = sqlBuilder.buildObjectModeSelectSql(object, sqlConfig);
+		if(SqlModel.checkSqlModel(sqlModel)){
+			
+			RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+			List<T> list = jdbcTemplate.query(sqlModel.getSql(),sqlModel.getParameter(),rowMapper);
 		return list;
 		}
 		return new ArrayList<T>(0);

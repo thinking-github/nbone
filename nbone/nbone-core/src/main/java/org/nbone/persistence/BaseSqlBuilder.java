@@ -24,6 +24,7 @@ import org.springframework.util.Assert;
  * 根据JPA注解构建sql
  * @author thinking
  * @since 2015-12-12
+ * @version 1.0
  * @see javax.persistence.Entity
  * @see javax.persistence.Table
  * @see javax.persistence.Id
@@ -296,14 +297,13 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		if(id == null){
 			return SqlModel.EmptySqlModel;
 		}
-		SqlModel<T> sqlModel = selectAllTableSql(entityClass);
-		
 		TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
+		StringBuilder all = tableMapper.getSelectAllSql();
 		String[]  primaryKeys = tableMapper.getPrimaryKeys();
 		
 		
 		FieldMapper fieldMapper =  tableMapper.getFieldMapper(primaryKeys[0]);
-		StringBuffer selectSql = new StringBuffer(sqlModel.getSql());
+		StringBuffer selectSql = new StringBuffer(all);
 		selectSql.append(" where ");
 		selectSql.append(fieldMapper.getDbFieldName()).append(" = ");
 		selectSql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
@@ -322,24 +322,25 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	@Override
 	public SqlModel<Object> buildSelectSqlById(Object object) throws BuilderSQLException {
 		Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
-		
-		SqlModel<?> sqlModel = selectAllTableSql(object.getClass());
+		TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
         
-        StringBuffer selectSql = new StringBuffer(sqlModel.getSql());
+        StringBuffer selectSql = new StringBuffer(tableMapper.getSelectAllSql());
         
         StringBuffer whereSql = new StringBuffer(" where ");
-        whereSql.append(primaryKeysCondition(object, sqlModel.getTableMapper()));
+        whereSql.append(primaryKeysCondition(object,tableMapper));
         
         String sql = selectSql.append(whereSql).toString();
         
-        SqlModel<Object> model = new SqlModel<Object>(sql,object,sqlModel.getTableMapper());
+        SqlModel<Object> model = new SqlModel<Object>(sql,object,tableMapper);
         
         return model;
 	}
 	
 	 public <T> SqlModel<T> buildSelectAllSql(Class<T> entityClass) throws BuilderSQLException{
 		 Assert.notNull(entityClass, "Sorry,I refuse to build sql for a null entityClass!");
-		 SqlModel<T> sqlModel = selectAllTableSql(entityClass);
+		 TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
+	     String sql = tableMapper.getSelectAllSql().toString();
+		 SqlModel<T> sqlModel = new SqlModel<T>(sql, null, tableMapper);
 		return sqlModel;
 	 }
 	 
@@ -348,12 +349,15 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 }
 	 public <T> SqlModel<T> buildSelectSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException{
 		 Assert.notNull(entityClass, "Sorry,I refuse to build sql for a null entityClass!");
-		 SqlModel<T> sqlModel = selectAllTableSql(entityClass);
-		 String[]  primaryKeys = sqlModel.getTableMapper().getPrimaryKeys();
+		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
+		 StringBuilder allsql = tableMapper.getSelectAllSql();
+		 
+		 String[]  primaryKeys =tableMapper.getPrimaryKeys();
 		 StringBuilder in  =   SqlUtils.list2In(primaryKeys[0], ids);
 		 
-		 StringBuilder sql = new StringBuilder(sqlModel.getSql()).append(" where ").append(in);
-		 sqlModel.setSql(sql.toString());
+		 StringBuilder sql = new StringBuilder(allsql).append(" where ").append(in);
+		
+		 SqlModel<T> sqlModel = new SqlModel<T>(sql.toString(), null, tableMapper);
 		 sqlModel.setParameterArray(ids);
 		return sqlModel;
 	 }
@@ -361,7 +365,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 
 	@Override
 	public <T> SqlModel<T>  buildSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object, -1);
+		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object,SqlConfig.getSqlConfig(-1));
 
 		return model;
 	}
@@ -370,22 +374,107 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 */
 	@Override
 	public <T> SqlModel<T> buildSimpleSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object, SqlConfig.PrimaryMode);
+		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object, SqlConfig.getSqlConfig(SqlConfig.PrimaryMode));
 		
 		return model;
 	}
 
 	@Override
 	public <T> SqlModel<T> buildMiddleModeSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object, SqlConfig.MiddleMode);
+		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object,  SqlConfig.getSqlConfig(SqlConfig.MiddleMode));
 		return model;
 	}
 
 	@Override
 	public <T> SqlModel<T> buildHighModeSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object, SqlConfig.PrimaryMode);
+		SqlModel<T> model = (SqlModel<T>) buildSelectSql(object, SqlConfig.getHighMode());
 		return model;
 	}
+	
+	 public  SqlModel<Map<String,Object>>  buildObjectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException{
+		 
+		    Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
+			
+		    
+		    TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
+		    StringBuilder allsql = tableMapper.getSelectAllSql();
+		    
+	        StringBuffer selectSql = new StringBuffer(allsql).append(" where 1 = 1 ");
+	        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
+	      
+	        List<FieldMapper> fields =  tableMapper.getFieldMapperList();
+	        Map<String,Object> namedParameters =  new HashMap<String, Object>();
+	        
+	        for (FieldMapper fieldMapper : fields) {
+	    		String fieldName = fieldMapper.getFieldName();
+	    		String dbFieldName = fieldMapper.getDbFieldName();
+				Class<?> fieldType  = fieldMapper.getPropertyType();
+				if(fieldType == Class.class){
+					continue;
+				}
+				Object fieldValue  = bw.getPropertyValue(fieldName);
+				SqlPropertyDescriptor sqlPropertyDescriptor = sqlConfig.getSqlPd(fieldName);
+				//XXX：特殊情况可为空
+				if(fieldValue == null &&  sqlPropertyDescriptor != null){
+					String operType = sqlPropertyDescriptor.getOperType();
+					if(SqlPropertyDescriptor.is_null.equalsIgnoreCase(operType) || SqlPropertyDescriptor.is_not_null.equalsIgnoreCase(operType)){
+						
+						StringBuilder sqlpd = SqlUtils.getCommonWherePart(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+						selectSql.append(sqlpd);
+						continue;
+						
+					}else if(SqlPropertyDescriptor.in.equalsIgnoreCase(operType)|| SqlPropertyDescriptor.not_in.equalsIgnoreCase(operType)){
+						
+						StringBuilder sqlpd = SqlUtils.getSpringJdbcWhereIn(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+						selectSql.append(sqlpd);
+						continue;
+						
+					}else if(sqlPropertyDescriptor.isBetween()){
+						StringBuilder sqlpd = SqlUtils.getWhereBetween(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+						selectSql.append(sqlpd);
+						continue;
+					}
+				}
+				
+				if( fieldValue != null ){
+					if(sqlPropertyDescriptor ==  null ){
+						sqlPropertyDescriptor = new SqlPropertyDescriptor(dbFieldName);
+						
+					}
+					StringBuilder sqlpd = SqlUtils.getSpringJdbcWhere(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+					//StringBuilder sqlpd = SqlUtils.getCommonWherePart(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+					
+					selectSql.append(sqlpd);
+				}
+					
+			}
+	        
+	          //:XXX Range beginTime <=  value  <= endTime
+	          List<SqlPropertyRange> sqlPropertyRanges = sqlConfig.getSqlPropertyRanges();
+			  if(sqlPropertyRanges != null && sqlPropertyRanges.size() > 0 ){
+					for (SqlPropertyRange sqlPropertyRange : sqlPropertyRanges) {
+						String dbLeftField = tableMapper.getDbFieldName(sqlPropertyRange.getLeftField());
+						String dbRightField = tableMapper.getDbFieldName(sqlPropertyRange.getRightField());
+						sqlPropertyRange.setDbLeftField(dbLeftField);
+						sqlPropertyRange.setDbRightField(dbRightField);
+						StringBuilder rangeSql  = SqlUtils.getPropertyRange(sqlPropertyRange, namedParameters);
+					    if(rangeSql != null){
+			        	  selectSql.append(rangeSql);
+			            }
+					}
+					
+			  }
+	        
+	         //order by 
+	          StringBuilder orderSql  = SqlUtils.getOrderBy(sqlConfig, false);
+	          if(orderSql != null){
+	        	  selectSql.append(orderSql);
+	          }
+	          
+			  String sql = selectSql.toString();
+		      SqlModel<Map<String,Object>>  model = new SqlModel<Map<String,Object>> (sql, namedParameters,tableMapper);
+			return  model;
+	 }
 
 	
 
@@ -444,34 +533,25 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 * @param tableMapper
 	 * @return
 	 */
-	public <T> SqlModel<T> selectAllTableSql(Class<T> entityClass){
-		TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
-		String tableName = tableMapper.getDbTableName();
-
-        StringBuffer selectSql = new StringBuffer();
-        selectSql.append("select ");
-        
-        String commaDelimitedColumns = tableMapper.getCommaDelimitedColumns();
-        selectSql.append(commaDelimitedColumns);
-        
-        selectSql.append(" from ").append(tableName);
-        
-        SqlModel<T>  model = new SqlModel<T> (selectSql.toString(), null,tableMapper);
+	/*public <T> SqlModel<T> selectAllTableSql(Class<T> entityClass){
 		
-		return model;
-	}
-	private SqlModel<Object> buildSelectSql(Object object,int levelMode){
+	}*/
+	
+	
+	private SqlModel<Object> buildSelectSql(Object object,SqlConfig sqlConfig){
 		Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
 		
-	    SqlModel<?> sqlModel = selectAllTableSql(object.getClass());
-	    TableMapper<?> tableMapper =  sqlModel.getTableMapper();
-        StringBuffer selectSql = new StringBuffer(sqlModel.getSql()).append(" where 1 = 1 ");
+	    TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
+	    StringBuilder allsql = tableMapper.getSelectAllSql();
+	    
+        StringBuffer selectSql = new StringBuffer(allsql).append(" where 1 = 1 ");
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
       
         List<FieldMapper> fields =  tableMapper.getFieldMapperList();
-        
+        int levelMode = sqlConfig.getSqlMode();
         for (FieldMapper fieldMapper : fields) {
     		String fieldName = fieldMapper.getFieldName();
+    		String dbFieldName = fieldMapper.getDbFieldName();
 			Class<?> fieldType  = fieldMapper.getPropertyType();
 			if(fieldType == Class.class){
 				continue;
@@ -484,14 +564,14 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 				if(fieldValue != null){
 					if(SimpleTypeMapper.isPrimitiveWithString(fieldType)){
 						
-						selectSql.append(" and ").append(fieldMapper.getDbFieldName()).append(" like  '%").append(fieldValue).append("%'");
+						selectSql.append(" and ").append(dbFieldName).append(" like  '%").append(fieldValue).append("%'");
 						
-					/*	selectSql.append(" and ").append(fieldMapper.getDbFieldName()).append(" like  '%");
+					/*	selectSql.append(" and ").append(dbFieldName).append(" like  '%");
 						selectSql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
 						selectSql.append("%'");*/
 						
 					}else{
-						selectSql.append(" and ").append(fieldMapper.getDbFieldName()).append(" = ");
+						selectSql.append(" and ").append(dbFieldName).append(" = ");
 						selectSql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
 					}
 				}
@@ -500,12 +580,19 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 			}else if(levelMode == SqlConfig.MiddleMode){
 				
 				
-				
 			}else if(levelMode == SqlConfig.HighMode){
+				SqlPropertyDescriptor sqlPropertyDescriptor = sqlConfig.getSqlPd(fieldName);
+				if( fieldValue != null ){
+					if(sqlPropertyDescriptor == null){
+						sqlPropertyDescriptor = new SqlPropertyDescriptor(fieldName);
+					}
+					//SqlUtils.getSpringJdbcWhere(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+				}
 				
 				
 				
-			}else{
+			}
+			else{
 				if(fieldValue != null){
 					selectSql.append(" and ").append(fieldMapper.getDbFieldName()).append(" = ");
 					selectSql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
@@ -514,7 +601,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	  }
 	
 		  String sql = selectSql.toString();
-	      SqlModel<Object>  model = new SqlModel<Object> (sql, object,sqlModel.getTableMapper());
+	      SqlModel<Object>  model = new SqlModel<Object> (sql, object,tableMapper);
 		return model;
 	}
 	

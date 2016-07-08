@@ -6,14 +6,14 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.nbone.framework.hibernate.util.HibernateClassUtils;
-import org.nbone.framework.hibernate.util.HqlConfig;
-import org.nbone.framework.hibernate.util.HqlPropertyDescriptor;
 import org.nbone.framework.hibernate.util.HqlQuery;
+import org.nbone.persistence.SqlConfig;
+import org.nbone.persistence.SqlPropertyDescriptor;
+import org.nbone.persistence.SqlPropertyDescriptors;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 
 @Repository
-
 public class HibernateDao extends HibernateDaoSupportX {
 	
 	//***********************super**********************************
@@ -30,20 +30,20 @@ public class HibernateDao extends HibernateDaoSupportX {
 		return super.getHibernateTemplate().find(hql);
 	}
 	
-	public List<Object> queryForBean(Object bean,HqlPropertyDescriptor[] hqlpds) {
+	public List<Object> queryForBean(Object bean,SqlPropertyDescriptors sqlpds) {
 		
-		HqlConfig hqlConfig;
-		if (hqlpds == null) {
-			hqlConfig = new HqlConfig();
+		SqlConfig hqlConfig;
+		if (sqlpds == null) {
+			hqlConfig = new SqlConfig();
 		}
 		else {
-			hqlConfig = HqlConfig.getHighMode();
-			hqlConfig.addHqlPds(hqlpds);
+			hqlConfig = SqlConfig.getHighMode();
+			hqlConfig.setSqlPds(sqlpds);
 		}
 		return queryForBean(bean, hqlConfig);
 	}
 	
-	public List<Object> queryForBean(Object bean,HqlConfig hqlConfig) {
+	public List<Object> queryForBean(Object bean,SqlConfig hqlConfig) {
  		HqlQuery hqlQuery = HibernateClassUtils.getHql(bean, hqlConfig);
  		String queryString = hqlQuery.getQueryString();
  		Map<String,Object> nameKeyMap = hqlQuery.getNameKeyMap();

@@ -11,7 +11,9 @@ public class Test {
 		
 		String[] ss = {};
 		System.out.println(ss.length);
-		System.out.println(ss);
+		System.out.println(ss.getClass());
+		System.out.println(ss.getClass().getComponentType());
+		System.out.println(Object.class.getComponentType());
 
 	}
 

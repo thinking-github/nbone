@@ -74,6 +74,8 @@ public class TableMapper<T> {
      */
     private String   commaDelimitedColumns;
     
+    private StringBuilder selectAllSql;
+    
     /**
      * Spring Jdbc
      */
@@ -185,6 +187,30 @@ public class TableMapper<T> {
 	public FieldMapper getFieldMapper(String dbFieldName) {
 		return fieldMappers.get(dbFieldName);
 	}
+	/**
+	 * 根据数据库字段名称查询Java字段名称
+	 * @param dbFieldName
+	 * @return
+	 */
+	public String getFieldName(String dbFieldName) {
+		return fieldMappers.get(dbFieldName).getFieldName();
+	}
+	/**
+	 * 根据Java字段名称查询数据库字段名称
+	 * @param fieldName
+	 * @return
+	 */
+	public String getDbFieldName(String fieldName) {
+		if(fieldName == null){
+			return null;
+		}
+		for (FieldMapper fieldMapper : fieldMapperList) {
+			if(fieldName.equals(fieldMapper.getFieldName())){
+				return fieldMapper.getDbFieldName();
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * 
@@ -236,9 +262,8 @@ public class TableMapper<T> {
 	public String[] getColumnNames() {
 		if(columnNames == null || columnNames.length == 0){
 			Set<String> keys = fieldMappers.keySet();
-			String[] temp =  new String[keys.size()];
-			temp = keys.toArray(temp);
-			columnNames = temp;
+			columnNames =  new String[keys.size()];
+			columnNames = keys.toArray(columnNames);
 			return columnNames;
 		}
 		return columnNames;
@@ -267,9 +292,25 @@ public class TableMapper<T> {
 	}
 
 	
-	
-	public <T> RowMapper<T> getRowMapper() {
-		return (RowMapper<T>) rowMapper;
+	public StringBuilder getSelectAllSql() {
+		if(selectAllSql == null){
+			selectAllSql = new StringBuilder();
+			selectAllSql.append("SELECT ");
+	        
+		    selectAllSql.append(this.getCommaDelimitedColumns());
+		        
+		    selectAllSql.append(" FROM ").append(this.getDbTableName());
+		}
+		
+		return selectAllSql;
+	}
+
+	public void setSelectAllSql(StringBuilder selectAllSql) {
+		this.selectAllSql = selectAllSql;
+	}
+
+	public  RowMapper<T> getRowMapper() {
+		return  rowMapper;
 	}
 	
 

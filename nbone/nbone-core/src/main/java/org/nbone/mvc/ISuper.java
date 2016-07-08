@@ -49,6 +49,11 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return
 	 */
 	public void update(T object);
+	/**
+	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)
+	 * @param object
+	 */
+	public void updateSelective(T object);
     
 	/**
 	 * 按实体中的id删除数据

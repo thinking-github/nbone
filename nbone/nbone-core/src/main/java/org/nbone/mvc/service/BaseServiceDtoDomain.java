@@ -31,8 +31,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 
 	private SupperMapper<P,IdType> superMapper;
 	
-	private BaseServiceDomain<P,IdType> baseServiceDomain;
-	
+	private BaseServiceDomain<P,IdType> baseServiceDomain   = new BaseServiceDomain<P, IdType>();
 	
 	private SqlSession namedJdbcDao;
 	
@@ -45,7 +44,6 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
      */
 	@SuppressWarnings("unchecked")
 	public BaseServiceDtoDomain() {
-		baseServiceDomain  = new BaseServiceDomain<P, IdType>();
 		this.dtoClass = (Class<T>) GenericsUtils.getSuperClassGenricType(this.getClass(), 0);
 		this.targetClass = (Class<P>) GenericsUtils.getSuperClassGenricType(this.getClass(), 1);
 		
@@ -162,18 +160,16 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public int updateNotNull(T object) {
+	public void updateSelective(T object) {
 		if(object == null){
-			return 0;
+			return ;
 		}
 		P bean = this.copyProperties(object, targetClass);
-		int row ;
 		if(superMapper != null){
-			row =  superMapper.updateByPrimaryKeySelective(bean);
+		  superMapper.updateByPrimaryKeySelective(bean);
 		}else{
-			row = baseServiceDomain.updateNotNull(bean);
+		 baseServiceDomain.updateSelective(bean);
 		}
-		return row;
 	}
 
 	@Override
@@ -190,8 +186,6 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		P pojo;
 		if(superMapper != null){
 			 pojo = superMapper.selectByPrimaryKey(id);
-			 long count = baseServiceDomain.getCount();
-			 System.out.println(count);
 		}else{
 			 pojo =baseServiceDomain.get(id);
 		}
@@ -219,23 +213,6 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		return resultDtos;
 	}
 	
-	/**
-	 * 
-	 * <p>Discription:[listBean to ListDto]</p>
-	 * Created on 2016年4月12日
-	 * @param beans        原始数据列表
-	 * @param targetClass  转换的目标Class
-	 * @return
-	 * @author:ChenYiCheng
-	 */
-	public <R> List<R> listBean2ListDto(List<? extends Object> beans,Class<R> targetClass){
-		List<R> resultDtos = new ArrayList<R>();
-		for (Object bean : beans) {
-			R dto = this.copyProperties(bean, targetClass);
-			resultDtos.add(dto);
-		}
-		return resultDtos;
-	}
 
 	@Override
 	public void saveOrUpdate(T object) {

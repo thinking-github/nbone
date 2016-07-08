@@ -34,7 +34,7 @@ public class SqlPropertyDescriptor implements QueryOperator {
 	private String  endValueMark = lt_eq;
 	
 	/**
-	 *特殊值
+	 *特殊值 in 
 	 */
 	private Object  specialValue;
 	
@@ -54,6 +54,13 @@ public class SqlPropertyDescriptor implements QueryOperator {
 		this.endValue = endValue;
 		this.between = true;
 	}
+   
+   public SqlPropertyDescriptor(String fieldName,Object[] values) {
+	    this.fieldName = fieldName;
+	    this.specialValue = values;
+	    this.operType = in;
+   }
+
 
 
    public String getFieldName() {

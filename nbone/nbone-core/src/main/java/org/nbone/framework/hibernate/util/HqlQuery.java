@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nbone.persistence.SqlConfig;
 /**
  * 
  * @author thinking
@@ -36,16 +37,16 @@ public class HqlQuery {
 	private List types;
 	
 	//current HqlConfig
-	private HqlConfig hqlConfig;
+	private SqlConfig hqlConfig;
 	
 	
 	
-	public HqlQuery(String queryString, HqlConfig hqlConfig) {
+	public HqlQuery(String queryString, SqlConfig hqlConfig) {
 		this.queryString = queryString;
 		this.hqlConfig = hqlConfig;
 	}
 
-    public HqlQuery(String hqlWhereBefore,String hqlWhereAfter, HqlConfig hqlConfig) {
+    public HqlQuery(String hqlWhereBefore,String hqlWhereAfter, SqlConfig hqlConfig) {
     	this.hqlWhereBefore = hqlWhereBefore;
 		this.hqlWhereAfter = hqlWhereAfter;
 		this.hqlConfig = hqlConfig;
@@ -108,12 +109,12 @@ public class HqlQuery {
 	}
 
 
-	public HqlConfig getHqlConfig() {
+	public SqlConfig getHqlConfig() {
 		return hqlConfig;
 	}
 
 
-	public void setHqlConfig(HqlConfig hqlConfig) {
+	public void setHqlConfig(SqlConfig hqlConfig) {
 		this.hqlConfig = hqlConfig;
 	}
 

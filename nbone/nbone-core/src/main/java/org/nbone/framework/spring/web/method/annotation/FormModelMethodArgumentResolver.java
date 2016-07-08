@@ -227,9 +227,9 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
             Type type = parameter.getGenericParameterType();
             Class<?> componentType = Object.class;
 
-            Collection target = (Collection) binder.getTarget();
+            Collection<Object> target = (Collection<Object>) binder.getTarget();
 
-            List targetList = new ArrayList(target);
+            List<Object> targetList = new ArrayList<Object>(target);
 
             if (type instanceof ParameterizedType) {
                 componentType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
@@ -275,7 +275,7 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
                     if (targetList.size() <= index) {
                         growCollectionIfNecessary(targetList, index);
                     }
-                    Iterator iterator = targetList.iterator();
+                    Iterator<Object> iterator = targetList.iterator();
                     for (int i = 0; i < index; i++) {
                         iterator.next();
                     }
@@ -300,9 +300,9 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
                         targetList.set(index, component);
                     }
                 }
-                target.clear();
-                target.addAll(targetList);
             }
+            target.clear();
+            target.addAll(targetList);
         } else if (MapWapper.class.isAssignableFrom(targetType)) {
 
 
@@ -316,10 +316,10 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
             }
 
 
-            MapWapper mapWapper = ((MapWapper) binder.getTarget());
-            Map target = mapWapper.getInnerMap();
+            MapWapper<Object,Object> mapWapper = ((MapWapper<Object,Object>) binder.getTarget());
+            Map<Object,Object> target = mapWapper.getInnerMap();
             if(target == null) {
-                target = new HashMap();
+                target = new HashMap<Object,Object>();
                 mapWapper.setInnerMap(target);
             }
 
@@ -367,7 +367,7 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
         }
     }
 
-    private void growCollectionIfNecessary(final Collection collection, final int index) {
+    private void growCollectionIfNecessary(final Collection<?> collection, final int index) {
         if(index >= collection.size() && index < this.autoGrowCollectionLimit) {
             for (int i = collection.size(); i <= index; i++) {
                 collection.add(null);
@@ -411,7 +411,7 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
 
         String modelPrefixName = parameter.getParameterAnnotation(FormModel.class).value();
 
-        HttpServletRequest nativeRequest = (HttpServletRequest) request.getNativeRequest();
+        HttpServletRequest nativeRequest =  request.getNativeRequest(HttpServletRequest.class);
         MultipartRequest multipartRequest = WebUtils.getNativeRequest(nativeRequest, MultipartRequest.class);
 
         MockHttpServletRequest mockRequest = null;
@@ -433,8 +433,8 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
             }
         }
 
-        for (Object parameterEntry : nativeRequest.getParameterMap().entrySet()) {
-            Entry<String, String[]> entry = (Entry<String, String[]>) parameterEntry;
+        for (Entry<String, String[]> parameterEntry : nativeRequest.getParameterMap().entrySet()) {
+            Entry<String, String[]> entry =  parameterEntry;
             String parameterName = entry.getKey();
             String[] value = entry.getValue();
             if (isFormModelAttribute(parameterName, modelPrefixName)) {
@@ -508,38 +508,7 @@ public class FormModelMethodArgumentResolver extends BaseMethodArgumentResolver 
         return false;
     }
 
-    /**
-     * Validate the model attribute if applicable.
-     * <p>The default implementation checks for {@code @javax.validation.Valid}.
-     *
-     * @param binder    the DataBinder to be used
-     * @param parameter the method parameter
-     */
-    protected void validateIfApplicable(WebDataBinder binder, MethodParameter parameter) {
-        Annotation[] annotations = parameter.getParameterAnnotations();
-        for (Annotation annot : annotations) {
-            if (annot.annotationType().getSimpleName().startsWith("Valid")) {
-                Object hints = AnnotationUtils.getValue(annot);
-                binder.validate(hints instanceof Object[] ? (Object[]) hints : new Object[]{hints});
-            }
-        }
-    }
-
-    /**
-     * Whether to raise a {@link org.springframework.validation.BindException} on bind or validation errors.
-     * The default implementation returns {@code true} if the next method
-     * argument is not of type {@link org.springframework.validation.Errors}.
-     *
-     * @param binder    the data binder used to perform data binding
-     * @param parameter the method argument
-     */
-    protected boolean isBindExceptionRequired(WebDataBinder binder, MethodParameter parameter) {
-        int i = parameter.getParameterIndex();
-        Class<?>[] paramTypes = parameter.getMethod().getParameterTypes();
-        boolean hasBindingResult = (paramTypes.length > (i + 1) && Errors.class.isAssignableFrom(paramTypes[i + 1]));
-
-        return !hasBindingResult;
-    }
+  
 
 
     private static class MultipartFileWrapper implements MultipartFile {

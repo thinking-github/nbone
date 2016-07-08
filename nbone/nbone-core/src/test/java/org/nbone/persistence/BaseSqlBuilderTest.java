@@ -1,6 +1,10 @@
 package org.nbone.persistence;
 
+import java.util.Date;
+import java.util.Map;
+
 import org.junit.Test;
+import org.nbone.persistence.criterion.QueryOperator;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.util.SqlUtils;
@@ -30,7 +34,7 @@ public class BaseSqlBuilderTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void testbuildDeleteSqlByIds(){
 		
 		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.buildDeleteSqlByIds(TsProjectDTO.class, new Long[]{1030L,1037L});
@@ -51,6 +55,26 @@ public class BaseSqlBuilderTest {
 		SqlModel<Object> sqlModel = sqlBuilder.buildUpdateSql(object);
 		System.out.println(sqlModel.getSql());
 	}
+	
+	@Test
+	public void testbuildObjectModeSelectSql(){
+		TsProjectDTO object = getTsProjectDTO();
+		object.setId(9L);
+		SqlConfig sqlConfig  = new SqlConfig();
+		sqlConfig.addSqlPd("createDt", QueryOperator.is_not_null);
+		sqlConfig.addSqlPdIn("id", new Object[]{1,2,3});
+		sqlConfig.addSqlPdBetween("modifyDt", new Date(), new Date());
+		
+		sqlConfig.addSqlPropertyRange("createDt","modifyDt", new Date());
+		
+		sqlConfig.setOrderFieldASC("id","modify_dt");
+		sqlConfig.setOrderFieldDESC("create_dt");
+		SqlModel<Map<String, Object>> sqlModel = sqlBuilder.buildObjectModeSelectSql(object, sqlConfig);
+		
+		System.out.println(sqlModel.getSql());
+	}
+	
+	
 	
 	public TsProjectDTO getTsProjectDTO(){
 		TsProjectDTO object = new TsProjectDTO();

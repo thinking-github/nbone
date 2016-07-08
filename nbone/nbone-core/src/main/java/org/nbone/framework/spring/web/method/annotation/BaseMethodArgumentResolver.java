@@ -1,10 +1,17 @@
 package org.nbone.framework.spring.web.method.annotation;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -84,6 +91,34 @@ public abstract class BaseMethodArgumentResolver implements HandlerMethodArgumen
                         HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
         return (variables != null) ? variables : Collections.<String, String>emptyMap();
     }
+    
+	protected void validateIfApplicable(WebDataBinder binder, MethodParameter parameter) {
+		Annotation[] annotations = parameter.getParameterAnnotations();
+		for (Annotation annot : annotations) {
+			if (annot.annotationType().getSimpleName().startsWith("Valid")) {
+				Object hints = AnnotationUtils.getValue(annot);
+				binder.validate(hints instanceof Object[] ? (Object[]) hints : new Object[] {hints});
+				break;
+			}
+		}
+	}
+	
+	protected boolean isBindExceptionRequired(WebDataBinder binder, MethodParameter parameter) {
+		int i = parameter.getParameterIndex();
+		Class<?>[] paramTypes = parameter.getMethod().getParameterTypes();
+		boolean hasBindingResult = (paramTypes.length > (i + 1) && Errors.class.isAssignableFrom(paramTypes[i + 1]));
+
+		return !hasBindingResult;
+	}
+	
+	
+	
+	protected Object createAttribute(String attributeName, MethodParameter parameter,
+			WebDataBinderFactory binderFactory,  NativeWebRequest request) throws Exception {
+
+		return BeanUtils.instantiateClass(parameter.getParameterType());
+	}
+    
 
 
 }

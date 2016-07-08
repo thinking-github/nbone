@@ -22,6 +22,7 @@
 		<bean class="org.nbone.framework.spring.web.method.annotation.JsonRequestParamMethodArgumentResolver"></bean>
 		<bean class="org.nbone.framework.spring.web.method.annotation.JsonRequestBodyMethodProcessor"></bean>
 		<bean class="org.nbone.framework.spring.web.method.annotation.FormModelMethodArgumentResolver"></bean>
+		<bean class="org.nbone.framework.spring.web.method.annotation.NamespaceModelAttributeMethodProcessor"></bean>
 	</mvc:argument-resolvers>
 	
 	
