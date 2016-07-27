@@ -71,10 +71,10 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 			String countSql = PageSuport.getCountSqlString(sql);
 			String pageSql  = "";
 			
-			if (JdbcConstants.MYSQL.equals(SystemContext.CurrentUse_DB_TYPE)) {
+			if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
 				pageSql = PageSuport.toMysqlPage(sql, pageNum, pageSize);
 				
-			}else if (JdbcConstants.ORACLE.equals(SystemContext.CurrentUse_DB_TYPE)) {
+			}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
 				pageSql = PageSuport.toOraclePage(sql, pageNum, pageSize);
 			}
 			

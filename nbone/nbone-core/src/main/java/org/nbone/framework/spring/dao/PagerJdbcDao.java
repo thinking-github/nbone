@@ -83,10 +83,10 @@ public class PagerJdbcDao implements IPagerJdbcDao{
 		List list_obj = new ArrayList();
 		String pageSql  = "";
 
-		if (JdbcConstants.MYSQL.equals(SystemContext.CurrentUse_DB_TYPE)) {
+		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
 			pageSql = PageSuport.toMysqlPage(sql, offset, pageSize);
 			
-		}else  if (JdbcConstants.ORACLE.equals(SystemContext.CurrentUse_DB_TYPE)) {
+		}else  if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
 			
 			pageSql = PageSuport.toOraclePage(sql, offset, pageSize);
 		}

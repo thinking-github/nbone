@@ -162,7 +162,7 @@ public class SystemContext {
 	/**
 	 * 当前系统使用的数据库。默认是oracle
 	 */
-	public static String CurrentUse_DB_TYPE = JdbcConstants.ORACLE;
+	public static String CURRENT_DB_TYPE = JdbcConstants.ORACLE;
 	
 	/**
 	 * 数据库insert记录数

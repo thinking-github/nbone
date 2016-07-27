@@ -41,7 +41,6 @@ public class ExtendStrutsFilter extends StrutsPrepareAndExecuteFilter {
 	
 	
 	
-	
 	public void init(FilterConfig filterConfig) throws ServletException {
 		//将Spring applicationContext装载到自己的SystemContext中
 		ServletContext sc = filterConfig.getServletContext();
@@ -49,7 +48,12 @@ public class ExtendStrutsFilter extends StrutsPrepareAndExecuteFilter {
 		
 		ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(sc);
 		SystemContext.setAppicationContext(ac);
-		SystemContext.CurrentUse_DB_TYPE = JdbcConstants.ORACLE;
+		String dbType = filterConfig.getInitParameter("dbType");
+		if(dbType != null && !dbType.trim().equals("")){
+			SystemContext.CURRENT_DB_TYPE = dbType.toLowerCase();
+		}else{
+			SystemContext.CURRENT_DB_TYPE = JdbcConstants.ORACLE;
+		}
 		
 		super.init(filterConfig);
 		

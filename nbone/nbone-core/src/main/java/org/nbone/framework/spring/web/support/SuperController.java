@@ -3,17 +3,23 @@ package org.nbone.framework.spring.web.support;
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.constants.ContentType;
 import org.nbone.framework.AbstractHttpServlet;
+import org.nbone.framework.spring.web.context.ServletActionAttributes;
+import org.nbone.framework.spring.web.context.ServletActionContext;
+import org.nbone.framework.spring.web.context.ServletActionHolder;
 import org.nbone.util.DateFPUtils;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +33,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author thinking  
  * @serial 1.0
  * @since  2013-8-28 
+ * @since spring 3.1
  */
 
 public abstract class SuperController extends AbstractHttpServlet implements ContentType{
@@ -35,16 +42,13 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
 	
 	protected String  redirectStr = "redirect:";  
 	
-	protected HttpServletRequest request;  
-    protected HttpServletResponse response;  
-    protected HttpSession session; 
-    
+	@Deprecated
     protected Model model;
     /**
      * spring package  HttpServletRequest
      */
+    @Deprecated
     protected WebRequest webRequest;
-    
     
     
     /**
@@ -54,19 +58,56 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
      */
     @ModelAttribute
     protected void doExecuteSetReqAndRes(HttpServletRequest request, HttpServletResponse response){  
-        this.request = request;  
-        this.response = response;  
+        //XXX:thinking  ThreadLocal
+        ServletActionAttributes attributes = new ServletActionAttributes(request,response);
+        ServletActionHolder.setRequestAttributes(attributes);
         
-        if(request != null) {
-        	this.session = request.getSession();  
-        }
         
     }  
-    @ModelAttribute
+    //@ModelAttribute
     protected void doExecuteController(WebRequest webRequest,Model model){
-    	this.webRequest = webRequest;
-    	this.model = model;
+    	
     }
+    
+    
+    public HttpServletRequest getRequest() {
+		return ServletActionHolder.getRequest();
+	}
+    
+	public HttpServletResponse getResponse() {
+		return ServletActionHolder.getResponse();
+	}
+	/**
+     * @see spring org.springframework.web.method.annotation.RequestParamMapMethodArgumentResolver
+     */
+    protected Map<String,String> getParameterMap(){
+    	HttpServletRequest webRequest = getRequest();
+    	Map<String, String[]> parameterMap = webRequest.getParameterMap();
+    	Map<String, String> result = new LinkedHashMap<String, String>(parameterMap.size());
+		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+			if (entry.getValue().length > 0) {
+				result.put(entry.getKey(), entry.getValue()[0]);
+			}
+		}
+		return result;
+    }
+    
+    /**
+     * @see spring org.springframework.web.method.annotation.RequestParamMapMethodArgumentResolver
+     */
+    protected MultiValueMap<String,String> paramsMultiValueMap(){
+    	HttpServletRequest webRequest = getRequest();
+    	Map<String, String[]> parameterMap = webRequest.getParameterMap();
+		MultiValueMap<String, String> result = new LinkedMultiValueMap<String, String>(parameterMap.size());
+		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+			for (String value : entry.getValue()) {
+				result.add(entry.getKey(), value);
+			}
+		}
+		return result;
+    }
+    
+    
     
     /**
 	 * 初始化数据绑定
@@ -106,7 +147,11 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
 	
     
 	protected void sendToClientWithJson(Object object) throws IOException {
-		this.sendToClientWithJson(request, response, object);
+		this.sendToClientWithJson(getRequest(),getResponse(), object);
+	}
+	
+	protected void sendToClientWithHtml(Object object) throws IOException {
+		this.sendToClientWithHtml(getRequest(),getResponse(), object);
 	}
     
 

@@ -20,8 +20,10 @@ public abstract class AbstractHttpServlet  implements ContentType {
 	/**
 	 * 数据转化标识
 	 */
-	public static final int  transformationType_JSON = 0;
-	public static final int  transformationType_XML = 1;
+	public static final int  TransformationType_JSON = 0;
+	public static final int  TransformationType_XML  = 1;
+	public static final int  TransformationType_HTML = 2;
+	
 	
 	/**
 	 * 
@@ -51,13 +53,16 @@ public abstract class AbstractHttpServlet  implements ContentType {
 		String strData = "null";
 		switch (transformationType) {
 		
-		case transformationType_JSON:
+		case TransformationType_JSON:
 			strData =  JSONOperUtils.pojoToJSON(object);
 			
 			break;
-		case transformationType_XML:
+		case TransformationType_XML:
 			//TODO:此方法还未实现
 					
+		    break;
+		case TransformationType_HTML:
+			strData = 	String.valueOf(object);
 		    break;
 
 		default:
@@ -66,11 +71,16 @@ public abstract class AbstractHttpServlet  implements ContentType {
 		
 		writer.write(strData);
 		writer.flush();
+		writer.close();
 			
 	}
 	
 	protected void sendToClientWithJson(HttpServletRequest request ,HttpServletResponse response,Object object) throws IOException {
-		this.sendToClient(request, response, object, TEXT_JSON, CHARSET_UTF8, transformationType_JSON);
+		this.sendToClient(request, response, object, TEXT_JSON, CHARSET_UTF8, TransformationType_JSON);
+	}
+	
+	protected void sendToClientWithHtml(HttpServletRequest request ,HttpServletResponse response,Object object) throws IOException {
+		this.sendToClient(request, response, object, TEXT_HTML, CHARSET_UTF8, TransformationType_HTML);
 	}
 		
 

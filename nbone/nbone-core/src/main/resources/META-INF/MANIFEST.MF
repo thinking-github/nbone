@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Implementation-Title: nbone-core
+Implementation-Version: 1.0.0.RELEASE
+Bundle-SymbolicName: nbone-core
+Bundle-Version: 1.0.0
+Bundle-Name: nbone-core
+Bundle-Vendor: nbone

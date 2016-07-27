@@ -76,6 +76,10 @@ public class TableMapper<T> {
     
     private StringBuilder selectAllSql;
     
+    private StringBuilder deleteAllSql;
+    
+    private StringBuilder countSql;
+    
     /**
      * Spring Jdbc
      */
@@ -305,8 +309,23 @@ public class TableMapper<T> {
 		return selectAllSql;
 	}
 
-	public void setSelectAllSql(StringBuilder selectAllSql) {
-		this.selectAllSql = selectAllSql;
+
+	public StringBuilder getDeleteAllSql() {
+		if(deleteAllSql == null ){
+			deleteAllSql  = new StringBuilder();
+			deleteAllSql.append("delete from ").append(this.getDbTableName());
+		}
+		
+		return deleteAllSql;
+	}
+
+	public StringBuilder getCountSql() {
+		if(countSql == null){
+			countSql = new StringBuilder();
+			countSql.append("select count(1) from ").append(this.getDbTableName());
+		}
+		
+		return countSql;
 	}
 
 	public  RowMapper<T> getRowMapper() {

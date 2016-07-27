@@ -229,12 +229,11 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
       
         TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
-        String tableName = tableMapper.getDbTableName();
 
         StringBuffer sql = new StringBuffer();
 
         // delete from tableName where primaryKeyName = ?
-        sql.append("delete from ").append(tableName).append(" where ");
+        sql.append(tableMapper.getDeleteAllSql()).append(" where ");
         sql.append(primaryKeysCondition(object, tableMapper));
         
         SqlModel<Object>  model = new SqlModel<Object> (sql.toString(), object,tableMapper);
@@ -248,13 +247,12 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 				return SqlModel.EmptySqlModel;
 		   }
 	       TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
-	       String tableName = tableMapper.getDbTableName();
 	       String[]  primaryKeys = tableMapper.getPrimaryKeys();
 	       FieldMapper fieldMapper =  tableMapper.getFieldMapper(primaryKeys[0]);
 			
 			StringBuffer sql = new StringBuffer();
 	        // delete from tableName where primaryKeyName = ?
-	        sql.append("delete from ").append(tableName).append(" where ");
+	        sql.append(tableMapper.getDeleteAllSql()).append(" where ");
 	        
 	        sql.append(fieldMapper.getDbFieldName()).append(" = ");
 	        sql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
@@ -274,13 +272,12 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 				return SqlModel.EmptySqlModel;
 		   }
 	       TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
-	       String tableName = tableMapper.getDbTableName();
 	       String[]  primaryKeys = tableMapper.getPrimaryKeys();
 	       FieldMapper fieldMapper =  tableMapper.getFieldMapper(primaryKeys[0]);
 			
 			StringBuffer sql = new StringBuffer();
 	        // delete from tableName where primaryKeyName = ?
-	        sql.append("delete from ").append(tableName).append(" where ");
+	        sql.append(tableMapper.getDeleteAllSql()).append(" where ");
 	        
 	        StringBuilder in =  SqlUtils.list2In(fieldMapper.getDbFieldName(), ids);
 	        sql.append(in);

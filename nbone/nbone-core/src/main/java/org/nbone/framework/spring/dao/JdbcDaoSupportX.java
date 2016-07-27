@@ -2,6 +2,8 @@ package org.nbone.framework.spring.dao;
 
 import javax.sql.DataSource;
 
+import org.nbone.context.system.SystemContext;
+import org.nbone.persistence.db.DBAdapter;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -30,6 +32,7 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 		this.initDataSource();
+		initApplicationContext();
 	}
 
 	
@@ -66,6 +69,18 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 		}
 		
 	} 
+	
+	protected void initApplicationContext(){
+		DataSource dataSource = getDataSource();
+		if(dataSource != null){
+			try {
+				String dbType = DBAdapter.getDbName(dataSource);
+				SystemContext.CURRENT_DB_TYPE = dbType;
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+			}
+		}
+	}
 	
 
 }

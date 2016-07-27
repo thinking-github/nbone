@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nbone</groupId>
   <artifactId>nbone</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <modules>
@@ -68,6 +68,35 @@
 			<artifactId>jetty-maven-plugin</artifactId>
 			<version>8.1.14.v20131031</version>
 	      </plugin>
+          <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+          <plugin>
+          	<groupId>org.eclipse.m2e</groupId>
+          	<artifactId>lifecycle-mapping</artifactId>
+          	<version>1.0.0</version>
+          	<configuration>
+          		<lifecycleMappingMetadata>
+          			<pluginExecutions>
+          				<pluginExecution>
+          					<pluginExecutionFilter>
+          						<groupId>
+          							org.apache.maven.plugins
+          						</groupId>
+          						<artifactId>
+          							maven-compiler-plugin
+          						</artifactId>
+          						<versionRange>[3.3,)</versionRange>
+          						<goals>
+          							<goal>testCompile</goal>
+          						</goals>
+          					</pluginExecutionFilter>
+          					<action>
+          						<ignore></ignore>
+          					</action>
+          				</pluginExecution>
+          			</pluginExecutions>
+          		</lifecycleMappingMetadata>
+          	</configuration>
+          </plugin>
       </plugins>
     </pluginManagement>
   	
@@ -229,10 +258,6 @@
         </repository>
         
         
-        <repository>
-        	<id>ui</id>
-            <name>JBoss repository </name>
-            <url>http://uk.maven.org/maven2/</url>
         </repository> -->
         
         <repository>

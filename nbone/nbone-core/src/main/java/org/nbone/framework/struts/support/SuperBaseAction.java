@@ -57,7 +57,7 @@ public abstract class SuperBaseAction extends ActionSupport implements ContentTy
      */
 	public void sendDirectToClient(Object returnData) throws IOException {
 		
-		this.sendDirectToClient(TEXT_JSON, CHARSET_UTF8, returnData, AbstractHttpServlet.transformationType_JSON);
+		this.sendDirectToClient(TEXT_JSON, CHARSET_UTF8, returnData, AbstractHttpServlet.TransformationType_JSON);
 		
 	}
 

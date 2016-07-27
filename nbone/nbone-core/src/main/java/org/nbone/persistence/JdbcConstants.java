@@ -1,5 +1,10 @@
 package org.nbone.persistence;
-
+/**
+ * 
+ * @author alibaba
+ * @author thinking
+ * @version 1.0 
+ */
 public interface JdbcConstants {
 	
     public static final String JTDS              = "jtds";

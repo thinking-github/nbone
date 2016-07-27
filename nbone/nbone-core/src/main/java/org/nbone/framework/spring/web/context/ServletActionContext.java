@@ -1,4 +1,4 @@
-package org.nbone.framework.spring.web.support;
+package org.nbone.framework.spring.web.context;
 
 import javax.servlet.http.HttpServletRequest;
 

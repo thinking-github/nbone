@@ -1,13 +1,10 @@
 package org.nbone.persistence.exception;
 
-import javax.persistence.PersistenceException;
-
 /**
  * @author thinking
  * @version 1.0 
- * @see javax.persistence.PersistenceException
  */
-public class BuilderSQLException extends PersistenceException {
+public class BuilderSQLException extends PersistenceBaseRuntimeException {
 
 	private static final long serialVersionUID = 5293096565896569399L;
 

@@ -3,7 +3,10 @@ package org.nbone.web.demo;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.nbone.framework.spring.web.bind.annotation.JsonRequestParam;
+import org.nbone.framework.spring.web.support.SuperController;
 import org.nbone.test.domain.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class SampleController {
+public class SampleController extends SuperController {
 	
     @RequestMapping("/test")
     @ResponseBody
     String home(@RequestHeader Map<String, String> mapHeader,@RequestHeader HttpHeaders httpHeaders) {
     	
     	//Object user  = ComponentFactory.getBean("user01");
+    	System.out.println(Thread.currentThread());
+    	
+    	HttpServletRequest temp = this.getRequest();
+    	System.out.println(temp);
     	
         return "Hello World----------------44!<br>00000000000000 <h2>00000000000099</h2/";
     }

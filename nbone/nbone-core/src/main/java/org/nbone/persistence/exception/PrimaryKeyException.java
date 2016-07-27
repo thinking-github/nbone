@@ -1,13 +1,11 @@
 package org.nbone.persistence.exception;
 
-import javax.persistence.PersistenceException;
-
 /**
  * 
  * @author thinking
  * @version 1.0 
  */
-public class PrimaryKeyException extends PersistenceException{
+public class PrimaryKeyException extends PersistenceBaseRuntimeException{
 
 	
 	private static final long serialVersionUID = 3017927819429970076L;
