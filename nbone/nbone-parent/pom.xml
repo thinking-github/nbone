@@ -10,11 +10,12 @@
   <parent>
     <groupId>org.nbone</groupId>
     <artifactId>nbone</artifactId>
-     <version>${nbone.version}</version>
+    <version>${nbone.version}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
     <properties>
+    
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	  	<!-- <spring.version>4.0.3.RELEASE</spring.version> -->
 	  	<spring.version>3.2.1.RELEASE</spring.version>
@@ -405,33 +406,31 @@
   <dependencyManagement>
 	  <dependencies>
 	  
-		
-		
 	  <!--  dependency  test start-->
 		  	 <dependency>
-				     <groupId>junit</groupId>
-				     <artifactId>junit</artifactId>
-				     <version>4.11</version>
-				     <scope>provided</scope>
+			     <groupId>junit</groupId>
+			     <artifactId>junit</artifactId>
+			     <version>4.11</version>
+			     <scope>provided</scope>
 		      </dependency>
 		  	 <dependency>
-					<groupId>org.apache.velocity</groupId>
-					<artifactId>velocity</artifactId>
-					<version>1.7</version>
-					<scope>test</scope>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity</artifactId>
+				<version>1.7</version>
+				<scope>test</scope>
 		  	 </dependency>
 			<dependency>
-					<groupId>org.apache.velocity</groupId>
-					<artifactId>velocity-tools</artifactId>
-					<version>2.0</version>
-					<scope>test</scope>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity-tools</artifactId>
+				<version>2.0</version>
+				<scope>test</scope>
 			</dependency>
 			
 			<dependency>
-					<groupId>org.freemarker</groupId>
-					<artifactId>freemarker</artifactId>
-					<version>2.3.20</version>
-					<scope>test</scope>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<version>2.3.20</version>
+				<scope>test</scope>
 			</dependency>
 			
 			<dependency>

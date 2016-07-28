@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nbone</groupId>
   <artifactId>nbone</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>${nbone.version}</version>
   <packaging>pom</packaging>
   
   <modules>
-    <module>nbone-core</module>
     <module>nbone-parent</module>
-    <module>nbone-web</module>
-    <module>nbone-demo</module>
+    <module>nbone-core</module>
     <module>nbone-security</module>
     <module>nbone-toolbox</module>
+    <module>nbone-demo</module>
+    <module>nbone-web</module>
+    <module>nbone-web-app</module>
   </modules>
 
 	<properties>
+		 <nbone.version>1.0.1-SNAPSHOT</nbone.version>
+		 
 		 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		 <project.build.source.version>1.6</project.build.source.version>
 		 <project.build.target.version>1.6</project.build.target.version>
 		 
 		 <java.version>1.7</java.version>
 		 <java.target.version>1.6</java.target.version>
-		 
-		 <nbone.version>1.0.1-SNAPSHOT</nbone.version>
 	
 	</properties>
 	

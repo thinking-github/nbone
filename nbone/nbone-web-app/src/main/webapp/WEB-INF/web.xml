@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" 
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+         id="WebApp_ID" metadata-complete="false" version="3.0">
+         
+  <display-name>nbone-web-app</display-name>
+  <context-param>
+    <param-name>viewEngine</param-name>
+    <param-value>V</param-value>
+  </context-param>
+  <context-param>
+    <param-name>encoding</param-name>
+    <param-value>UTF-8</param-value>
+  </context-param>
+  <filter>
+    <filter-name>filter1</filter-name>
+    <filter-class>org.nbone.web.demo.Filter1</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>filter1</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+</web-app>
