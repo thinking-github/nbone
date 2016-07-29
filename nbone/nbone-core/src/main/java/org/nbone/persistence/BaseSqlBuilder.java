@@ -341,6 +341,11 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		return sqlModel;
 	 }
 	 
+	 public <T> SqlModel<T> buildCountSql(Class<T> entityClass) throws BuilderSQLException{
+		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
+		 return new SqlModel<T>(tableMapper.getCountSql().toString(), null, tableMapper);
+	 }
+	 
 	 public <T> SqlModel<T> buildSelectSqlByIds(Class<T> entityClass,Collection<?> ids) throws BuilderSQLException{
 		return buildSelectSqlByIds(entityClass, ids.toArray());
 	 }

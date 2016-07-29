@@ -1,4 +1,4 @@
-package org.nbone.framework.mybatis.generator.plugins;
+package org.nbone.mybatis.generator.plugins;
 
 import java.util.List;
 

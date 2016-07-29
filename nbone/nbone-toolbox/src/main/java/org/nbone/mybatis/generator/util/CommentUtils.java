@@ -1,4 +1,4 @@
-package org.nbone.framework.mybatis.generator.util;
+package org.nbone.mybatis.generator.util;
 
 import java.sql.Date;
 

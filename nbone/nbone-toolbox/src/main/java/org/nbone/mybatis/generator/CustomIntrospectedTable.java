@@ -1,4 +1,4 @@
-package org.nbone.framework.mybatis.generator;
+package org.nbone.mybatis.generator;
 
 import org.mybatis.generator.codegen.mybatis3.IntrospectedTableMyBatis3Impl;
 

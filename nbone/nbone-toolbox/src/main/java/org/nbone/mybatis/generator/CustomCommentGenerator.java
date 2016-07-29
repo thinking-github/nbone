@@ -1,8 +1,7 @@
-package org.nbone.framework.mybatis.generator;
+package org.nbone.mybatis.generator;
 
 import static org.mybatis.generator.internal.util.StringUtility.isTrue;
 
-import java.sql.Date;
 import java.util.Properties;
 
 import org.mybatis.generator.api.CommentGenerator;
@@ -18,7 +17,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
-import org.nbone.framework.mybatis.generator.util.CommentUtils;
+import org.nbone.mybatis.generator.util.CommentUtils;
 
 /**
  * 

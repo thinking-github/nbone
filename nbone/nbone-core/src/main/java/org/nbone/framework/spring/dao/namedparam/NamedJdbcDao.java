@@ -9,12 +9,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
-import org.nbone.framework.spring.dao.core.CachedEntityPropertyRowMapper;
-import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
 import org.nbone.persistence.BaseSqlBuilder;
+import org.nbone.persistence.BaseSqlSession;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.SqlPropertyDescriptors;
 import org.nbone.persistence.SqlSession;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.model.SqlModel;
@@ -44,7 +42,7 @@ import org.springframework.stereotype.Repository;
 @Primary
 @Lazy
 @SuppressWarnings("unchecked")
-public class NamedJdbcDao implements SqlSession,InitializingBean{
+public class NamedJdbcDao extends BaseSqlSession implements SqlSession,InitializingBean{
 	
 	@Resource(name="baseJdbcDao")
 	private BaseJdbcDao baseJdbcDao;
@@ -197,6 +195,13 @@ public class NamedJdbcDao implements SqlSession,InitializingBean{
 	
 	
 	
+	@Override
+	public long count(Class<?> clazz) {
+		SqlModel<?> sqlModel =  sqlBuilder.buildCountSql(clazz);
+		return dao.queryForLong(sqlModel.getSql());
+	}
+
+
 	@Override
 	public <T> List<T> getAll(Class<T> clazz) {
 		SqlModel<T> sqlModel = sqlBuilder.buildSelectAllSql(clazz);

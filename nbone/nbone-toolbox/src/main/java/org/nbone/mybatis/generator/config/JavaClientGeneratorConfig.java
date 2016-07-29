@@ -1,4 +1,4 @@
-package org.nbone.framework.mybatis.generator.config;
+package org.nbone.mybatis.generator.config;
 
 import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
 

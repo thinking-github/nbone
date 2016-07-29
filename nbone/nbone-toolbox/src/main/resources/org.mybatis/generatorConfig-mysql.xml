@@ -8,10 +8,10 @@
     <context id="my" targetRuntime="MyBatis3">
     	
     	  <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
-    	  <plugin type="org.nbone.framework.mybatis.generator.plugins.JpaAnnotationPlugin" />
-    	  <plugin type="org.nbone.framework.mybatis.generator.plugins.GeneratorExtPlugin" />
+    	  <plugin type="org.nbone.mybatis.generator.plugins.JpaAnnotationPlugin" />
+    	  <plugin type="org.nbone.mybatis.generator.plugins.GeneratorExtPlugin" />
     	 
-        <commentGenerator type="org.nbone.framework.mybatis.generator.CustomCommentGenerator">
+        <commentGenerator type="org.nbone.mybatis.generator.CustomCommentGenerator">
             <property name="suppressDate" value="true"/>
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>

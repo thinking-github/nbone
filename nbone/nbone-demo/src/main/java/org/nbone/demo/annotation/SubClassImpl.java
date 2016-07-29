@@ -1,12 +1,8 @@
 package org.nbone.demo.annotation;
 
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
 
-@Primary
-@Lazy
-@Service
+@Resource
 public class SubClassImpl extends AbstractParent implements Feature {
 	
 	 @Override  

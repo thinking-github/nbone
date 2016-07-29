@@ -1,4 +1,4 @@
-package org.nbone.framework.mybatis.generator;
+package org.nbone.mybatis.generator;
 
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;

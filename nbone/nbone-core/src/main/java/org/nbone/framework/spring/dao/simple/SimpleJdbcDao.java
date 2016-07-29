@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
+import org.nbone.persistence.BaseSqlSession;
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.SqlPropertyDescriptors;
 import org.nbone.persistence.SqlSession;
 import org.nbone.persistence.mapper.DbMappingBuilder;
 import org.nbone.persistence.mapper.FieldMapper;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Repository;
 @Repository("simpleJdbcDao")
 @Primary
 @Lazy
-public class SimpleJdbcDao  implements SqlSession,InitializingBean{
+public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,InitializingBean{
 	
 	@Resource(name="baseJdbcDao")
 	private BaseJdbcDao baseJdbcDao;

@@ -97,6 +97,15 @@ public interface SqlBuilder {
 	  */
 	 public <T> SqlModel<T> buildSelectAllSql(Class<T> entityClass) throws BuilderSQLException;
 	 /**
+	  * 统计单表的数量行数
+	  * @param entityClass
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public <T> SqlModel<T> buildCountSql(Class<T> entityClass) throws BuilderSQLException;
+	 
+	 
+	 /**
 	  * 根据主键列表查询
 	  * @param entityClass
 	  * @param ids

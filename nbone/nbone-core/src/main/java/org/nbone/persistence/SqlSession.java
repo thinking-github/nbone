@@ -111,6 +111,12 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public <T> T get(Object object);
+	/**
+	 * 统计单表的数据总行数
+	 * @param clazz
+	 * @return
+	 */
+	public long count(Class<?> clazz);
 	
 	
 	
