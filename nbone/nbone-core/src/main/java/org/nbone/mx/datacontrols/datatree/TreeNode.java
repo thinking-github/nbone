@@ -6,10 +6,14 @@ import java.util.List;
 
 
 /**
- * @author thinking 2012-9-1
+ * @author thinking 
+ * @since  2012-9-1
+ * @version 1.0
  */
 public class TreeNode<T> implements Serializable{
 
+	private static final long serialVersionUID = -603189611941523528L;
+	
 	private String id;
 	private String text;
 	private String state;

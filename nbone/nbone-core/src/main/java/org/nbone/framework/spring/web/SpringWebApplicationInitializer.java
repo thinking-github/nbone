@@ -19,6 +19,7 @@ import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.RequestContextFilter;
 
 import net.sf.ehcache.constructs.web.filter.GzipFilter;
 
@@ -54,6 +55,10 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 		
 		//CharacterEncodingFilter  
 		initCharacterEncodingFilter(servletContext, encoding);
+		
+		//RequestContextFilter
+		initRequestContextFilter(servletContext);
+		
 		//GzipFilter
 		initGzipFilter(servletContext);
 		
@@ -82,6 +87,21 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 		filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 		
 	}
+	
+	protected void initRequestContextFilter(ServletContext servletContext){
+		String enableRequestContextFilter  = servletContext.getInitParameter("enableRequestContext");
+		if(BooleanUtils.valueOf(enableRequestContextFilter)){
+			//RequestContextFilter  
+			RequestContextFilter requestContextFilter =  new RequestContextFilter();
+			
+			FilterRegistration filterRegistration =  servletContext.addFilter("requestContextFilter", requestContextFilter);
+			
+			filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+		}
+	}
+	
+	
+	
 	/**
 	 * 启用静态文件压缩
 	 * @param servletContext

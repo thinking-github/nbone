@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @since  2015-12-12
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:/test.xml")
+@ContextConfiguration(locations = "classpath*:/*test.xml")
 //@TransactionConfiguration(transactionManager="transactionManager",defaultRollback=false)
 //@Transactional
 public class SpringAnnotationUnitTest {

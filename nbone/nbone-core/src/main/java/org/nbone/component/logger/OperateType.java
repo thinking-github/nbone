@@ -1,5 +1,7 @@
 package org.nbone.component.logger;
 
+import org.nbone.lang.IEnum;
+
 
 /**
  * 操作类型枚举类
@@ -7,7 +9,7 @@ package org.nbone.component.logger;
  * @author Thinking  2014-8-8
  * @see LogOperateType
  */
-public enum OperateType {
+public enum OperateType implements IEnum{
 
 	QUERY("0", "查询"),
 
@@ -25,15 +27,15 @@ public enum OperateType {
 	/**
 	 * 信息
 	 */
-	private final String message;
+	private final String name;
 
 	/**
 	 * @param code
 	 * @param message
 	 */
-	OperateType(String code, String message) {
+	OperateType(String code, String name) {
 		this.code = code;
-		this.message = message;
+		this.name = name;
 	}
 
 	/**
@@ -59,12 +61,18 @@ public enum OperateType {
 	public String getCode() {
 		return code;
 	}
-
 	/**
 	 * @return the message
 	 */
-	public String getMessage() {
-		return message;
+	@Override
+	public String getName() {
+		return name;
 	}
+
+	@Override
+	public long getId() {
+		return 0;
+	}
+
 
 }

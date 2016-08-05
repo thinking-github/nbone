@@ -21,9 +21,15 @@ ${sharedChen}
 ${name}
 ${user.id}
 ${user.getId()}
-${user.getChen()}
 ${staticUser}
 ${dateO?date}
 ${dateO?time}
 ${dateO?datetime}
+
+<#if chen?? && chen !="">
+   object is not null..只能判断null  不能判断为""
+<#else>
+	object is  null....................s
+</#if>
+
 

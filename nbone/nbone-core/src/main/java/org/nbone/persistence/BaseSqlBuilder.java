@@ -97,9 +97,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         boolean allFieldNull = true;
         int columnCount = 0;
-        for (String dbFieldName : tableMapper.getFieldMappers().keySet()) {
-            FieldMapper fieldMapper = tableMapper.getFieldMappers().get(dbFieldName);
+        List<FieldMapper> fields =  tableMapper.getFieldMapperList();
+        for (FieldMapper fieldMapper : fields) {
             String fieldName = fieldMapper.getFieldName();
+            String dbFieldName = fieldMapper.getDbFieldName();
             Object value = PropertyUtil.getProperty(object, fieldName);
             if (value == null) {
                 continue;
@@ -115,8 +116,9 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             valueSql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
             //valueSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
         }
+        //XXX:allFieldNull
         if (allFieldNull) {
-            throw new RuntimeException("Are you joking? Object " + object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
+            throw new RuntimeException(object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
         }
         
         String sql = tableSql.append(") ").append(valueSql).append(")").toString();
@@ -149,9 +151,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         boolean allFieldNull = true;
         int columnCount = 0;
-        for (String dbFieldName : tableMapper.getFieldMappers().keySet()) {
-            FieldMapper fieldMapper = tableMapper.getFieldMappers().get(dbFieldName);
+        List<FieldMapper> fields =  tableMapper.getFieldMapperList();
+        for (FieldMapper fieldMapper : fields) {
             String fieldName = fieldMapper.getFieldName();
+            String dbFieldName =  fieldMapper.getDbFieldName();
             Object value = PropertyUtil.getProperty(object, fieldName);
             if (value == null) {
                 continue;
@@ -165,8 +168,9 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             //tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
             
         }
+        //XXX: allFieldNull
         if (allFieldNull) {
-            throw new RuntimeException("Are you joking? Object " + object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
+            throw new RuntimeException(object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
         }
         
         whereSql.append(primaryKeysCondition(object, tableMapper));
@@ -198,9 +202,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         tableSql.append("update ").append(tableName).append(" set ");
 
         int columnCount = 0;
-        for (String dbFieldName : tableMapper.getFieldMappers().keySet()) {
-            FieldMapper fieldMapper = tableMapper.getFieldMappers().get(dbFieldName);
+        List<FieldMapper> fields =  tableMapper.getFieldMapperList();
+        for (FieldMapper fieldMapper : fields) {
             String fieldName = fieldMapper.getFieldName();
+            String dbFieldName =  fieldMapper.getDbFieldName();
             if(fieldMapper.isPrimaryKey()){
             	continue;
             }
@@ -226,6 +231,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	
 	@Override
 	public SqlModel<Object>  buildDeleteSql(Object object) throws BuilderSQLException {
+		return buildDeleteSqlByEntityParams(object, true);
+	}
+	public SqlModel<Object> buildDeleteSqlByEntityParams(Object object,boolean onlypkParam) throws BuilderSQLException{
+		
 		Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
       
         TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
@@ -234,11 +243,42 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         // delete from tableName where primaryKeyName = ?
         sql.append(tableMapper.getDeleteAllSql()).append(" where ");
-        sql.append(primaryKeysCondition(object, tableMapper));
+        if(onlypkParam){
+        	sql.append(primaryKeysCondition(object, tableMapper));
+        	
+        }else{
+        	// delete from tableName where 1=1 and name = ? and age = 13 
+        	boolean allFieldNull = true;
+        	sql.append(" 1=1 ");
+        	BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
+            List<FieldMapper> fields =  tableMapper.getFieldMapperList();
+            for (FieldMapper fieldMapper : fields) {
+        		String fieldName = fieldMapper.getFieldName();
+        		String dbFieldName = fieldMapper.getDbFieldName();
+    			Class<?> fieldType  = fieldMapper.getPropertyType();
+    			if(fieldType == Class.class){
+    				continue;
+    			}
+    			Object fieldValue  = bw.getPropertyValue(fieldName);
+    				
+				if(fieldValue != null ){
+					allFieldNull = false;
+					sql.append(" and ").append(dbFieldName).append(" = ");
+					sql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
+				}
+    	  }
+            //XXX: allFieldNull
+            if (allFieldNull) {
+                throw new RuntimeException(object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
+            }
+        	
+        }
         
         SqlModel<Object>  model = new SqlModel<Object> (sql.toString(), object,tableMapper);
         
         return model;
+	
+		
 	}
 	
 	 public <T> SqlModel<Map<String,?>> buildDeleteSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException{
@@ -491,7 +531,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		
 		String[]  primaryKeys = tableMapper.getPrimaryKeys();
         for (int i = 0; i < primaryKeys.length; i++) {
-            FieldMapper fieldMapper = tableMapper.getFieldMappers().get(primaryKeys[i]);
+            FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[i]);
             String fieldName = fieldMapper.getFieldName();
             Object value = PropertyUtil.getProperty(object, fieldName);
             if (value == null) {
@@ -515,7 +555,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		StringBuffer sql = new StringBuffer();
         for (int i = 0; i < primaryKeys.length; i++) {
             sql.append(primaryKeys[i]);
-            FieldMapper fieldMapper = tableMapper.getFieldMappers().get(primaryKeys[i]);
+            FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[i]);
             
             String fieldName = fieldMapper.getFieldName();
             
@@ -574,7 +614,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 						
 					}else{
 						selectSql.append(" and ").append(dbFieldName).append(" = ");
-						selectSql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
+						selectSql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
 					}
 				}
 				
@@ -596,8 +636,8 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 			}
 			else{
 				if(fieldValue != null){
-					selectSql.append(" and ").append(fieldMapper.getDbFieldName()).append(" = ");
-					selectSql.append(placeholderPrefix).append(fieldMapper.getFieldName()).append(placeholderSuffix);
+					selectSql.append(" and ").append(dbFieldName).append(" = ");
+					selectSql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
 				}
 			}
 	  }

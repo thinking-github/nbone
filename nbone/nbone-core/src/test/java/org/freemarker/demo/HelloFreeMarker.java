@@ -37,6 +37,8 @@ public class HelloFreeMarker {
 			dataModel.put("date1", (new Date()).toString());
 			dataModel.put("dateO", new Date());
 			dataModel.put("staticUser", User.class);
+			
+			dataModel.put("chen","");
 			 
 			 User user =  User.getUser();
 			 

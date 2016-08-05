@@ -2,20 +2,17 @@ package org.nbone.mvc.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.nbone.framework.mybatis.SupperMapper;
-import org.nbone.mvc.BaseObject;
-import org.nbone.persistence.BaseSqlBuilder;
+import org.nbone.lang.BaseObject;
+import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlSession;
 import org.nbone.util.reflect.GenericsUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-import org.springframework.util.Assert;
 
 /**
  * 
@@ -28,12 +25,12 @@ import org.springframework.util.Assert;
  */
 public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> extends BaseObject  implements SuperService<T, IdType>{
 	
-
+    @Deprecated
 	private SupperMapper<P,IdType> superMapper;
 	
 	private BaseServiceDomain<P,IdType> baseServiceDomain   = new BaseServiceDomain<P, IdType>();
 	
-	private SqlSession namedJdbcDao;
+	private BatchSqlSession namedJdbcDao;
 	
 	private Class<T> dtoClass;
 	private Class<P> targetClass;
@@ -51,7 +48,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Resource(name="namedJdbcDao")
-	public void setNamedJdbcDao(SqlSession namedJdbcDao) {
+	public void setNamedJdbcDao(BatchSqlSession namedJdbcDao) {
 		this.namedJdbcDao = namedJdbcDao;
 		this.baseServiceDomain.setNamedJdbcDao(this.namedJdbcDao);
 		
@@ -76,11 +73,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		this.superMapper = superMapper;
 	}
 	
-	
+
 	protected void initMybatisOrm(String namespace,String id) {
 		this.superMapper = null;
-		baseServiceDomain.setNamespace(namespace);
-		baseServiceDomain.setId(id);
+		baseServiceDomain.initMybatisOrm(namespace, id);
 		
 	}
 	
@@ -89,7 +85,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		this.initMybatisOrm(namespace.getName(), id);
 	}
 	
-	/*	@Autowired
+	/*	@Autowired @PostConstruct
 	@Override
 	protected void initMybatisOrm() {
 		super.initMybatisOrm(TsProjectBeanDao.class,"BaseResultMap");
@@ -103,7 +99,6 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		P bean = this.copyProperties(object, targetClass);
 		
 		return baseServiceDomain.save(bean);
-		//throw new RuntimeException("请在子类中实现.");
 		
 	}
 	 
@@ -205,12 +200,8 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	 * @author:ChenYiCheng
 	 */
 	public List<T> listBean2ListDto(List<P> beans){
-		List<T> resultDtos = new ArrayList<T>();
-		for (P bean : beans) {
-			T dto = this.copyProperties(bean, dtoClass);
-			resultDtos.add(dto);
-		}
-		return resultDtos;
+		
+		return listBeanConverter(beans, dtoClass);
 	}
 	
 
@@ -225,11 +216,36 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
+	public void deleteByEntityParams(T object) {
+		P bean = this.copyProperties(object, targetClass);
+		baseServiceDomain.deleteByEntityParams(bean);
+	}
+
+	@Override
+	public void delete(IdType[] ids) {
+		baseServiceDomain.delete(ids);
+	}
+	@Override
+	public void delete(Collection<?> ids) {
+		baseServiceDomain.delete(ids);
+	}
+	@Override
 	public List<T> getAll() {
 		List<P> beans =  baseServiceDomain.getAll();
 		
 		return listBean2ListDto(beans);
 	}
+	@Override
+	public List<T> getAll(IdType[] ids) {
+		List<P> beans = baseServiceDomain.getAll(ids);
+		return listBean2ListDto(beans);
+	}
+
+	@Override
+	public long count() {
+		return baseServiceDomain.count();
+	}
+
 	@Override
 	public List<T> getForList(T object) {
 		P bean = this.copyProperties(object, targetClass);
@@ -254,16 +270,44 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		
 		return dtos;
 	}
-
+	
+	
 	@Override
-	public void delete(IdType[] ids) {
-		baseServiceDomain.delete(ids);
+	public void batchInsert(T[] objects) {
+		List<P> beans = this.copyProperties(objects, targetClass);
+		baseServiceDomain.batchInsert(beans);
+	}
+	@Override
+	public void batchInsert(Collection<T> objects) {
+		List<P> beans = this.copyProperties(objects, targetClass);
+		baseServiceDomain.batchInsert(beans);
 	}
 
 	@Override
-	public List<T> getAll(IdType[] ids) {
-		List<P> beans = baseServiceDomain.getAll(ids);
-		return listBean2ListDto(beans);
+	public void batchUpdate(Object[] objects) {
+		List<P> beans = this.copyProperties(objects, targetClass);
+		baseServiceDomain.batchUpdate(beans);
 	}
+
+	@Override
+	public void batchUpdate(Collection<T> objects) {
+		List<P> beans = this.copyProperties(objects, targetClass);
+		baseServiceDomain.batchUpdate(beans);
+	}
+
+	@Override
+	public void batchDelete(Class<T> clazz, Serializable[] ids) {
+		baseServiceDomain.batchDelete(targetClass, ids);
+	}
+
+	@Override
+	public void batchDelete(Class<T> clazz, List<Serializable> ids) {
+		baseServiceDomain.batchDelete(targetClass, ids);
+		
+	}
+
+
+	
+	
 
 }

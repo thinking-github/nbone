@@ -1,6 +1,7 @@
 package org.nbone.persistence;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,12 +21,7 @@ public interface SqlSession  extends QueryOperations{
 	 */
 	public int insert(Object object);
 	
-	/**
-	 * 批量添加
-	 * @param objects
-	 * @return
-	 */
-	public int[] batchInsert(Object[] objects);
+
 	
 	/**
 	 * 保存数据
@@ -53,14 +49,6 @@ public interface SqlSession  extends QueryOperations{
 	public int update(Object object);
 	
 	/**
-	 * 批量更新
-	 * @param objects
-	 * @return
-	 * @author:ChenYiCheng
-	 */
-	public int[] batchUpdate(Object[] objects);
-	
-	/**
 	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)
 	 * @param object
 	 * @return
@@ -81,6 +69,12 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public int delete(Object object);
+	/**
+	 * 单表操作删除记录, 根据实体不为null参数删除
+	 * @param object
+	 * @return
+	 */
+	public int deleteByEntityParams(Object object);
 	
 	/**
 	 * 单表操作删除一条记录
@@ -117,6 +111,7 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public long count(Class<?> clazz);
+	
 	
 	
 	

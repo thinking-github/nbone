@@ -47,7 +47,7 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 			super.setJdbcTemplate(jdbcTemplate);
 			
 		} catch (Exception e) {
-			logger.warn("application not config  or config multiple JdbcTemplate.thinking",e);
+			logger.warn("application not config  or config multiple JdbcTemplate.thinking");
 			
 			try {
 				
@@ -55,13 +55,13 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 				super.setDataSource(dataSource);
 				
 			} catch (Exception e2) {
-				logger.warn("application not config or config multiple dataSource.thinking",e2);
+				logger.warn("application not config or config multiple dataSource.thinking");
 				try {
 					DataSource dataSource = applicationContext.getBean("dataSource", DataSource.class);
 					super.setDataSource(dataSource);
 				} catch (Exception e3) {
-					logger.warn(e2.getMessage(),e2);
-					logger.info("应用程序无法自动指定数据源,请手工指定数据源.thinking");
+					logger.warn(e3.getMessage());
+					logger.warn("应用程序无法自动指定数据源,请手工指定数据源.thinking");
 				}
 				
 			}

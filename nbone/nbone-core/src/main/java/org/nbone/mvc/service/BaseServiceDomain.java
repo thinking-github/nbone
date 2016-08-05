@@ -1,12 +1,14 @@
 package org.nbone.mvc.service;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.nbone.mvc.BaseObject;
+import org.nbone.lang.BaseObject;
 import org.nbone.persistence.BaseSqlBuilder;
+import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlSession;
 import org.springframework.util.Assert;
 
@@ -21,11 +23,18 @@ import org.springframework.util.Assert;
 public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObject implements SuperService<P, IdType>{
 	
 	@Resource
-	private SqlSession namedJdbcDao;
+	private BatchSqlSession namedJdbcDao;
 	
 	private Class<P> targetClass;
-	
+	/**
+	 * 	
+	 * 映射mybatis  namespace
+	 */
 	private String namespace;
+	/**
+	 * 	
+	 * 映射mybatis 实体  resultMap id
+	 */
 	private String id;
 	
 	private  boolean builded =  false;
@@ -36,8 +45,20 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	public BaseServiceDomain() {
 		count ++;
 	}
-
-
+    /**
+     * 初始化mybatis 映射实体 
+     * @param namespace  映射文件的命名空间
+     * @param id    resultMap id
+     */
+	protected void initMybatisOrm(String namespace,String id) {
+		this.setNamespace(namespace);
+		this.setId(id);
+	}
+	
+	protected void initMybatisOrm(Class<?> namespace,String id) {
+		this.initMybatisOrm(namespace.getName(), id);
+	}
+	
 
 	protected synchronized void  builded(){
 	    Assert.notNull(namespace, "namespace is not null.thinking");
@@ -67,7 +88,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return namedJdbcDao;
 	}
 
-	public void setNamedJdbcDao(SqlSession namedJdbcDao) {
+	public void setNamedJdbcDao(BatchSqlSession namedJdbcDao) {
 		this.namedJdbcDao = namedJdbcDao;
 	}
 
@@ -163,7 +184,11 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		namedJdbcDao.delete(object);
 	}
-
+	@Override
+	public void deleteByEntityParams(P object) {
+		checkBuilded();
+		namedJdbcDao.deleteByEntityParams(object);
+	}
 	@Override
 	public List<P> getAll() {
 		checkBuilded();
@@ -191,6 +216,12 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		namedJdbcDao.delete(targetClass, ids);
 	}
+	
+	@Override
+	public void delete(Collection<?> ids) {
+		checkBuilded();
+		namedJdbcDao.delete(targetClass, ids.toArray());
+	}
 
 
 	@Override
@@ -199,11 +230,49 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		List<P> beans = namedJdbcDao.getAll(targetClass, ids);
 		return beans;
 	}
-
-
-
-
-
+	
+	@Override
+	public void batchInsert(P[] objects) {
+		
+		checkBuilded();
+		namedJdbcDao.batchInsert(objects);
+	}
+	@Override
+	public void batchInsert(Collection<P> objects) {
+		checkBuilded();
+		namedJdbcDao.batchInsert(objects);
+		
+	}
+	
+	
+	@Override
+	public void batchUpdate(P[] objects) {
+		checkBuilded();
+		namedJdbcDao.batchUpdate(objects);
+	}
+	@Override
+	public void batchUpdate(Collection<P> objects) {
+		checkBuilded();
+		namedJdbcDao.batchUpdate(objects);
+	}
+	
+	
+	@Override
+	public void batchDelete(Class<P> clazz, Serializable[] ids) {
+		checkBuilded();
+		namedJdbcDao.batchDelete(clazz, ids);
+		
+	}
+	@Override
+	public void batchDelete(Class<P> clazz, List<Serializable> ids) {
+		checkBuilded();
+		namedJdbcDao.batchDelete(clazz, ids);
+	}
+	@Override
+	public long count() {
+		
+		return namedJdbcDao.count(targetClass);
+	}
 
 
 }

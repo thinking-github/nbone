@@ -273,9 +273,7 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	public void batchUpdate(List<String> list) throws SQLException {
 		try {
 			String[] sqls = new String[list.size()];
-			for (int i = 0; i < list.size(); i++) {
-				sqls[i] = list.get(i);
-			}
+			sqls = list.toArray(sqls);
 			this.getJdbcTemplate().batchUpdate(sqls);
 		} catch (DataAccessException e) {
 			throw new SQLException(e);
@@ -319,12 +317,12 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 			throw new SQLException(e);
 		}
 	}
-    //BatchSize==100
+    //BatchSize==500
 	public void batchSqlUpdate(String sql, List<Object[]> list, int[] sqlTypes)
 			throws SQLException {
 		int size  = list.size();
 		
-		if(size > 100){
+		if(size > 500){
 			logger.warn(new StringBuilder().append("批量更新数据偏大:").append("[").append(size).append("]."));
 		}
 		try {

@@ -49,12 +49,21 @@ public interface SqlBuilder {
 	 public SqlModel<Object> buildUpdateSql(Object object) throws BuilderSQLException;
 	 
 	 /**
-	  * 由传入的对象生成delete sql语句
+	  * 由传入的对象生成delete sql语句(根据对象主键生成)
 	  * @param object
 	  * @return
 	  * @throws BuilderSQLException
 	  */
 	 public SqlModel<Object> buildDeleteSql(Object object) throws BuilderSQLException;
+	 
+	 /**
+	  *  由传入的对象生成delete sql语句(包括不为null的属性生成sql)
+	  * @param object
+	  * @param onlypkParam true 只包括主键参数,  <code>false</code> 包括不为null的属性参数
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public SqlModel<Object> buildDeleteSqlByEntityParams(Object object,boolean onlypkParam) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据主键Id删除

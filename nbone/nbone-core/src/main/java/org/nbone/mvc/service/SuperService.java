@@ -4,6 +4,8 @@
 package org.nbone.mvc.service;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 import org.nbone.mvc.ISuper;
 import org.slf4j.Logger;
@@ -23,6 +25,19 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	
 	
 	
+	public void batchInsert(T[] objects);
 	
+	public void batchInsert(Collection<T> objects);
+	
+	
+	public void batchUpdate(T[] objects);
+	
+	public void batchUpdate(Collection<T> objects);
+	
+	
+	public void batchDelete(Class<T> clazz,Serializable[] ids);
+	
+	public void batchDelete(Class<T> clazz,List<Serializable> ids);
+
 
 }

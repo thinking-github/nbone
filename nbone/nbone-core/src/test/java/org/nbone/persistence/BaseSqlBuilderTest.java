@@ -42,6 +42,20 @@ public class BaseSqlBuilderTest {
 		
 	}
 	
+	@Test
+	public void testbuildDeleteSql(){
+		TsProjectDTO object = new TsProjectDTO();
+		object.setCode("2");
+		
+		SqlModel<Object> sqlModel = sqlBuilder.buildDeleteSqlByEntityParams(object, false);
+		StringBuilder sqld = sqlModel.getTableMapper().getDeleteSqlWithId();
+		StringBuilder sqls = sqlModel.getTableMapper().getSelectSqlWithId();
+		System.out.println(sqlModel.getSql());
+		System.out.println(sqld);
+		System.out.println(sqls);
+		
+	}
+	
 	//@Test
 	public void testSQlUtils(){
 		System.out.println(SqlUtils.stringSplit2In("id", "1,2", int.class));
@@ -56,7 +70,7 @@ public class BaseSqlBuilderTest {
 		System.out.println(sqlModel.getSql());
 	}
 	
-	@Test
+	//@Test
 	public void testbuildObjectModeSelectSql(){
 		TsProjectDTO object = getTsProjectDTO();
 		object.setId(9L);

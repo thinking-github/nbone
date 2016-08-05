@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.persistence.Table;
 
+import org.nbone.persistence.exception.PrimaryKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
@@ -79,6 +80,15 @@ public class TableMapper<T> {
     private StringBuilder deleteAllSql;
     
     private StringBuilder countSql;
+    /**
+     * 根据Id查询 使用?占位符
+     */
+    private StringBuilder selectSqlWithId;
+    /**
+     * 根据Id删除 使用?占位符
+     */
+    private StringBuilder deleteSqlWithId;
+    
     
     /**
      * Spring Jdbc
@@ -92,6 +102,18 @@ public class TableMapper<T> {
 		this.entityName = entityClazz.getName();
 	}
 	
+	/**
+	 * 设定预定的容量  XXX： thinking 2016-08-02
+	 * @param entityClazz
+	 * @param initialCapacity
+	 */
+	public TableMapper(Class<T> entityClazz,int initialCapacity) {
+		this(entityClazz);
+		fieldMapperList =  new ArrayList<FieldMapper>(initialCapacity);
+		fieldMappers =  new LinkedHashMap<String, FieldMapper>(initialCapacity);
+		mappedPropertys =  new HashMap<String, PropertyDescriptor>(initialCapacity);
+	}
+	
 	public Annotation getTableMapperAnnotation() {
 		return tableMapperAnnotation;
 	}
@@ -101,6 +123,13 @@ public class TableMapper<T> {
 	}
 
 	public String[] getPrimaryKeys() {
+		List<String> primaryKeys = getPrimaryKeyList();
+		String[] pks = new String[primaryKeys.size()];
+		pks = primaryKeys.toArray(pks);
+		return pks;
+	}
+	
+	public List<String> getPrimaryKeyList() {
 		if(primaryKeys == null || primaryKeys.size() == 0){
 			for (FieldMapper fieldMapper : fieldMapperList) {
 				if(fieldMapper.isPrimaryKey()){
@@ -109,9 +138,17 @@ public class TableMapper<T> {
 			}
 		}
 		
-		String[] pks = new String[primaryKeys.size()];
-		pks = primaryKeys.toArray(pks);
-		return pks;
+		return primaryKeys;
+	}
+	
+	public String getPrimaryKey(){
+		List<String> primaryKeys = getPrimaryKeyList();
+		
+		if(primaryKeys == null || primaryKeys.size() <= 0 ){
+			return null;
+		}
+		
+		return primaryKeys.get(0);
 	}
 
 	public void setPrimaryKeys(String[] primaryKeys) {
@@ -326,6 +363,36 @@ public class TableMapper<T> {
 		}
 		
 		return countSql;
+	}
+
+	
+	public StringBuilder getSelectSqlWithId() {
+		if(selectSqlWithId == null){
+			selectSqlWithId = new StringBuilder(getSelectAllSql());
+			
+			String  primaryKey=  getPrimaryKey();
+			if(primaryKey == null){
+				throw new PrimaryKeyException("table name "+this.dbTableName +" not have primaryKey");
+			}
+			
+			selectSqlWithId.append(" where ").append(primaryKey).append(" = ?");
+		}
+		
+		return selectSqlWithId;
+	}
+
+	public StringBuilder getDeleteSqlWithId() {
+		if(deleteSqlWithId == null){
+			deleteSqlWithId = new StringBuilder(getDeleteAllSql());
+			
+			String  primaryKey=  getPrimaryKey();
+			if(primaryKey == null){
+				throw new PrimaryKeyException("table name "+this.dbTableName +" not have primaryKey");
+			}
+			
+			deleteSqlWithId.append(" where ").append(primaryKey).append(" = ?");
+		}
+		return deleteSqlWithId;
 	}
 
 	public  RowMapper<T> getRowMapper() {

@@ -6,10 +6,15 @@ import java.util.List;
 
 
 /**
-  *@author thinking 2012-9-1 *
-  */
+ * @author thinking 
+ * @since 2012-9-1 
+ * @version 1.0
+ * 
+ */
 public class ZtreeNode  implements Serializable{
 
+	private static final long serialVersionUID = 7598358324659309185L;
+	
 	private String id;
 	private String pId;
 	private String name;
@@ -19,6 +24,13 @@ public class ZtreeNode  implements Serializable{
 	private String target;
 	private boolean checked;
 	private boolean open;
+	
+	private String  icon;
+	/**
+	 * ztree 默认含有level属性会自动赋值，故不要设置此属性，新增属性如下
+	 */
+	private int nodeLevel;
+	
 	private List<ZtreeNode> children;
 	/**
 	 * 设置节点是否隐藏checkbox/radio 当settiong.check.enable = true有效
@@ -139,6 +151,19 @@ public class ZtreeNode  implements Serializable{
 	 */
 	public void setOpen(boolean open) {
 		this.open = open;
+	}
+	
+	public String getIcon() {
+		return icon;
+	}
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+	public int getNodeLevel() {
+		return nodeLevel;
+	}
+	public void setNodeLevel(int nodeLevel) {
+		this.nodeLevel = nodeLevel;
 	}
 	/**
 	 * @return the children

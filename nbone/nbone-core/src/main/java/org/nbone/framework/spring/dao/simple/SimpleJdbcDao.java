@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
 import org.nbone.persistence.BaseSqlSession;
+import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlSession;
 import org.nbone.persistence.mapper.DbMappingBuilder;
@@ -32,7 +33,7 @@ import org.springframework.stereotype.Repository;
 @Repository("simpleJdbcDao")
 @Primary
 @Lazy
-public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,InitializingBean{
+public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSqlSession,InitializingBean{
 	
 	@Resource(name="baseJdbcDao")
 	private BaseJdbcDao baseJdbcDao;
@@ -116,6 +117,12 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,Initial
 	public int delete(Class<?> clazz, Serializable id) {
 		return 0;
 	}
+	
+	@Override
+	public <T> int delete(Class<T> clazz, Object[] ids) {
+		return 0;
+	}
+
 
 	@Override
 	public <T> T get(Class<T> clazz, Serializable id) {
@@ -126,44 +133,31 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,Initial
 	public <T> T get(Object object) {
 		return null;
 	}
+
 	
-	@Override
-	public <T> List<T> getAll(Class<T> clazz) {
-		return null;
-	}
-	
-	@Override
-	public <T> List<T> getAll(Class<T> clazz,Collection<?> ids) {
-		return null;
-	}
-	@Override
-	public <T> List<T> getAll(Class<T> clazz, Object[] ids) {
-		return null;
-	}
-
-
-	@Override
-	public <T> List<T> getForList(Object object) {
-		return null;
-	}
-
-	@Override
-	public <T> List<T> queryForList(Object object) {
-		return null;
-	}
-
-	@Override
-	public <T> List<T> findForList(Object object) {
-		return null;
-	}
-
 	@Override
 	public int[] batchInsert(Object[] objects) {
-		insertProcess(objects[0]);
-		
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.length];
 		for (int i = 0; i < objects.length; i++) {
+			if(i == 0){
+				insertProcess(objects[0]);
+			}
 			batch[i] = new EntityPropertySqlParameterSource(objects[i]);
+		}
+		int[] row  = simpleJdbcInsert.executeBatch(batch);
+		return row;
+	}
+	
+	@Override
+	public int[] batchInsert(Collection<?> objects) {
+		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.size()];
+		int index = 0 ; 
+		for (Object object : objects) {
+			if(index == 0){
+				insertProcess(object);
+			}
+			batch[index] = new EntityPropertySqlParameterSource(object);
+			index ++;
 		}
 		int[] row  = simpleJdbcInsert.executeBatch(batch);
 		return row;
@@ -175,23 +169,19 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,Initial
 		return null;
 	}
 
-
 	@Override
-	public <T> int delete(Class<T> clazz, Object[] ids) {
-		return 0;
-	}
-
-	@Override
-	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize) {
+	public int[] batchUpdate(Collection<?> objects) {
 		return null;
 	}
 
-
 	@Override
-	public <T> List<T> queryForList(Object object, SqlConfig sqlConfig) {
+	public <T> int[] batchDelete(Class<T> clazz, Serializable[] ids) {
 		return null;
 	}
 
-
+	@Override
+	public <T> int[] batchDelete(Class<T> clazz, List<Serializable> ids) {
+		return null;
+	}
 
 }

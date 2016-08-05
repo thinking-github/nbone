@@ -1,6 +1,7 @@
 package org.nbone.mvc;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -60,6 +61,11 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @param object
 	 */
 	public void delete(T object);
+	/**
+	 * 按实体中不为空属性参数删除数据
+	 * @param object
+	 */
+	public void deleteByEntityParams(T object);
 	
 	/**
 	 * 按id删除数据
@@ -68,12 +74,17 @@ public interface ISuper<T,PK extends Serializable> {
 	public void delete(PK id);
 	
 	public void delete(PK[] ids);
+	
+	public void delete(Collection<?> ids);
+	
 	/**
 	 * 按id获取数据
 	 * @param id
 	 * @return
 	 */
 	public T get(PK id);
+	
+	public long count();
 	
 	/**
 	 * 获取数据(数据量大时不建议使用)

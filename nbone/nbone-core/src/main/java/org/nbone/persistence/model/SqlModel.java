@@ -1,6 +1,12 @@
 package org.nbone.persistence.model;
 
+import java.util.Map;
+
+import org.nbone.lang.BaseObject;
+import org.nbone.persistence.JdbcParameter;
+import org.nbone.persistence.exception.PersistenceBaseRuntimeException;
 import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.util.lang.ToStringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
@@ -52,17 +58,21 @@ public class SqlModel<T> {
 	
 	
 	
-	public static  <T> boolean  checkSqlModel(SqlModel<T> sqlModel) {
+	public static  <T> void  checkSqlModel(SqlModel<T> sqlModel) {
 		if(sqlModel == null || sqlModel == EmptySqlModel){
-			return false;
 		}
-		return true;
 	}
 	
 
 	public String getSql() {
+		if(JdbcParameter.showSql){
+			System.out.println(toString());
+			System.out.println(getPrintSqlParameter());
+		}
 		return sql;
 	}
+
+	
 
 	public void setSql(String sql) {
 		this.sql = sql;
@@ -100,5 +110,28 @@ public class SqlModel<T> {
 		return tableMapper.getRowMapper();
 	}
 	
+	public StringBuilder getPrintSqlParameter(){
+		
+		StringBuilder print = new StringBuilder();
+		if(parameter != null){
+			if(parameter instanceof Map){
+				print .append("Jdbc Parameter Map :").append(parameter) ;
+			}else{
+				print.append("Jdbc Parameter POJO : ").append(ToStringUtils.toStringMultiLine(parameter));
+			}
+		}else{
+			if(parameterArray != null){
+				print.append("Jdbc parameterArray : ").append(parameterArray);
+			}
+		}
+		
+		return print;
+	}
+	@Override
+	public String toString() {
+		StringBuilder sqlSb = new StringBuilder("Jdbc sql : "+sql);
+		
+		return sqlSb.toString();
+	}
 
 }

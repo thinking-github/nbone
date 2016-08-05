@@ -9,6 +9,7 @@ import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.enums.JdbcFrameWork;
+import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.support.PageSuport;
 import org.springframework.data.domain.Page;
@@ -65,31 +66,30 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	@SuppressWarnings("unchecked")
 	public <T> Page<T> findByPage(Object object,int pageNum ,int pageSize){
 		SqlModel<Object> sqlModel = sqlBuilder.buildSimpleSelectSql(object);
-		if(SqlModel.checkSqlModel(sqlModel)){
-			
-			String sql = sqlModel.getSql();
-			String countSql = PageSuport.getCountSqlString(sql);
-			String pageSql  = "";
-			
-			if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
-				pageSql = PageSuport.toMysqlPage(sql, pageNum, pageSize);
-				
-			}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
-				pageSql = PageSuport.toOraclePage(sql, pageNum, pageSize);
-			}
-			
-			RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-			SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
-			
-			List<T> rows = jdbcTemplate.query(getPreparedStatementCreator(pageSql,paramSource), rowMapper);
-			
-			long  count  =  this.queryForLong(countSql, paramSource);
-			
-			Page<T> page  = new PageImpl<T>(rows, null,count);
-			
-			return page;
+		if(sqlModel == null){
+			throw new BuilderSQLException("sqlModel is null.");
 		}
-		return new PageImpl<T>(null);
+		String sql = sqlModel.getSql();
+		String countSql = PageSuport.getCountSqlString(sql);
+		String pageSql  = "";
+		
+		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
+			pageSql = PageSuport.toMysqlPage(sql, pageNum, pageSize);
+			
+		}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
+			pageSql = PageSuport.toOraclePage(sql, pageNum, pageSize);
+		}
+		
+		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
+		
+		List<T> rows = jdbcTemplate.query(getPreparedStatementCreator(pageSql,paramSource), rowMapper);
+		
+		long  count  =  this.queryForLong(countSql, paramSource);
+		
+		Page<T> page  = new PageImpl<T>(rows, null,count);
+		
+		return page;
 	}
 	
 	

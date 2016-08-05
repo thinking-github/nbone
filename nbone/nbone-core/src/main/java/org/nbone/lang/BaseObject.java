@@ -1,6 +1,7 @@
-package org.nbone.mvc;
+package org.nbone.lang;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.nbone.util.lang.ToStringUtils;
@@ -28,6 +29,24 @@ public abstract class BaseObject {
 		return target;
 	}
 
+	protected <E>  List<E> copyProperties(Object[] sources, Class<E> targetClass){
+		List<E> targetList = new  ArrayList<E>(sources.length);
+		for (Object source : sources) {
+			E targetObject = this.copyProperties(source, targetClass);
+			targetList.add(targetObject);
+		}
+		
+		return targetList;
+	}
+	
+	protected <E> List<E> copyProperties(Collection<?> sources, Class<E> targetClass){
+		List<E> targetList = new  ArrayList<E>(sources.size());
+		for (Object source : sources) {
+			E targetObject = this.copyProperties(source, targetClass);
+			targetList.add(targetObject);
+		}
+		return targetList;
+	}
 	/**
 	 * 
 	 * <p>Discription:[listBean to ListDto]</p>
