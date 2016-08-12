@@ -55,17 +55,17 @@ public class TableMapper<T> {
     /**
      * 以数据库字段为Key , 最好使用LinkedHashMap保证key的顺序
      */
-    private Map<String, FieldMapper> fieldMappers = new LinkedHashMap<String, FieldMapper>();
+    private Map<String, FieldMapper> fieldMappers;
     
     /**
      * 以JavaBean属性为Key
      */
-    private Map<String, PropertyDescriptor> mappedPropertys= new HashMap<String, PropertyDescriptor>();
+    private Map<String, PropertyDescriptor> mappedPropertys;
     
     /**
      * 数据库表字段映射列表
      */
-    private List<FieldMapper> fieldMapperList =  new  ArrayList<FieldMapper>();
+    private  List<FieldMapper> fieldMapperList ;
     /**
      * 数据库列名称数组
      */
@@ -75,19 +75,19 @@ public class TableMapper<T> {
      */
     private String   commaDelimitedColumns;
     
-    private StringBuilder selectAllSql;
+    private String selectAllSql;
     
-    private StringBuilder deleteAllSql;
+    private String deleteAllSql;
     
-    private StringBuilder countSql;
+    private String countSql;
     /**
      * 根据Id查询 使用?占位符
      */
-    private StringBuilder selectSqlWithId;
+    private String selectSqlWithId;
     /**
      * 根据Id删除 使用?占位符
      */
-    private StringBuilder deleteSqlWithId;
+    private String deleteSqlWithId;
     
     
     /**
@@ -98,8 +98,7 @@ public class TableMapper<T> {
     
 
 	public TableMapper(Class<T> entityClazz) {
-		this.entityClazz = entityClazz;
-		this.entityName = entityClazz.getName();
+		this(entityClazz, 10);
 	}
 	
 	/**
@@ -107,11 +106,18 @@ public class TableMapper<T> {
 	 * @param entityClazz
 	 * @param initialCapacity
 	 */
-	public TableMapper(Class<T> entityClazz,int initialCapacity) {
-		this(entityClazz);
-		fieldMapperList =  new ArrayList<FieldMapper>(initialCapacity);
-		fieldMappers =  new LinkedHashMap<String, FieldMapper>(initialCapacity);
-		mappedPropertys =  new HashMap<String, PropertyDescriptor>(initialCapacity);
+	public TableMapper(Class<T> entityClazz,int fieldInitialCapacity) {
+		fieldInitialCapacity = fieldInitialCapacity +5;
+		
+		if(fieldInitialCapacity < 10){
+			fieldInitialCapacity = 10;
+		}
+		
+		this.entityClazz = entityClazz;
+		this.entityName = entityClazz.getName();
+		this.fieldMapperList =  new ArrayList<FieldMapper>(fieldInitialCapacity);
+		this.fieldMappers =  new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
+		this.mappedPropertys =  new HashMap<String, PropertyDescriptor>(fieldInitialCapacity);
 	}
 	
 	public Annotation getTableMapperAnnotation() {
@@ -228,6 +234,19 @@ public class TableMapper<T> {
 	public FieldMapper getFieldMapper(String dbFieldName) {
 		return fieldMappers.get(dbFieldName);
 	}
+	
+	public FieldMapper getFieldMapperByPropertyName(String propertyName) {
+		if(propertyName == null){
+			return null;
+		}
+		for (FieldMapper fieldMapper : fieldMapperList) {
+			if(propertyName.equals(fieldMapper.getFieldName())){
+				return fieldMapper;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 根据数据库字段名称查询Java字段名称
 	 * @param dbFieldName
@@ -242,15 +261,12 @@ public class TableMapper<T> {
 	 * @return
 	 */
 	public String getDbFieldName(String fieldName) {
-		if(fieldName == null){
+		FieldMapper fieldMapper = getFieldMapperByPropertyName(fieldName);
+		if(fieldMapper == null){
 			return null;
 		}
-		for (FieldMapper fieldMapper : fieldMapperList) {
-			if(fieldName.equals(fieldMapper.getFieldName())){
-				return fieldMapper.getDbFieldName();
-			}
-		}
-		return null;
+		return fieldMapper.getDbFieldName();
+	
 	}
 	
 	/**
@@ -332,58 +348,101 @@ public class TableMapper<T> {
 		this.commaDelimitedColumns = commaDelimitedColumns;
 	}
 
-	
-	public StringBuilder getSelectAllSql() {
+	/**
+	 * 查询全部sql (返回副本)
+	 * @return
+	 */
+	public String getSelectAllSql() {
 		if(selectAllSql == null){
-			selectAllSql = new StringBuilder();
-			selectAllSql.append("SELECT ");
-	        
-		    selectAllSql.append(this.getCommaDelimitedColumns());
-		        
-		    selectAllSql.append(" FROM ").append(this.getDbTableName());
+			StringBuilder selectAllSqlTemp = new StringBuilder();
+			selectAllSqlTemp.append("SELECT ");
+			selectAllSqlTemp.append(this.getCommaDelimitedColumns());
+			selectAllSqlTemp.append(" FROM ").append(this.getDbTableName());
+
+			
+		    this.selectAllSql = selectAllSqlTemp.toString();
 		}
 		
 		return selectAllSql;
 	}
+	/**
+	 * 根字段返回查询sql 用于按需字段查询
+	 * @param fieldNames
+	 * @param isDbFieldName true为数据库字段名称,false 为Java字段名称
+	 * @return
+	 */
+	public String getSelectAllSql(String[] fieldNames,boolean isDbFieldName) {
+		if(fieldNames == null || fieldNames.length == 0){
+			return getSelectAllSql();
+		}
+	    StringBuilder selectAllSql = new StringBuilder();
+		selectAllSql.append("SELECT ");
+		
+		if(isDbFieldName){
+				selectAllSql.append(StringUtils.arrayToDelimitedString(fieldNames, ","));
+			
+		}else{
+			for (int i = 0; i < fieldNames.length; i++) {
+				String dbFieldName = getDbFieldName(fieldNames[i]);
+				if(i > 0){
+					selectAllSql.append(",");
+				}
+				selectAllSql.append(dbFieldName);
+			}
+		}
+		
+	    selectAllSql.append(" FROM ").append(this.getDbTableName());
+		
+		return selectAllSql.toString();
+	}
 
-
-	public StringBuilder getDeleteAllSql() {
+   /**
+    * 返回副本
+    * @return
+    */
+	public String getDeleteAllSql() {
 		if(deleteAllSql == null ){
-			deleteAllSql  = new StringBuilder();
-			deleteAllSql.append("delete from ").append(this.getDbTableName());
+			StringBuilder deleteAllSqlTemp  = new StringBuilder();
+			deleteAllSqlTemp.append("delete from ").append(this.getDbTableName());
+			
+			this.deleteAllSql = deleteAllSqlTemp.toString();
 		}
 		
 		return deleteAllSql;
 	}
 
-	public StringBuilder getCountSql() {
+	public String getCountSql() {
 		if(countSql == null){
-			countSql = new StringBuilder();
-			countSql.append("select count(1) from ").append(this.getDbTableName());
+			StringBuilder countSqlTemp = new StringBuilder();
+			countSqlTemp.append("select count(1) from ").append(this.getDbTableName());
+			
+			this.countSql = countSqlTemp.toString();
 		}
 		
 		return countSql;
 	}
 
 	
-	public StringBuilder getSelectSqlWithId() {
+	public String getSelectSqlWithId() {
 		if(selectSqlWithId == null){
-			selectSqlWithId = new StringBuilder(getSelectAllSql());
+			StringBuilder selectSqlWithIdTemp = new StringBuilder(getSelectAllSql());
 			
 			String  primaryKey=  getPrimaryKey();
 			if(primaryKey == null){
 				throw new PrimaryKeyException("table name "+this.dbTableName +" not have primaryKey");
 			}
 			
-			selectSqlWithId.append(" where ").append(primaryKey).append(" = ?");
+			selectSqlWithIdTemp.append(" where ").append(primaryKey).append(" = ?");
+			
+			this.selectSqlWithId = selectSqlWithIdTemp.toString();
 		}
 		
 		return selectSqlWithId;
 	}
 
-	public StringBuilder getDeleteSqlWithId() {
+	public String getDeleteSqlWithId() {
 		if(deleteSqlWithId == null){
-			deleteSqlWithId = new StringBuilder(getDeleteAllSql());
+			StringBuilder deleteSqlWithId = new StringBuilder(getDeleteAllSql());
 			
 			String  primaryKey=  getPrimaryKey();
 			if(primaryKey == null){
@@ -391,6 +450,8 @@ public class TableMapper<T> {
 			}
 			
 			deleteSqlWithId.append(" where ").append(primaryKey).append(" = ?");
+			
+			this.deleteSqlWithId = deleteSqlWithId.toString();
 		}
 		return deleteSqlWithId;
 	}

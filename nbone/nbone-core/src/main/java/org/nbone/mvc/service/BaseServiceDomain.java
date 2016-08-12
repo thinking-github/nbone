@@ -7,9 +7,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.nbone.lang.BaseObject;
+import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlSession;
+import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
 /**
@@ -196,6 +198,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return beans;
 	}
 
+
 	@Override
 	public List<P> getForList(P object) {
 		checkBuilded();
@@ -230,10 +233,28 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		List<P> beans = namedJdbcDao.getAll(targetClass, ids);
 		return beans;
 	}
+	@Override
+	public List<P> getAll(Collection<?> ids) {
+		checkBuilded();
+		List<P> beans = namedJdbcDao.getAll(targetClass, ids);
+		return beans;
+	}
+	
+	@Override
+	public long count() {
+		checkBuilded();
+		return namedJdbcDao.count(targetClass);
+	}
+	
+	@Override
+	public long count(P object) {
+		checkBuilded();
+		return namedJdbcDao.count(object);
+	}
+
 	
 	@Override
 	public void batchInsert(P[] objects) {
-		
 		checkBuilded();
 		namedJdbcDao.batchInsert(objects);
 	}
@@ -241,9 +262,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	public void batchInsert(Collection<P> objects) {
 		checkBuilded();
 		namedJdbcDao.batchInsert(objects);
-		
 	}
-	
 	
 	@Override
 	public void batchUpdate(P[] objects) {
@@ -256,23 +275,51 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		namedJdbcDao.batchUpdate(objects);
 	}
 	
-	
 	@Override
 	public void batchDelete(Class<P> clazz, Serializable[] ids) {
 		checkBuilded();
 		namedJdbcDao.batchDelete(clazz, ids);
-		
 	}
 	@Override
 	public void batchDelete(Class<P> clazz, List<Serializable> ids) {
 		checkBuilded();
 		namedJdbcDao.batchDelete(clazz, ids);
 	}
+
+	
 	@Override
-	public long count() {
-		
-		return namedJdbcDao.count(targetClass);
+	public Page<P> getForPage(Object object, int pageNum, int pageSize) {
+		checkBuilded();
+		return namedJdbcDao.getForPage(object, pageNum, pageSize);
 	}
+	@Override
+	public Page<P> queryForPage(Object object, int pageNum, int pageSize) {
+		checkBuilded();
+		return namedJdbcDao.queryForPage(object, pageNum, pageSize);
+	}
+	@Override
+	public Page<P> findForPage(Object object, int pageNum, int pageSize) {
+		checkBuilded();
+		return namedJdbcDao.findForPage(object, pageNum, pageSize);
+	}
+	
+	
+	@Override
+	public <E> List<E> getForList(Object object, String fieldName) {
+		checkBuilded();
+		return namedJdbcDao.getForList(object, fieldName);
+	}
+	@Override
+	public List<P> getForListWithFieldNames(Object object, String[] fieldNames) {
+		checkBuilded();
+		return namedJdbcDao.getForListWithFieldNames(object, fieldNames, false);
+	}
+	@Override
+	public int updateMathOperation(Object object, MathOperation mathOperation) {
+		checkBuilded();
+		return namedJdbcDao.updateMathOperation(object, mathOperation);
+	}
+
 
 
 }

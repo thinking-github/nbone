@@ -87,8 +87,9 @@ public class DbMappingBuilder {
                 return tableMapper;
             }
             
-            
-            tableMapper = new TableMapper<E>(entityClass);
+            //Column Field mapper
+            Field[] fields = entityClass.getDeclaredFields();
+            tableMapper = new TableMapper<E>(entityClass,fields.length);
             //table Entity mapper
             Annotation[] classAnnotations = entityClass.getDeclaredAnnotations();
             if (classAnnotations.length == 0) {
@@ -106,8 +107,6 @@ public class DbMappingBuilder {
                         + "which has the database table information," + " I can't build 'TableMapper' for it.");
             }
             
-            //Column Field mapper
-            Field[] fields = entityClass.getDeclaredFields();
             List<String> primaryKeys = new ArrayList<String>(1);
             for (Field field : fields) {
                 PropertyDescriptor pd  = BeanUtils.getPropertyDescriptor(entityClass, field.getName());

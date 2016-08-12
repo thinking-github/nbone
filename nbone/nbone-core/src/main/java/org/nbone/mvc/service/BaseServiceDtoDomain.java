@@ -8,11 +8,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.nbone.framework.mybatis.SupperMapper;
+import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.lang.BaseObject;
+import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlSession;
 import org.nbone.util.reflect.GenericsUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 
 /**
  * 
@@ -240,10 +243,25 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		List<P> beans = baseServiceDomain.getAll(ids);
 		return listBean2ListDto(beans);
 	}
+	
+
+	@Override
+	public List<T> getAll(Collection<?> ids) {
+		List<P> beans = baseServiceDomain.getAll(ids);
+		return listBean2ListDto(beans);
+	}
 
 	@Override
 	public long count() {
 		return baseServiceDomain.count();
+	}
+
+	
+	@Override
+	public long count(T object) {
+		P bean = this.copyProperties(object, targetClass);
+		
+		return baseServiceDomain.count(bean);
 	}
 
 	@Override
@@ -284,7 +302,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public void batchUpdate(Object[] objects) {
+	public void batchUpdate(T[] objects) {
 		List<P> beans = this.copyProperties(objects, targetClass);
 		baseServiceDomain.batchUpdate(beans);
 	}
@@ -306,8 +324,62 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		
 	}
 
+	@Override
+	public Page<T> getForPage(Object object, int pageNum, int pageSize) {
+		P bean = this.copyProperties(object, targetClass);
+		
+		Page<P> page = baseServiceDomain.getForPage(bean, pageNum, pageSize);
+		List<P> beans = page.getContent();
+		List<T> dtos  = listBean2ListDto(beans);
+		
+		Page<T> result = new PageImpl<T>(dtos, null, page.getTotalElements());
+		return result;
+	}
 
-	
+	@Override
+	public Page<T> queryForPage(Object object, int pageNum, int pageSize) {
+		P bean = this.copyProperties(object, targetClass);
+		
+		Page<P> page = baseServiceDomain.queryForPage(bean, pageNum, pageSize);
+		List<P> beans = page.getContent();
+		List<T> dtos  = listBean2ListDto(beans);
+		
+		Page<T> result = new PageImpl<T>(dtos, null, page.getTotalElements());
+		return result;
+	}
+
+	@Override
+	public Page<T> findForPage(Object object, int pageNum, int pageSize) {
+		P bean = this.copyProperties(object, targetClass);
+		
+		Page<P> page = baseServiceDomain.findForPage(bean, pageNum, pageSize);
+		List<P> beans = page.getContent();
+		List<T> dtos  = listBean2ListDto(beans);
+		
+		Page<T> result = new PageImpl<T>(dtos, null, page.getTotalElements());
+		return result;
+	}
+
+	@Override
+	public <E> List<E> getForList(Object object, String fieldName) {
+		P bean = this.copyProperties(object, targetClass);
+		return baseServiceDomain.getForList(bean, fieldName);
+	}
+
+	@Override
+	public List<T> getForListWithFieldNames(Object object, String[] fieldNames) {
+		P bean = this.copyProperties(object, targetClass);
+		List<P> beans = baseServiceDomain.getForListWithFieldNames(bean, fieldNames);
+		List<T> dtos  = listBean2ListDto(beans);
+		return dtos;
+	}
+
+	@Override
+	public int updateMathOperation(Object object, MathOperation mathOperation) {
+		P bean = this.copyProperties(object, targetClass);
+		return baseServiceDomain.updateMathOperation(bean, mathOperation);
+	}
+
 	
 
 }

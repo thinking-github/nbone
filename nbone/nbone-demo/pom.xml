@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.nbone</groupId>
     <artifactId>nbone-parent</artifactId>
-     <version>${nbone.version}</version>
+     <version>1.0.1-SNAPSHOT</version>
     <relativePath>../nbone-parent/pom.xml</relativePath>
   </parent>
  
@@ -35,6 +35,48 @@
         <artifactId>jsr305</artifactId>
         <version>1.3.9</version>
       </dependency>
+      
+      <dependency>
+	    <groupId>org.ninjaframework</groupId>
+	    <artifactId>ninja-servlet</artifactId>
+	    <version>5.7.0</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>com.google.inject</groupId>
+	    <artifactId>guice</artifactId>
+	    <version>4.0</version>
+	</dependency>
+	
+	  	<dependency>
+		    <groupId>org.jodd</groupId>
+		    <artifactId>jodd-bean</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.jodd</groupId>
+		    <artifactId>jodd-props</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.jodd</groupId>
+		    <artifactId>jodd-http</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.jodd</groupId>
+		    <artifactId>jodd-mail</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.jodd</groupId>
+		    <artifactId>jodd-log</artifactId>
+		</dependency> 
+	
+	<dependency>
+	    <groupId>com.sparkjava</groupId>
+	    <artifactId>spark-core</artifactId>
+	    <version>2.5</version>
+	</dependency>
+	
       
       
   </dependencies>

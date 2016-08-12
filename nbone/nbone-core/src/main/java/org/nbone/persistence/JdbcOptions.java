@@ -1,6 +1,6 @@
 package org.nbone.persistence;
 
-public class JdbcParameter {
+public class JdbcOptions {
 	
 	
 	public static boolean showSql =  false;

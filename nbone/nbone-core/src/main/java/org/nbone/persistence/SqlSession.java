@@ -1,14 +1,14 @@
 package org.nbone.persistence;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nbone.lang.MathOperation;
 /**
  * 以实体Bean的方式实现单个对象的 增/删/改/查
  * @author thinking
- * @since 2015-12-12
+ * @since 2014-12-12
  *
  */
 public interface SqlSession  extends QueryOperations{
@@ -111,6 +111,18 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public long count(Class<?> clazz);
+	/**
+	 * 根据实体的参数统计单表的行数
+	 * @param object
+	 * @return
+	 */
+	public long count(Object object);
+	/**
+	 * 对数据的字段进行数学运算 (加减乘除...)
+	 * @param object 根据实体不为null参数计算且是数字类型
+	 * @param mathOperation
+	 */
+	public int updateMathOperation(Object object,MathOperation mathOperation);
 	
 	
 	

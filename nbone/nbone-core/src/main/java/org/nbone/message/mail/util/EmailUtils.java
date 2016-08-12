@@ -94,7 +94,7 @@ public class EmailUtils {
 	
 	public static void  asyncSend(final String subject,final String content,final Object  emailUserList,final MailServerVo mailServerVo) {
 		
-		Thread thread=new  Thread(){
+		Thread thread= new  Thread(){
 			@Override
 			public void run() {
 				try {

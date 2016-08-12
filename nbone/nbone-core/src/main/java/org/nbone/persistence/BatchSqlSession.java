@@ -3,7 +3,12 @@ package org.nbone.persistence;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-
+/**
+ * 
+ * 以实体Bean的方式实现对象的批量的  增/删/改/查
+ * @author thinking
+ * @since 2015-12-12
+ */
 public interface BatchSqlSession extends SqlSession {
 	
 	/**

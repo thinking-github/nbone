@@ -10,7 +10,7 @@
    <parent>
     <groupId>org.nbone</groupId>
     <artifactId>nbone-parent</artifactId>
-    <version>${nbone.version}</version>
+    <version>1.0.1-SNAPSHOT</version>
     <relativePath>../nbone-parent/pom.xml</relativePath>
   </parent>
  

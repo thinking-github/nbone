@@ -1,4 +1,4 @@
-package org.nbone.framework;
+package org.nbone.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
  * @since   2016-04-09
  *
  */
-public abstract class AbstractHttpServlet  implements ContentType {
+public abstract class SuperHttpServlet  implements ContentType {
 	/**
 	 * 数据转化标识
 	 */

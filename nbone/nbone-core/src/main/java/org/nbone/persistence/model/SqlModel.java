@@ -2,10 +2,13 @@ package org.nbone.persistence.model;
 
 import java.util.Map;
 
+import org.nbone.context.system.SystemContext;
 import org.nbone.lang.BaseObject;
-import org.nbone.persistence.JdbcParameter;
+import org.nbone.persistence.JdbcConstants;
+import org.nbone.persistence.JdbcOptions;
 import org.nbone.persistence.exception.PersistenceBaseRuntimeException;
 import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.support.PageSuport;
 import org.nbone.util.lang.ToStringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -65,15 +68,33 @@ public class SqlModel<T> {
 	
 
 	public String getSql() {
-		if(JdbcParameter.showSql){
-			System.out.println(toString());
-			System.out.println(getPrintSqlParameter());
-		}
+		print();
+		return sql;
+	}
+	
+	public String getPlainSql(){
 		return sql;
 	}
 
+	public String getPageSql(int pageNum ,int pageSize){
+		String pageSql  = "";
+		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
+			pageSql = PageSuport.toMysqlPage(sql, pageNum, pageSize);
+			
+		}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
+			pageSql = PageSuport.toOraclePage(sql, pageNum, pageSize);
+		}
+		print(pageSql);
+		return pageSql;
+	}
 	
-
+	
+	public String getCountSql(){
+		String countSql = PageSuport.getCountSqlString(sql);
+		return countSql;
+	}
+	
+	
 	public void setSql(String sql) {
 		this.sql = sql;
 	}
@@ -109,6 +130,21 @@ public class SqlModel<T> {
 	public RowMapper<?> getRowMapper(){
 		return tableMapper.getRowMapper();
 	}
+	
+	private void print(){
+		if(JdbcOptions.showSql){
+			System.out.println(toString());
+			System.out.println(getPrintSqlParameter());
+		}
+	}
+	
+	private void print(String printSql){
+		if(JdbcOptions.showSql){
+			System.out.println(printSql);
+			System.out.println(getPrintSqlParameter());
+		}
+	}
+	
 	
 	public StringBuilder getPrintSqlParameter(){
 		

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.nbone.context.system.SystemContext;
+import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.SqlBuilder;
@@ -13,7 +14,6 @@ import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.support.PageSuport;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -55,7 +55,6 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 		
 	}
 	
-	
 	/**
 	 * 单表数据分页
 	 * @param object
@@ -63,22 +62,51 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param pageSize
 	 * @return
 	 */
+	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize){
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object);
+		return processPage(sqlModel, object, pageNum, pageSize);
+		
+	}
+	/**
+	 * 单表数据分页
+	 * @param object
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize){
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object);
+		return processPage(sqlModel, object, pageNum, pageSize);
+	}
+	/**
+	 * 单表数据分页
+	 * @param object
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	
+	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize){
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object);
+		
+		return processPage(sqlModel, object, pageNum, pageSize);
+	}
+	
+	
 	@SuppressWarnings("unchecked")
-	public <T> Page<T> findByPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.buildSimpleSelectSql(object);
+	private <T> Page<T>  processPage(SqlModel<Object> sqlModel,Object object,int pageNum ,int pageSize){
 		if(sqlModel == null){
 			throw new BuilderSQLException("sqlModel is null.");
 		}
-		String sql = sqlModel.getSql();
-		String countSql = PageSuport.getCountSqlString(sql);
-		String pageSql  = "";
-		
-		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
-			pageSql = PageSuport.toMysqlPage(sql, pageNum, pageSize);
-			
-		}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
-			pageSql = PageSuport.toOraclePage(sql, pageNum, pageSize);
+		if(pageNum <= 0 ){
+			pageNum = 1;
 		}
+		if(pageSize <= 0 ){
+			pageSize = 10;
+		}
+		
+		String countSql = sqlModel.getCountSql();
+		String pageSql  = sqlModel.getPageSql(pageNum, pageSize);
 		
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
 		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
@@ -90,11 +118,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 		Page<T> page  = new PageImpl<T>(rows, null,count);
 		
 		return page;
+		
 	}
-	
-	
-	
-	
-	
 
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.junit.Test;
+import org.nbone.lang.MathOperation;
 import org.nbone.persistence.criterion.QueryOperator;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.model.SqlModel;
@@ -16,20 +17,20 @@ public class BaseSqlBuilderTest {
 	};
 	//@Test
 	public void testbuildSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.buildSelectSql(getTsProjectDTO());
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(getTsProjectDTO());
 		System.out.println(sqlModel.getSql());
 	}
 	
 	//@Test
 	public void testbuildSimpleSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.buildSimpleSelectSql(getTsProjectDTO());
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(getTsProjectDTO());
 		System.out.println(sqlModel.getSql());
 		
 	}
 	//@Test
 	public void testbuildSelectSqlByIds(){
 		
-		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.buildSelectSqlByIds(TsProjectDTO.class, new Object[]{1030,1037});
+		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.selectSqlByIds(TsProjectDTO.class, new Object[]{1030,1037});
 		System.out.println(sqlModel.getSql());
 		
 	}
@@ -37,19 +38,19 @@ public class BaseSqlBuilderTest {
 	//@Test
 	public void testbuildDeleteSqlByIds(){
 		
-		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.buildDeleteSqlByIds(TsProjectDTO.class, new Long[]{1030L,1037L});
+		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.deleteSqlByIds(TsProjectDTO.class, new Long[]{1030L,1037L});
 		System.out.println(sqlModel.getSql());
 		
 	}
 	
-	@Test
+	//@Test
 	public void testbuildDeleteSql(){
 		TsProjectDTO object = new TsProjectDTO();
 		object.setCode("2");
 		
-		SqlModel<Object> sqlModel = sqlBuilder.buildDeleteSqlByEntityParams(object, false);
-		StringBuilder sqld = sqlModel.getTableMapper().getDeleteSqlWithId();
-		StringBuilder sqls = sqlModel.getTableMapper().getSelectSqlWithId();
+		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntityParams(object, false);
+		String sqld = sqlModel.getTableMapper().getDeleteSqlWithId();
+		String sqls = sqlModel.getTableMapper().getSelectSqlWithId();
 		System.out.println(sqlModel.getSql());
 		System.out.println(sqld);
 		System.out.println(sqls);
@@ -66,7 +67,7 @@ public class BaseSqlBuilderTest {
 	public void testbuildUpdateSql(){
 		TsProjectDTO object = getTsProjectDTO();
 		object.setId(9L);
-		SqlModel<Object> sqlModel = sqlBuilder.buildUpdateSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object);
 		System.out.println(sqlModel.getSql());
 	}
 	
@@ -83,11 +84,33 @@ public class BaseSqlBuilderTest {
 		
 		sqlConfig.setOrderFieldASC("id","modify_dt");
 		sqlConfig.setOrderFieldDESC("create_dt");
-		SqlModel<Map<String, Object>> sqlModel = sqlBuilder.buildObjectModeSelectSql(object, sqlConfig);
+		SqlModel<Map<String, Object>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
 		
 		System.out.println(sqlModel.getSql());
 	}
 	
+	/**
+	 * 自定义字段查询
+	 */
+	@Test
+	public void testCustomFieldBuildSelectSql(){
+		TsProjectDTO object = getTsProjectDTO();
+		object.setId(9L);
+		object.setSort(2);
+		
+		SqlConfig sqlConfig = new SqlConfig(-1);
+		sqlConfig.setFieldNames(new String[]{"id","name"});
+		sqlConfig.setDbFieldMode(false);
+		
+		SqlModel<Object> sqlModel= sqlBuilder.selectSql(object, sqlConfig);
+		
+		SqlModel<Object> sqlModel2 = sqlBuilder.updateMathOperationSql(object, MathOperation.ADD);
+		
+		SqlModel<Object> sqlModel3 = sqlBuilder.countSql(object);
+		
+		System.out.println(sqlModel.getSql());
+		System.out.println(sqlModel2.getSql());
+	}
 	
 	
 	public TsProjectDTO getTsProjectDTO(){

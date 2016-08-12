@@ -23,7 +23,7 @@ public class PageSuport {
 	
 	
 	public static String getCountSqlString(String sql) {
-		return "select count(*) as total  from ( " + sql + " ) sysT";
+		return "select count(1) as total  from ( " + sql + " ) sysT";
 	}
 
 	

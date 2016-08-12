@@ -27,6 +27,17 @@ public class SqlConfig {
     private SqlPropertyDescriptors  sqlPds = new SqlPropertyDescriptors();
     
     private List<SqlPropertyRange> sqlPropertyRanges = new ArrayList<SqlPropertyRange>(1);
+    
+    /**
+     * 字段名称数组,用于按需返回字段
+     */
+    private String[] fieldNames;
+    /**
+     * 默认采用Java字段模式
+     */
+    private boolean dbFieldMode = false;
+    
+    
     /**
      * 此实体Bean 引用其他的实体Bean列表
      */
@@ -47,7 +58,6 @@ public class SqlConfig {
     private String[] notinStringFields;
     private Map<String,String> inStringFieldsMap;
     private Map<String,String> notinStringFieldsMap;
-    
    
 	private List dtField;
     /**
@@ -208,6 +218,23 @@ public class SqlConfig {
 
 	public void setSqlPropertyRanges(List<SqlPropertyRange> sqlPropertyRanges) {
 		this.sqlPropertyRanges = sqlPropertyRanges;
+	}
+	
+
+	public String[] getFieldNames() {
+		return fieldNames;
+	}
+
+	public void setFieldNames(String[] fieldNames) {
+		this.fieldNames = fieldNames;
+	}
+
+	public boolean isDbFieldMode() {
+		return dbFieldMode;
+	}
+
+	public void setDbFieldMode(boolean dbFieldMode) {
+		this.dbFieldMode = dbFieldMode;
 	}
 
 	public List<Class<?>> getPojoRefs() {

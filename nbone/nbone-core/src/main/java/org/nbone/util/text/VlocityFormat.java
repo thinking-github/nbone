@@ -25,12 +25,10 @@ public class VlocityFormat extends BaseFormat implements CharsetConstant {
 
 	private static final long serialVersionUID = 2955656626149507881L;
 	
-	private String pattern = "";
-	
 	private  static  VelocityEngine ve;
 	
     public VlocityFormat(String pattern) {
-    	this.pattern = pattern;
+    	super(pattern);
     }
    
     /**
@@ -114,7 +112,7 @@ public class VlocityFormat extends BaseFormat implements CharsetConstant {
 			
 		}else if(dataModel instanceof Map){
 			
-			context = new VelocityContext((Map) dataModel);
+			context = new VelocityContext((Map<?,?>) dataModel);
 			return context;
 		}
 		
@@ -134,35 +132,6 @@ public class VlocityFormat extends BaseFormat implements CharsetConstant {
 		 ve.init();
 		 
 		 VlocityFormat.ve = ve;
-	}
-	
-	
-	
-	
-	public static void main(String[] args) {
-		 VelocityContext ctx = new VelocityContext();
-		 ctx.put("name", "velocity");
-		 ctx.put("date1", (new Date()).toString());
-		 String content = "";
-		 content += "Welcome  $name  to Javayou.com! ";
-		 content += "---- $date1 ------  ";
-		 
-		 
-		 System.out.println(VlocityFormat.format(content, ctx));
-		 System.out.println(VlocityFormat.format("你好数字{0}-{1}", "33","99"));
-		 System.out.println(VlocityFormat.format("你好数字{0}-{1}",Arrays.asList("66","99")));
-		 
-		 
-		 MessageFormat msg = new MessageFormat("你好数字{0}-{1}");
-		 String ss = msg.format(Arrays.asList("66","99000").toArray());
-		 System.out.println(ss);
-		 try {
-			Object kk = msg.parseObject(ss);
-			System.out.println(kk);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		 
 	}
 
 }

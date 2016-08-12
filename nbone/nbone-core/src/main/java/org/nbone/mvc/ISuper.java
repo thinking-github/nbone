@@ -83,8 +83,18 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return
 	 */
 	public T get(PK id);
-	
+	/**
+	 * 统计全部数据的行数
+	 * @return
+	 */
 	public long count();
+	
+	/**
+	 * 按照实体中不为空的参数作为参数统计行数
+	 * @param object
+	 * @return
+	 */
+	public long count(T object);
 	
 	/**
 	 * 获取数据(数据量大时不建议使用)
@@ -93,6 +103,8 @@ public interface ISuper<T,PK extends Serializable> {
 	public List<T> getAll();
 	
 	public List<T> getAll(PK[] ids);
+	
+	public List<T> getAll(Collection<?> ids);
 	
 	/**
 	 * 按照实体中的参数查询实体列表

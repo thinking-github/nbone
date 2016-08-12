@@ -2,8 +2,10 @@ package org.nbone.framework.spring.web.support;
 
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.constants.ContentType;
-import org.nbone.framework.AbstractHttpServlet;
 import org.nbone.framework.spring.web.context.ServletActionAttributes;
 import org.nbone.framework.spring.web.context.ServletActionContext;
 import org.nbone.framework.spring.web.context.ServletActionHolder;
 import org.nbone.util.DateFPUtils;
+import org.nbone.web.SuperHttpServlet;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -36,7 +38,7 @@ import org.springframework.web.context.request.WebRequest;
  * @since spring 3.1
  */
 
-public abstract class SuperController extends AbstractHttpServlet implements ContentType{
+public abstract class SuperController extends SuperHttpServlet implements ContentType{
 	
 	protected static Log logger = LogFactory.getLog(SuperController.class);
 	
@@ -80,7 +82,7 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
 	/**
      * @see spring org.springframework.web.method.annotation.RequestParamMapMethodArgumentResolver
      */
-    protected Map<String,String> getParameterMap(){
+    protected Map<String,String> parameterMap(){
     	HttpServletRequest webRequest = getRequest();
     	Map<String, String[]> parameterMap = webRequest.getParameterMap();
     	Map<String, String> result = new LinkedHashMap<String, String>(parameterMap.size());
@@ -107,7 +109,24 @@ public abstract class SuperController extends AbstractHttpServlet implements Con
 		return result;
     }
     
+    protected List<String> paramMultiValues(String name){
+    	HttpServletRequest webRequest = getRequest();
+    	String[] values  = webRequest.getParameterValues(name);
+    	if(values == null){
+    		return null;
+    	}
+		return  Arrays.asList(values);
+    }
     
+    protected String[] paramValues(String name){
+    	HttpServletRequest webRequest = getRequest();
+		return  webRequest.getParameterValues(name);
+    }
+    
+    protected String paramValue(String name){
+    	HttpServletRequest webRequest = getRequest();
+		return  webRequest.getParameter(name);
+    }
     
     /**
 	 * 初始化数据绑定

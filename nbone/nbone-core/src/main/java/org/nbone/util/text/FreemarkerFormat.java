@@ -23,13 +23,11 @@ public class FreemarkerFormat extends BaseFormat implements CharsetConstant {
 	
 	private static final long serialVersionUID = 3343475495847994770L;
 	
-	private String pattern = "";
-	
 	private static Configuration config; 
 	private static StringTemplateLoader stringLoader; 
 	
     public FreemarkerFormat(String pattern) {
-    	this.pattern = pattern;
+    	super(pattern);
     }
 	
     /**
@@ -73,18 +71,5 @@ public class FreemarkerFormat extends BaseFormat implements CharsetConstant {
 		 FreemarkerFormat.stringLoader = stringLoader;
 	}
 	
-	
-	
-	
-	public static void main(String[] args) {
-		 Map<String, Object> ctx = new HashMap<String, Object>();
-		 ctx.put("name", "Freemarker");
-		 ctx.put("date1", (new Date()).toString());
-		 String content = "";
-		 content += "Welcome  ${name}  to Javayou.com! ";
-		 content += "---- ${date1} ------  ";
-	
-		 System.out.println(FreemarkerFormat.format(content, ctx));
-	}
 
 }

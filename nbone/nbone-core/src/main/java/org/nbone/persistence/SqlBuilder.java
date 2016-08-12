@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
+import org.nbone.lang.MathOperation;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
 
@@ -21,23 +22,14 @@ public interface SqlBuilder {
 	 * @return {@link SqlModel}
 	 * @throws BuilderSQLException
 	 */
-	 public SqlModel<Object> buildInsertSql(Object object) throws BuilderSQLException;
+	 public SqlModel<Object> insertSql(Object object) throws BuilderSQLException;
 	/**
 	 * 由传入的对象的参数生成insert sql语句(参数值不为空的加入)
 	 * @param object
 	 * @return {@link SqlModel}
 	 * @throws BuilderSQLException
 	 */
-	 public SqlModel<Object> buildInsertSelectiveSql(Object object) throws BuilderSQLException;
-	 
-	 /**
-	  * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
-	  * @param object
-	  * @return
-	  * @throws BuilderSQLException
-	  */
-	 public SqlModel<Object> buildUpdateSelectiveSql(Object object) throws BuilderSQLException;
-	 
+	 public SqlModel<Object> insertSelectiveSql(Object object) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的对象生成update sql语句
@@ -46,24 +38,35 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> buildUpdateSql(Object object) throws BuilderSQLException;
+	 public SqlModel<Object> updateSql(Object object) throws BuilderSQLException;
 	 
 	 /**
-	  * 由传入的对象生成delete sql语句(根据对象主键生成)
+	  * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
 	  * @param object
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> buildDeleteSql(Object object) throws BuilderSQLException;
+	 public SqlModel<Object> updateSelectiveSql(Object object) throws BuilderSQLException;
+	 
+     
+	 /**
+	  * 由传入的对象生成update sql语句(参数值不为空且为数字的加入进行数学计算)
+	  * @param object
+	  * @param mathOperation 数学运算类型 {@link MathOperation}
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public SqlModel<Object> updateMathOperationSql(Object object,MathOperation mathOperation) throws BuilderSQLException;
+	 
 	 
 	 /**
 	  *  由传入的对象生成delete sql语句(包括不为null的属性生成sql)
 	  * @param object
-	  * @param onlypkParam true 只包括主键参数,  <code>false</code> 包括不为null的属性参数
+	  * @param onlypkParam true 只包括主键参数(根据对象主键生成),  <code>false</code> 包括不为null的属性参数
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> buildDeleteSqlByEntityParams(Object object,boolean onlypkParam) throws BuilderSQLException;
+	 public SqlModel<Object> deleteSqlByEntityParams(Object object,boolean onlypkParam) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据主键Id删除
@@ -72,7 +75,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<Map<String,?>> buildDeleteSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException;
+	 public <T> SqlModel<Map<String,?>> deleteSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据主键列表Id删除
@@ -81,7 +84,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildDeleteSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException;
+	 public <T> SqlModel<T> deleteSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException;
 	
 	 /**
 	  * 根据主键Id查询
@@ -90,28 +93,30 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<Map<String,?>> buildSelectSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException;
+	 public <T> SqlModel<Map<String,?>> selectSqlById(Class<T> entityClass,Serializable id) throws BuilderSQLException;
 	 /**
 	  * 根据实体中的主键Id查询
 	  * @param object
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> buildSelectSqlById(Object object) throws BuilderSQLException;
+	 public SqlModel<Object> selectSqlById(Object object) throws BuilderSQLException;
 	 /**
 	  * 查询全表sql(小数量时使用)
 	  * @param entityClass
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildSelectAllSql(Class<T> entityClass) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectAllSql(Class<T> entityClass) throws BuilderSQLException;
 	 /**
 	  * 统计单表的数量行数
 	  * @param entityClass
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildCountSql(Class<T> entityClass) throws BuilderSQLException;
+	 public <T> SqlModel<T> countSql(Class<T> entityClass) throws BuilderSQLException;
+	 
+	 public  SqlModel<Object> countSql(Object object) throws BuilderSQLException;
 	 
 	 
 	 /**
@@ -121,7 +126,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildSelectSqlByIds(Class<T> entityClass,Collection<?> ids) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectSqlByIds(Class<T> entityClass,Collection<?> ids) throws BuilderSQLException;
 	 /**
 	  * 根据主键列表查询
 	  * @param entityClass
@@ -129,7 +134,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildSelectSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询(全部使用等号)
@@ -137,7 +142,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws Exception
 	  */
-	 public <T> SqlModel<T> buildSelectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectSql(Object object) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询
@@ -146,7 +151,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildSimpleSelectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> simpleSelectSql(Object object) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询
@@ -154,16 +159,31 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildMiddleModeSelectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> middleModeSelectSql(Object object) throws BuilderSQLException;
 	 /**
 	  * 根据实体中的参数查询
 	  * @param object
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> buildHighModeSelectSql(Object object) throws BuilderSQLException;
-	 
-	 public  SqlModel<Map<String,Object>> buildObjectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
+	 public <T> SqlModel<T> highModeSelectSql(Object object) throws BuilderSQLException;
+	 /**
+	  * 根据实体中的参数查询
+	  * @param object
+	  * @param sqlConfig 特殊参数定义 
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public  SqlModel<Map<String,Object>> objectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
+	
+	 /**
+	  * 根据实体中的参数查询
+	  * @param object
+	  * @param sqlConfig 特殊参数定义 
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public SqlModel<Object> selectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
 	 
 	 
 	 

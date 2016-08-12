@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nbone</groupId>
   <artifactId>nbone</artifactId>
-  <version>${nbone.version}</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <modules>
@@ -52,9 +52,32 @@
   	</developers>
   	<inceptionYear>2013</inceptionYear>
 
-
+<dependencyManagement>
+	<dependencies>
+		<dependency>
+		  	<groupId>org.nbone</groupId>
+		  	<artifactId>nbone-core</artifactId>
+		  	<version>${nbone.version}</version>
+	  </dependency>
+	   <dependency>
+		  	<groupId>org.nbone</groupId>
+		  	<artifactId>nbone-web</artifactId>
+		  	<version>${nbone.version}</version>
+	  </dependency>
+	  
+	</dependencies>
+</dependencyManagement>
   	
   	<build>
+	  	<resources>
+	      <resource>
+	        <directory>src/main/java</directory>
+	        <includes>
+	          <include>**/*.properties</include>
+	        </includes>
+	      </resource>
+	    </resources>
+    
   	 <pluginManagement>
       <plugins>
         <plugin>

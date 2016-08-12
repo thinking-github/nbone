@@ -1,7 +1,13 @@
 package com.google.common;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.common.base.CaseFormat;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
@@ -25,6 +31,18 @@ public class StringTest {
 		System.out.println(CharMatcher.JAVA_UPPER_CASE.removeFrom("UUUkkk"));
 		System.out.println(CharMatcher.JAVA_UPPER_CASE.retainFrom("UUUkkk"));
 		System.out.println(CharMatcher.JAVA_UPPER_CASE.replaceFrom("UUUkkk","u"));
+		
+		List<String> ss = Arrays.asList("chen","yi","cheng",null);
+		String[] strings = {"1","2","3","4","5"};
+		String join = Joiner.on(",").skipNulls().join(ss);
+		System.out.println(join);
+		System.out.println(Joiner.on("_").join(strings));
+		
+		Iterable<String> it  = Splitter.on(",").split(join);
+		List<String> list = Splitter.on(",").splitToList(join);
+		
+		System.out.println(it);
+		System.out.println(list);
 		
 		
 	}

@@ -2,16 +2,13 @@ package org.nbone.framework.struts.support;
 
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.nbone.constants.ContentType;
-import org.nbone.framework.AbstractHttpServlet;
-import org.nbone.util.json.JSONOperUtils;
-import org.springframework.util.Assert;
+import org.nbone.web.SuperHttpServlet;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -25,11 +22,11 @@ public abstract class SuperBaseAction extends ActionSupport implements ContentTy
 	
 	private static final long serialVersionUID = -5667735251743302720L;
 	//使用组合方式，不使用继承
-	private AbstractHttpServlet supper;
+	private SuperHttpServlet supper;
 	
 	public SuperBaseAction(){
 		
-		supper = new AbstractHttpServlet(){};
+		supper = new SuperHttpServlet(){};
 		
 	}
 	
@@ -57,7 +54,7 @@ public abstract class SuperBaseAction extends ActionSupport implements ContentTy
      */
 	public void sendDirectToClient(Object returnData) throws IOException {
 		
-		this.sendDirectToClient(TEXT_JSON, CHARSET_UTF8, returnData, AbstractHttpServlet.TransformationType_JSON);
+		this.sendDirectToClient(TEXT_JSON, CHARSET_UTF8, returnData, SuperHttpServlet.TransformationType_JSON);
 		
 	}
 

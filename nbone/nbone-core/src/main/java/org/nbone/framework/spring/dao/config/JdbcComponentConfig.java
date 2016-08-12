@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.nbone.framework.spring.SpringEnv;
 import org.nbone.framework.spring.dao.JdbcDaoSupportX;
 import org.nbone.framework.spring.support.ComponentFactory;
-import org.nbone.persistence.JdbcParameter;
+import org.nbone.persistence.JdbcOptions;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +127,7 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 
 	public void setShowSql(boolean showSql) {
 		this.showSql = showSql;
-		JdbcParameter.showSql = showSql; 
+		JdbcOptions.showSql = showSql; 
 	}
 
 	@Override

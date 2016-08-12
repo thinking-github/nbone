@@ -78,7 +78,7 @@ public class MyMapperUtils {
 		List<ResultMapping> idsResultMapping  = resultMap.getIdResultMappings();
 		List<ResultMapping>  attrsResultMapping =   resultMap.getResultMappings();
 		
-		TableMapper<E> tableMapper = new TableMapper<E>(entityClass);
+		TableMapper<E> tableMapper = new TableMapper<E>(entityClass,attrsResultMapping.size());
 		
 		//primary key
 		List<String> primaryList = new ArrayList<String>(1);
