@@ -1,8 +1,11 @@
 package org.nbone.persistence.mapper;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.nbone.persistence.annotation.FieldLevel;
+import org.nbone.persistence.annotation.FieldProperty;
 import org.nbone.persistence.enums.JdbcType;
 
 /**
@@ -34,7 +37,7 @@ public class FieldMapper {
      */
     private JdbcType jdbcType;
     
-    
+    private FieldLevel fieldLevel = FieldLevel.NORM_VALUE;
      
     private  boolean nullable   = true;
     private  boolean insertable = true;
@@ -79,6 +82,10 @@ public class FieldMapper {
 
 	public void setPrimaryKey(boolean primaryKey) {
 		this.primaryKey = primaryKey;
+		if(primaryKey){
+			fieldLevel = FieldLevel.ID;
+		}
+		
 	}
 
 	public Class<?> getPropertyType() {
@@ -102,6 +109,15 @@ public class FieldMapper {
     public void setJdbcType(JdbcType jdbcType) {
         this.jdbcType = jdbcType;
     }
+
+    
+	public FieldLevel getFieldLevel() {
+		return fieldLevel;
+	}
+	public void setFieldLevel(FieldLevel fieldLevel) {
+		this.fieldLevel = fieldLevel;
+	}
+
 
 	public boolean isNullable() {
 		return nullable;
@@ -127,11 +143,11 @@ public class FieldMapper {
 		this.updatable = updatable;
 	}
 
-	public Class getEnumClass() {
+	public Class<?> getEnumClass() {
 		return enumClass;
 	}
 
-	public void setEnumClass(Class enumClass) {
+	public void setEnumClass(Class<?> enumClass) {
 		this.enumClass = enumClass;
 	}
 
@@ -160,5 +176,20 @@ public class FieldMapper {
         setter.invoke(target, value);
     
 	}
+	
+	public static void setFieldProperty(Field field,FieldMapper fieldMapper){
+		if(field == null){
+			return ;
+		}
+     	FieldProperty fieldProperty = field.getAnnotation(FieldProperty.class);
+      	if(fieldProperty == null){
+      		fieldMapper.setFieldLevel(FieldLevel.NORM_VALUE);
+      	}else{
+      		fieldMapper.setFieldLevel(fieldProperty.value());
+      	}
+		
+	}
+	
+	
     
 }

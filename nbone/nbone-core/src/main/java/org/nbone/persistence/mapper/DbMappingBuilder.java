@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
+import org.nbone.persistence.annotation.FieldLevel;
+import org.nbone.persistence.annotation.FieldProperty;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
 /**
@@ -126,6 +128,9 @@ public class DbMappingBuilder {
                   	if(field.isAnnotationPresent(Transient.class)){
                   		continue;
                   	}
+                  	
+                  	FieldMapper.setFieldProperty(field, fieldMapper);
+                  	
                     Column fieldMapperAnnotation = field.getAnnotation(Column.class);
                     if(fieldMapperAnnotation != null){
                         String dbFieldName = fieldMapperAnnotation.name();
@@ -157,6 +162,7 @@ public class DbMappingBuilder {
             }
             
             tableMapper.setPrimaryKeys(primaryKeys);
+            tableMapper.setFieldPropertyLoad(true);
             //Spring Jdbc
             RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(tableMapper);
             tableMapper.setRowMapper(rowMapper);

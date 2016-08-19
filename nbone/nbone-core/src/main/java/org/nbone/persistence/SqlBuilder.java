@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.nbone.lang.MathOperation;
+import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
 
@@ -39,6 +40,16 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public SqlModel<Object> updateSql(Object object) throws BuilderSQLException;
+	 
+	 /**
+	  * 由传入的Map对象生成update sql语句
+	  * @param entityClass 
+	  * @param fieldsMap
+	  * @param isDbFieldName map的key是否采用数据库的字段名称(默认采用数据库的字段名称效率高不用转化)
+	  * @return
+	  * @throws BuilderSQLException
+	  */
+	 public <T> SqlModel<Map<String,?>> updateSql(Class<T> entityClass,Map<String,?> fieldsMap,boolean isDbFieldName) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
@@ -139,34 +150,38 @@ public interface SqlBuilder {
 	 /**
 	  * 根据实体中的参数查询(全部使用等号)
 	  * @param object
+	  * @param fieldLevel 根据字段级别查询,参数可为null
 	  * @return
 	  * @throws Exception
 	  */
-	 public <T> SqlModel<T> selectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询
 	  * <p> number use = ;String use Like
 	  * @param object
+	  * @param fieldLevel 根据字段级别查询,参数可为null
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> simpleSelectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询
 	  * @param object
+	  * @param fieldLevel 根据字段级别查询,参数可为null
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> middleModeSelectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> middleModeSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
 	 /**
 	  * 根据实体中的参数查询
 	  * @param object
+	  * @param fieldLevel 根据字段级别查询,参数可为null
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> highModeSelectSql(Object object) throws BuilderSQLException;
+	 public <T> SqlModel<T> highModeSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
 	 /**
 	  * 根据实体中的参数查询
 	  * @param object

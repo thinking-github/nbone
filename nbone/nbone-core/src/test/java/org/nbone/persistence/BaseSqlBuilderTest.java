@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nbone.lang.MathOperation;
+import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.criterion.QueryOperator;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.model.SqlModel;
@@ -15,15 +16,19 @@ public class BaseSqlBuilderTest {
 	private SqlBuilder sqlBuilder = new BaseSqlBuilder(JdbcFrameWork.SPRING_JDBC) {
 		
 	};
-	//@Test
+	@Test
 	public void testbuildSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(getTsProjectDTO());
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(getTsProjectDTO(),(FieldLevel)null);
+		SqlModel<Object> sqlModel1 = sqlBuilder.selectSql(getTsProjectDTO(),FieldLevel.ALL);
+		SqlModel<Object> sqlModel2 = sqlBuilder.selectSql(getTsProjectDTO(),FieldLevel.ID);
+		SqlModel<Object> sqlModel3 = sqlBuilder.selectSql(getTsProjectDTO(),FieldLevel.TWO);
 		System.out.println(sqlModel.getSql());
+		System.out.println(sqlModel1.getSql());
 	}
 	
 	//@Test
 	public void testbuildSimpleSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(getTsProjectDTO());
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(getTsProjectDTO(),null);
 		System.out.println(sqlModel.getSql());
 		
 	}
@@ -92,7 +97,7 @@ public class BaseSqlBuilderTest {
 	/**
 	 * 自定义字段查询
 	 */
-	@Test
+	//@Test
 	public void testCustomFieldBuildSelectSql(){
 		TsProjectDTO object = getTsProjectDTO();
 		object.setId(9L);

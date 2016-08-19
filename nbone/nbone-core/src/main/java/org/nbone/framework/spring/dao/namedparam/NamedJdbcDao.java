@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +18,9 @@ import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlSession;
+import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.enums.JdbcFrameWork;
-import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.mapper.DbMappingBuilder;
-import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.model.SqlModel;
 import org.springframework.beans.BeanWrapper;
@@ -88,6 +86,12 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
 		return namedPjdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
+
+	@Override
+	public int insert(Class<?> entityClass, Map<String, Object> fieldMap) {
+		return simpleJdbcDao.insert(entityClass, fieldMap);
+	}
+
 
 	@Override
 	public Serializable save(Object object) {
@@ -228,17 +232,19 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public long count(Class<?> clazz) {
 		SqlModel<?> sqlModel =  sqlBuilder.countSql(clazz);
 		checkSqlModel(sqlModel);
+		Number number = dao.queryForObject(sqlModel.getSql(), Long.class);
 		
-		return dao.queryForLong(sqlModel.getSql());
+		return (number != null ? number.longValue() : 0);
 	}
 
 	@Override
 	public long count(Object object) {
 		SqlModel<Object> sqlModel = sqlBuilder.countSql(object);
 		checkSqlModel(sqlModel);
+		SqlParameterSource parameterSource =  new BeanPropertySqlParameterSource(object);
 		
-		long rows = namedPjdbcTemplate.queryForLong(sqlModel.getSql(), new BeanPropertySqlParameterSource(object));
-		return rows;
+		Number number = namedPjdbcTemplate.queryForObject(sqlModel.getSql(),parameterSource, Long.class);
+		return (number != null ? number.longValue() : 0);
 	}
 
 
@@ -265,25 +271,38 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 	@Override
 	public <T> List<T> getForList(Object object) {
-		
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object);
-		checkSqlModel(sqlModel);
-			
-		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
-		return list;
+		return getForList(object, (FieldLevel)null);
 	}	
+	
 
 	@Override
-	public <T> List<T> queryForList(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object);
+	public <T> List<T> getForList(Object object, FieldLevel fieldLevel) {
+		
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,fieldLevel);
 		checkSqlModel(sqlModel);
 			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
 		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
 		return list;
 	}
+
+
+	@Override
+	public <T> List<T> queryForList(Object object) {
+		return queryForList(object, (FieldLevel)null);
+	}
 	
+	@Override
+	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel) {
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,fieldLevel);
+		checkSqlModel(sqlModel);
+			
+		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
+		return list;
+	}
+
+
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
 		
 		SqlModel<Map<String,Object>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
@@ -300,8 +319,15 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public <T> List<T> findForList(Object object) {
 		return this.queryForList(object);
 	}
+	 /**
+     * XXX：预留方法目前实现采用 {@link #queryForList(Object, FieldLevel)}
+     */
+	@Override
+	public <T> List<T> findForList(Object object, FieldLevel fieldLevel) {
+		return this.queryForList(object, fieldLevel);
+	}
 
-	
+
 	/**
 	 * 暂时使用simpleJdbcDao的批量更新
 	 * @param objects

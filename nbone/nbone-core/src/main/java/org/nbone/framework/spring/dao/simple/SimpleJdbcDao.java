@@ -3,6 +3,7 @@ package org.nbone.framework.spring.dao.simple;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -10,17 +11,16 @@ import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
 import org.nbone.persistence.BaseSqlSession;
 import org.nbone.persistence.BatchSqlSession;
-import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlSession;
 import org.nbone.persistence.mapper.DbMappingBuilder;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.util.PropertyUtil;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -57,6 +57,21 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 		int row  = simpleJdbcInsert.execute(new EntityPropertySqlParameterSource(object));
 		return row;
 	}
+	
+    
+	@Override
+	public int insert(Class<?> entityClass, Map<String, Object> fieldMap) {
+		simpleJdbcInsert.reuse();
+		TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(entityClass);
+		simpleJdbcInsert.withTableName(tableMapper.getDbTableName());
+		String primaryKey = tableMapper.getPrimaryKey();
+		Object value  = fieldMap.get(primaryKey);
+		if(value == null){
+			simpleJdbcInsert.usingGeneratedKeyColumns(primaryKey);
+		}
+		
+		return simpleJdbcInsert.execute(fieldMap);
+	}
 
 	@Override
 	public Serializable save(Object object) {
@@ -67,11 +82,9 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 
 	@Override
 	public Object add(Object object) {
-		simpleJdbcInsert.reuse();
-		TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
+		TableMapper<?> tableMapper = insertProcess(object);
 		String[]  primaryKeys= tableMapper.getPrimaryKeys();
-		simpleJdbcInsert.withTableName(tableMapper.getDbTableName());
-		simpleJdbcInsert.usingGeneratedKeyColumns(primaryKeys);
+		
 		Number num = simpleJdbcInsert.executeAndReturnKey(new EntityPropertySqlParameterSource(object));
 		
 		if(primaryKeys != null && primaryKeys.length > 0){
@@ -82,16 +95,21 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 		return object;
 	}
 	
-	private void insertProcess(Object object){
+	private TableMapper<?> insertProcess(Object object){
 		simpleJdbcInsert.reuse();
 		TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
-		simpleJdbcInsert.withTableName(tableMapper.getDbTableName());
 		String[]  primaryKeys= tableMapper.getPrimaryKeys();
+		
 		FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[0]);
 		Class<?> cls = fieldMapper.getPropertyType();
-		if(Number.class.isAssignableFrom(cls) || long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls)){
+		simpleJdbcInsert.withTableName(tableMapper.getDbTableName());
+		
+		Object value = PropertyUtil.getProperty(object, fieldMapper.getFieldName());
+		//XXX：当是数字且为空时使用自动生成主键
+		if(value == null && (Number.class.isAssignableFrom(cls) || long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls))){
 			simpleJdbcInsert.usingGeneratedKeyColumns(primaryKeys);
 		}
+		return tableMapper;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package org.nbone.framework.mybatis.util;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +98,15 @@ public class MyMapperUtils {
 			
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(entityClass, fieldName);
 			FieldMapper fieldMapper = new FieldMapper(propertyDescriptor);
+			Field field;
+			try {
+				field = entityClass.getDeclaredField(fieldName);
+				FieldMapper.setFieldProperty(field, fieldMapper);
+			} catch (NoSuchFieldException e) {
+				logger.error(e.getMessage(), e);
+			} catch (SecurityException e) {
+				logger.error(e.getMessage(), e);
+			}
 			
 			fieldMapper.setFieldName(fieldName);
 			fieldMapper.setDbFieldName(dbFieldName);
@@ -113,6 +123,8 @@ public class MyMapperUtils {
 		  //Spring Jdbc
         RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(tableMapper);
         tableMapper.setRowMapper(rowMapper);
+        
+        tableMapper.setFieldPropertyLoad(true);
 		
 		return tableMapper;
 	}

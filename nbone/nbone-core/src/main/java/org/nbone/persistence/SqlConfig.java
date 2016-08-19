@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nbone.persistence.annotation.FieldLevel;
+
 /**
  * 
  * @author thinking
@@ -36,8 +38,10 @@ public class SqlConfig {
      * 默认采用Java字段模式
      */
     private boolean dbFieldMode = false;
-    
-    
+    /**
+     * 字段级别
+     */
+    private FieldLevel fieldLevel;
     /**
      * 此实体Bean 引用其他的实体Bean列表
      */
@@ -235,6 +239,14 @@ public class SqlConfig {
 
 	public void setDbFieldMode(boolean dbFieldMode) {
 		this.dbFieldMode = dbFieldMode;
+	}
+
+	public FieldLevel getFieldLevel() {
+		return fieldLevel;
+	}
+
+	public void setFieldLevel(FieldLevel fieldLevel) {
+		this.fieldLevel = fieldLevel;
 	}
 
 	public List<Class<?>> getPojoRefs() {

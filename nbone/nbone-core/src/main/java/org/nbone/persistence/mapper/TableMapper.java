@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.persistence.Table;
 
+import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.exception.PrimaryKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
@@ -36,6 +37,10 @@ public class TableMapper<T> {
      * 数据库表主键类型：（单个字段的唯一键）（几个字段组合起来的唯一键）
      */
     private List<String> primaryKeys = new ArrayList<String>(1);
+    /**
+     * 数据库表主键映射列表：（单个字段的唯一键）（几个字段组合起来的唯一键）
+     */
+    private List<FieldMapper> primaryKeyFields = new ArrayList<FieldMapper>(1);
     
     /**
      * 映射实体Bean的全名称(包含包名称)<br>
@@ -66,6 +71,10 @@ public class TableMapper<T> {
      * 数据库表字段映射列表
      */
     private  List<FieldMapper> fieldMapperList ;
+    /**
+     * Field Property is Load(查询级别)
+     */
+    private boolean fieldPropertyLoad;
     /**
      * 数据库列名称数组
      */
@@ -130,20 +139,13 @@ public class TableMapper<T> {
 
 	public String[] getPrimaryKeys() {
 		List<String> primaryKeys = getPrimaryKeyList();
-		String[] pks = new String[primaryKeys.size()];
-		pks = primaryKeys.toArray(pks);
-		return pks;
+		return primaryKeys.toArray(new String[primaryKeys.size()]);
 	}
 	
 	public List<String> getPrimaryKeyList() {
 		if(primaryKeys == null || primaryKeys.size() == 0){
-			for (FieldMapper fieldMapper : fieldMapperList) {
-				if(fieldMapper.isPrimaryKey()){
-					primaryKeys.add(fieldMapper.getDbFieldName());
-				}
-			}
+			 getPrimaryKeyFields();
 		}
-		
 		return primaryKeys;
 	}
 	
@@ -162,6 +164,27 @@ public class TableMapper<T> {
 	}
 	public void setPrimaryKeys(List<String> primaryKeys) {
 		this.primaryKeys = primaryKeys;
+	}
+	
+	/**
+	 * 没有加载主键时加载主键字段列表和名称
+	 * @return
+	 */
+	public List<FieldMapper> getPrimaryKeyFields() {
+		if(primaryKeyFields == null || primaryKeyFields.size() == 0){
+			primaryKeys.clear();
+			for (FieldMapper fieldMapper : fieldMapperList) {
+				if(fieldMapper.isPrimaryKey()){
+					primaryKeyFields.add(fieldMapper);
+					primaryKeys.add(fieldMapper.getDbFieldName());
+				}
+			}
+		}
+		return primaryKeyFields;
+	}
+
+	public void setPrimaryKeyFields(List<FieldMapper> primaryKeyFields) {
+		this.primaryKeyFields = primaryKeyFields;
 	}
 
 	public String getEntityName() {
@@ -313,6 +336,14 @@ public class TableMapper<T> {
 	}
 
 
+	public boolean isFieldPropertyLoad() {
+		return fieldPropertyLoad;
+	}
+
+	public void setFieldPropertyLoad(boolean fieldPropertyLoad) {
+		this.fieldPropertyLoad = fieldPropertyLoad;
+	}
+
 	/**
      * @see #columnNames
      */
@@ -354,13 +385,7 @@ public class TableMapper<T> {
 	 */
 	public String getSelectAllSql() {
 		if(selectAllSql == null){
-			StringBuilder selectAllSqlTemp = new StringBuilder();
-			selectAllSqlTemp.append("SELECT ");
-			selectAllSqlTemp.append(this.getCommaDelimitedColumns());
-			selectAllSqlTemp.append(" FROM ").append(this.getDbTableName());
-
-			
-		    this.selectAllSql = selectAllSqlTemp.toString();
+		    this.selectAllSql = getSelectAllSql(this.getColumnNames(), true);
 		}
 		
 		return selectAllSql;
@@ -392,6 +417,33 @@ public class TableMapper<T> {
 		}
 		
 	    selectAllSql.append(" FROM ").append(this.getDbTableName());
+		
+		return selectAllSql.toString();
+	}
+	
+	public String getSelectAllSql(FieldLevel fieldLevel) {
+		if(fieldLevel == null || fieldLevel == FieldLevel.ALL || !fieldPropertyLoad){
+			return getSelectAllSql();
+		}
+		// query column
+		StringBuilder selectAllSql = new StringBuilder();
+		selectAllSql.append("SELECT ");
+		int count = 0;
+		int inputLevel = fieldLevel.getId();
+		for (int i = 0; i < fieldMapperList.size(); i++) {
+			FieldMapper fieldMapper = fieldMapperList.get(i);
+			int level = fieldMapper.getFieldLevel().getId();
+			if(inputLevel >= level){
+				String dbFieldName = fieldMapper.getDbFieldName();
+				if(count > 0){
+					selectAllSql.append(",");
+				}
+				selectAllSql.append(dbFieldName);
+				
+				count ++;
+			}
+		}
+		selectAllSql.append(" FROM ").append(this.getDbTableName());
 		
 		return selectAllSql.toString();
 	}
@@ -464,6 +516,11 @@ public class TableMapper<T> {
 	public void setRowMapper(RowMapper<T> rowMapper) {
 		this.rowMapper = rowMapper;
 	}
+	
+	
+	
+	
+	
 	
 
 }

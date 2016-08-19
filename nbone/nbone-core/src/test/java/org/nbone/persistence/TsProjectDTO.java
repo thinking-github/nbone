@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.nbone.persistence.annotation.FieldLevel;
+import org.nbone.persistence.annotation.FieldProperty;
+
 /**
  * This class  was database table entity mapping (ORM)
  * @author thinking
@@ -33,6 +36,7 @@ public class TsProjectDTO implements Serializable {
     /**
      * ts_project.name 服务项目名称
      */
+    @FieldProperty(FieldLevel.ONE)
     @Column(name="name")
     private String name;
 

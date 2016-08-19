@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.nbone.framework.mybatis.util.MyMapperUtils;
 import org.nbone.lang.MathOperation;
+import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.mapper.DbMappingBuilder;
@@ -162,6 +163,15 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	}
 	
 	
+	@Override
+	public <T> SqlModel<Map<String, ?>> updateSql(Class<T> entityClass, Map<String, ?> fieldsMap, boolean isDbFieldName)
+			throws BuilderSQLException {
+		
+		
+		return null;
+	}
+
+
 	@Override
 	public SqlModel<Object>  updateSelectiveSql(final Object object) throws BuilderSQLException {
 
@@ -483,8 +493,11 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 
 	 
 	@Override
-	public <T> SqlModel<T>  selectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) selectSql(object,SqlConfig.getSqlConfig(-1));
+	public <T> SqlModel<T>  selectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException {
+		SqlConfig sqlConfig = SqlConfig.getSqlConfig(-1);
+		sqlConfig.setFieldLevel(fieldLevel);
+		
+		SqlModel<T> model = (SqlModel<T>) selectSql(object,sqlConfig);
 
 		return model;
 	}
@@ -492,21 +505,30 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T> SqlModel<T> simpleSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) selectSql(object, SqlConfig.getSqlConfig(SqlConfig.PrimaryMode));
+	public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException {
+		SqlConfig sqlConfig = SqlConfig.getSqlConfig(SqlConfig.PrimaryMode);
+		sqlConfig.setFieldLevel(fieldLevel);
+		
+		SqlModel<T> model = (SqlModel<T>) selectSql(object,sqlConfig);
 		
 		return model;
 	}
 
 	@Override
-	public <T> SqlModel<T> middleModeSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) selectSql(object,  SqlConfig.getSqlConfig(SqlConfig.MiddleMode));
+	public <T> SqlModel<T> middleModeSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException {
+		SqlConfig sqlConfig =  SqlConfig.getSqlConfig(SqlConfig.MiddleMode);
+		sqlConfig.setFieldLevel(fieldLevel);
+		
+		SqlModel<T> model = (SqlModel<T>) selectSql(object, sqlConfig);
 		return model;
 	}
 
 	@Override
-	public <T> SqlModel<T> highModeSelectSql(Object object) throws BuilderSQLException {
-		SqlModel<T> model = (SqlModel<T>) selectSql(object, SqlConfig.getHighMode());
+	public <T> SqlModel<T> highModeSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException {
+		SqlConfig sqlConfig =  SqlConfig.getHighMode();
+		sqlConfig.setFieldLevel(fieldLevel);
+		
+		SqlModel<T> model = (SqlModel<T>) selectSql(object, sqlConfig);
 		return model;
 	}
 	
@@ -518,8 +540,15 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		    TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
 		    String[] fieldNames  = sqlConfig.getFieldNames();
 		    String allsql;
+		    // 1.优先使用自定义查询，
 		    if(fieldNames == null || fieldNames.length == 0){
-		    	 allsql = tableMapper.getSelectAllSql();
+		    	 //2.字段级别次之
+		    	 FieldLevel fieldLevel = sqlConfig.getFieldLevel();
+		    	 if(fieldLevel == null){
+		    		 allsql = tableMapper.getSelectAllSql();
+		    	 }else{
+		    		 allsql = tableMapper.getSelectAllSql(fieldLevel);
+		    	 }
 		    	
 		    }else{
 		    	 allsql = tableMapper.getSelectAllSql(fieldNames, sqlConfig.isDbFieldMode());
@@ -610,8 +639,16 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		    TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
 		    String[] fieldNames = sqlConfig.getFieldNames();
 		    String allsql;
+		    // 1.优先使用自定义查询，
 		    if(fieldNames == null || fieldNames.length ==0){
-		    	 allsql = tableMapper.getSelectAllSql();
+		    	//2.字段级别次之
+		    	 FieldLevel fieldLevel = sqlConfig.getFieldLevel();
+		    	 if(fieldLevel == null){
+		    		 allsql = tableMapper.getSelectAllSql();
+		    	 }else{
+		    		 allsql = tableMapper.getSelectAllSql(fieldLevel);
+		    	 }
+		    	 
 		    }else{
 		    	 allsql = tableMapper.getSelectAllSql(fieldNames, sqlConfig.isDbFieldMode()); 
 		    }

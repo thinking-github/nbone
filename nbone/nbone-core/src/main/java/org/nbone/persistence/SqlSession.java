@@ -1,6 +1,7 @@
 package org.nbone.persistence;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +21,13 @@ public interface SqlSession  extends QueryOperations{
 	 * @return 返回插入的行数
 	 */
 	public int insert(Object object);
-	
+	/**
+	 * 单表操作插入一条数据(数据来源于map)当map 主键值为空时自动生成主键值
+	 * @param entityClass
+	 * @param fieldMap
+	 * @return
+	 */
+	public int insert(Class<?> entityClass, Map<String, Object> fieldMap);
 
 	
 	/**
@@ -47,6 +54,13 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public int update(Object object);
+	/**
+	 * 以主键为条件修改一条记录 (数据来源于map)
+	 * @param entityClass
+	 * @param fieldMap
+	 * @return
+	 */
+    public int update(Class<?> entityClass, Map<String, Object> fieldMap);
 	
 	/**
 	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)

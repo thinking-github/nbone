@@ -9,6 +9,7 @@ import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.SqlBuilder;
+import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
@@ -63,7 +64,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,(FieldLevel)null);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}
@@ -75,7 +76,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null);
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 	/**
@@ -87,7 +88,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 */
 	
 	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null);
 		
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}

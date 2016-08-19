@@ -7,11 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -350,7 +345,8 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	public long queryForLong(String sql) throws SQLException {
 		long count;
 		try {
-			count = this.getJdbcTemplate().queryForLong(sql);
+			Number number = this.getJdbcTemplate().queryForObject(sql, Long.class);
+			count =  (number != null ? number.longValue() : 0);
 		} catch (DataAccessException e) {
 			throw new SQLException(e);
 		}
@@ -360,7 +356,8 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	public int queryForInt(String sql) throws SQLException{
 		int count;
 		try {
-			count = this.getJdbcTemplate().queryForInt(sql);
+			Number number = this.getJdbcTemplate().queryForObject(sql, Integer.class);
+			count =  (number != null ? number.intValue() : 0);
 		} catch (DataAccessException e) {
 			throw new SQLException(e);
 		}

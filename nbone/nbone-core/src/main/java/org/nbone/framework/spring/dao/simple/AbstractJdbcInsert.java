@@ -36,7 +36,7 @@ import org.springframework.jdbc.support.nativejdbc.NativeJdbcExtractor;
 import org.springframework.util.Assert;
 
 /**
- * 使用自定义缓存映射的EntityTableMetaDataContext
+ * 使用自定义缓存映射的EntityTableMetaDataContext ,增加reuse()方法 
  * @author thinking
  * @version 1.0 
  * @see org.springframework.jdbc.core.simple.AbstractJdbcInsert
@@ -74,9 +74,12 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	/** The names of the columns holding the generated key */
 	private String[] generatedKeyNames = new String[0];
 	
-	
-	public  void reuse(){
+	@Override
+	public synchronized void reuse(){
 		this.compiled = false;
+		this.generatedKeyNames = new String[0];
+		this.insertString = null;
+		this.insertTypes = null;
 	}
 
 	/**
