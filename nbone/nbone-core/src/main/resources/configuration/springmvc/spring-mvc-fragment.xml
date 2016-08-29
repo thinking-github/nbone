@@ -19,16 +19,16 @@
 
     <import resource="../spring/spring-holder.xml"/>
 
-
+	<!-- 异常处理 -->
 	<bean class="org.nbone.framework.spring.web.exception.WebExceptionResolver"></bean>   
 	
+	<!-- 自动方法名称映射 -->
 	<bean id="classMethodNameHandlerMapping" class="org.nbone.framework.spring.web.method.annotation.ClassMethodNameHandlerMapping">
-	
 	</bean> 
 	
 	 <!-- URL和文件名称匹配映射 -->
-	 <bean name="/views/**" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
-	 </bean>
+	<bean name="/views/**" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+	</bean>
 	 
 	 
 	

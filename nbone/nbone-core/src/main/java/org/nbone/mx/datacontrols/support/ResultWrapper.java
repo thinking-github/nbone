@@ -106,9 +106,9 @@ public class ResultWrapper  implements Serializable{
 
     /**
      * 用作失败返回消息提示
-     * @param exMessage 提示消息
+     * @param message 提示消息
      * @return
-     * @see #failedWrappedResult(String, String)
+     * @see #failedResultWraped(String, int, String)
      */
 	public static ResultWrapper failedResultWraped(String message) {
 		return failedResultWraped(message,DEFAULT_ERRCODE_FAILED,message);

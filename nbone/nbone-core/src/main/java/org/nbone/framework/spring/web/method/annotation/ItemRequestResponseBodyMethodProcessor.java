@@ -69,26 +69,27 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
 		  ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
     mavContainer.setRequestHandled(true);
     ResultWrapper wrapedResult = null;
-
+    
     if (returnValue == null) {
-      wrapedResult = ResultWrapper.successResultWraped();
+    	wrapedResult = ResultWrapper.successResultWraped();
+    }else if(returnValue instanceof ResultWrapper){
+    	//XXX:thinking
+    	wrapedResult = (ResultWrapper) returnValue;
     }else {
-      WrapedItems wrapedItems = new WrapedItems();
-
-      if (returnValue.getClass().getName().equals(QueryResultObject.class.getName()))
-      {
-        QueryResultObject queryResult = (QueryResultObject)returnValue;
-        int count = queryResult.getItemCount();
-        wrapedItems.setItemCount(count);
-
-        if (queryResult.getItems() != null) {
-          wrapedItems.addItems((List<Object>) queryResult.getItems());
-        }
-        if (queryResult.getDicItems() != null) {
-          wrapedItems.setDicts(queryResult.getDicItems());
-        }
-        
-        wrapedResult = ResultWrapper.successResultWraped(wrapedItems);
+    	if (returnValue.getClass().getName().equals(QueryResultObject.class.getName())){
+	    	WrapedItems wrapedItems = new WrapedItems();
+	        QueryResultObject queryResult = (QueryResultObject)returnValue;
+	        int count = queryResult.getItemCount();
+	        wrapedItems.setItemCount(count);
+	
+	        if (queryResult.getItems() != null) {
+	          wrapedItems.addItems((List<Object>) queryResult.getItems());
+	        }
+	        if (queryResult.getDicItems() != null) {
+	          wrapedItems.setDicts(queryResult.getDicItems());
+	        }
+	        
+	        wrapedResult = ResultWrapper.successResultWraped(wrapedItems);
       }else{
     	  
     	  wrapedResult = ResultWrapper.successResultWraped(returnValue);

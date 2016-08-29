@@ -143,6 +143,11 @@ public class CustomCommentGenerator implements CommentGenerator {
 	public void addRootComment(XmlElement rootElement) {
 	}
 
+	@Override
+	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		
+	}
+
 
 	
 	

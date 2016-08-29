@@ -260,4 +260,40 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	}
 	
 	
+	//--------------------1.8------------------
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.data.domain.Slice#hasPrevious()
+	 */
+	public boolean hasPrevious() {
+		return getNumber() > 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.data.domain.Slice#isFirst()
+	 */
+	public boolean isFirst() {
+		return !hasPrevious();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.data.domain.Slice#isLast()
+	 */
+	public boolean isLast() {
+		return !hasNext();
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.domain.Slice#hasNext()
+	 */
+	@Override
+	public boolean hasNext() {
+		return hasNextPage();
+	}
+
+	
+	
 }
