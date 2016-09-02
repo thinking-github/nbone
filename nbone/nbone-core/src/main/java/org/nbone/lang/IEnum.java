@@ -12,7 +12,7 @@ public interface IEnum {
 	 * long type 标识
 	 * @return
 	 */
-	long getId();
+	int getId();
 	/**
 	 * String type 标识
 	 * @return

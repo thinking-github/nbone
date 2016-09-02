@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.nbone</groupId>
     <artifactId>nbone-parent</artifactId>
-     <version>1.0.1-SNAPSHOT</version>
+     <version>1.0.2-SNAPSHOT</version>
     <relativePath>../nbone-parent/pom.xml</relativePath>
   </parent>
  
@@ -29,6 +29,17 @@
 		<artifactId>spring-test</artifactId>
 		<scope>provided</scope>
 	</dependency>
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-websocket</artifactId>
+	    <version>4.0.0.RELEASE</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-messaging</artifactId>
+	    <version>4.0.0.RELEASE</version>
+	</dependency>
+	
     
      <dependency>
         <groupId>com.google.code.findbugs</groupId>

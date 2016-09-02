@@ -1,9 +1,12 @@
 package org.nbone.framework.spring.web.method.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.nbone.framework.spring.web.bind.annotation.ClassMethodNameRequestMapping;
+import org.nbone.framework.spring.web.bind.annotation.DefaultRequestMapping;
+import org.nbone.framework.spring.web.bind.annotation.NoRequestMapping;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
@@ -91,15 +94,19 @@ public class ClassMethodNameHandlerMapping extends RequestMappingHandlerMapping 
 		}
 		
 		RequestMappingInfo info = null;
-		ClassMethodNameRequestMapping clsMethodName = AnnotationUtils.findAnnotation(handlerType, ClassMethodNameRequestMapping.class);
+		Annotation clsMethodName = AnnotationUtils.findAnnotation(handlerType, DefaultRequestMapping.class);
+		if(clsMethodName == null){
+			clsMethodName = AnnotationUtils.findAnnotation(handlerType, ClassMethodNameRequestMapping.class);
+		}
 		//包了一层注解
 		// ClassMethodNameRequestMapping
 		if(clsMethodName != null){
 			
 			RequestMapping methodAnnotation = AnnotationUtils.findAnnotation(method, RequestMapping.class);
+			NoRequestMapping noMappingAnnotation = AnnotationUtils.findAnnotation(method, NoRequestMapping.class);
 			if(methodAnnotation == null){
-				//only load public method
-				if(Modifier.isPublic(method.getModifiers())){
+				//only load public method and not exist @NoRequestMapping
+				if(Modifier.isPublic(method.getModifiers()) && noMappingAnnotation == null){
 					
 					RequestCondition<?> methodCondition = getCustomMethodCondition(method);
 					info = createRequestMappingInfo(methodAnnotation, methodCondition,method);

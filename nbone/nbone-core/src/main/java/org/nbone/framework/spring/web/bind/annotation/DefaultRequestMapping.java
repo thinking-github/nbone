@@ -7,17 +7,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ *  根据类名称和方法名称默认映射
  * <p> Class Name auto mapping 
  * <p> Method Name auto mapping
  * @author  thining
  * @version 1.0 
  * @since spring 3.1
- * @see  DefaultRequestMapping
  */
-@Deprecated  
+
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ClassMethodNameRequestMapping {
+public @interface DefaultRequestMapping {
 
 }

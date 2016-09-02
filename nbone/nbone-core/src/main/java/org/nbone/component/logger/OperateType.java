@@ -70,7 +70,7 @@ public enum OperateType implements IEnum{
 	}
 
 	@Override
-	public long getId() {
+	public int getId() {
 		return 0;
 	}
 

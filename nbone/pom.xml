@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nbone</groupId>
   <artifactId>nbone</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <modules>
@@ -18,7 +18,7 @@
   </modules>
 
 	<properties>
-		 <nbone.version>1.0.1-SNAPSHOT</nbone.version>
+		 <nbone.version>1.0.2-SNAPSHOT</nbone.version>
 		 
 		 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		 <project.build.source.version>1.7</project.build.source.version>

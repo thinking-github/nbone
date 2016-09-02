@@ -67,11 +67,13 @@ public class UserController1 {
 	}
 	
 	/*
-	 * 1.代码过多收钱的问题,
+	 * 1.代码过多收钱的问题,聊聊源码安全测试？
 	 * 
 	 * 2.我们不要以为代码写的"越多"越值钱，其实不然。编程简单化,组件化
 	 * 
 	 * 3.servlet 3.0技术简述 JavaEE6 tomcat7以上支持,jetty8 以上支持(spring web  3.1以后提供简化支持,例如:WebApplicationInitializer,容器启动时自动加载 )
+	 * 
+	 * 4.聊聊 Jenkins tomcat 发布问题
 	 */
 
 }
