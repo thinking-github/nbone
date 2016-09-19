@@ -1,4 +1,4 @@
-package org.nbone.exception;
+package org.nbone.core.exception;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

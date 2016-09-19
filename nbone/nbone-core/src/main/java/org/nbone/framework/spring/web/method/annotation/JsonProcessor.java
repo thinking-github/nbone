@@ -3,14 +3,8 @@ package org.nbone.framework.spring.web.method.annotation;
 import java.util.Arrays;
 import java.util.List;
 
-import org.nbone.util.json.jackson2.JsonUtils;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 /**
  * @author thinking

@@ -23,8 +23,11 @@ public class ServletActionAttributes extends ServletRequestAttributes{
 		this.response = response;
 	}
 
-
-	public HttpServletResponse getResponse() {
+   /**
+    * spring 4.1 新加方法 getResponse 
+    * @return
+    */
+	public HttpServletResponse getHttpResponse() {
 		return response;
 	}
 	

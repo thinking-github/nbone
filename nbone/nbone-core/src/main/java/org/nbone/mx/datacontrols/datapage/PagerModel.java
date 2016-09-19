@@ -5,13 +5,16 @@ import java.util.List;
 /**
  * 分页对象. 包含当前页数据及分页信息如总记录数.
  * 
- * @version v1.0 2014-04-09
- * @author Thinking
+ * @author thinking
+ * @since 2014-04-09
+ * @version v1.0 
  * 
  */
 public class PagerModel<T> implements Serializable {
 	
-    /**
+	private static final long serialVersionUID = 864785535881496596L;
+
+	/**
      * 当前页码
      */
 	private int pageNow;

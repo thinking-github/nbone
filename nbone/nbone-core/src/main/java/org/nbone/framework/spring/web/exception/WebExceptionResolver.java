@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.nbone.exception.ExceptionUtils;
+import org.nbone.core.exception.ExceptionUtils;
 import org.nbone.framework.spring.web.method.annotation.JsonProcessor;
 import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.nbone.web.support.WebResultWrapper;

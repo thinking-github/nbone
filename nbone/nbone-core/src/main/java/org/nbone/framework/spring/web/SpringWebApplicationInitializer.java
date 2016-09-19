@@ -7,6 +7,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,8 +19,10 @@ import org.springframework.core.SpringVersion;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.RequestContextFilter;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import net.sf.ehcache.constructs.web.filter.GzipFilter;
 
@@ -40,18 +43,23 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		initialApplicationContext(servletContext);
+		
+		servletContext.log("===============================================================================");
+		
+		servletContext.log("Java EE 6 Servlet 3.0");
 		servletContext.log("Nbone Version: " + NboneVersion.getVersion(NboneVersion.version));
 		servletContext.log("Spring Version: " + SpringVersion.getVersion());
 		String encoding  = servletContext.getInitParameter("encoding");
-		servletContext.log("===============================================================================");
 		servletContext.log("current WebApplication config  set character encoding: "+ encoding +" .thinking");
-		
-		servletContext.log("===============================================================================");
-		
 		if(!StringUtils.hasText(encoding)){
 			encoding = CharsetConstant.CHARSET_UTF8;
 			servletContext.log("current WebApplication use default character encoding: "+ encoding  +" .thinking");
 		}
+		
+		servletContext.log("===============================================================================");
+		
+		//DispatcherServlet
+		initDispatcherServlet(servletContext);
 		
 		//CharacterEncodingFilter  
 		initCharacterEncodingFilter(servletContext, encoding);
@@ -74,7 +82,21 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
         servletContext.setAttribute("nboneApplicationVersion", NboneVersion.getVersion("1.0.0"));
     }
 	
-    
+    protected void initDispatcherServlet(ServletContext servletContext){
+    	String enable  = servletContext.getInitParameter("enableDispatcherServlet");
+    	if(BooleanUtils.valueOf(enable)){
+    		//classpath*:/spring-mvc*.xml,/WEB-INF/spring-mvc*.xml
+    		XmlWebApplicationContext appContext = new XmlWebApplicationContext();
+    		appContext.setConfigLocation("classpath*:/spring/spring-mvc*.xml,/WEB-INF/spring/spring-mvc*.xml");
+    		
+    		
+    		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(appContext));
+    		dispatcher.setLoadOnStartup(1);
+    		dispatcher.addMapping("/");
+    		
+    	}
+
+    }
     
 	protected void initCharacterEncodingFilter (ServletContext servletContext,String encoding){
 		//CharacterEncodingFilter  
