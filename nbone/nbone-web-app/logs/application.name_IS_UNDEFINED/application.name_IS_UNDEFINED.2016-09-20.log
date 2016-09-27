@@ -1,0 +1,89 @@
+14:32:37.034 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+14:32:37.097 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Tue Sep 20 14:32:37 CST 2016]; root of context hierarchy
+14:32:37.131 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+14:32:37.329 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+14:32:37.349 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+14:32:37.405 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Tue Sep 20 14:32:37 CST 2016]; root of context hierarchy
+14:32:37.407 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 370 ms
+14:32:37.482 [main] INFO  o.n.f.s.w.s.ViewDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+14:32:37.484 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:32:37 CST 2016]; parent: Root WebApplicationContext
+14:32:37.639 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+14:32:37.657 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-core\target\classes\spring-mvc.xml]
+14:32:37.813 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+14:32:37.824 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+14:32:37.899 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:32:37 CST 2016]; parent: Root WebApplicationContext
+14:32:37.996 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+14:32:37.996 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+14:32:38.026 [main] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 4.3.2.Final
+14:32:38.413 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:32:38.414 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - nbone JsonRequestBodyMethodProcessor starting ....
+14:32:38.414 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:32:38.426 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:32:37 CST 2016]; parent: Root WebApplicationContext
+14:32:38.456 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:32:38.456 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - nbone JsonRequestBodyMethodProcessor starting ....
+14:32:38.456 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:32:38.459 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:32:37 CST 2016]; parent: Root WebApplicationContext
+14:32:38.521 [main] INFO  o.n.f.s.w.s.ViewDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 1039 ms
+14:51:36.271 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+14:51:36.338 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Tue Sep 20 14:51:36 CST 2016]; root of context hierarchy
+14:51:36.370 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+14:51:36.588 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+14:51:36.604 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+14:51:36.651 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Tue Sep 20 14:51:36 CST 2016]; root of context hierarchy
+14:51:36.667 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 393 ms
+14:51:36.745 [main] INFO  o.n.f.s.w.s.ViewDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+14:51:36.745 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:51:36 CST 2016]; parent: Root WebApplicationContext
+14:51:36.901 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+14:51:36.917 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-core\target\classes\spring-mvc.xml]
+14:51:37.073 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+14:51:37.088 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+14:51:37.151 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:51:36 CST 2016]; parent: Root WebApplicationContext
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(org.nbone.test.domain.User)
+14:51:37.260 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+14:51:37.292 [main] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 4.3.2.Final
+14:51:37.665 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:51:37.665 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - nbone JsonRequestBodyMethodProcessor starting ....
+14:51:37.665 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:51:37.681 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:51:36 CST 2016]; parent: Root WebApplicationContext
+14:51:37.712 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:51:37.712 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - nbone JsonRequestBodyMethodProcessor starting ....
+14:51:37.712 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+14:51:37.712 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 14:51:36 CST 2016]; parent: Root WebApplicationContext
+14:51:37.775 [main] INFO  o.n.f.s.w.s.ViewDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 1030 ms
+14:52:33.526 [qtp1873444284-25] WARN  o.s.web.servlet.PageNotFound - No mapping found for HTTP request with URI [/] in DispatcherServlet with name 'springmvc'
+15:46:53.918 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+15:46:53.970 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Tue Sep 20 15:46:53 CST 2016]; root of context hierarchy
+15:46:54.001 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+15:46:54.205 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+15:46:54.220 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+15:46:54.267 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Tue Sep 20 15:46:53 CST 2016]; root of context hierarchy
+15:46:54.267 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 346 ms
+15:46:54.345 [main] INFO  o.n.f.s.w.s.ViewDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+15:46:54.345 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 15:46:54 CST 2016]; parent: Root WebApplicationContext
+15:46:54.501 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+15:46:54.517 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-core\target\classes\spring-mvc.xml]
+15:46:54.689 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+15:46:54.689 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+15:46:54.767 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 15:46:54 CST 2016]; parent: Root WebApplicationContext
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(org.nbone.test.domain.User)
+15:46:54.876 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+15:46:54.908 [main] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 4.3.2.Final
+15:46:55.283 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+15:46:55.283 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - nbone JsonRequestBodyMethodProcessor starting ....
+15:46:55.283 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+15:46:55.298 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 15:46:54 CST 2016]; parent: Root WebApplicationContext
+15:46:55.329 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+15:46:55.329 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - nbone JsonRequestBodyMethodProcessor starting ....
+15:46:55.329 [main] INFO  o.n.f.s.w.m.a.JsonRequestBodyMethodProcessor - ========================================================================
+15:46:55.329 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Tue Sep 20 15:46:54 CST 2016]; parent: Root WebApplicationContext
+15:46:55.392 [main] INFO  o.n.f.s.w.s.ViewDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 1047 ms

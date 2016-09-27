@@ -115,5 +115,9 @@ public abstract class Graph<R> implements Serializable {
 		this.nodes = new HashSet<Node>(nodesMap.values());
 	}
 
+	
+	public  boolean checkCircle() {
+		return false;
+	}
 
 }

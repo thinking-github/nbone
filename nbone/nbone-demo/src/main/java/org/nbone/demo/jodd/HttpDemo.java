@@ -8,8 +8,10 @@ import jodd.http.HttpResponse;
 public class HttpDemo {
 	
 	public static void main(String[] args) {
-		get();
+		//get();
 	   // post();
+		put();
+		delete();
 	}
 	
 	static void get(){
@@ -47,5 +49,29 @@ public class HttpDemo {
 
 	        HttpResponse httpResponse = httpRequest.send();
 	}
+	
+	
+	static void put(){
+		//put
+		HttpRequest httpRequest = HttpRequest.put("http://localhost:8080/user");
+		httpRequest.form("id", "001","name","thinking","password","chen..");
+	    HttpResponse response = httpRequest.send();
+
+	    System.out.println(response);
+	    System.out.println(response.statusCode());
+		
+	}
+	
+	static void delete(){
+		//delete
+		HttpRequest httpRequest = HttpRequest.delete("http://localhost:8080/user/22");
+	    HttpResponse response = httpRequest.send();
+
+	    System.out.println(response);
+	    System.out.println(response.statusCode());
+		
+	}
+	
+	
 	
 }

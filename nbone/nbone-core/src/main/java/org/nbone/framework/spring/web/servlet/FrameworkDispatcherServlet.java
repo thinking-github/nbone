@@ -4,42 +4,72 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.DispatcherServlet;
-
-public class ViewDispatcherServlet extends DispatcherServlet {
+/**
+ * 支持框架组件类型
+ * <p> SSH  SpringMVC + spring + Hibernate
+ * <p> SSM  SpringMVC + spring + Mybatis
+ * <p> S2SH struts2 + spring + Hibernate
+ * <p> S2SM struts2 + spring + Mybatis
+ * 
+ * <p> SSM   jsp + SSM
+ * <p> J-SSM jsp + SSM
+ * <p> V-SSM velocity + SSM
+ * <p> F-SSM freemarker + SSM
+ * 
+ * @author thinking
+ *
+ */
+public class FrameworkDispatcherServlet extends DispatcherServlet {
 
 	private static final long serialVersionUID = -8945766024955551868L;
 	
-	protected String viewEngine;
-	
 	protected String framework = "SSM";
 	
-	protected String encoding;
+	protected String encoding = "UTF-8";
+	
+	private String viewEngine = "jsp";
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext sc = config.getServletContext();
 		//sc.addFilter("characterEncodingFilter", CharacterEncodingFilter.class);
-		
-		this.viewEngine = sc.getInitParameter("viewEngine");
-		this.framework = sc.getInitParameter("framework");
-		this.encoding  = sc.getInitParameter("encoding");
-		
+		initFramework(config,sc);
 		
 		super.init(config);
+
+	}
+	
+	private void initFramework(ServletConfig config,ServletContext sc){
+		String framework = sc.getInitParameter("framework");
+		String encoding  = sc.getInitParameter("encoding");
+		if(framework != null){
+			String[] frameworks = StringUtils.split(framework, "-");
+			if(frameworks.length == 1){
+				this.framework = frameworks[0];
+			}
+			if(frameworks.length == 2){
+				this.viewEngine = frameworks[0];
+				this.framework = frameworks[1];
+			}
+			
+		}
+		if(encoding != null){
+			this.encoding = encoding;
+		}
 		
 		sc.log("========================================================================");
-		sc.log("current WebApplication config set viewEngine: "+viewEngine+" .thinking");
-		sc.log("current WebApplication config set framework: " +framework +" .thinking");
-		sc.log("current WebApplication config set character encoding: "+ encoding +" .thinking");
+		sc.log("current WebApplication config set viewEngine: " + this.viewEngine +" .thinking");
+		sc.log("current WebApplication config set framework: " + this.framework +" .thinking");
+		sc.log("current WebApplication config set character encoding: "+ this.encoding +" .thinking");
 		sc.log("========================================================================");
+		
 	}
 
 	@Override
 	public void setContextConfigLocation(String contextConfigLocation) {
-		if(viewEngine == null){
-			viewEngine = "jsp";
-		}
+	
 		viewEngine = viewEngine.trim();
 		String viewPath = "";
 		if(viewEngine.equalsIgnoreCase("velocity") || viewEngine.equalsIgnoreCase("V")){
@@ -60,20 +90,6 @@ public class ViewDispatcherServlet extends DispatcherServlet {
 		
 		super.setContextConfigLocation(contextConfigLocation);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
 	
 
 }

@@ -64,4 +64,10 @@ public class Node  implements Serializable{
 		this.icon = icon;
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder("id:").append(id).append(",name:").append(name).toString();
+	}
+	
+
 }

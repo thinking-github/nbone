@@ -29,7 +29,7 @@
 <!-- spring mvc  org.springframework.web.servlet.DispatcherServlet -->
 <servlet>
     <servlet-name>springmvc</servlet-name>
-    <servlet-class>org.nbone.framework.spring.web.servlet.ViewDispatcherServlet</servlet-class>
+    <servlet-class>org.nbone.framework.spring.web.servlet.FrameworkDispatcherServlet</servlet-class>
     <!-- 可以自定义servlet.xml配置文件的位置和名称，默认为WEB-INF目录下，名称为[<servlet-name>]-servlet.xml，如spring-servlet.xml-->
     <init-param>
         <param-name>contextConfigLocation</param-name>

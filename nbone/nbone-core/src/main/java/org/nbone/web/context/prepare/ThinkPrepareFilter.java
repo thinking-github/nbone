@@ -20,7 +20,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * 预处理filter 此过滤器将 request,response等参数缓存下来,用于application其他位置
  *  
- * @author Thinking   2014-7-16
+ * @author thinking  
+ * @since 2014-7-16
+ * @see struts2
  * 
  */
 

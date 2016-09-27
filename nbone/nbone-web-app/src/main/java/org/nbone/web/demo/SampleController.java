@@ -9,7 +9,6 @@ import org.nbone.framework.spring.web.bind.annotation.JsonRequestParam;
 import org.nbone.framework.spring.web.support.SuperController;
 import org.nbone.test.domain.User;
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;

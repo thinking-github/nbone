@@ -116,6 +116,7 @@
 		    <artifactId>resteasy-jaxrs</artifactId>
 		    <version>3.0.10.Final</version>
 		</dependency>
+		
 
 	  <dependency>
 	  	<groupId>org.nbone</groupId>

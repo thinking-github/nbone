@@ -4,14 +4,16 @@
          id="WebApp_ID" metadata-complete="false" version="3.0">
          
   <display-name>nbone-web-app</display-name>
+  
   <context-param>
-    <param-name>viewEngine</param-name>
-    <param-value>V</param-value>
+    <param-name>framework</param-name>
+    <param-value>V-SSM</param-value>
   </context-param>
   <context-param>
     <param-name>encoding</param-name>
     <param-value>UTF-8</param-value>
   </context-param>
+  
   <filter>
     <filter-name>filter1</filter-name>
     <filter-class>org.nbone.web.demo.Filter1</filter-class>

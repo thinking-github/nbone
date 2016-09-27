@@ -18,8 +18,6 @@ import org.codehaus.jackson.map.ser.StdSerializerProvider;
 import org.codehaus.jackson.type.TypeReference;
 import org.nbone.constants.DateConstant;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-
 /**
  * base by org.codehaus.jackson.map.ObjectMapper
  * @author thinking  2014-04-26

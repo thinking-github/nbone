@@ -71,4 +71,11 @@ public class GraphEdgeModel implements GraphEdge<Node>,Serializable {
 		this.lineWidth = lineWidth;
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder().append(from).append("------->").append(to).toString();
+	}
+	
+	
+
 }

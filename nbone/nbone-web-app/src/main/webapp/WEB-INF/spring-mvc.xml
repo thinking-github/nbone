@@ -9,14 +9,17 @@
 						   http://www.springframework.org/schema/context
 						   http://www.springframework.org/schema/context/spring-context.xsd
 						   http://www.springframework.org/schema/mvc
-						   http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+						   http://www.springframework.org/schema/mvc/spring-mvc.xsd
 						   
 						   http://www.springframework.org/schema/util
 						   http://www.springframework.org/schema/mvc/spring-util.xsd
 						   
 						   ">
- 
-
+			<mvc:annotation-driven ></mvc:annotation-driven>
+			
+			<context:component-scan base-package="org.nbone.web" use-default-filters="false">
+				<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+			</context:component-scan>
 						   
 
 </beans>

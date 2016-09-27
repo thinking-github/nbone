@@ -15,12 +15,15 @@ import org.hibernate.Version;
 import org.nbone.NboneVersion;
 import org.nbone.constants.CharsetConstant;
 import org.nbone.util.lang.BooleanUtils;
+import org.nbone.web.context.prepare.ThinkPrepareFilter;
 import org.springframework.core.SpringVersion;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -39,6 +42,9 @@ import net.sf.ehcache.constructs.web.filter.GzipFilter;
 public class SpringWebApplicationInitializer implements WebApplicationInitializer,CharsetConstant {
 
 	protected  Log logger = LogFactory.getLog(getClass());
+	
+	public final static String prefix  = "[nbone-application] initialize";
+	
 	
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
@@ -64,6 +70,15 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 		//CharacterEncodingFilter  
 		initCharacterEncodingFilter(servletContext, encoding);
 		
+		//HiddenHttpMethodFilter
+		initHiddenHttpMethodFilter(servletContext);
+		
+		//HttpPutFormContentFilter
+		initHttpPutFormContentFilter(servletContext);
+		
+		//XXX：ThinkPrepareFilter 特殊情况下开启暂存 request response
+		//initThinkPrepareFilter(servletContext);
+		
 		//RequestContextFilter
 		initRequestContextFilter(servletContext);
 		
@@ -77,11 +92,15 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 	}
 	
     private void initialApplicationContext(ServletContext servletContext) {
-        servletContext.setAttribute("applicationStartupDate",new Date());
-        servletContext.setAttribute("nboneApplicationName","nbone");
-        servletContext.setAttribute("nboneApplicationVersion", NboneVersion.getVersion("1.0.0"));
+        servletContext.setAttribute("appStartupDate",new Date());
+        servletContext.setAttribute("nboneAppName","nbone");
+        servletContext.setAttribute("nboneAppVersion", NboneVersion.getVersion("1.0.0"));
     }
-	
+	/**
+	 * <p>默认关闭<p>
+	 * 加载spring mvc 统一调度器
+	 * @param servletContext
+	 */
     protected void initDispatcherServlet(ServletContext servletContext){
     	String enable  = servletContext.getInitParameter("enableDispatcherServlet");
     	if(BooleanUtils.valueOf(enable)){
@@ -97,8 +116,15 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
     	}
 
     }
-    
+    /**
+     * <P> 默认开启
+     * <p> 加载字符编码过滤器,用于统一字符编码
+     * @param servletContext
+     * @param encoding
+     */
 	protected void initCharacterEncodingFilter (ServletContext servletContext,String encoding){
+		servletContext.log(prefix +" CharacterEncodingFilter.thinking");
+		
 		//CharacterEncodingFilter  
 		CharacterEncodingFilter characterEncodingFilter =  new CharacterEncodingFilter();
 		characterEncodingFilter.setEncoding(encoding);
@@ -109,7 +135,65 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 		filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 		
 	}
+	/**
+	 * <p>默认关闭<p>
+	 * 使用threadLocal暂存 request response
+	 * @param servletContext
+	 */
+	protected void initThinkPrepareFilter (ServletContext servletContext){
+		servletContext.log(prefix + " ThinkPrepareFilter.thinking");
+		
+		//ThinkPrepareFilter  
+		ThinkPrepareFilter thinkingFilter =  new ThinkPrepareFilter();
+		
+		FilterRegistration filterRegistration =  servletContext.addFilter("thinkingFilter", thinkingFilter);
+		
+		filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+		
+	}
 	
+	/**
+	 * <p>默认关闭<p>
+	 * 加载HiddenHttpMethodFilter用于支持  HTTP PUT、DELETE(post模拟 put/delete)
+	 * 在这处理过程中 HttpServletRequest对象需要修改 故此过滤器放置位置需要靠前（放在过滤字符之后）
+	 * @param servletContext
+	 * @see HiddenHttpMethodFilter
+	 */
+	protected void initHiddenHttpMethodFilter(ServletContext servletContext){
+		String enableHiddenHttpMethod  = servletContext.getInitParameter("enableHiddenHttpMethod");
+		if(BooleanUtils.valueOf(enableHiddenHttpMethod)){
+			//HiddenHttpMethodFilter  
+			HiddenHttpMethodFilter hiddenHttpMethodFilter =  new HiddenHttpMethodFilter();
+			
+			FilterRegistration filterRegistration =  servletContext.addFilter("hiddenHttpMethodFilter", hiddenHttpMethodFilter);
+			
+			filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+		}
+	}
+	/**
+	 * <p>默认关闭<p>
+	 * 注意：需放在initHiddenHttpMethodFilter之后
+	 * @param servletContext
+	 * @see HttpPutFormContentFilter
+	 */
+	protected void initHttpPutFormContentFilter(ServletContext servletContext){
+		String enablePutForm  = servletContext.getInitParameter("enablePutForm");
+		if(BooleanUtils.valueOf(enablePutForm)){
+			//HttpPutFormContentFilter  
+			HttpPutFormContentFilter httpPutFormContentFilter =  new HttpPutFormContentFilter();
+			
+			FilterRegistration filterRegistration =  servletContext.addFilter("httpPutFormContentFilter", httpPutFormContentFilter);
+			
+			filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+		}
+	}
+	
+	
+	/**
+	 * <p>默认关闭<p>
+	 * 加载RequestContextFilter 用于将RequestContext存储于当前线程
+	 * @param servletContext
+	 */
 	protected void initRequestContextFilter(ServletContext servletContext){
 		String enableRequestContextFilter  = servletContext.getInitParameter("enableRequestContext");
 		if(BooleanUtils.valueOf(enableRequestContextFilter)){
@@ -122,9 +206,12 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 		}
 	}
 	
+
+	
 	
 	
 	/**
+	 * <p>默认关闭<p>
 	 * 启用静态文件压缩
 	 * @param servletContext
 	 */
@@ -140,6 +227,7 @@ public class SpringWebApplicationInitializer implements WebApplicationInitialize
 	
 	
 	/**
+	 * <p>默认关闭<p>
 	 * enable Hibernate Lazy
 	 * @param servletContext
 	 */

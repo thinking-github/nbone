@@ -12,7 +12,7 @@
 						   http://www.springframework.org/schema/mvc/spring-mvc.xsd
 						   
 						   http://www.springframework.org/schema/util
-						   http://www.springframework.org/schema/mvc/spring-util.xsd
+						   http://www.springframework.org/schema/util/spring-util.xsd
 						   
 						   ">
 						   
