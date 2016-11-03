@@ -15,7 +15,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonProcessingException;
 import org.nbone.constants.DateConstant;
 
 /**
@@ -281,7 +280,6 @@ public class DateFPUtils implements DateConstant {
 	 * @param value
 	 * @return
 	 * @throws IOException
-	 * @throws JsonProcessingException
 	 */
 	@Deprecated
 	public static Date parseDate1(String value) {

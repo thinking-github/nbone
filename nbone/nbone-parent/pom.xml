@@ -1,508 +1,450 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>nbone-parent</artifactId>
-  <name>nbone-parent</name>
-  <packaging>pom</packaging>
-  <url>http://maven.apache.org</url>
-  
-  <parent>
-    <groupId>org.nbone</groupId>
-    <artifactId>nbone</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-  
-    <properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	  	<spring.version>4.1.1.RELEASE</spring.version>
-	  	<spring-boot.version>1.0.0.RELEASE</spring-boot.version>
-	  	<hibernate.version>3.6.10.Final</hibernate.version>
-	  	<mybatis.version>3.2.3</mybatis.version>
-	  	<mybatis-spring.version>1.2.1</mybatis-spring.version>
-	  	<jodd.version>3.7</jodd.version>
-  </properties>
-  
-  
-   <dependencies>
-	      <dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.0.1</version>
-				<scope>provided</scope>
-	      </dependency>
-	      <dependency>
-	        <groupId>javax.servlet.jsp</groupId>
-	        <artifactId>jsp-api</artifactId>
-	        <version>2.1</version>
-	        <scope>provided</scope>
-	      </dependency>
-	      
-		 <dependency>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>nbone-parent</artifactId>
+	<name>nbone-parent</name>
+	<packaging>pom</packaging>
+	<url>http://maven.apache.org</url>
+
+	<parent>
+		<groupId>org.nbone</groupId>
+		<artifactId>nbone</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>4.1.4.RELEASE</spring.version>
+		<spring-boot.version>1.2.0.RELEASE</spring-boot.version>
+		<hibernate.version>3.6.10.Final</hibernate.version>
+		<mybatis.version>3.2.3</mybatis.version>
+		<mybatis-spring.version>1.2.1</mybatis-spring.version>
+		<jodd.version>3.7</jodd.version>
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>javax.jms-api</artifactId>
 			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.2</version>
+			<scope>provided</scope>
 		</dependency>
 
-  
-   		<!-- springframework -->
-  	   <dependency>
-			 <groupId>org.springframework</groupId>
-  			 <artifactId>spring-context-support</artifactId>
-			 <version>${spring.version}</version>
-  	   </dependency> 
-  	   <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
-  	   </dependency> 
+		<!-- apache -->
 		<dependency>
-	        <groupId>org.springframework</groupId>
-	        <artifactId>spring-webmvc</artifactId>
-	        <version>${spring.version}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+			<optional>true</optional>
 		</dependency>
-	      <dependency>
-		       <groupId>org.springframework</groupId>
-		       <artifactId>spring-jdbc</artifactId>
-		       <version>${spring.version}</version><!--$NO-MVN-MAN-VER$-->
-		  </dependency>
-		  
-		  
-		   <dependency>
-	        <groupId>org.springframework</groupId>
-	        <artifactId>spring-orm</artifactId>
-	        <version>${spring.version}</version>
-	        <optional>true</optional>
-	      </dependency>
-		  <dependency>
-			   <groupId>org.springframework</groupId>
-			   <artifactId>spring-jms</artifactId>
-			   <version>${spring.version}</version>
-			   <optional>true</optional>
-		 </dependency>
-		 <dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-			<version>1.8.1.RELEASE</version>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>1.3.3</version>
+			<optional>true</optional>
 		</dependency>
-		  <!-- spring  boot-->
-		 <dependency>
-		       <groupId>org.springframework.boot</groupId>
-		       <artifactId>spring-boot-starter-web</artifactId>
-		       <version>${spring-boot.version}</version>
-		       <!-- spring  boot web tomcat-->
-		        <exclusions>
-		        <!--
-			       <exclusion>
-				       <groupId>org.springframework.boot</groupId>
-				       <artifactId>spring-boot-starter-tomcat</artifactId>
-			       </exclusion>
-			        -->
-			        <exclusion>
-				        <groupId>org.slf4j</groupId>
-				        <artifactId>log4j-over-slf4j</artifactId>
-			        </exclusion>
-		       </exclusions>
-    	</dependency>
-    	 <!-- spring  boot web jetty-->
-    	<!-- <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-jetty</artifactId>
-		    <version>${spring-boot.version}</version>
-		 </dependency> -->
-		 
-		 <!-- google core -->
-		 <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>18.0</version>
-       	 </dependency>
-        
-		   <!-- apache -->
-		   <dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
-			</dependency>
-			<dependency>
-		  		<groupId>org.apache.commons</groupId>
-		  		<artifactId>commons-email</artifactId>
-		  		<version>1.3.3</version>
-		  	</dependency>
-		   
-		   <dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.3.6</version>
-				<scope>provided</scope>
-		   </dependency>
-		   <dependency>
-				<groupId>commons-httpclient</groupId>
-				<artifactId>commons-httpclient</artifactId>
-				<version>3.1</version>
-				<scope>provided</scope>
-			</dependency>
-		   
-		   <dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-core</artifactId>
-				<version>2.3.30</version>
-				<scope>provided</scope>
-		   </dependency>
-		   
-		   <dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-json-plugin</artifactId>
-				<version>2.3.30</version>
-				<scope>provided</scope>
-			</dependency>
-			
-	<!-- 		<dependency>
-			    <groupId>org.apache.struts</groupId>
-			    <artifactId>struts2-core</artifactId>
-			    <version>2.5.2</version>
-			    <scope>provided</scope>
-			</dependency> -->
-		   
-		   <dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-core</artifactId>
-				<version>5.7.0</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-all</artifactId>
-				<version>5.9.0</version>
-				<scope>provided</scope>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.2</version>
+			<optional>true</optional>
 		</dependency>
-		   
-		   
-		    <!-- Java JPA -->
-		    
-		    <!--   
-		    <dependency>
-				<groupId>javax.persistence</groupId>
-				<artifactId>persistence-api</artifactId>
-				<version>1.0</version>
-		   </dependency> 
-		   -->
-		   
-		   <dependency>
-				<groupId>org.hibernate.javax.persistence</groupId>
-				<artifactId>hibernate-jpa-2.0-api</artifactId>
-				<version>1.0.0.Final</version>
-		    </dependency>
-		   
-		   <!-- hibernate -->
-		   <dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>3.6.10.Final</version>
-				<scope>provided</scope>
-		   </dependency>
-		   
-		   <dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>4.3.2.Final</version>
-			</dependency>
-						
-		   <!-- MyBatis -->
-			<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis</artifactId>
-				<version>${mybatis.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis-spring</artifactId>
-				<version>${mybatis-spring.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			
-			<!-- ehcache -->
-			<dependency>
-	            <groupId>net.sf.ehcache</groupId>
-	            <artifactId>ehcache-web</artifactId>
-	            <version>2.0.4</version>
-	            <scope>provided</scope>
-	        </dependency>
-	        
-			<!--AOP  -->
-			<dependency>
-				<groupId>aopalliance</groupId>
-				<artifactId>aopalliance</artifactId>
-				<version>1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.aspectj</groupId>
-				<artifactId>aspectjrt</artifactId>
-				<version>1.6.12</version>
-			</dependency>
-			<dependency>
-				<groupId>org.aspectj</groupId>
-				<artifactId>aspectjweaver</artifactId>
-				<version>1.6.12</version>
-			</dependency>
-			
-			<!-- jackson JSON -->
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-core-asl</artifactId>
-				<version>1.9.8</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-mapper-asl</artifactId>
-				<version>1.9.8</version>
-			</dependency>
-			
-			<!-- jackson2 JSON -->
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
-				<version>2.5.4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>2.5.4</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.codehaus.castor</groupId>
-				<artifactId>castor-xml</artifactId>
-				<version>1.3.3</version>
-				<scope>provided</scope>
-			</dependency>
-			
-			
-			
-			<!-- net.sf.json-lib JSON -->
-			<dependency>
-				<groupId>net.sf.json-lib</groupId>
-				<artifactId>json-lib</artifactId>
-				<version>2.4</version>
-				<classifier>jdk15</classifier>
-			</dependency>
-			
-			<dependency>
-				<groupId>net.sf.ezmorph</groupId>
-				<artifactId>ezmorph</artifactId>
-				<version>1.0.6</version>
-			</dependency>
-			
-			<!-- XML object model-->
-			<dependency>
-				<groupId>com.io7m.xom</groupId>
-				<artifactId>xom</artifactId>
-				<version>1.2.10</version>
-			</dependency>
-			
-			<!-- alibaba  fastjson-->
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>1.2.4</version>
-			</dependency>
-			
-  	  		<dependency>
-				<groupId>net.sourceforge.jexcelapi</groupId>
-				<artifactId>jxl</artifactId>
-				<version>2.6.12</version>
-				<scope>provided</scope>
-		  	</dependency>
-		  	<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi</artifactId>
-				<version>3.10.1</version>
-				<scope>provided</scope>
-			</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.6</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
 
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-all</artifactId>
+			<version>5.9.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		
-		<!--     <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-words</artifactId>
-            <version>15.6.0</version>
-            <classifier>jdk16</classifier>
-        </dependency> -->
 		
+		<!-- MyBatis -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ehcache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-web</artifactId>
+			<version>2.0.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!--AOP -->
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.6.12</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.12</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>castor-xml</artifactId>
+			<version>1.3.3</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+
+		<!-- net.sf.json-lib JSON -->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ezmorph</groupId>
+			<artifactId>ezmorph</artifactId>
+			<version>1.0.6</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- XML object model -->
+		<dependency>
+			<groupId>com.io7m.xom</groupId>
+			<artifactId>xom</artifactId>
+			<version>1.2.10</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- alibaba fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.12</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- <dependency> <groupId>com.aspose</groupId> <artifactId>aspose-words</artifactId> 
+			<version>15.6.0</version> <classifier>jdk16</classifier> </dependency> -->
+
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>2.1.6</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- 时间相关 -->
+		<!--日期美化 -->
 		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>2.1_3</version>
+			<groupId>org.ocpsoft.prettytime</groupId>
+			<artifactId>prettytime</artifactId>
+			<version>3.2.5.Final</version>
+			<optional>true</optional>
 		</dependency>
+		<!-- joda time 相关jar包 -->
 		<dependency>
-			<groupId>ognl</groupId>
-			<artifactId>ognl</artifactId>
-			<version>3.0.6</version>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.6</version>
+			<scope>provided</scope>
 		</dependency>
 		
-        <!-- 时间相关 -->
-        <!--日期美化-->
-        <dependency>
-            <groupId>org.ocpsoft.prettytime</groupId>
-            <artifactId>prettytime</artifactId>
-            <version>3.2.3.Final</version>
-        </dependency>
-        <!-- joda time 相关jar包 -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.3</version>
-        </dependency>
-  		<!--  jodd -->
-	  	<dependency>
-	       <groupId>org.jodd</groupId>
-	       <artifactId>jodd-core</artifactId>
-	     </dependency>
-	     <dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-props</artifactId>
-		</dependency>
-	     <dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-bean</artifactId>
-		    <scope>provided</scope>
+		<!-- jodd -->
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-db</artifactId>
-		    <scope>provided</scope>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-props</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-servlet</artifactId>
-		    <scope>provided</scope>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-bean</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-madvoc</artifactId>
-		   <scope>provided</scope>
-		</dependency>
-	    <dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-http</artifactId>
-		    <scope>provided</scope>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-db</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-mail</artifactId>
-		    <scope>provided</scope>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-servlet</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.jodd</groupId>
-		    <artifactId>jodd-log</artifactId>
-		     <scope>provided</scope>
-		</dependency> 
-		
-		<dependency>
-		    <groupId>org.antlr</groupId>
-		    <artifactId>stringtemplate</artifactId>
-		    <version>4.0.2</version>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-madvoc</artifactId>
+			<scope>provided</scope>
 		</dependency>
-		
-	
-  </dependencies>
-  
-  
-  <dependencyManagement>
-  	  <!-- jodd -->
-	  <dependencies>
-		   	<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-core</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency>
-		  	<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-bean</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency>
-			
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-http</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-mail</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-log</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>stringtemplate</artifactId>
+			<version>4.0.2</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+
+	</dependencies>
+
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- springframework -->
 			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-props</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-db</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-servlet</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-madvoc</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-http</artifactId>
-			    <version>${jodd.version}</version>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-mail</artifactId>
-			    <version>${jodd.version}</version>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.jodd</groupId>
-			    <artifactId>jodd-log</artifactId>
-			    <version>${jodd.version}</version>
-			</dependency> 
-		
-	  		<!--dependency  test start-->
-		  	 <dependency>
-			     <groupId>junit</groupId>
-			     <artifactId>junit</artifactId>
-			     <version>4.11</version>
-			     <scope>provided</scope>
-		      </dependency>
-		  	 <dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jms</artifactId>
+				<version>${spring.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-commons</artifactId>
+				<version>1.8.1.RELEASE</version>
+			</dependency>
+
+			<!-- jodd -->
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-core</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-bean</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-props</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-db</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-servlet</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-madvoc</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-http</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-mail</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jodd</groupId>
+				<artifactId>jodd-log</artifactId>
+				<version>${jodd.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.6.7</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.6.7</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.apache.velocity</groupId>
 				<artifactId>velocity</artifactId>
 				<version>1.7</version>
-				<scope>provided</scope>
-				<optional>true</optional>
-		  	 </dependency>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
 				<artifactId>velocity-tools</artifactId>
 				<version>2.0</version>
-				<scope>provided</scope>
-				<optional>true</optional>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.freemarker</groupId>
 				<artifactId>freemarker</artifactId>
 				<version>2.3.20</version>
-				<scope>provided</scope>
-				<optional>true</optional>
 			</dependency>
-			
+
+			<!--dependency test start -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>provided</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.mybatis.generator</groupId>
 				<artifactId>mybatis-generator-core</artifactId>
@@ -515,21 +457,17 @@
 				<version>5.1.25</version>
 				<scope>test</scope>
 			</dependency>
-			<!--  dependency  test end-->
-		
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			  
-	  
-	  </dependencies>
-  
-  </dependencyManagement>
-  
-  	<!-- 不同的打包环境 -->
+			<!-- dependency test end -->
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- 不同的打包环境 -->
 	<profiles>
 		<profile>
 			<id>dev</id>
@@ -540,30 +478,30 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
-		
+
 		<profile>
 			<id>test</id>
 			<properties>
 				<env>test</env>
 			</properties>
 		</profile>
-	
+
 	</profiles>
-	
-     <build>
-     	<filters>
-     		<filter>../nbone-parent/src/main/filters/filter-${env}.properties</filter>
-     	</filters>
-     	
-     	
-     	<resources>
-     	   <resource>
-	         <directory>src/main/java</directory>
-	         <includes>
-	           <include>**/*.properties</include>
-	         </includes>
-	       </resource>
-	      
+
+	<build>
+		<filters>
+			<filter>../nbone-parent/src/main/filters/filter-${env}.properties</filter>
+		</filters>
+
+
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+
 			<resource><!-- 不对指定的资源文件进行资源替换 -->
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
@@ -583,8 +521,8 @@
 				</includes>
 			</resource>
 		</resources>
-		
-		
+
+
 		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
@@ -605,10 +543,10 @@
 				</includes>
 			</testResource>
 		</testResources>
-		
-		
-     	
-     </build>
+
+
+
+	</build>
 
 
 </project>

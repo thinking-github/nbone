@@ -18,6 +18,12 @@ public class Node  implements Serializable{
 	private String url;
 	private String  icon;
 	
+	private Location location; 
+	
+	/**
+	 * 标记属性可用于图的回环标记等（可选项）
+	 */
+	private boolean flag ;
 	
 	public Node() {
 	}
@@ -62,6 +68,22 @@ public class Node  implements Serializable{
 	}
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+	
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 
 	@Override

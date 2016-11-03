@@ -8,7 +8,7 @@ package org.nbone;
  * 常用IT变量
  * @author thinking
  * @since 2015-12-12
- * @see com.alibaba.dubbo.common.Constants
+ * @see com.alibaba.OperationConstants.common.Constants
  *
  */
 //@SuppressWarnings({"rawtypes","unchecked"})

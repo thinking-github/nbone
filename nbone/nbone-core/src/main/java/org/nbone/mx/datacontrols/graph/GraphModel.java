@@ -3,11 +3,18 @@ package org.nbone.mx.datacontrols.graph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.nbone.core.exception.CircleReferenceException;
 import org.nbone.mx.datacontrols.Node;
 import org.nbone.mx.datacontrols.graph.exception.GraphCircleReferenceException;
 import org.nbone.util.graph.CycleDetector;
+import org.nbone.util.json.jackson.JsonUtils;
+
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
+import com.google.common.graph.MutableNetwork;
+import com.google.common.graph.NetworkBuilder;
 
 
 /**
@@ -54,7 +61,34 @@ public class GraphModel extends Graph<GraphEdgeModel> {
 		return super.checkCircle();
 	}
 	
+	/**
+	 * 检测环，如果含有环并更新Node节点环的状态
+	 * @return
+	 */
+	public static  boolean checkCircleAndUpdate(Graph<GraphEdgeModel> graph) {
+		boolean check = false ;
+		List<String> cnodes = checkCircle(graph);
+		Set<Node> allNode = graph.getNodes();
+		if(cnodes != null && cnodes.size() > 0 ){
+			check = true;
+			for (String nodeId : cnodes) {
+				for (Node node : allNode) {
+					if(nodeId.equals(node.getId())){
+						node.setFlag(true);
+						break;
+					}
+				}
+			}
+		}
+		
+		return check;
+	}
 	
+	/**
+	 * 检测环并返回含有环的列表
+	 * @param graph
+	 * @return
+	 */
 	public static List<String> checkCircle(Graph<GraphEdgeModel> graph){
 		IdDirectedGraph directedGraph = new IdDirectedGraph(graph);
 		
@@ -117,7 +151,7 @@ public class GraphModel extends Graph<GraphEdgeModel> {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 	
 		
 		
@@ -144,6 +178,17 @@ public class GraphModel extends Graph<GraphEdgeModel> {
 		list.add(edge4);
 		list.add(edge5);
 		list.add(edge6);
+		
+		MutableGraph<Node> graph1 = GraphBuilder.directed().build();
+		graph1.addNode(rootNode);
+		graph1.addNode(node1);
+		graph1.addNode(node2);
+		graph1.addNode(node3);
+		graph1.addNode(node4);
+		graph1.putEdge(rootNode, node1);
+		graph1.putEdge(rootNode, node2);
+		System.out.println(JsonUtils.pojoToJson(graph1));
+		
 		for (int i = 0; i < 5; i++) {
 			
 			try {
@@ -159,9 +204,9 @@ public class GraphModel extends Graph<GraphEdgeModel> {
 				graph.setRelationEdges(list);
 				
 				
+				
 				List<String> cycNodes = GraphModel.checkCircle(graph);
 				System.out.println(cycNodes);
-				
 				
 			} catch (GraphCircleReferenceException e) {
 				System.out.println(e.getMessage());

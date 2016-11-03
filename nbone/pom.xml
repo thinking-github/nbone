@@ -1,305 +1,295 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.nbone</groupId>
-  <artifactId>nbone</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  
-  <modules>
-    <module>nbone-parent</module>
-    <module>nbone-core</module>
-    <module>nbone-security</module>
-    <module>nbone-toolbox</module>
-    <module>nbone-demo</module>
-    <module>nbone-web</module>
-    <module>nbone-web-app</module>
-  </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.nbone</groupId>
+	<artifactId>nbone</artifactId>
+	<version>1.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>nbone-parent</module>
+		<module>nbone-core</module>
+		<module>nbone-security</module>
+		<module>nbone-toolbox</module>
+		<module>nbone-demo</module>
+		<module>nbone-web</module>
+		<module>nbone-web-app</module>
+		<module>nbone-framework</module>
+	</modules>
 
 	<properties>
-		 <nbone.version>1.0.2-SNAPSHOT</nbone.version>
-		 
-		 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		 <project.build.source.version>1.7</project.build.source.version>
-		 <project.build.target.version>1.7</project.build.target.version>
-		 
-		 <java.version>1.7</java.version>
-		 <java.target.version>1.7</java.target.version>
-	
-	</properties>
-	
-  	
-    <name>nbone-thinking</name>
-    <url>https://github.com/thinking-github/nbone</url>
-  	<organization>
-  		<name>nbone</name>
-  	</organization>
-  	<description>clean package
-				  clean deploy </description>
-  	<scm>
-  		<url>https://github.com/thinking-github/nbone</url>
-  		<developerConnection>thinking</developerConnection>
-  		<tag>master</tag>
-  		<connection>git@github.com:thinking-github/nbone.git</connection>
-  	</scm>
-  	<developers>
-  		<developer>
-  			<id/>
-  			<name>thinking</name>
-  			<email>chenyicheng00@gmail.com</email>
-  		</developer>
-  	</developers>
-  	<inceptionYear>2013</inceptionYear>
+		<nbone.version>1.1.0-SNAPSHOT</nbone.version>
 
-<dependencyManagement>
-	<dependencies>
-		<dependency>
-		  	<groupId>org.nbone</groupId>
-		  	<artifactId>nbone-core</artifactId>
-		  	<version>${nbone.version}</version>
-	  </dependency>
-	   <dependency>
-		  	<groupId>org.nbone</groupId>
-		  	<artifactId>nbone-web</artifactId>
-		  	<version>${nbone.version}</version>
-	  </dependency>
-	  
-	</dependencies>
-</dependencyManagement>
-  	
-  	<build>
-	  	<resources>
-	      <resource>
-	        <directory>src/main/java</directory>
-	        <includes>
-	          <include>**/*.properties</include>
-	        </includes>
-	      </resource>
-	    </resources>
-    
-  	 <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat6-maven-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat7-maven-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-          <plugin>
-	      	<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-maven-plugin</artifactId>
-			<version>8.1.14.v20131031</version>
-	      </plugin>
-          <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-          <plugin>
-          	<groupId>org.eclipse.m2e</groupId>
-          	<artifactId>lifecycle-mapping</artifactId>
-          	<version>1.0.0</version>
-          	<configuration>
-          		<lifecycleMappingMetadata>
-          			<pluginExecutions>
-          				<pluginExecution>
-          					<pluginExecutionFilter>
-          						<groupId>
-          							org.apache.maven.plugins
-          						</groupId>
-          						<artifactId>
-          							maven-compiler-plugin
-          						</artifactId>
-          						<versionRange>[3.3,)</versionRange>
-          						<goals>
-          							<goal>testCompile</goal>
-          						</goals>
-          					</pluginExecutionFilter>
-          					<action>
-          						<ignore></ignore>
-          					</action>
-          				</pluginExecution>
-          			</pluginExecutions>
-          		</lifecycleMappingMetadata>
-          	</configuration>
-          </plugin>
-      </plugins>
-    </pluginManagement>
-  	
-  	
-     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
-        <configuration>
-          <source>${project.build.source.version}</source>
-          <target>${project.build.target.version}</target>
-          <encoding>UTF-8</encoding>
-          <verbose>thinking</verbose>
-        </configuration>
-      </plugin>
-      
-      
-      
-      <plugin>  
-		    <groupId>org.apache.maven.plugins</groupId>  
-		    <artifactId>maven-javadoc-plugin</artifactId>  
-		    <version>2.9.1</version>  
-		    <configuration>  
-		        <aggregate>true</aggregate>
-		        <charset>UTF-8</charset>
-				<encoding>UTF-8</encoding>
-		    </configuration>  
-		   <executions>
-				<execution>
-					<phase>package</phase>
-				<goals>
-					<goal>help</goal>
-				</goals>
-				</execution>
-			</executions>
-	 </plugin>  
-      
-      <!-- 要将源码放上去，需要加入这个插件 -->
-	  		
-		<plugin>
-			<artifactId>maven-source-plugin</artifactId>
-			<version>2.2</version>
-			<configuration>
-				<attach>true</attach>
-			</configuration>
-			<executions>
-				<execution>
-					<phase>package</phase>
-				<goals>
-					<goal>help</goal>
-				</goals>
-				</execution>
-			</executions>
-		</plugin> 
-		
-	 
-		
-		  <plugin>
-          	<artifactId>maven-dependency-plugin</artifactId>
-          	<version>2.8</version>
-          	<configuration>
-          	</configuration>
-          	<executions>  
-                <execution>  
-                    <phase>package</phase>  
-                    <goals>  
-                        <goal>tree</goal>  
-                        <goal>help</goal>
-                    </goals>  
-                    <configuration>  
-	                  <!--  <outputDirectory>  
-	                           ${project.build.directory}/lib  
-	                   </outputDirectory>   -->
-	                   <outputDirectory>  
-	                            ./src/main/webapp/WEB-INF/lib 
-	                   </outputDirectory>  
-	               </configuration>  
-                </execution>  
-             
-            </executions>  
-        </plugin>
-        
-       	<plugin>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-maven-plugin</artifactId>
-			<!-- <version>8.1.0.RC0</version> -->
-			<configuration>
-				<scanIntervalSeconds>0</scanIntervalSeconds>
-				<webAppConfig>
-					<contextPath>/${project.artifactId}</contextPath>
-				</webAppConfig>
-			</configuration>
-		</plugin>
-		
-		 <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat6-maven-plugin</artifactId>
-          <configuration>
-          </configuration>
-        </plugin>
-        
-        <plugin>
-        	<groupId>org.apache.maven.plugins</groupId>
-        	<artifactId>maven-pdf-plugin</artifactId>
-        	<version>1.3</version>
-        	<configuration>
-        		<outputDirectory>
-        			${project.build.directory}/doc
-        		</outputDirectory>
-        	</configuration>
-        </plugin>
-	
-      
-      
-    </plugins>
-  </build>
-  
-  	
-  	  <!--Maven私服配置 -->
-  
-    <distributionManagement>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.source.version>1.7</project.build.source.version>
+		<project.build.target.version>1.7</project.build.target.version>
+
+		<java.version>1.7</java.version>
+		<java.target.version>1.7</java.target.version>
+
+	</properties>
+
+
+	<name>nbone-thinking</name>
+	<url>https://github.com/thinking-github/nbone</url>
+	<organization>
+		<name>nbone</name>
+	</organization>
+	<description>clean package
+				  clean deploy </description>
+	<scm>
+		<url>https://github.com/thinking-github/nbone</url>
+		<developerConnection>thinking</developerConnection>
+		<tag>master</tag>
+		<connection>git@github.com:thinking-github/nbone.git</connection>
+	</scm>
+	<developers>
+		<developer>
+			<id />
+			<name>thinking</name>
+			<email>chenyicheng00@gmail.com</email>
+		</developer>
+	</developers>
+	<inceptionYear>2013</inceptionYear>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.nbone</groupId>
+				<artifactId>nbone-core</artifactId>
+				<version>${nbone.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.nbone</groupId>
+				<artifactId>nbone-framework</artifactId>
+				<version>${nbone.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.nbone</groupId>
+				<artifactId>nbone-web</artifactId>
+				<version>${nbone.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat6-maven-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jetty-maven-plugin</artifactId>
+					<version>8.1.14.v20131031</version>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-compiler-plugin
+										</artifactId>
+										<versionRange>[3.3,)</versionRange>
+										<goals>
+											<goal>testCompile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>${project.build.source.version}</source>
+					<target>${project.build.target.version}</target>
+					<encoding>UTF-8</encoding>
+					<verbose>thinking</verbose>
+				</configuration>
+			</plugin>
+
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>help</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- 要将源码放上去，需要加入这个插件 -->
+
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>help</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>tree</goal>
+							<goal>help</goal>
+						</goals>
+						<configuration>
+							<!-- <outputDirectory> ${project.build.directory}/lib </outputDirectory> -->
+							<outputDirectory>
+								./src/main/webapp/WEB-INF/lib
+							</outputDirectory>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<!-- <version>8.1.0.RC0</version> -->
+				<configuration>
+					<scanIntervalSeconds>0</scanIntervalSeconds>
+					<webAppConfig>
+						<contextPath>/${project.artifactId}</contextPath>
+					</webAppConfig>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
+				<configuration>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pdf-plugin</artifactId>
+				<version>1.3</version>
+				<configuration>
+					<outputDirectory>
+						${project.build.directory}/doc
+					</outputDirectory>
+				</configuration>
+			</plugin>
+
+
+
+		</plugins>
+	</build>
+
+
+	<!--Maven私服配置 -->
+
+	<distributionManagement>
 		<repository>
 			<id>releases</id>
-    		<name>Releases</name>
-    		<url>http://172.21.1.81:8081/nexus/content/repositories/releases</url>
+			<name>Releases</name>
+			<url>http://172.21.1.81:8081/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Snapshots</name>
-    		<url>http://172.21.1.81:8081/nexus/content/repositories/snapshots</url>
-    		<layout>default</layout>
+			<url>http://172.21.1.81:8081/nexus/content/repositories/snapshots</url>
+			<layout>default</layout>
 		</snapshotRepository>
 	</distributionManagement>
-    
-<!--   	<distributionManagement>
-		<repository>
-			<id>releases</id>
-    		<name>Releases</name>
-    		<url>http://121.42.168.19:8081/nexus/content/repositories/releases</url>
-		</repository>
-		
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Snapshots</name>
-    		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement> -->
-	
-	<repositories>
-      <!--   <repository>
-            <id>aspose-maven-repository</id>
-            <url>http://maven.aspose.com/repository/repo/</url>
-        </repository>
-        
-        <repository>
-            <id>com.springsource.repository.bundles.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-            <url>http://repository.springsource.com/maven/bundles/external</url>
-        </repository>
-        
-        
-        </repository> -->
-        
-        <repository>
-        	<id>jboss-public-repository-group</id>
-            <name>JBoss repository </name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
-            <layout>default</layout>
-            <releases>
-            	<enabled>true</enabled>
-            </releases>
-        </repository>
-        
-        
-    </repositories>
-    
 
-	
+	<!-- <distributionManagement> <repository> <id>releases</id> <name>Releases</name> 
+		<url>http://121.42.168.19:8081/nexus/content/repositories/releases</url> 
+		</repository> <snapshotRepository> <id>snapshots</id> <name>Snapshots</name> 
+		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url> 
+		</snapshotRepository> </distributionManagement> -->
+
+	<repositories>
+		<!-- <repository> <id>aspose-maven-repository</id> <url>http://maven.aspose.com/repository/repo/</url> 
+			</repository> <repository> <id>com.springsource.repository.bundles.external</id> 
+			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name> 
+			<url>http://repository.springsource.com/maven/bundles/external</url> </repository> 
+			</repository> -->
+
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss repository </name>
+			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+
+
+	</repositories>
+
+
+
 </project>

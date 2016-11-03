@@ -2,22 +2,25 @@ package org.nbone.util.json.jackson;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+
 
 public class ToJsonStringSerializer extends JsonSerializer<String> {
 
 	@Override
-	public void serialize(String arg0, JsonGenerator arg1,SerializerProvider arg2) throws IOException,
-			JsonProcessingException {
-		arg1.writeString(arg0);
+	public Class<String> handledType() {
+		return String.class;
 	}
 
 	@Override
-	public Class<String> handledType() {
-		return String.class;
+	public void serialize(String value, JsonGenerator gen, SerializerProvider serializers)
+			throws IOException, JsonProcessingException {
+		gen.writeString(value);
+		
 	}
 
 

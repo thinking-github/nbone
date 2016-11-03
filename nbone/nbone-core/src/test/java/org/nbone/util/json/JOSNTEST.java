@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.type.TypeReference;
 import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.nbone.test.UserTest;
 import org.nbone.test.domain.User;
 import org.nbone.util.json.jackson.JsonUtils;
 import org.nbone.web.support.WebResultWrapper;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import net.sf.json.JSONArray;
 
@@ -61,6 +62,7 @@ public class JOSNTEST {
 		
 		
 		String webResultWrapperString1 =JsonUtils.pojoToJson(resultS);
+		System.out.println(JsonUtils.pojoToJsonFilter(resultS));
 		System.out.println("JsonUtil.pojoToJson-------------");
 		System.out.println(webResultWrapperString1);
 		

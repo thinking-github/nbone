@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+
 
 /**
  * JavaObject to JSON String <br>
@@ -26,14 +28,15 @@ public class ToJsonDateSerializer extends JsonSerializer<Date>{
 	}
 	
 	@Override
-	public void serialize(Date arg0, JsonGenerator arg1,SerializerProvider arg2)
-			throws IOException,JsonProcessingException {
-		dateFormat.applyPattern(pattern);
-		arg1.writeString(String.valueOf(dateFormat.format(arg0)));
-		
-	}
-	@Override
 	public Class<Date> handledType() {
 		return Date.class;
+	}
+
+	@Override
+	public void serialize(Date value, JsonGenerator gen, SerializerProvider serializers)
+			throws IOException, JsonProcessingException {
+		dateFormat.applyPattern(pattern);
+		gen.writeString(String.valueOf(dateFormat.format(value)));
+		
 	}
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.JoinPoint;
-import org.nbone.framework.spring.aop.AopUtils;
+import org.nbone.aop.AopUtils;
 
 
 /**

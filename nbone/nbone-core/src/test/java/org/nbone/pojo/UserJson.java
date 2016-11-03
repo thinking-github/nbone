@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
-import org.nbone.mvc.dto.Range;
 import org.nbone.test.domain.User;
 
 public class UserJson extends User { 
@@ -15,7 +14,6 @@ public class UserJson extends User {
 	 private java.sql.Date sqlDate;
 	 private Timestamp createTimestamp;
 	 
-	 private Range range;
 	 
 	 private Map extMap;
 	 
@@ -51,12 +49,6 @@ public class UserJson extends User {
 	}
 	public void setCreateTimestamp(Timestamp createTimestamp) {
 		this.createTimestamp = createTimestamp;
-	}
-	public Range getRange() {
-		return range;
-	}
-	public void setRange(Range range) {
-		this.range = range;
 	}
 	
 	

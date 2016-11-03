@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
 
 /**
  * JavaObject to JSON String <br>
@@ -24,16 +25,16 @@ public class ToJsonSqlTimestampSerializer extends JsonSerializer<java.sql.Timest
 		this.pattern = pattern;
 		dateFormat = new SimpleDateFormat();
 	}
-	
-	@Override
-	public void serialize(Timestamp arg0, JsonGenerator arg1,SerializerProvider arg2)
-			throws IOException,JsonProcessingException {
-		dateFormat.applyPattern(pattern);
-		arg1.writeString(String.valueOf(dateFormat.format(arg0)));
-		
-	}
 	@Override
 	public Class<Timestamp> handledType() {
 		return Timestamp.class;
+	}
+
+	@Override
+	public void serialize(Timestamp value, JsonGenerator gen, SerializerProvider serializers)
+			throws IOException, JsonProcessingException {
+		dateFormat.applyPattern(pattern);
+		gen.writeString(String.valueOf(dateFormat.format(value)));
+		
 	}
 }
