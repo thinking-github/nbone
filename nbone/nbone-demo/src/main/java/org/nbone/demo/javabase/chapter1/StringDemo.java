@@ -1,6 +1,6 @@
 package org.nbone.demo.javabase.chapter1;
 
-public class Demo {
+public class StringDemo {
 
 	public static void main(String[] args) {
 		//string mem  

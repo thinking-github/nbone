@@ -1,12 +1,6 @@
 /**
  * 项目名称:东辆设备管理系统
- * 类名：CookieUtil.java 
- * 包名：com.johe.ems.framework.util 
- * 履历：
- * 日期          修改人          内容
- * 2010-7-16	wangcg		   创建                  
- *
- * Copyright (c) 2010 西安聚合软件有限公司
+ * Copyright (c) 2010 
  */
 
 package org.nbone.web.util;
@@ -19,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Cookie工具类
  * @author thinking
+ * @author WF
  * @version 1.0
  * @since   2016年4月4日
  *

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						   http://www.springframework.org/schema/beans/spring-beans.xsd
+						   http://www.springframework.org/schema/context
+						   http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 使用properties注入属性 -->					   
+	<!-- 异步线程池 -->
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="${threadPool.corePoolSize}" />
+		<!-- 最大线程数 当核心线程和队列已满，临时new()到最大线程数-->
+		<property name="maxPoolSize" value="${threadPool.maxPoolSize}" />
+		<!-- 队列最大长度，超过最大核心线程数，队列等待 -->
+		<property name="queueCapacity" value="${threadPool.queueCapacity}" />
+		<!-- 线程池维护线程所允许的空闲时间 -->
+		<property name="keepAliveSeconds" value="${threadPool.keepAliveSeconds}" />
+		
+		<!-- 线程池对拒绝任务(无线程可用)的处理策略 抛弃当前的任务 -->
+		<property name="rejectedExecutionHandler">
+			<bean class="java.util.concurrent.ThreadPoolExecutor$DiscardPolicy" />
+		</property>
+	</bean>
+</beans>

@@ -2,6 +2,11 @@ package org.nbone.web.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 
+ * @author thinking
+ *
+ */
 public class IPUtils {
 	
 	/**

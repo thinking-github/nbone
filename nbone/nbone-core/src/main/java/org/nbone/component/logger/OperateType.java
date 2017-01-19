@@ -9,7 +9,7 @@ import org.nbone.lang.IEnum;
  * @author Thinking  2014-8-8
  * @see LogOperateType
  */
-public enum OperateType implements IEnum{
+public enum OperateType implements IEnum<String>{
 
 	QUERY("0", "查询"),
 
@@ -70,9 +70,10 @@ public enum OperateType implements IEnum{
 	}
 
 	@Override
-	public int getId() {
-		return 0;
+	public String getDescription() {
+		return name;
 	}
+
 
 
 }

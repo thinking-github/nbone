@@ -1,0 +1,555 @@
+11:13:02.969 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+11:13:03.125 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 11:13:03 CST 2017]; root of context hierarchy
+11:13:03.172 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+11:13:03.563 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+11:13:03.594 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+11:13:28.090 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 11:13:03 CST 2017]; root of context hierarchy
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+11:13:28.245 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+11:13:28.683 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 11:13:03 CST 2017]; root of context hierarchy
+11:13:28.730 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 11:13:03 CST 2017]; root of context hierarchy
+11:13:28.776 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 25791 ms
+11:13:28.864 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+11:13:28.864 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:13:28 CST 2017]; parent: Root WebApplicationContext
+11:13:29.020 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+11:13:29.036 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+11:13:29.083 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+11:13:29.099 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:13:28 CST 2017]; parent: Root WebApplicationContext
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+11:13:29.114 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+11:13:29.145 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:13:28 CST 2017]; parent: Root WebApplicationContext
+11:13:29.161 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:13:28 CST 2017]; parent: Root WebApplicationContext
+11:13:29.239 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 375 ms
+11:14:41.360 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+11:14:41.423 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 11:14:41 CST 2017]; root of context hierarchy
+11:14:41.449 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+11:14:41.730 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+11:14:41.745 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+11:14:43.286 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 11:14:41 CST 2017]; root of context hierarchy
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+11:14:43.364 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+11:14:43.599 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 11:14:41 CST 2017]; root of context hierarchy
+11:14:43.630 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 11:14:41 CST 2017]; root of context hierarchy
+11:14:43.692 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 2332 ms
+11:14:43.740 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+11:14:43.740 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:14:43 CST 2017]; parent: Root WebApplicationContext
+11:14:43.865 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+11:14:43.881 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+11:14:43.928 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+11:14:43.943 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:14:43 CST 2017]; parent: Root WebApplicationContext
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+11:14:43.959 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+11:14:43.990 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:14:43 CST 2017]; parent: Root WebApplicationContext
+11:14:44.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:14:43 CST 2017]; parent: Root WebApplicationContext
+11:14:44.068 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 328 ms
+11:15:00.887 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+11:15:00.950 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 11:15:00 CST 2017]; root of context hierarchy
+11:15:00.975 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+11:15:01.256 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+11:15:01.272 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+11:15:02.831 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 11:15:00 CST 2017]; root of context hierarchy
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+11:15:02.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+11:15:03.143 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 11:15:00 CST 2017]; root of context hierarchy
+11:15:03.190 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 11:15:00 CST 2017]; root of context hierarchy
+11:15:03.237 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 2350 ms
+11:15:03.284 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+11:15:03.284 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:15:03 CST 2017]; parent: Root WebApplicationContext
+11:15:03.409 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+11:15:03.425 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+11:15:03.472 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+11:15:03.503 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:15:03 CST 2017]; parent: Root WebApplicationContext
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+11:15:03.503 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+11:15:03.534 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:15:03 CST 2017]; parent: Root WebApplicationContext
+11:15:03.550 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 11:15:03 CST 2017]; parent: Root WebApplicationContext
+11:15:03.612 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 328 ms
+17:18:59.387 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+17:18:59.450 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 17:18:59 CST 2017]; root of context hierarchy
+17:18:59.482 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+17:18:59.763 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:18:59.779 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:27:11.771 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 17:18:59 CST 2017]; root of context hierarchy
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:27:11.860 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:27:12.125 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:18:59 CST 2017]; root of context hierarchy
+17:27:12.157 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:18:59 CST 2017]; root of context hierarchy
+17:27:12.204 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 492816 ms
+17:27:12.265 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+17:27:12.265 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:27:12 CST 2017]; parent: Root WebApplicationContext
+17:27:12.625 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:27:12.640 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:27:12.687 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+17:27:12.703 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:27:12 CST 2017]; parent: Root WebApplicationContext
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:27:12.719 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:27:12.734 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:27:12 CST 2017]; parent: Root WebApplicationContext
+17:27:12.765 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:27:12 CST 2017]; parent: Root WebApplicationContext
+17:27:12.824 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 559 ms
+17:30:18.087 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+17:30:18.138 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 17:30:18 CST 2017]; root of context hierarchy
+17:30:18.169 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+17:30:18.450 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:30:18.482 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:30:43.775 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 17:30:18 CST 2017]; root of context hierarchy
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:30:43.869 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:30:44.103 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:30:18 CST 2017]; root of context hierarchy
+17:30:44.134 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:30:18 CST 2017]; root of context hierarchy
+17:30:44.194 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 26104 ms
+17:30:44.245 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+17:30:44.245 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:30:44 CST 2017]; parent: Root WebApplicationContext
+17:30:44.386 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:30:44.402 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:30:44.433 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+17:30:44.464 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:30:44 CST 2017]; parent: Root WebApplicationContext
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:30:44.480 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:30:44.495 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:30:44 CST 2017]; parent: Root WebApplicationContext
+17:30:44.511 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:30:44 CST 2017]; parent: Root WebApplicationContext
+17:30:44.589 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+17:42:26.031 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+17:42:26.082 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 17:42:26 CST 2017]; root of context hierarchy
+17:42:26.113 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+17:42:26.394 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:42:26.410 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:42:34.024 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 17:42:26 CST 2017]; root of context hierarchy
+17:42:34.102 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:42:34.102 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:42:34.118 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:42:34.118 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:42:34.118 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:42:34.118 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:42:34.118 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:42:34.352 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:42:26 CST 2017]; root of context hierarchy
+17:42:34.399 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:42:26 CST 2017]; root of context hierarchy
+17:42:34.446 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 8412 ms
+17:42:34.499 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+17:42:34.499 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:42:34 CST 2017]; parent: Root WebApplicationContext
+17:42:34.624 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:42:34.640 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:42:34.686 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+17:42:34.718 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:42:34 CST 2017]; parent: Root WebApplicationContext
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:42:34.718 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:42:34.749 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:42:34 CST 2017]; parent: Root WebApplicationContext
+17:42:34.765 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:42:34 CST 2017]; parent: Root WebApplicationContext
+17:42:34.843 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+17:43:35.735 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+17:43:35.786 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 17:43:35 CST 2017]; root of context hierarchy
+17:43:35.818 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+17:43:36.099 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:43:36.115 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:45:07.313 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 17:43:35 CST 2017]; root of context hierarchy
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:45:07.406 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:45:07.656 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:43:35 CST 2017]; root of context hierarchy
+17:45:07.688 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:43:35 CST 2017]; root of context hierarchy
+17:45:07.750 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 92012 ms
+17:45:07.802 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+17:45:07.802 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:45:07 CST 2017]; parent: Root WebApplicationContext
+17:45:07.943 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:45:07.958 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:45:08.005 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+17:45:08.021 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:45:07 CST 2017]; parent: Root WebApplicationContext
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:45:08.036 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:45:08.052 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:45:07 CST 2017]; parent: Root WebApplicationContext
+17:45:08.083 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:45:07 CST 2017]; parent: Root WebApplicationContext
+17:45:08.146 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+17:45:54.711 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+17:45:54.762 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 17:45:54 CST 2017]; root of context hierarchy
+17:45:54.793 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+17:45:55.074 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:45:55.090 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:46:32.469 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 17:45:54 CST 2017]; root of context hierarchy
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:46:32.562 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:46:32.812 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:45:54 CST 2017]; root of context hierarchy
+17:46:32.844 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:45:54 CST 2017]; root of context hierarchy
+17:46:32.891 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 38177 ms
+17:46:32.947 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+17:46:32.947 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:46:32 CST 2017]; parent: Root WebApplicationContext
+17:46:33.088 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:46:33.103 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:46:33.135 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+17:46:33.166 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:46:32 CST 2017]; parent: Root WebApplicationContext
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:46:33.182 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:46:33.197 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:46:32 CST 2017]; parent: Root WebApplicationContext
+17:46:33.228 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:46:32 CST 2017]; parent: Root WebApplicationContext
+17:46:33.291 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+17:47:06.857 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+17:47:06.909 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 17:47:06 CST 2017]; root of context hierarchy
+17:47:06.940 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+17:47:07.222 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:47:07.237 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:47:56.592 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 17:47:06 CST 2017]; root of context hierarchy
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:47:56.693 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:47:56.943 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:47:06 CST 2017]; root of context hierarchy
+17:47:56.974 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 17:47:06 CST 2017]; root of context hierarchy
+17:47:57.021 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 50161 ms
+17:47:57.079 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+17:47:57.079 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:47:57 CST 2017]; parent: Root WebApplicationContext
+17:47:57.220 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+17:47:57.236 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+17:47:57.283 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+17:47:57.314 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:47:57 CST 2017]; parent: Root WebApplicationContext
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+17:47:57.314 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+17:47:57.329 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:47:57 CST 2017]; parent: Root WebApplicationContext
+17:47:57.345 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 17:47:57 CST 2017]; parent: Root WebApplicationContext
+17:47:57.423 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+19:22:25.029 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:22:25.080 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:22:25 CST 2017]; root of context hierarchy
+19:22:25.127 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:22:25.455 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:22:25.471 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:22:28.011 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize  
+19:22:28.043 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [Ljava.lang.String;@16432f65
+19:22:30.895 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 19:22:25 CST 2017]; root of context hierarchy
+19:22:31.004 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:22:31.004 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:22:31.020 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:22:31.020 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:22:31.020 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:22:31.020 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:22:31.020 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:22:31.270 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:22:25 CST 2017]; root of context hierarchy
+19:22:31.301 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:22:25 CST 2017]; root of context hierarchy
+19:22:31.364 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 6332 ms
+19:22:31.415 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:22:31.415 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:22:31 CST 2017]; parent: Root WebApplicationContext
+19:22:31.555 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:22:31.571 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:22:31.618 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:22:31.649 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:22:31 CST 2017]; parent: Root WebApplicationContext
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:22:31.649 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:22:31.696 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:22:31 CST 2017]; parent: Root WebApplicationContext
+19:22:31.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:22:31 CST 2017]; parent: Root WebApplicationContext
+19:22:31.790 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 375 ms
+19:25:33.353 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:25:33.404 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:25:33 CST 2017]; root of context hierarchy
+19:25:33.435 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:25:33.732 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:25:33.748 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:25:36.153 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize .thinking 
+19:25:36.184 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [test, dev]
+19:25:51.485 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 19:25:33 CST 2017]; root of context hierarchy
+19:25:51.585 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:25:51.600 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:25:51.600 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:25:51.600 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:25:51.600 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:25:51.600 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:25:51.600 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:25:51.835 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:25:33 CST 2017]; root of context hierarchy
+19:25:51.866 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:25:33 CST 2017]; root of context hierarchy
+19:25:51.928 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 18572 ms
+19:25:51.982 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:25:51.982 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:25:51 CST 2017]; parent: Root WebApplicationContext
+19:25:52.122 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:25:52.138 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:25:52.169 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:25:52.200 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:25:51 CST 2017]; parent: Root WebApplicationContext
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:25:52.216 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:25:52.263 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:25:51 CST 2017]; parent: Root WebApplicationContext
+19:25:52.278 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:25:51 CST 2017]; parent: Root WebApplicationContext
+19:25:52.325 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 343 ms
+19:27:39.841 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:27:39.891 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:27:39 CST 2017]; root of context hierarchy
+19:27:39.923 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:27:40.204 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:27:40.235 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:27:42.443 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize .thinking 
+19:27:42.490 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [test, dev, nbone-jdbc]
+19:28:02.897 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 19:27:39 CST 2017]; root of context hierarchy
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:28:03.006 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:28:03.256 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:27:39 CST 2017]; root of context hierarchy
+19:28:03.287 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:27:39 CST 2017]; root of context hierarchy
+19:28:03.334 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 23490 ms
+19:28:03.392 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:28:03.392 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:28:03 CST 2017]; parent: Root WebApplicationContext
+19:28:03.532 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:28:03.548 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:28:03.579 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:28:03.626 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:28:03 CST 2017]; parent: Root WebApplicationContext
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:28:03.642 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:28:03.657 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:28:03 CST 2017]; parent: Root WebApplicationContext
+19:28:03.673 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:28:03 CST 2017]; parent: Root WebApplicationContext
+19:28:03.754 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 362 ms
+19:31:00.733 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:31:00.787 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:31:00 CST 2017]; root of context hierarchy
+19:31:00.818 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:31:01.099 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:31:01.115 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:31:04.048 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize[] .thinking
+19:31:04.095 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [test, dev, nbone-jdbc]
+19:31:11.618 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 19:31:00 CST 2017]; root of context hierarchy
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:31:11.727 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:31:11.977 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:31:00 CST 2017]; root of context hierarchy
+19:31:12.008 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:31:00 CST 2017]; root of context hierarchy
+19:31:12.055 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 11319 ms
+19:31:12.117 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:31:12.117 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:31:12 CST 2017]; parent: Root WebApplicationContext
+19:31:12.258 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:31:12.274 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:31:12.305 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:31:12.336 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:31:12 CST 2017]; parent: Root WebApplicationContext
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:31:12.367 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:31:12.399 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:31:12 CST 2017]; parent: Root WebApplicationContext
+19:31:12.414 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:31:12 CST 2017]; parent: Root WebApplicationContext
+19:31:12.461 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+19:32:05.999 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:32:06.050 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:32:06 CST 2017]; root of context hierarchy
+19:32:06.097 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:32:06.285 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:32:06.316 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:32:06.566 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 19:32:06 CST 2017]; root of context hierarchy
+19:32:06.644 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:32:06.644 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:32:06.660 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:32:06.660 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:32:06.660 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:32:06.660 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:32:06.660 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:32:06.894 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:32:06 CST 2017]; root of context hierarchy
+19:32:06.925 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:32:06 CST 2017]; root of context hierarchy
+19:32:06.988 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 986 ms
+19:32:07.060 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:32:07.073 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:32:07 CST 2017]; parent: Root WebApplicationContext
+19:32:07.229 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:32:07.245 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:32:07.323 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:32:07.370 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:32:07 CST 2017]; parent: Root WebApplicationContext
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:32:07.401 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:32:07.448 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:32:07 CST 2017]; parent: Root WebApplicationContext
+19:32:07.464 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:32:07 CST 2017]; parent: Root WebApplicationContext
+19:32:07.526 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 455 ms
+19:33:29.138 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:33:29.188 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:33:29 CST 2017]; root of context hierarchy
+19:33:29.220 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:33:29.501 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:33:29.532 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:33:31.751 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize[] .thinking
+19:33:31.789 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [test, dev, nbone-jdbc]
+19:33:37.714 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:Root WebApplicationContext: startup date [Mon Jan 09 19:33:29 CST 2017]; root of context hierarchy
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:33:37.792 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:33:38.042 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:33:29 CST 2017]; root of context hierarchy
+19:33:38.089 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:33:29 CST 2017]; root of context hierarchy
+19:33:38.136 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 8996 ms
+19:33:38.191 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:33:38.191 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:33:38 CST 2017]; parent: Root WebApplicationContext
+19:33:38.316 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:33:38.332 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:33:38.379 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:33:38.426 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:33:38 CST 2017]; parent: Root WebApplicationContext
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:33:38.441 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:33:38.457 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:33:38 CST 2017]; parent: Root WebApplicationContext
+19:33:38.473 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:33:38 CST 2017]; parent: Root WebApplicationContext
+19:33:38.535 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 344 ms
+19:34:09.090 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:34:09.143 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:34:09 CST 2017]; root of context hierarchy
+19:34:09.174 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:34:09.455 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:34:09.471 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:34:11.616 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize[] .thinking
+19:34:11.647 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [test, dev, nbone-jdbc]
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:34:14.512 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:34:14.768 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:34:09 CST 2017]; root of context hierarchy
+19:34:14.804 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:34:09 CST 2017]; root of context hierarchy
+19:34:14.857 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5763 ms
+19:34:14.915 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:34:14.917 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:34:14 CST 2017]; parent: Root WebApplicationContext
+19:34:15.036 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:34:15.052 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:34:15.098 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:34:15.130 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:34:15.130 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:34:15.145 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:34:15.145 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:34:15.145 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:34:15.145 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:34:15.145 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:34:15.177 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:34:14 CST 2017]; parent: Root WebApplicationContext
+19:34:15.192 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:34:14 CST 2017]; parent: Root WebApplicationContext
+19:34:15.239 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 324 ms
+19:35:05.784 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+19:35:05.846 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Mon Jan 09 19:35:05 CST 2017]; root of context hierarchy
+19:35:05.875 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-demo.xml]
+19:35:06.156 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:35:06.187 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:35:08.191 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles initialize[] .thinking
+19:35:08.237 [main] INFO  o.n.f.s.b.c.c.ConfigFileApplication - spring application config environment active profiles : [test, dev, nbone-jdbc, hh]
+19:35:18.628 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:35:18.628 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:35:18.628 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:35:18.628 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:35:18.628 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:35:18.643 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:35:18.643 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:35:18.878 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:35:05 CST 2017]; root of context hierarchy
+19:35:18.909 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Mon Jan 09 19:35:05 CST 2017]; root of context hierarchy
+19:35:18.971 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 13187 ms
+19:35:19.019 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization started
+19:35:19.019 [main] INFO  o.s.w.c.s.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:35:19 CST 2017]; parent: Root WebApplicationContext
+19:35:19.160 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from file [D:\UAP\nbone-framework\nbone\nbone\nbone-web-app\target\classes\spring-mvc-custom.xml]
+19:35:19.176 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from ServletContext resource [/WEB-INF/spring-mvc.xml]
+19:35:19.207 [main] INFO  o.s.b.f.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [configuration/springmvc/springmvc-velocity.xml]
+19:35:19.269 [main] INFO  o.n.f.s.support.ComponentFactory - 注入ApplicationContext到SpringContextHolder:WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:35:19 CST 2017]; parent: Root WebApplicationContext
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/save]}" onto java.lang.Object org.nbone.web.demo.SampleController.form(org.nbone.test.domain.User,java.util.List<java.lang.Integer>,java.util.List<org.nbone.test.domain.User>)
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/test]}" onto java.lang.String org.nbone.web.demo.SampleController.home(java.util.Map<java.lang.String, java.lang.String>,org.springframework.http.HttpHeaders)
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[GET]}" onto public java.lang.String org.nbone.web.restful.SampleRestfulController.get(java.lang.String)
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.save(org.nbone.test.domain.User)
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[DELETE]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.delete(java.lang.String)
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/{id}],methods=[PUT]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.update(java.lang.String,org.nbone.test.domain.User)
+19:35:19.269 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.Object org.nbone.web.restful.SampleRestfulController.login(org.nbone.test.domain.User)
+19:35:19.301 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:35:19 CST 2017]; parent: Root WebApplicationContext
+19:35:19.316 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: WebApplicationContext for namespace 'springmvc-servlet': startup date [Mon Jan 09 19:35:19 CST 2017]; parent: Root WebApplicationContext
+19:35:19.379 [main] INFO  o.n.f.s.w.s.FrameworkDispatcherServlet - FrameworkServlet 'springmvc': initialization completed in 360 ms

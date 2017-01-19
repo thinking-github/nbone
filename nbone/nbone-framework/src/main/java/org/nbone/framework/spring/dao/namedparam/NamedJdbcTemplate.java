@@ -14,6 +14,7 @@ import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.support.PageSuport;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
@@ -93,6 +94,10 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 	
+	public long queryForLong(String sql, SqlParameterSource paramSource) throws DataAccessException {
+		Number number = queryForObject(sql, paramSource, Long.class);
+		return (number != null ? number.longValue() : 0);
+	}
 	
 	@SuppressWarnings("unchecked")
 	private <T> Page<T>  processPage(SqlModel<Object> sqlModel,Object object,int pageNum ,int pageSize){

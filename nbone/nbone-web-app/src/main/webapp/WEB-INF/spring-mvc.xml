@@ -17,7 +17,7 @@
 						   ">
 			<mvc:annotation-driven ></mvc:annotation-driven>
 			
-			<context:component-scan base-package="org.nbone.web" use-default-filters="false">
+			<context:component-scan base-package="org.nbone.web" use-default-filters="false" >
 				<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 			</context:component-scan>
 						   

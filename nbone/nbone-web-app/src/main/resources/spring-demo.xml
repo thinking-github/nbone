@@ -14,14 +14,16 @@
 						   http://www.springframework.org/schema/util
 						   http://www.springframework.org/schema/util/spring-util.xsd
 						   
-						   ">
+						   " >
  
 	<bean class="org.nbone.web.demo.InitializingBeanDemo"></bean>
 
-    <context:component-scan base-package="org.nbone.web" use-default-filters="false">
-    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    <context:component-scan base-package="org.nbone.web" use-default-filters="false" >
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+    
+    <bean class="org.nbone.framework.spring.boot.context.config.ConfigFileApplication"></bean>
+    <bean class="org.nbone.web.config.TestAutoConfiguration"></bean> 
 						   
 
 </beans>

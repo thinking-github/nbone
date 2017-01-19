@@ -66,6 +66,57 @@ public class RequestUtils {
         uri = request.getRequestURI();
         return uri.substring(request.getContextPath().length());
     }
+    
+    
+    //XXX: new add
+    public static String getContextPath(HttpServletRequest request) {
+    	return request.getContextPath();
+    }
+    /**
+     * 返回服务的信息包含协议/IP地址/端口  <br>
+     * http://localhost:8080;
+     * @param request
+     * @return
+     */
+    public static String getServerInfo(HttpServletRequest request) {
+    	String serverInfo = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
+    	return serverInfo;
+    }
+    
+    /**
+     * 返回服务的基本路径 <br>
+     * http://localhost:8080/hst/ (含有上下文信息) <br>
+     * http://localhost:8080/ (未使用上下文信息)
+     * @param request
+     * @return
+     */
+    public static String getBasePath(HttpServletRequest request) {
+    	String path = request.getContextPath();
+    	//String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    	String basePath = getServerInfo(request) + path;
+    	if(!basePath.endsWith("/")){
+    		basePath = basePath +"/";
+    	}
+    	return basePath;
+    }
+    
+    /**
+     * 192.168.0.1:8080
+     * @param request
+     * @return
+     */
+    public static String getLocalServerInfo(HttpServletRequest request) {
+    	return request.getLocalAddr() + ":" + request.getLocalPort() ;
+    }
+    
+    /**
+     * localhost:8080
+     * @param request
+     * @return
+     */
+    public static String getLocalServerNameInfo(HttpServletRequest request) {
+    	return request.getLocalName() + ":" + request.getLocalPort() ;
+    }
 
 
 }

@@ -3,26 +3,28 @@ package org.nbone.lang;
 /**
  * 
  * @author thinking
- * @see 
  * @version 1.0
+ * @see java.lang.Enum
  *
  */
-public interface IEnum {
+public interface IEnum<T> {
 	/**
-	 * long type 标识
+	 * 枚举 标识 可以是String/int
 	 * @return
 	 */
-	int getId();
-	/**
-	 * String type 标识
-	 * @return
-	 */
-	String getCode();
+	 T getCode();
 	
 	/**
 	 * Enum 名称
 	 * @return
 	 */
 	String getName();
+	
+	/**
+     * 获取枚举描述
+     * 
+     * @return
+     */
+    public String getDescription();
 
 }

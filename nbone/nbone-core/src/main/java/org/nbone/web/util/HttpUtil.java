@@ -1,8 +1,6 @@
 /*
  * <p>Title: 方天服务平台系统</p>
- * <p>Description: 方天服务平台系统</p>
  * <p>Copyright: Copyright (c) 2011</p>
- * <p>Company: 江苏方天电力技术有限公司</p>
  */
 package org.nbone.web.util;
 
@@ -20,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * http相关信息的操作、获取和管理类
+ * @author thinking
+ * @author WF
  * 
  */
 public class HttpUtil {

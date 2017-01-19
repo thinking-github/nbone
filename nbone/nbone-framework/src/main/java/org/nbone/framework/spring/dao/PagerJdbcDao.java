@@ -1,7 +1,6 @@
 package org.nbone.framework.spring.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,8 @@ import org.springframework.stereotype.Repository;
 /**
  * 
  * page Jdbc Dao 封装
- * @author Thinking 
+ * @author thinking
+ * @author xun 
  * @since 2014-08-04
  * @see org.nbone.framework.spring.dao.BaseJdbcDao
  *
@@ -68,19 +68,20 @@ public class PagerJdbcDao implements IPagerJdbcDao{
 		return findByPage(sql, datas, types, null, offset, pageSize);
 	}
    
-	public <T> PagerModel<T> findByPage(String sql, Object[] datas, int[] types,RowMapper<T> rm, int offset, int pageSize) throws SQLException {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <T> PagerModel<T> findByPage(String sql, Object[] datas, int[] argTypes,RowMapper<T> rm, int offset, int pageSize) throws SQLException {
 		PagerModel<T> pm = new PagerModel<T>();
 		JdbcTemplate dao = this.getJdbcTemplate();
 		String countSql = PageSuport.getCountSqlString(sql);
-		Integer total = 0;
-		total = (datas != null) ? ((types != null) ? dao.queryForInt(countSql, datas, types) 
-				: dao.queryForInt(countSql, datas)) 
-				: dao.queryForInt(countSql);
+		Long total = 0L;
+		total = (datas != null) ? ((argTypes != null) ? dao.queryForObject(countSql, datas, argTypes,Long.class) 
+				: dao.queryForObject(countSql, datas,Long.class)) 
+				: dao.queryForObject(countSql,Long.class);
 		// if (total != null && total > 0) {
 		// this.getJdbcTemplate().setMaxRows(total);
 		// }
 		pm.setTotal(total);
-		List list_obj = new ArrayList();
+		List list_obj;
 		String pageSql  = "";
 
 		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
@@ -92,8 +93,8 @@ public class PagerJdbcDao implements IPagerJdbcDao{
 		}
       
 		if (datas != null) {
-			list_obj = (types != null) ? ((rm != null) ? dao.query(pageSql, datas, types, rm)
-					: dao.queryForList(pageSql, datas, types))
+			list_obj = (argTypes != null) ? ((rm != null) ? dao.query(pageSql, datas, argTypes, rm)
+					: dao.queryForList(pageSql, datas, argTypes))
 					: ((rm != null) ? dao.query(pageSql, datas, rm)
 					: dao.queryForList(pageSql, datas));
 		} else {

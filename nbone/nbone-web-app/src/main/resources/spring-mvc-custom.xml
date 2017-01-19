@@ -14,7 +14,7 @@
 						   http://www.springframework.org/schema/util
 						   http://www.springframework.org/schema/util/spring-util.xsd
 						   
-						   ">
+						   " profile="hh">
  
 	<bean class="org.nbone.framework.spring.support.ComponentFactory"></bean>
 

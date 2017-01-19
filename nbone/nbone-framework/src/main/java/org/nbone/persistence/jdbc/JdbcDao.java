@@ -9,9 +9,9 @@ public class JdbcDao  {
      * 用于测试
      * @return
      */
-    public int queryForInt() {
+    public long queryForInt() {
     	String sql="select count(*) from meeting";
-    	int count=jdbcTemplate.queryForInt(sql);
+    	long count = jdbcTemplate.queryForObject(sql, Long.class);
 		return count;
 		
 	}
