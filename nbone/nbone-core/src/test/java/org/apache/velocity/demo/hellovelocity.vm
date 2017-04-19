@@ -50,4 +50,22 @@ $list      -------------------list
 
 
 
+## ====枚举demo=======
+
+#set( $RDPS = "RDPS" )
+1.$!{orderBusinessType} 
+2.$!{orderBusinessType.values()} 
+3.$!{orderBusinessType.getByCode('RDPS')}
+4.$!{orderBusinessType.getNameByCode($RDPS)}
+5.$!{orderBusinessType.getNameByCode('2')}
+6.$!{orderBusinessTypeOne}
+
+#foreach ($one in $!{orderBusinessType.values()})
+$one   $one.key  $one.value -------------------------foreach enum
+#end
+
+
+
+
+
 

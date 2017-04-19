@@ -14,8 +14,8 @@ import org.springframework.beans.BeanUtils;
 public abstract class BaseObject {
 	
 	
-	public static  String inputParameters ="The method of input parameters";
-	public static  String outputParameters = "The method of output parameters";
+	public static  String INPUT_PARAMETERS ="The method of input parameters";
+	public static  String OUTPUT_PARAMETERS = "The method of output parameters";
 	
 	
 	protected <E> E newInstance(Class<E> clazz){
@@ -47,22 +47,6 @@ public abstract class BaseObject {
 		}
 		return targetList;
 	}
-	/**
-	 * 
-	 * <p>Discription:[listBean to ListDto]</p>
-	 * Created on 2016年4月12日
-	 * @param beans        原始数据列表
-	 * @param targetClass  转换的目标Class
-	 * @return
-	 */
-	public <S,T> List<T> listBeanConverter(List<S> beans,Class<T> targetClass){
-		List<T> results = new ArrayList<T>();
-		for (S bean : beans) {
-			T dto = this.copyProperties(bean, targetClass);
-			results.add(dto);
-		}
-		return results;
-	}
 	
 	
 	@Override
@@ -72,6 +56,14 @@ public abstract class BaseObject {
 	
 	
 	
+	
+	
+	public static void main(String[] args) {
+		BaseObject ss = new BaseObject() {
+		};
+		List<?> sources = new ArrayList<>();
+		ss.copyProperties(sources, BaseObject.class);
+	}
 	
 
 }

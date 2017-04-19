@@ -40,6 +40,8 @@ public class HelloVelocity {
 	 ctx.put("date1", (new Date()).toString());
 	 ctx.put("dateO", new Date());
 	 ctx.put("staticUser", User.class);
+	 ctx.put("orderBusinessType", OrderBusinessType.class);
+	 ctx.put("orderBusinessTypeOne", OrderBusinessType.RDPS);
 	 
 	 User user =  User.getUser();
 	 

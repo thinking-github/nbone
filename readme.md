@@ -11,18 +11,18 @@ nbone-Framework是在Spring Framework基础上搭建的一个Java基础开发平
 
 ##技术选型:  
 1、后端                 
-- 核心框架：Spring Framework 3.1.1 以上  建议:3.2, 可升级4.0以上,可以使用spring boot                             
+- 核心框架：Spring Framework 4.0.0   升级4.0以上可以使用spring boot                             
 * 视图框架：Spring MVC
-* 服务端验证：Hibernate Validator 4.3.2  建议5.2
+* 服务端验证：Hibernate Validator 5.2 
 * 持久层框架：MyBatis 3.2 , hibernate 3.3.10(可选)
 * 日志管理：SLF4J 1.7、Log4j
-* 工具类：Apache Commons、Jackson 2.2、Xstream 1.4、Dozer 5.3、POI 3.9 
+* 工具类：Apache Commons、Jackson 2.6、Xstream 1.4、Dozer 5.3、POI 3.13 
 * JPA持久层：JPA 1.0 建议2.0 
 * Email：Javamail 1.4
 
 2、平台
 
-* 服务器中间件：在Java EE 5规范（Servlet 2.5、JSP 2.1）下开发，支持应用服务器中间件有Tomcat 6+、Jboss 7+、WebLogic 10+、WebSphere 8+。  建议：Java EE 6规范
+* 服务器中间件：在Java EE 5规范（Servlet 2.5、JSP 2.1）下开发，支持应用服务器中间件有Tomcat 6+、Jboss 7+、WebLogic 10+、WebSphere 8+。  建议：建议使用Java EE 6以上的规范(Servlet 3.0,Servlet 3.1)
 * 开发环境：Java、Eclipse Java EE 4.3、Maven 3.1、Git
 	
 	                        

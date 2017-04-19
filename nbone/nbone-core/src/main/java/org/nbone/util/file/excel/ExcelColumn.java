@@ -1,4 +1,4 @@
-package org.nbone.util.file.excel.jxl;
+package org.nbone.util.file.excel;
 
 import java.io.Serializable;
 
@@ -6,11 +6,13 @@ import java.io.Serializable;
  * 用于Excel导出的辅助类，映射数据结果集(ResultSet)内列名的元数据和Excel内的显示列名
  * <p/>
  * 
- * @author Thinking  2014-10-29
- * @version Date: 2013-2-1 下午7:59:54
+ * @author thinking 2014-10-29
+ * @version 2013-2-1 下午7:59:54
  * @serial 1.0
  */
 public class ExcelColumn implements Serializable {
+
+	private static final long serialVersionUID = 6152940005869331985L;
 	/**
 	 * 数据库的字段名称
 	 */

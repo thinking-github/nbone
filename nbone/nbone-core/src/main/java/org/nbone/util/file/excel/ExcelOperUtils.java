@@ -1,6 +1,10 @@
-package org.nbone.util.file.excel.jxl;
+package org.nbone.util.file.excel;
 
-
+/**
+ * 
+ * @author thinking
+ *
+ */
 public class ExcelOperUtils {
 	
 	/**

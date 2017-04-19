@@ -22,8 +22,18 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
-    <bean class="org.nbone.framework.spring.boot.context.config.ConfigFileApplication"></bean>
-    <bean class="org.nbone.web.config.TestAutoConfiguration"></bean> 
-						   
+    
+    <bean id="configFile" class="org.nbone.framework.spring.boot.context.config.ConfigFileApplication">
+    	<property name="order" value="-1"></property>
+    </bean>
+    <bean class="org.nbone.web.config.TestAutoConfiguration">
+   		<!-- <property name="username" value="${spring.username}"></property>
+   		<property name="password" value="${spring.password}"></property> -->
+    </bean> 
+    
+	<!-- <context:property-placeholder order="10"/> -->
+	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" >
+		<property name="fileEncoding" value="utf-8"></property>
+	</bean>
 
 </beans>

@@ -1,7 +1,6 @@
 package org.nbone.util.file.excel.jxl;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -21,7 +20,6 @@ import jxl.Sheet;
 import jxl.StringFormulaCell;
 import jxl.Workbook;
 import jxl.biff.EmptyCell;
-import jxl.read.biff.BiffException;
 
 
 /**

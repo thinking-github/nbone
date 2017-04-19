@@ -11,7 +11,6 @@ import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.lang.BaseObject;
 import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BatchSqlSession;
-import org.nbone.persistence.SqlSession;
 import org.nbone.util.reflect.GenericsUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -161,7 +160,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 	
 	/**
-	 * 
+	 * transToDTOList/transToDomainList
 	 * <p>Discription:listBean to ListDto</p>
 	 * Created on 2016年4月1日
 	 * @param list  原始数据列表
@@ -170,7 +169,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	 */
 	public List<T> listBean2ListDto(List<P> beans){
 		
-		return listBeanConverter(beans, dtoClass);
+		return copyProperties(beans, dtoClass);
 	}
 	
 

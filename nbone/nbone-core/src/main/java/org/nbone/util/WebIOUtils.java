@@ -7,24 +7,29 @@ import java.io.OutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nbone.constants.ContentType;
 
 /**
  * 
- * @author Thinking  2014-10-24
+ * @author thinking  
+ * @since 2014-10-24
  *
  */
 public abstract class WebIOUtils extends IOUtils implements ContentType{
 	
-	public final static String DEFAULT_ECODING ="UTF-8";
+	protected Log logger = LogFactory.getLog(WebIOUtils.class);
+	
+	public final static String DEFAULT_ECODING =  CHARSET_UTF8;
 	
 	public final static String SUB_CHARSET =";charset";
 	
 	/**
 	 * 设置  response 
 	 * @param response {@link ServletResponse}
-	 * @param contentType  {@link ContentType}
-	 * @param encoding     编码
+	 * @param contentType  {@link ContentType}  默认为{@link ContentType#TEXT_HTML}
+	 * @param encoding     编码  默认为UTF-8
 	 * @return
 	 */
 	public static ServletResponse setResponse(ServletResponse response,String contentType,String encoding){
@@ -87,7 +92,7 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * 
 	 * @param fileName   文件名称(包含扩展名),可为null 当为null 时输出方案不同
 	 */
-	public static void exportResource(ServletResponse response,String resourceType,InputStream ins,String fileName){
+	public static void exportResource(ServletResponse response,String resourceType,InputStream ins,String fileName) {
 		
 		response = setResponse(response,resourceType,null);
 		
@@ -120,21 +125,17 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @param fileName 文件名称(包含扩展名),可为null 当为null 时输出方案不同
 	 * @return
 	 */
-	public static OutputStream getOutputStream(ServletResponse response,String resourceType,String fileName){
+	public static OutputStream getOutputStream(ServletResponse response,String resourceType,String fileName) throws IOException {
 		response = setResponse(response, resourceType,null);
 		HttpServletResponse response1 = (HttpServletResponse) response;
 		OutputStream os = null;
-		try {
-			if(fileName != null){
-				//HttpServletResponse 添加 文件头
-				//展现下载另存在
-				//response1.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(),CHARSET_ISO_8859_1));
-				response1.addHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes("gb2312"), "iso8859-1") + ".xls");
-			}
-			os = response1.getOutputStream();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(fileName != null){
+			//HttpServletResponse 添加 文件头
+			//展现下载另存在
+			//response1.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(),CHARSET_ISO_8859_1));
+			response1.addHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes("gb2312"),CHARSET_ISO_8859_1));
 		}
+		os = response1.getOutputStream();
 		return os;
 		
 	}
@@ -144,7 +145,7 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @return
 	 * @see #getOutputStream(ServletResponse, String, String)
 	 */
-	public static OutputStream getImageOutputStream(ServletResponse response){
+	public static OutputStream getImageOutputStream(ServletResponse response) throws IOException{
 		OutputStream os = getOutputStream(response, JPG, null);
 		return os;
 		
@@ -157,7 +158,7 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @return
 	 * @see #getOutputStream(ServletResponse, String, String)
 	 */
-	public static OutputStream getExcelOutputStream(ServletResponse response,String fileName){
+	public static OutputStream getExcelOutputStream(ServletResponse response,String fileName) throws IOException{
 		OutputStream os = getOutputStream(response, XLS, fileName);
 		return os;
 		
@@ -170,7 +171,7 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @return
 	 * @see #getOutputStream(ServletResponse, String, String)
 	 */
-	public static OutputStream getTxtOutputStream(ServletResponse response,String fileName){
+	public static OutputStream getTxtOutputStream(ServletResponse response,String fileName) throws IOException{
 		OutputStream os = getOutputStream(response, TXT, fileName);;
 		
 		return os;

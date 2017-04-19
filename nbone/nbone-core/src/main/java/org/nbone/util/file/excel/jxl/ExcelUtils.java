@@ -8,20 +8,21 @@ import java.util.List;
 
 import javax.servlet.ServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.nbone.util.WebIOUtils;
+import org.nbone.util.file.excel.ExcelColumn;
+
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.nbone.util.WebIOUtils;
-
 
 /**
  * 导出EXCEL公共类
  * 
- * @author Thinking  2014-10-29
+ * @author thinking  2014-10-29
  * @serial 1.0
  */
 public class ExcelUtils {
