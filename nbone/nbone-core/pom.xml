@@ -20,6 +20,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.nbone</groupId>
+			<artifactId>nbone-base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>20.0</version>
@@ -91,6 +97,7 @@
 			<artifactId>spring-test</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 
 
 	</dependencies>

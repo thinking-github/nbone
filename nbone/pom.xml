@@ -17,6 +17,7 @@
 		<module>nbone-web</module>
 		<module>nbone-web-app</module>
 		<module>nbone-framework</module>
+		<module>nbone-base</module>
 	</modules>
 
 	<properties>
@@ -187,7 +188,24 @@
 				</executions>
 			</plugin>
 
-
+			<!-- maven-jar-plugin插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<executions>
+					<execution>
+						<id>my-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>api</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -254,39 +272,17 @@
 		<repository>
 			<id>releases</id>
 			<name>Releases</name>
-			<url>http://172.21.1.81:8081/nexus/content/repositories/releases</url>
+			<url>https://ac.chainnova.xyz/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Snapshots</name>
-			<url>http://172.21.1.81:8081/nexus/content/repositories/snapshots</url>
+			<url>https://ac.chainnova.xyz/nexus/content/repositories/snapshots/</url>
 			<layout>default</layout>
 		</snapshotRepository>
+
 	</distributionManagement>
-
-	<!-- <distributionManagement> <repository> <id>releases</id> <name>Releases</name> 
-		<url>http://121.42.168.19:8081/nexus/content/repositories/releases</url> 
-		</repository> <snapshotRepository> <id>snapshots</id> <name>Snapshots</name> 
-		<url>http://121.42.168.19:8081/nexus/content/repositories/snapshots</url> 
-		</snapshotRepository> </distributionManagement> -->
-
 	<repositories>
-		<!-- <repository> <id>aspose-maven-repository</id> <url>http://maven.aspose.com/repository/repo/</url> 
-			</repository> <repository> <id>com.springsource.repository.bundles.external</id> 
-			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name> 
-			<url>http://repository.springsource.com/maven/bundles/external</url> </repository> 
-			</repository> -->
-
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss repository </name>
-			<url>http://repository.jboss.org/nexus/content/groups/public</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-
 
 	</repositories>
 
