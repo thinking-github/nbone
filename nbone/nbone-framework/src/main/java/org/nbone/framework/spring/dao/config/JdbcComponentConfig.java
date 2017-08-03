@@ -46,7 +46,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Import(ComponentFactory.class)
 public class JdbcComponentConfig implements ApplicationContextAware,InitializingBean{
 	
-	protected Log logger  =  LogFactory.getLog(JdbcComponentConfig.class);
+	protected static Log logger  =  LogFactory.getLog(JdbcComponentConfig.class);
 	final static String SystemProperties = "#!{@jdbcComponentConig}";
 	@Autowired
 	private ConfigurableEnvironment env;
@@ -143,7 +143,9 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 		logger.info("nbone JdbcComponent starting ....");
 		logger.info("========================================================================");
 		org.springframework.core.env.PropertySource<?> ps =  env.getPropertySources().get("jdbcComponentConig");
-		config = (Properties) ps.getSource();
+		if(ps != null){
+			config = (Properties) ps.getSource();
+		}
 		String name  = env.getProperty("nbone.name");
 		String dataSourceName = env.getProperty("nbone.datasource.name");
 		System.out.println("========================="+name);
@@ -161,6 +163,7 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 			return ;
 		}
 		if(dataSource == null){
+			logger.warn("dataSource is null.thinking.");
 			return;
 		}
 		Map<String,JdbcDaoSupportX> supportMap = applicationContext.getBeansOfType(JdbcDaoSupportX.class);
@@ -177,6 +180,7 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 			return ;
 		}
 		if(jdbcTemplate == null){
+			logger.warn("jdbcTemplate is null.thinking.");
 			return;
 		}
 		Map<String,JdbcDaoSupportX> supportMap = applicationContext.getBeansOfType(JdbcDaoSupportX.class);

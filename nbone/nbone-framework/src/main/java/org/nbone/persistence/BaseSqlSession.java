@@ -32,81 +32,75 @@ public abstract class BaseSqlSession implements SqlSession {
 	
 	@Override
 	public <T> List<T> getAll(Class<T> clazz) {
-		return null;
+		throw new UnsupportedOperationException("unsupported getAll operation.");
 	}
 
 	@Override
 	public <T> List<T> getAll(Class<T> clazz, Collection<?> ids) {
-		return null;
+		throw new UnsupportedOperationException("unsupported getAll operation.");
 	}
 
 	@Override
 	public <T> List<T> getAll(Class<T> clazz, Object[] ids) {
-		return null;
+		throw new UnsupportedOperationException("unsupported getAll operation.");
 	}
 
 	@Override
-	public <T> List<T> getForList(Object object) {
-		return null;
+	public <T> List<T> getForList(Object object,String afterWhere) {
+		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 	@Override
-	public <T> List<T> getForList(Object object, FieldLevel fieldLevel) {
-		return null;
+	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String afterWhere) {
+		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 
 	@Override
-	public <T> List<T> queryForList(Object object) {
-		return null;
+	public <T> List<T> queryForList(Object object,String afterWhere) {
+		throw new UnsupportedOperationException("unsupported queryForList operation.");
 	}
 	@Override
-	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel) {
-		return null;
+	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String afterWhere) {
+		throw new UnsupportedOperationException("unsupported queryForList operation.");
 	}
 	@Override
 	public <T> List<T> queryForList(Object object, SqlConfig sqlConfig) {
-		return null;
+		throw new UnsupportedOperationException("unsupported queryForList operation.");
 	}
 
 	@Override
 	public <T> List<T> findForList(Object object) {
-		return null;
+		throw new UnsupportedOperationException("unsupported findForList operation.");
 	}
 	@Override
 	public <T> List<T> findForList(Object object, FieldLevel fieldLevel) {
-		return null;
+		throw new UnsupportedOperationException("unsupported findForList operation.");
 	}
 	
 	
 	@Override
-	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize) {
-		return null;
+	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported getForPage operation.");
 	}
 
 	@Override
-	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize) {
-		return null;
+	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported queryForPage operation.");
 	}
 	
 	@Override
-	public <T> Page<T> findForPage(Object object, int pageNum, int pageSize) {
-		return null;
+	public <T> Page<T> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported findForPage operation.");
 	}
 
-	
-	
 
-	@Override
-	public <T> List<T> getForList(Object object, String fieldName) {
-		return null;
-	}
 	
 	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType){
-		return null;
+		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 
 	@Override
 	public <T> List<T> getForListWithFieldNames(Object object, String[] fieldNames,boolean dbFieldMode) {
-		return null;
+		throw new UnsupportedOperationException("unsupported getForListWithFieldNames operation.");
 	}
 	
 	
@@ -153,21 +147,21 @@ public abstract class BaseSqlSession implements SqlSession {
 
 	@Override
 	public int delete(Object object) {
-		throw new UnsupportedOperationException("unsupported update operation.");
+		throw new UnsupportedOperationException("unsupported delete operation.");
 	}
 
 	@Override
 	public int delete(Class<?> clazz, Serializable id) {
-		throw new UnsupportedOperationException("unsupported update operation.");
+		throw new UnsupportedOperationException("unsupported delete operation.");
 	}
 
 	@Override
 	public <T> int delete(Class<T> clazz, Object[] ids) {
-		throw new UnsupportedOperationException("unsupported update operation.");
+		throw new UnsupportedOperationException("unsupported delete operation.");
 	}
 	@Override
 	public int deleteByEntityParams(Object object) {
-		throw new UnsupportedOperationException("unsupported update operation.");
+		throw new UnsupportedOperationException("unsupported deleteByEntityParams operation.");
 	}
 	
 	@Override

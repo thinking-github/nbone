@@ -385,7 +385,14 @@ public class TableMapper<T> {
 	 */
 	public String getSelectAllSql() {
 		if(selectAllSql == null){
-		    this.selectAllSql = getSelectAllSql(this.getColumnNames(), true);
+			String[] cols = this.getColumnNames();
+			if(cols == null){
+				//XXX: 特殊情况处理
+				StringBuilder selectAllSql = new StringBuilder();
+				selectAllSql.append("SELECT * FROM ").append(this.getDbTableName());
+				return selectAllSql.toString();
+			}
+		    this.selectAllSql = getSelectAllSql(cols, true);
 		}
 		
 		return selectAllSql;

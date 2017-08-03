@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -292,6 +293,11 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	@Override
 	public boolean hasNext() {
 		return hasNextPage();
+	}
+
+	@Override
+	public <S> Page<S> map(Converter<? super T, ? extends S> converter) {
+		return null;
 	}
 
 	

@@ -59,7 +59,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	private BatchSqlSession simpleJdbcDao;
 	
 	
-	private JdbcTemplate dao;
+	private JdbcTemplate jdbcTemplate;
 	
 	private NamedParameterJdbcTemplate namedPjdbcTemplate;
 	
@@ -72,9 +72,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		this.dao =  baseJdbcDao.getJdbcTemplate();
-		this.namedPjdbcTemplate = new NamedParameterJdbcTemplate(dao);
-		this.namedJdbcTemplate = new NamedJdbcTemplate(dao, sqlBuilder);
+		//代理有时存在问题取不到值
+		this.jdbcTemplate =  baseJdbcDao.getJdbcTemplate();
+		if(jdbcTemplate == null ){
+			jdbcTemplate = baseJdbcDao.getSuperJdbcTemplate();
+		}
+		this.namedPjdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+		this.namedJdbcTemplate = new NamedJdbcTemplate(jdbcTemplate, sqlBuilder);
 	}
 	
 
@@ -187,7 +191,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		SqlModel<T> sqlModel = sqlBuilder.deleteSqlByIds(clazz, ids);
 		int row = 0;
 		checkSqlModel(sqlModel);
-		row = dao.update(sqlModel.getSql(),sqlModel.getParameterArray());
+		row = jdbcTemplate.update(sqlModel.getSql(),sqlModel.getParameterArray());
 		return row;
 	}
 
@@ -232,7 +236,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public long count(Class<?> clazz) {
 		SqlModel<?> sqlModel =  sqlBuilder.countSql(clazz);
 		checkSqlModel(sqlModel);
-		Number number = dao.queryForObject(sqlModel.getSql(), Long.class);
+		Number number = jdbcTemplate.queryForObject(sqlModel.getSql(), Long.class);
 		
 		return (number != null ? number.longValue() : 0);
 	}
@@ -253,7 +257,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		SqlModel<T> sqlModel = sqlBuilder.selectAllSql(clazz);
 		checkSqlModel(sqlModel);
 		RowMapper<T> rowMapper =    (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> result  = dao.query(sqlModel.getSql(),rowMapper);
+		List<T> result  = jdbcTemplate.query(sqlModel.getSql(),rowMapper);
 		return result;
 	}
 	
@@ -266,19 +270,19 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		SqlModel<T> sqlModel = sqlBuilder.selectSqlByIds(clazz, ids);
 		checkSqlModel(sqlModel);
 		RowMapper<T> rowMapper =    (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> result  = dao.query(sqlModel.getSql(),ids,rowMapper);
+		List<T> result  = jdbcTemplate.query(sqlModel.getSql(),ids,rowMapper);
 		return result;
 	}
 	@Override
-	public <T> List<T> getForList(Object object) {
-		return getForList(object, (FieldLevel)null);
+	public <T> List<T> getForList(Object object,String afterWhere) {
+		return getForList(object, (FieldLevel)null,afterWhere);
 	}	
 	
 
 	@Override
-	public <T> List<T> getForList(Object object, FieldLevel fieldLevel) {
+	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String afterWhere) {
 		
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,fieldLevel);
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,fieldLevel,afterWhere);
 		checkSqlModel(sqlModel);
 			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
@@ -288,13 +292,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 
 	@Override
-	public <T> List<T> queryForList(Object object) {
-		return queryForList(object, (FieldLevel)null);
+	public <T> List<T> queryForList(Object object,String afterWhere) {
+		return queryForList(object, (FieldLevel)null,afterWhere);
 	}
 	
 	@Override
-	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel) {
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,fieldLevel);
+	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String afterWhere) {
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,fieldLevel,afterWhere);
 		checkSqlModel(sqlModel);
 			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
@@ -317,14 +321,14 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
      */
 	@Override
 	public <T> List<T> findForList(Object object) {
-		return this.queryForList(object);
+		return this.queryForList(object,(String)null);
 	}
 	 /**
      * XXX：预留方法目前实现采用 {@link #queryForList(Object, FieldLevel)}
      */
 	@Override
 	public <T> List<T> findForList(Object object, FieldLevel fieldLevel) {
-		return this.queryForList(object, fieldLevel);
+		return this.queryForList(object, fieldLevel,null);
 	}
 
 
@@ -384,7 +388,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		 String sql  = tableMapper.getDeleteSqlWithId().toString();
 		 final List<Serializable> tempids = ids;
 		 final int batchSize = ids.size();
-		 int[] rows = dao.batchUpdate(sql,new BatchPreparedStatementSetter() {
+		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -405,7 +409,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		 String sql  = tableMapper.getDeleteSqlWithId().toString();
 		 final Serializable[] tempids = ids;
 		 final int batchSize = ids.length;
-		 int[] rows = dao.batchUpdate(sql,new BatchPreparedStatementSetter() {
+		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -423,30 +427,22 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 	
 	@Override
-	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize) {
+	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		return namedJdbcTemplate.getForPage(object, pageNum, pageSize);
 	}
 
 	@Override
-	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize) {
+	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		return namedJdbcTemplate.queryForPage(object, pageNum, pageSize);
 	}
 
 	@Override
-	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize) {
+	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		
 		return namedJdbcTemplate.findForPage(object, pageNum, pageSize);
 	}
 
 
-	@Override
-	public <T> List<T> getForList(Object object, String fieldName) {
-		 //TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
-		 //FieldMapper fieldMapper = tableMapper.getFieldMapperByPropertyName(fieldName);
-		 
-		return (List<T>) getForList(object, fieldName, Object.class);
-	}
-	
 
 	@Override
 	public <T> List<T> getForList(Object object, String fieldName, final Class<T> requiredType) {

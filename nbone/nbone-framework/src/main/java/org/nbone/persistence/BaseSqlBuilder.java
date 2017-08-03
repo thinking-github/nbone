@@ -493,11 +493,12 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 
 	 
 	@Override
-	public <T> SqlModel<T>  selectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException {
+	public <T> SqlModel<T>  selectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException {
 		SqlConfig sqlConfig = SqlConfig.getSqlConfig(-1);
 		sqlConfig.setFieldLevel(fieldLevel);
 		
 		SqlModel<T> model = (SqlModel<T>) selectSql(object,sqlConfig);
+		model.setAfterWhere(afterWhere);
 
 		return model;
 	}
@@ -505,11 +506,12 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException {
+	public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException {
 		SqlConfig sqlConfig = SqlConfig.getSqlConfig(SqlConfig.PrimaryMode);
 		sqlConfig.setFieldLevel(fieldLevel);
 		
 		SqlModel<T> model = (SqlModel<T>) selectSql(object,sqlConfig);
+		model.setAfterWhere(afterWhere);
 		
 		return model;
 	}

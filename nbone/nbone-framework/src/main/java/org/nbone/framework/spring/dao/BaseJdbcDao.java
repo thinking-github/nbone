@@ -46,6 +46,9 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 		
 		return this.getJdbcTemplate();
 	}
+
+	
+	
 	  //**************************************queryForBean*************************************************
       
 	/**

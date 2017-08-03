@@ -11,6 +11,9 @@ import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlSession;
+import org.nbone.util.reflect.GenericsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
@@ -19,11 +22,14 @@ import org.springframework.util.Assert;
  * @author thinking
  * @since 2016年3月25日下午3:39:45
  *
- * @param <T>
+ * @param <P>
  * @param <IdType>
  */
 public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObject implements SuperService<P, IdType>{
-	
+
+	protected final  Logger logger = LoggerFactory.getLogger(getClass());
+
+
 	@Resource
 	private BatchSqlSession namedJdbcDao;
 	
@@ -45,6 +51,8 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 
 	
 	public BaseServiceDomain() {
+
+		this.targetClass = (Class<P>) GenericsUtils.getSuperClassGenricType(this.getClass(), 0);
 		count ++;
 	}
     /**
@@ -61,10 +69,21 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		this.initMybatisOrm(namespace.getName(), id);
 	}
 	
+	/*	@Autowired @PostConstruct
+	@Override
+	protected void initMybatisOrm() {
+		super.initMybatisOrm(TsProjectBeanDao.class,"BaseResultMap");
+	}*/
+	protected  void initMybatisOrm(){
+		
+	}
+	
 
 	protected synchronized void  builded(){
+	    Assert.notNull(targetClass, "targetClass is not null.thinking");
 	    Assert.notNull(namespace, "namespace is not null.thinking");
 	    Assert.notNull(id, "id is not null.thinking");
+
 	    if(!builded){
 	    	  try {
 	  	    	BaseSqlBuilder.buildTableMapper(targetClass,namespace,id);
@@ -201,18 +220,25 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 
 	@Override
 	public List<P> getForList(P object) {
+		return getForList(object,null);
+	}
+	@Override
+	public List<P> getForList(P object, String afterWhere) {
 		checkBuilded();
-		List<P> beans =  namedJdbcDao.getForList(object);
+		List<P> beans =  namedJdbcDao.getForList(object,afterWhere);
 		return beans;
 	}
-
 	@Override
 	public List<P> queryForList(P object) {
+		return queryForList(object,null);
+	}
+	@Override
+	public List<P> queryForList(P object, String afterWhere) {
 		checkBuilded();
-		List<P> beans  = namedJdbcDao.queryForList(object);	
+		List<P> beans  = namedJdbcDao.queryForList(object,afterWhere);	
 		return beans;
 	}
-
+	
 
 	@Override
 	public void delete(IdType[] ids) {
@@ -252,7 +278,9 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return namedJdbcDao.count(object);
 	}
 
-	
+	/*
+	 * 批量处理增/删/改
+	 */
 	@Override
 	public void batchInsert(P[] objects) {
 		checkBuilded();
@@ -286,28 +314,32 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		namedJdbcDao.batchDelete(clazz, ids);
 	}
 
-	
+	/*
+	 * --------------分页---------------------
+	 */
 	@Override
-	public Page<P> getForPage(Object object, int pageNum, int pageSize) {
+	public Page<P> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
 		return namedJdbcDao.getForPage(object, pageNum, pageSize);
 	}
 	@Override
-	public Page<P> queryForPage(Object object, int pageNum, int pageSize) {
+	public Page<P> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
 		return namedJdbcDao.queryForPage(object, pageNum, pageSize);
 	}
 	@Override
-	public Page<P> findForPage(Object object, int pageNum, int pageSize) {
+	public Page<P> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
 		return namedJdbcDao.findForPage(object, pageNum, pageSize);
 	}
 	
-	
+	/*
+	 * ----------------------按需返回字段列----------------------
+	 */
 	@Override
-	public <E> List<E> getForList(Object object, String fieldName) {
+	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType) {
 		checkBuilded();
-		return namedJdbcDao.getForList(object, fieldName);
+		return namedJdbcDao.getForList(object, fieldName,requiredType);
 	}
 	@Override
 	public List<P> getForListWithFieldNames(Object object, String[] fieldNames) {
@@ -319,6 +351,8 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		return namedJdbcDao.updateMathOperation(object, mathOperation);
 	}
+	
+	
 
 
 

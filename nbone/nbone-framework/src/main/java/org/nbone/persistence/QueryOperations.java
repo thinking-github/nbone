@@ -36,29 +36,35 @@ public interface QueryOperations {
 	public <T> List<T> getAll(Class<T> clazz,Object[] ids);
 	/**
 	 * 根据 entity bean含有参数的属性组装查询条件 hibernate get method(参数全部使用 等号 =)
-	 * @param clazz
+	 * @param object
+	 * @param afterWhere group by /order  by 子句 参数可为null
 	 * @return
 	 */
-	public <T> List<T> getForList(Object object);
+	public <T> List<T> getForList(Object object,String afterWhere);
 	/**
 	 * 根据 entity bean含有参数的属性组装查询条件 hibernate get method(参数全部使用 等号 =)
-	 * @param clazz
+	 * @param object
+	 * @param fieldLevel
+	 * @param afterWhere group by /order  by 子句 参数可为null
 	 * @return
 	 */
-	public <T> List<T> getForList(Object object,FieldLevel fieldLevel);
+	public <T> List<T> getForList(Object object,FieldLevel fieldLevel,String afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式 number use = /String use like）
 	 * @param object
+	 * @param afterWhere group by /order  by 子句 参数可为null
 	 * @return  {@link List}
 	 */
-	public  <T> List<T> queryForList(Object object);
+	public  <T> List<T> queryForList(Object object,String afterWhere);
 	/**
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式 number use = /String use like）
 	 * @param object
+	 * @param fieldLevel
+	 * @param afterWhere group by /order  by 子句 参数可为null
 	 * @return  {@link List}
 	 */
-	public  <T> List<T> queryForList(Object object,FieldLevel fieldLevel);
+	public  <T> List<T> queryForList(Object object,FieldLevel fieldLevel,String afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表(支持字段查询符号操作 =  > < >= <=  is null is not null)
@@ -83,40 +89,35 @@ public interface QueryOperations {
 	 * @param object
 	 * @param pageNum
 	 * @param pageSize
+	 * @param afterWhere  group by/order by 子句
 	 * @return
 	 * {@link #getForList(Object)}
 	 */
-	public  <T> Page<T> getForPage(Object object,int pageNum, int pageSize);
+	public  <T> Page<T> getForPage(Object object,int pageNum, int pageSize,String... afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表并分页（特殊情况下不同得实现方式 number use = /String use like）
 	 * @param object
 	 * @param pageNum
 	 * @param pageSize
+	 * @param afterWhere  group by/order by 子句
 	 * @return
 	 * {@link #queryForList(Object)}
 	 */
-	public  <T> Page<T> queryForPage(Object object,int pageNum, int pageSize);
+	public  <T> Page<T> queryForPage(Object object,int pageNum, int pageSize,String... afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表并分页
 	 * @param object
 	 * @param pageNum
 	 * @param pageSize
+	 * @param afterWhere  group by/order by 子句
 	 * @return
 	 * {@link #findForList(Object)}
 	 */
-	public  <T> Page<T> findForPage(Object object,int pageNum, int pageSize);
+	public  <T> Page<T> findForPage(Object object,int pageNum, int pageSize,String... afterWhere);
 	
 	
-	
-	/**
-	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)
-	 * @param object
-	 * @param fieldName 要返回的单个字段名称
-	 * @return
-	 */
-	public  <T> List<T> getForList(Object object,String fieldName);
 	
 	/**
 	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)

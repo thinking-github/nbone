@@ -1,5 +1,6 @@
 package org.nbone.mx.datacontrols.datagrid;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,11 @@ import java.util.List;
  * @author thinking 2012-9-1
  * @version 1.0
  */
-public class DataGrid<T> {
+public class DataGrid<T> implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6738589378233750410L;
 	private long total;
 	private List<T> rows;
 	

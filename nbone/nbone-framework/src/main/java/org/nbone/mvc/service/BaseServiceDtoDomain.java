@@ -62,7 +62,8 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	 * <p>Discription:供子类继承使用泛型自动推断</p>
 	 * 注意: 使用此方法时子类继承此父类必须使用泛型，否则不能推断<p>
 	 * Created on 2016年4月7日
-	 * @param superMapper
+	 * @param namespace
+	 * @param id
 	 * @author:ChenYiCheng
 	 */
 	
@@ -163,7 +164,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	 * transToDTOList/transToDomainList
 	 * <p>Discription:listBean to ListDto</p>
 	 * Created on 2016年4月1日
-	 * @param list  原始数据列表
+	 * @param beans  原始数据列表
 	 * @return
 	 * @author:ChenYiCheng
 	 */
@@ -286,10 +287,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public Page<T> getForPage(Object object, int pageNum, int pageSize) {
+	public Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		
-		Page<P> page = baseServiceDomain.getForPage(bean, pageNum, pageSize);
+		Page<P> page = baseServiceDomain.getForPage(bean, pageNum, pageSize,afterWhere);
 		List<P> beans = page.getContent();
 		List<T> dtos  = listBean2ListDto(beans);
 		
@@ -298,10 +299,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public Page<T> queryForPage(Object object, int pageNum, int pageSize) {
+	public Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		
-		Page<P> page = baseServiceDomain.queryForPage(bean, pageNum, pageSize);
+		Page<P> page = baseServiceDomain.queryForPage(bean, pageNum, pageSize,afterWhere);
 		List<P> beans = page.getContent();
 		List<T> dtos  = listBean2ListDto(beans);
 		
@@ -310,10 +311,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public Page<T> findForPage(Object object, int pageNum, int pageSize) {
+	public Page<T> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		
-		Page<P> page = baseServiceDomain.findForPage(bean, pageNum, pageSize);
+		Page<P> page = baseServiceDomain.findForPage(bean, pageNum, pageSize,afterWhere);
 		List<P> beans = page.getContent();
 		List<T> dtos  = listBean2ListDto(beans);
 		
@@ -322,9 +323,9 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public <E> List<E> getForList(Object object, String fieldName) {
+	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType) {
 		P bean = this.copyProperties(object, targetClass);
-		return baseServiceDomain.getForList(bean, fieldName);
+		return baseServiceDomain.getForList(bean, fieldName,requiredType);
 	}
 
 	@Override

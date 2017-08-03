@@ -4,16 +4,13 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.nbone.context.system.SystemContext;
 import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.persistence.BaseSqlBuilder;
-import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
-import org.nbone.persistence.support.PageSuport;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -64,8 +61,12 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,(FieldLevel)null);
+	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
+		String afterWhereString = null;
+		if(afterWhere != null && afterWhere.length > 0) {
+			afterWhereString = afterWhere[0];
+		}
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,(FieldLevel)null,afterWhereString);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}
@@ -76,8 +77,12 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null);
+	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
+		String afterWhereString = null;
+		if(afterWhere != null && afterWhere.length > 0) {
+			afterWhereString = afterWhere[0];
+		}
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhereString);
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 	/**
@@ -88,8 +93,12 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	
-	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize){
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null);
+	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
+		String afterWhereString = null;
+		if(afterWhere != null && afterWhere.length > 0) {
+			afterWhereString = afterWhere[0];
+		}
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhereString);
 		
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
@@ -100,7 +109,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T> Page<T>  processPage(SqlModel<Object> sqlModel,Object object,int pageNum ,int pageSize){
+	private <T> Page<T>  processPage(SqlModel<Object> sqlModel,Object object,int pageNum ,int pageSize,String... afterWhere){
 		if(sqlModel == null){
 			throw new BuilderSQLException("sqlModel is null.");
 		}

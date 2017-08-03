@@ -1,9 +1,11 @@
 package org.nbone.persistence.model;
 
+
 import java.util.Map;
 
 import org.nbone.context.system.SystemContext;
 import org.nbone.lang.BaseObject;
+import org.nbone.mvc.domain.DomainQuery;
 import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.JdbcOptions;
 import org.nbone.persistence.exception.PersistenceBaseRuntimeException;
@@ -39,6 +41,11 @@ public class SqlModel<T> {
 	 */
 	private  TableMapper<?> tableMapper;
 	
+	/**
+	 * group by/order by 子句
+	 */
+	private String  afterWhere;
+	
 	
 	@SuppressWarnings("rawtypes")
 	public static final  SqlModel EmptySqlModel = new SqlModel((String)null);
@@ -68,21 +75,56 @@ public class SqlModel<T> {
 	
 
 	public String getSql() {
-		print();
+		String sql = getPlainSql();
+		print(sql);
 		return sql;
 	}
 	
 	public String getPlainSql(){
-		return sql;
+		//外层where 之后语句
+		if(afterWhere == null || afterWhere.length() == 0) {
+			//实体内where 之后语句
+			if(parameter instanceof DomainQuery) {
+				DomainQuery domainQuery = (DomainQuery) parameter;
+				StringBuilder sBuilder = new StringBuilder(); 
+				String groupBy = domainQuery.groupBy();
+				if(groupBy!= null && groupBy.length() > 0) {
+					sBuilder.append(" ").append(groupBy);
+				}
+				String having = domainQuery.having();
+				if(having != null && having.length() > 0) {
+					sBuilder.append(" ").append(having);
+				}
+				String orderBy = domainQuery.orderBy();
+				if(orderBy != null && orderBy.length() > 0) {
+					sBuilder.append(" ").append(orderBy);
+				}
+				afterWhere = sBuilder.toString();
+			}else{
+				
+				return sql;
+				
+			}
+		}
+		return sql+ " " + afterWhere;
 	}
 
+	/**
+	 * 
+	 * @param pageNum
+	 * @param pageSize
+	 * @param afterWhere order by 子句
+	 * @return
+	 */
 	public String getPageSql(int pageNum ,int pageSize){
 		String pageSql  = "";
+		String tempSql  = getPlainSql() ;
+		
 		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
-			pageSql = PageSuport.toMysqlPage(sql, pageNum, pageSize);
+			pageSql = PageSuport.toMysqlPage(tempSql, pageNum, pageSize);
 			
 		}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
-			pageSql = PageSuport.toOraclePage(sql, pageNum, pageSize);
+			pageSql = PageSuport.toOraclePage(tempSql, pageNum, pageSize);
 		}
 		print(pageSql);
 		return pageSql;
@@ -131,6 +173,14 @@ public class SqlModel<T> {
 		return tableMapper.getRowMapper();
 	}
 	
+	public String getAfterWhere() {
+		return afterWhere;
+	}
+
+	public void setAfterWhere(String afterWhere) {
+		this.afterWhere = afterWhere;
+	}
+
 	private void print(){
 		if(JdbcOptions.showSql){
 			System.out.println(toString());
@@ -165,7 +215,7 @@ public class SqlModel<T> {
 	}
 	@Override
 	public String toString() {
-		StringBuilder sqlSb = new StringBuilder("Jdbc sql : "+sql);
+		StringBuilder sqlSb = new StringBuilder("Jdbc sql : "+ getPlainSql());
 		
 		return sqlSb.toString();
 	}

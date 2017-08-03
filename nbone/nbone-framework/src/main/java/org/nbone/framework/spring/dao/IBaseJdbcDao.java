@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -28,6 +30,9 @@ public interface IBaseJdbcDao {
 	 * @return
 	 */
 	public JdbcTemplate getSuperJdbcTemplate();
+	
+	
+	
 	/**
 	 * 查询单行结果集，封装成Bean
 	 */

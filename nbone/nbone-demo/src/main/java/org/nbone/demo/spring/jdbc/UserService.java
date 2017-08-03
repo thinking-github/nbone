@@ -43,11 +43,11 @@ public class UserService extends BaseServiceDomain<User, Long> implements SuperS
 	}
 	@Override
 	public List<User> getForList(User object) {
-		return namedJdbcDao.getForList(object);
+		return namedJdbcDao.getForList(object,null);
 	}
 	@Override
 	public List<User> queryForList(User object) {
-		return namedJdbcDao.queryForList(object);
+		return namedJdbcDao.queryForList(object,(String)null);
 	}
 	public List<User> queryForList(User object,SqlConfig config) {
 		return namedJdbcDao.queryForList(object,config);
@@ -56,11 +56,11 @@ public class UserService extends BaseServiceDomain<User, Long> implements SuperS
 	
 	
 	public List<User> queryForList(User object,FieldLevel fieldLevel) {
-		return namedJdbcDao.queryForList(object,fieldLevel);
+		return namedJdbcDao.queryForList(object,fieldLevel,null);
 	}
 	
 	@Override
-	public <E> List<E> getForList(Object object, String fieldName) {
+	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType) {
 		return namedJdbcDao.getForList(object, fieldName);
 	}
 	
@@ -71,18 +71,18 @@ public class UserService extends BaseServiceDomain<User, Long> implements SuperS
 	
 	
 	@Override
-	public Page<User> getForPage(Object object, int pageNum, int pageSize) {
-		return namedJdbcDao.getForPage(object, pageNum, pageSize);
+	public Page<User> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+		return namedJdbcDao.getForPage(object, pageNum, pageSize,afterWhere);
 	}
 
 	@Override
-	public Page<User> queryForPage(Object object, int pageNum, int pageSize) {
-		return namedJdbcDao.queryForPage(object, pageNum, pageSize);
+	public Page<User> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+		return namedJdbcDao.queryForPage(object, pageNum, pageSize,afterWhere);
 	}
 
 	@Override
-	public Page<User> findForPage(Object object, int pageNum, int pageSize) {
-		return namedJdbcDao.findForPage(object, pageNum, pageSize);
+	public Page<User> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+		return namedJdbcDao.findForPage(object, pageNum, pageSize,afterWhere);
 	}
 
 

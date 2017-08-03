@@ -8,6 +8,10 @@ import java.util.List;
   */
 public class TreeGrid implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4607564828067185611L;
 	private Integer total;
 	/**
 	 * get total

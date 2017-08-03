@@ -36,7 +36,13 @@ public class PagerJdbcDao implements IPagerJdbcDao{
 	
 	
 	public JdbcTemplate getJdbcTemplate(){
-		return baseJdbcDao.getJdbcTemplate();
+		//代理有时存在问题取不到值
+		JdbcTemplate jdbcTemplate = baseJdbcDao.getJdbcTemplate();
+		if(jdbcTemplate == null){
+			jdbcTemplate = baseJdbcDao.getSuperJdbcTemplate();
+		}
+		
+		return jdbcTemplate;
 	}
 	
 	private Log logger = LogFactory.getLog(getClass());

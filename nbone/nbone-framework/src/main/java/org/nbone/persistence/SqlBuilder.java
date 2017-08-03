@@ -151,20 +151,22 @@ public interface SqlBuilder {
 	  * 根据实体中的参数查询(全部使用等号)
 	  * @param object
 	  * @param fieldLevel 根据字段级别查询,参数可为null
+	  * @param afterWhere group by /order  by 子句 参数可为null
 	  * @return
 	  * @throws Exception
 	  */
-	 public <T> SqlModel<T> selectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询
 	  * <p> number use = ;String use Like
 	  * @param object
 	  * @param fieldLevel 根据字段级别查询,参数可为null
+	  * @param afterWhere group by /order  by 子句 参数可为null
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
+	 public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询

@@ -45,7 +45,11 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		//代理有时存在问题取不到值
 		JdbcTemplate jdbcTemplate =  baseJdbcDao.getJdbcTemplate();
+		if(jdbcTemplate == null ){
+			jdbcTemplate = baseJdbcDao.getSuperJdbcTemplate();
+		}
 		this.jdbcTemplate = jdbcTemplate;
 		this.simpleJdbcInsert  = new SimpleJdbcInsert(jdbcTemplate);
 		
