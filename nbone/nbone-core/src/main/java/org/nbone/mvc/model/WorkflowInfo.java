@@ -1,4 +1,4 @@
-package org.nbone.mvc.dto;
+package org.nbone.mvc.model;
 
 /**
  * 流程信息

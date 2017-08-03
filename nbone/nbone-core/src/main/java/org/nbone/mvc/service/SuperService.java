@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.ISuper;
-import org.nbone.persistence.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -46,22 +45,46 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	
 	
 	//查询分页
-	public Page<T> getForPage(Object object,int pageNum,int pageSize);
+	/**
+	 * 
+	 * @param object 
+	 * @param pageNum 当前页
+	 * @param pageSize 页的大小
+	 * @param afterWhere group by/order by 子句
+	 * @return
+	 */
+	public Page<T> getForPage(Object object,int pageNum,int pageSize,String... afterWhere);
+	/**
+	 * 
+	 * @param object 
+	 * @param pageNum 当前页
+	 * @param pageSize 页的大小
+	 * @param afterWhere group by/order by 子句
+	 * @return
+	 */
+	public Page<T> queryForPage(Object object,int pageNum,int pageSize,String... afterWhere);
+	/**
+	 * 
+	 * @param object 
+	 * @param pageNum 当前页
+	 * @param pageSize 页的大小
+	 * @param afterWhere group by/order by 子句
+	 * @return
+	 */
+	public Page<T> findForPage(Object object,int pageNum,int pageSize,String... afterWhere);
 	
-	public Page<T> queryForPage(Object object,int pageNum,int pageSize);
-	
-	public Page<T> findForPage(Object object,int pageNum,int pageSize);
 	
 	
 	//按需字段查询
 	/**
-	 * 
+	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)
 	 * @param object
-	 * @param fieldName
+	 * @param fieldName 单个字段名称
+	 * @param requiredType 目标类型
 	 * @return
 	 * @see SqlSession#getForList(Object, String)
 	 */
-	public <E> List<E> getForList(Object object, String fieldName);
+	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType);
 	
 	/**
 	 * 

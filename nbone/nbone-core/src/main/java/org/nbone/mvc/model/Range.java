@@ -1,4 +1,4 @@
-package org.nbone.mvc.dto;
+package org.nbone.mvc.model;
 
 import java.io.Serializable;
 
@@ -10,6 +10,8 @@ import java.io.Serializable;
  */
 public class Range implements Serializable{
 	
+	private static final long serialVersionUID = 3178641967711436300L;
+
 	private int min;
 	
 	private int max;

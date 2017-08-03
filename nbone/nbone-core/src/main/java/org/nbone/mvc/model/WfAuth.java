@@ -1,4 +1,4 @@
-package org.nbone.mvc.dto;
+package org.nbone.mvc.model;
 
 // default package
 // Generated 2013-8-5 21:27:22 by Hibernate Tools 3.2.4.GA
