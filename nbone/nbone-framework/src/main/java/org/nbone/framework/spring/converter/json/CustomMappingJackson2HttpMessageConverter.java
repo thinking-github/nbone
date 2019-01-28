@@ -29,6 +29,7 @@ public class CustomMappingJackson2HttpMessageConverter extends MappingJackson2Ht
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
+	@Override
 	public void afterPropertiesSet() throws Exception {
 		if(jsonSerializers != null && jsonSerializers.length > 0){
 			SimpleModule module = new SimpleModule("customMappingJacksonHttpMessageConverter", new Version(1, 0, 0, null));

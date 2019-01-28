@@ -31,15 +31,34 @@ public interface SqlBuilder {
 	 * @throws BuilderSQLException
 	 */
 	 public SqlModel<Object> insertSelectiveSql(Object object) throws BuilderSQLException;
-	 
+
+
+
 	 /**
 	  * 由传入的对象生成update sql语句
 	  * @param object
-	  * @param safeAttr 
 	  * @return
 	  * @throws BuilderSQLException
 	  */
 	 public SqlModel<Object> updateSql(Object object) throws BuilderSQLException;
+
+	/**
+	 * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
+	 * @param object
+	 * @return
+	 * @throws BuilderSQLException
+	 */
+	public SqlModel<Object> updateSelectiveSql(Object object) throws BuilderSQLException;
+
+	/**
+	 * 由传入的对象生成update sql语句
+	 * @param object
+	 * @param isSelective 是否只更新不为null的值
+	 * @param whereSql    where 部分sql id=1 and name ='chen',  可为null
+	 * @return
+	 * @throws BuilderSQLException
+	 */
+	public SqlModel<Object> updateSql(Object object,boolean isSelective,String whereSql) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的Map对象生成update sql语句
@@ -50,16 +69,6 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public <T> SqlModel<Map<String,?>> updateSql(Class<T> entityClass,Map<String,?> fieldsMap,boolean isDbFieldName) throws BuilderSQLException;
-	 
-	 /**
-	  * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
-	  * @param object
-	  * @return
-	  * @throws BuilderSQLException
-	  */
-	 public SqlModel<Object> updateSelectiveSql(Object object) throws BuilderSQLException;
-	 
-     
 	 /**
 	  * 由传入的对象生成update sql语句(参数值不为空且为数字的加入进行数学计算)
 	  * @param object
@@ -68,7 +77,9 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public SqlModel<Object> updateMathOperationSql(Object object,MathOperation mathOperation) throws BuilderSQLException;
-	 
+
+
+
 	 
 	 /**
 	  *  由传入的对象生成delete sql语句(包括不为null的属性生成sql)
@@ -91,7 +102,7 @@ public interface SqlBuilder {
 	 /**
 	  * 根据主键列表Id删除
 	  * @param entityClass
-	  * @param id
+	  * @param ids
 	  * @return
 	  * @throws BuilderSQLException
 	  */
@@ -155,7 +166,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws Exception
 	  */
-	 public <T> SqlModel<T> selectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException;
+	 public <T> SqlModel<T> selectSql(Object object,FieldLevel fieldLevel,String... afterWhere) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询
@@ -166,7 +177,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException;
+	 public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String... afterWhere) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据实体中的参数查询

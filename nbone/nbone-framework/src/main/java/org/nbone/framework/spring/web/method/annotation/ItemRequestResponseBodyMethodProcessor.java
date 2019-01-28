@@ -46,7 +46,7 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
   * 默认的构造器使用默认的 Json 转换器
   * 
   */
-  protected ItemRequestResponseBodyMethodProcessor(){
+  public ItemRequestResponseBodyMethodProcessor(){
 	  
 	  super(messageConverters);
   }
@@ -55,18 +55,19 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
    * 自定义Json 转换器
    * 
    */
-  protected ItemRequestResponseBodyMethodProcessor(List<HttpMessageConverter<?>> messageConverters)
-  {
+  public ItemRequestResponseBodyMethodProcessor(List<HttpMessageConverter<?>> messageConverters) {
     super(messageConverters);
   }
    
   /*Response  data */
+  @Override
   public boolean supportsReturnType(MethodParameter returnType) {
     return returnType.getMethodAnnotation(ItemResponseBody.class) != null;
   }
 
+  @Override
   public void handleReturnValue(Object returnValue, MethodParameter returnType,
-		  ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
+                                ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
     mavContainer.setRequestHandled(true);
     ResultWrapper wrapedResult = null;
     
@@ -101,19 +102,20 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
   
   
   /*Request  parameter */
+  @Override
   public boolean supportsParameter(MethodParameter parameter) {
     return parameter.getParameterAnnotation(ItemsRequestBody.class) != null;
   }
 
-  public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, 
-		  					   NativeWebRequest webRequest, WebDataBinderFactory binderFactory)throws Exception{
+  @Override
+  public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                NativeWebRequest webRequest, WebDataBinderFactory binderFactory)throws Exception{
     Object arg = readWithMessageConverters(webRequest, parameter, parameter.getParameterType());
 
     return arg;
   }
 
-  private String[] getIgnoreFields(Class dataClass, String[] showFields)
-  {
+  private String[] getIgnoreFields(Class dataClass, String[] showFields) {
     if (null != showFields) {
       Arrays.sort(showFields);
     }
@@ -139,16 +141,14 @@ public class ItemRequestResponseBodyMethodProcessor extends AbstractMessageConve
     return Collection.class.isAssignableFrom(returnValue.getClass());
   }
 
-  private Class<?> getCollectionGenericType(MethodParameter returnType)
-  {
+  private Class<?> getCollectionGenericType(MethodParameter returnType) {
     Type type = returnType.getGenericParameterType();
     ParameterizedType aType = (ParameterizedType)type;
     Type parameterArgType = aType.getActualTypeArguments()[0];
     return (Class)parameterArgType;
   }
 
-private String[] getAllFields(Class clazz)
-  {
+private String[] getAllFields(Class clazz) {
     Field[] fields = clazz.getDeclaredFields();
     List fieldList = new ArrayList();
     for (Field field : fields) {

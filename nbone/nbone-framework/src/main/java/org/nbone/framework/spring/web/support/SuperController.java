@@ -54,12 +54,13 @@ public abstract class SuperController extends SuperHttpServlet implements Conten
     
     
     /**
+	 * doExecute Set request And response
      * ModelAttribute 此注解用于http事件请求时第一个执行的方法
      * @param request 
      * @param response
      */
     @ModelAttribute
-    protected void doExecuteSetReqAndRes(HttpServletRequest request, HttpServletResponse response){  
+    protected void doExecuteSetRequestAndResponse(HttpServletRequest request, HttpServletResponse response){
         //XXX:thinking  ThreadLocal
         ServletActionAttributes attributes = new ServletActionAttributes(request,response);
         ServletActionHolder.setRequestAttributes(attributes);

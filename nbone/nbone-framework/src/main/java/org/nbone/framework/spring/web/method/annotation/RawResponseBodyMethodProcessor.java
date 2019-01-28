@@ -18,8 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConv
  * @since spring 3.1
  */
 @SuppressWarnings("unchecked")
-public class RawResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor
-{
+public class RawResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor {
 	protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) JsonProcessor.msgConverters;
 	
   /**
@@ -28,38 +27,37 @@ public class RawResponseBodyMethodProcessor extends AbstractMessageConverterMeth
    * 
    */
 
-  protected RawResponseBodyMethodProcessor()
-  {
+  public RawResponseBodyMethodProcessor() {
 	 super(messageConverters);
   }
-  
- 
-  protected RawResponseBodyMethodProcessor(List<HttpMessageConverter<?>> messageConverters)
-  {
+
+
+  public RawResponseBodyMethodProcessor(List<HttpMessageConverter<?>> messageConverters) {
     super(messageConverters);
   }
 
+  @Override
   public boolean supportsReturnType(MethodParameter returnType) {
     return returnType.getMethodAnnotation(RawResponseBody.class) != null;
   }
 
+  @Override
   public void handleReturnValue(Object returnValue, MethodParameter returnType,
-		  						ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception
-  {
+		  						ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
     mavContainer.setRequestHandled(true);
 
     writeWithMessageConverters(returnValue, returnType, webRequest);
   }
   
   /*---------------------------------------*/
-  public boolean supportsParameter(MethodParameter parameter)
-  {
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
     return false;
   }
 
+  @Override
   public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory)
-    throws Exception
-  {
+    throws Exception {
     return null;
   }
 }

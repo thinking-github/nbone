@@ -25,7 +25,7 @@ nbone-Framework是在Spring Framework基础上搭建的一个Java基础开发平
 * 服务器中间件：在Java EE 5规范（Servlet 2.5、JSP 2.1）下开发，支持应用服务器中间件有Tomcat 6+、Jboss 7+、WebLogic 10+、WebSphere 8+。  建议：建议使用Java EE 6以上的规范(Servlet 3.0,Servlet 3.1)
 * 开发环境：Java、Eclipse Java EE 4.3、Maven 3.1、Git
 	
-	                        
+	​                        
 ####Spring MVC扩展:
 	增加@JsonRequestParam注解解析JSON参数
 	增加@ClassMethodNameRequestMapping注解 默认支持类短名和方法名称映射  
@@ -74,12 +74,13 @@ nbone-Framework是在Spring Framework基础上搭建的一个Java基础开发平
 			return "index";
 		}
 		
-		/* http://localhost:8080/user/addMore
-		 * user.name =chenyicheng, teacher.name = thinking
+		/* http://localhost:8080/user/addMore?user.name=chenyicheng&teacher.name=thinking
 		 * 支持命名空间
 		 */
-		public String addMore(@Namespace("user")User user,@Namespace("teacher")Teacher teacher){
-			return "index";
+		 @ItemResponseBody
+		public Object addMore(@Namespace("user")User user,@Namespace("teacher")Teacher teacher){
+			StudentAndTeacher st = new StudentAndTeacher(user,teacher);
+			return st;
 		}
 		
 		/*
@@ -106,17 +107,17 @@ nbone-Framework是在Spring Framework基础上搭建的一个Java基础开发平
 		}
 	
 	}
-	
+
 ####nbone-orm Framework:	
 ##### 使用:
 1.配置：
 
     <context:annotation-config />
     <!--配置nbone-orm 框架 -->
-	<bean class="org.nbone.framework.spring.dao.config.JdbcComponentConfig">
-		<property name="showSql" value="true"></property>
-		<property name="dataSource" value="dataSource"></property>
-	</bean>
+    <bean class="org.nbone.framework.spring.dao.config.JdbcComponentConfig">
+    	<property name="showSql" value="true"></property>
+    	<property name="dataSource" ref="dataSource"></property>
+    </bean>
 2.使用	
 
 	@Service
@@ -145,9 +146,9 @@ nbone-Framework是在Spring Framework基础上搭建的一个Java基础开发平
 ####Spring Jdbc扩展:
 	集成springJDBC,提供springJDBCDao 
 	封装SimpleJdbcDao NamedJdbcDao可以实现基于对象单表增删改查   
-	
+
 ####提供丰富的工具箱:
-	
+
 	提供对Jsonlib的封装,简化 Java Object 和 JSON 之间的转化;
 	
 	提供对jackson的封装,简化 Java Object 和 JSON 之间的转化;

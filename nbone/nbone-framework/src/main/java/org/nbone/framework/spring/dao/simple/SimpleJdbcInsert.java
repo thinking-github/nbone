@@ -83,12 +83,17 @@ public class SimpleJdbcInsert extends AbstractJdbcInsert implements SimpleJdbcIn
 		return this;
 	}
 
+
+	/**
+	 * spring 5 废除
+	 * @param nativeJdbcExtractor
+	 * @return
+	 */
 	@Override
 	public SimpleJdbcInsertOperations useNativeJdbcExtractorForMetaData(NativeJdbcExtractor nativeJdbcExtractor) {
 		setNativeJdbcExtractor(nativeJdbcExtractor);
 		return this;
 	}
-
 	@Override
 	public int execute(Map<String, ?> args) {
 		return doExecute(args);

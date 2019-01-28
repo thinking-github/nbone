@@ -47,8 +47,34 @@ public abstract class BaseObject {
 		}
 		return targetList;
 	}
-	
-	
+
+
+	public boolean  state(int number) {
+		if(number > 0){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean state(long number) {
+		if(number > 0){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean state(Number number) {
+		if(number == null){
+			return  false;
+		}
+		if(number.intValue() > 0){
+			return true;
+		}
+		return false;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return ToStringUtils.toString(this);

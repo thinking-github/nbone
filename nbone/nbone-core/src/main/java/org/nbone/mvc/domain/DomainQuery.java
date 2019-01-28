@@ -8,10 +8,20 @@ package org.nbone.mvc.domain;
  *
  */
 public interface DomainQuery {
-	
-	
+
+	/**
+	 * 追加至Where之后
+	 * @return
+	 */
+	public String appendWhere();
+
+	/**
+	 * group by 子句
+	 * @return
+	 */
 	public String groupBy();
-	
+
+
 	public String having();
 	
 	public String orderBy();

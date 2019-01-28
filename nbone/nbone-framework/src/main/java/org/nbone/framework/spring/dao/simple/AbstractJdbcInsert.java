@@ -98,7 +98,9 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	protected AbstractJdbcInsert(JdbcTemplate jdbcTemplate) {
 		Assert.notNull(jdbcTemplate, "JdbcTemplate must not be null");
 		this.jdbcTemplate = jdbcTemplate;
-		setNativeJdbcExtractor(jdbcTemplate.getNativeJdbcExtractor());
+
+		// spring 5 废除
+		//setNativeJdbcExtractor(jdbcTemplate.getNativeJdbcExtractor());
 	}
 
 

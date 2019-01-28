@@ -23,8 +23,8 @@ import org.springframework.data.domain.Page;
  */
 public interface SuperService<T,IdType extends Serializable> extends ISuper<T, IdType> {
 	
-	static Logger logger = LoggerFactory.getLogger(SuperService.class);
-	
+	//static Logger logger = LoggerFactory.getLogger(SuperService.class);
+
 	//批量增删改
 	/**
 	 * @param objects
@@ -46,6 +46,9 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	
 	//查询分页
 	/**
+	 * getForPage(index,pageNow,pageSize,"and status != -1"," order by  create_time DESC"); <br>
+	 *
+	 * getForPage(index,pageNow,pageSize," order by  create_time DESC");
 	 * 
 	 * @param object 
 	 * @param pageNum 当前页
@@ -55,7 +58,9 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 */
 	public Page<T> getForPage(Object object,int pageNum,int pageSize,String... afterWhere);
 	/**
-	 * 
+	 * queryForPage(index,pageNow,pageSize,"and status != -1"," order by  create_time DESC"); <br>
+	 *
+	 * queryForPage(index,pageNow,pageSize," order by  create_time DESC");
 	 * @param object 
 	 * @param pageNum 当前页
 	 * @param pageSize 页的大小
@@ -72,14 +77,27 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * @return
 	 */
 	public Page<T> findForPage(Object object,int pageNum,int pageSize,String... afterWhere);
-	
+
+
+	/**
+	 * getForLimit(index,10,"and status != -1"," order by  create_time DESC"); <br>
+	 *
+	 * getForLimit(index,10," order by  create_time DESC");
+	 * @param object
+	 * @param limit
+	 * @param afterWhere
+	 * @return
+	 */
+	public List<T> getForLimit(Object object,int limit,String... afterWhere);
+
+	public List<T> queryForLimit(Object object,int limit,String... afterWhere);
 	
 	
 	//按需字段查询
 	/**
 	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)
 	 * @param object
-	 * @param fieldName 单个字段名称
+	 * @param fieldName 单个字段名称 默认采用java property mapping
 	 * @param requiredType 目标类型
 	 * @return
 	 * @see SqlSession#getForList(Object, String)

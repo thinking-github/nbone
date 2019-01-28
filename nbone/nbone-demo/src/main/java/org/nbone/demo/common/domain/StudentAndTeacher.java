@@ -6,7 +6,15 @@ public class StudentAndTeacher {
 	
 	private  Teacher teacher;
 
-	
+
+	public StudentAndTeacher() {
+	}
+
+	public StudentAndTeacher(User user, Teacher teacher) {
+		this.user = user;
+		this.teacher = teacher;
+	}
+
 	public User getUser() {
 		return user;
 	}

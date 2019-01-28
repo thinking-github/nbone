@@ -80,7 +80,7 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 	
 	/**
 	 * byClass<br>
-	 * Bean 的定义有且只有一个 多个或者没有抛出异常
+	 * Bean 的定义有且只有一个,多个或者没有抛出异常
 	 * @param requiredType
 	 * @return
 	 */

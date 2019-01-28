@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.nbone.common.model.DataGrid;
+import org.nbone.framework.spring.dao.BaseJdbcDao;
+import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
 import org.nbone.lang.BaseObject;
 import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BaseSqlBuilder;
@@ -15,6 +18,7 @@ import org.nbone.util.reflect.GenericsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.Assert;
 
 /**
@@ -29,9 +33,14 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 
 	protected final  Logger logger = LoggerFactory.getLogger(getClass());
 
+	@Resource(name="baseJdbcDao")
+	private BaseJdbcDao baseJdbcDao;
 
 	@Resource
 	private BatchSqlSession namedJdbcDao;
+
+	@Resource
+	private JdbcComponentConfig jdbcComponentConfig;
 	
 	private Class<P> targetClass;
 	/**
@@ -44,6 +53,11 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	 * 映射mybatis 实体  resultMap id
 	 */
 	private String id;
+
+	/**
+	 * 数据库表名称
+	 */
+	private  String tableName;
 	
 	private  boolean builded =  false;
 	
@@ -66,6 +80,17 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 	
 	protected void initMybatisOrm(Class<?> namespace,String id) {
+		this.initMybatisOrm(namespace.getName(), id);
+	}
+
+	protected void initMybatisOrm(Class<?> namespace,String id,String tableName) {
+		this.initMybatisOrm(namespace.getName(), id);
+		this.setTableName(tableName);
+	}
+
+	protected void initMybatisOrm(Class<?> namespace) {
+
+		String id = jdbcComponentConfig.getMybatisMapperId();
 		this.initMybatisOrm(namespace.getName(), id);
 	}
 	
@@ -137,6 +162,14 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		this.id = id;
 	}
 
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+
 	public static long getCount() {
 		return count;
 	}
@@ -169,6 +202,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return row;
 	}
 
+
 	@Override
 	public void update(P object) {
 		checkBuilded();
@@ -180,6 +214,12 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		namedJdbcDao.updateSelective(object);
 	}
+	@Override
+	public void updateSelective(P object, String whereql) {
+		checkBuilded();
+		namedJdbcDao.updateSelective(object,whereql);
+	}
+
 
 
 	@Override
@@ -223,7 +263,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return getForList(object,null);
 	}
 	@Override
-	public List<P> getForList(P object, String afterWhere) {
+	public List<P> getForList(P object, String... afterWhere) {
 		checkBuilded();
 		List<P> beans =  namedJdbcDao.getForList(object,afterWhere);
 		return beans;
@@ -233,12 +273,27 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return queryForList(object,null);
 	}
 	@Override
-	public List<P> queryForList(P object, String afterWhere) {
+	public List<P> queryForList(P object, String... afterWhere) {
 		checkBuilded();
 		List<P> beans  = namedJdbcDao.queryForList(object,afterWhere);	
 		return beans;
 	}
-	
+
+	@Override
+	public boolean execute(String sql) {
+		JdbcTemplate jdbcTemplate =  baseJdbcDao.getJdbcTemplate();
+		if(jdbcTemplate == null ){
+			jdbcTemplate = baseJdbcDao.getSuperJdbcTemplate();
+		}
+		try {
+			jdbcTemplate.execute(sql);
+		} catch (RuntimeException e) {
+			logger.error(e.getMessage(),e);
+			throw  e;
+		}
+		return true;
+	}
+
 
 	@Override
 	public void delete(IdType[] ids) {
@@ -315,27 +370,39 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 
 	/*
-	 * --------------分页---------------------
+	 * --------------------分页限制结果集--------------------
 	 */
 	@Override
 	public Page<P> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.getForPage(object, pageNum, pageSize);
+		return namedJdbcDao.getForPage(object, pageNum, pageSize,afterWhere);
 	}
 	@Override
 	public Page<P> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.queryForPage(object, pageNum, pageSize);
+		return namedJdbcDao.queryForPage(object, pageNum, pageSize,afterWhere);
 	}
 	@Override
 	public Page<P> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.findForPage(object, pageNum, pageSize);
+		return namedJdbcDao.findForPage(object, pageNum, pageSize,afterWhere);
 	}
-	
+
+	@Override
+	public List<P> getForLimit(Object object, int limit, String... afterWhere) {
+		checkBuilded();
+		return namedJdbcDao.getForLimit(object, limit,afterWhere);
+	}
+
+	@Override
+	public List<P> queryForLimit(Object object, int limit, String... afterWhere) {
+		checkBuilded();
+		return namedJdbcDao.queryForLimit(object, limit,afterWhere);
+	}
+
 	/*
-	 * ----------------------按需返回字段列----------------------
-	 */
+     * ----------------------按需返回字段列----------------------
+     */
 	@Override
 	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType) {
 		checkBuilded();
@@ -351,8 +418,20 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		return namedJdbcDao.updateMathOperation(object, mathOperation);
 	}
-	
-	
+
+	/**
+	 * 工具方法
+	 */
+	public <T> DataGrid<T>  to(Page<T> page) {
+		if(page == null){
+			return null;
+		}
+		DataGrid<T> dataGrid = new DataGrid<T>(page.getTotalElements(),page.getContent());
+
+		return dataGrid;
+	}
+
+
 
 
 

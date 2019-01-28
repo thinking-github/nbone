@@ -63,6 +63,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getNumber()
 	 */
+	@Override
 	public int getNumber() {
 		return pageable == null ? 0 : pageable.getPageNumber();
 	}
@@ -71,6 +72,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getSize()
 	 */
+	@Override
 	public int getSize() {
 		return pageable == null ? 0 : pageable.getPageSize();
 	}
@@ -79,6 +81,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getTotalPages()
 	 */
+	@Override
 	public int getTotalPages() {
 		return getSize() == 0 ? 1 : (int) Math.ceil((double) total / (double) getSize());
 	}
@@ -87,6 +90,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getNumberOfElements()
 	 */
+	@Override
 	public int getNumberOfElements() {
 		return content.size();
 	}
@@ -95,6 +99,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getTotalElements()
 	 */
+	@Override
 	public long getTotalElements() {
 		return total;
 	}
@@ -135,6 +140,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#nextPageable()
 	 */
+	@Override
 	public Pageable nextPageable() {
 		return hasNextPage() ? pageable.next() : null;
 	}
@@ -143,6 +149,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#previousOrFirstPageable()
 	 */
+	@Override
 	public Pageable previousPageable() {
 
 		if (hasPreviousPage()) {
@@ -156,6 +163,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#iterator()
 	 */
+	@Override
 	public Iterator<T> iterator() {
 		return content.iterator();
 	}
@@ -164,6 +172,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getContent()
 	 */
+	@Override
 	public List<T> getContent() {
 		return Collections.unmodifiableList(content);
 	}
@@ -172,6 +181,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#hasContent()
 	 */
+	@Override
 	public boolean hasContent() {
 		return !content.isEmpty();
 	}
@@ -180,6 +190,7 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getSort()
 	 */
+	@Override
 	public Sort getSort() {
 		return pageable == null ? null : pageable.getSort();
 	}
@@ -266,30 +277,24 @@ public class PageImpl<T> implements Page<T>, Serializable {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Slice#hasPrevious()
 	 */
+	@Override
 	public boolean hasPrevious() {
 		return getNumber() > 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.springframework.data.domain.Slice#isFirst()
-	 */
+
+	@Override
 	public boolean isFirst() {
 		return !hasPrevious();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.springframework.data.domain.Slice#isLast()
-	 */
+
+	@Override
 	public boolean isLast() {
 		return !hasNext();
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.domain.Slice#hasNext()
-	 */
+
 	@Override
 	public boolean hasNext() {
 		return hasNextPage();

@@ -31,6 +31,10 @@ public class StringTest {
 		System.out.println(CharMatcher.JAVA_UPPER_CASE.removeFrom("UUUkkk"));
 		System.out.println(CharMatcher.JAVA_UPPER_CASE.retainFrom("UUUkkk"));
 		System.out.println(CharMatcher.JAVA_UPPER_CASE.replaceFrom("UUUkkk","u"));
+
+
+
+		System.out.println(CharMatcher.javaUpperCase().trimFrom("UUUkkk"));
 		
 		List<String> ss = Arrays.asList("chen","yi","cheng",null);
 		String[] strings = {"1","2","3","4","5"};

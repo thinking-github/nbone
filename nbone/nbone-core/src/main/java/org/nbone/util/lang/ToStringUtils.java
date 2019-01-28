@@ -1,14 +1,14 @@
 package org.nbone.util.lang;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * object to String  format 
  * @author thinking
  * @version 1.0
  * @since   2016年4月4日
- * @see  org.apache.commons.lang.builder.ToStringBuilder
- * @see  org.apache.commons.lang.builder.ReflectionToStringBuilder
+ * @see  org.apache.commons.lang3.builder.ToStringBuilder
+ * @see  org.apache.commons.lang3.builder.ReflectionToStringBuilder
  *
  */
 public class ToStringUtils {

@@ -29,6 +29,12 @@ public class EntityTableMetaDataContext extends TableMetaDataContext {
 		 */
 		if(parameterSource instanceof EntityPropertySqlParameterSource){
 			List<Object> values = new ArrayList<Object>();
+
+			List<String> tableColumns= this.getTableColumns();
+			if(tableColumns == null || tableColumns.size() ==0){
+				logger.error(">>>>> table columns is Empty.");
+			}
+
 			for (String column : this.getTableColumns()) {
 				if (parameterSource.hasValue(column)) {
 					values.add(SqlParameterSourceUtils.getTypedValue(parameterSource, column));

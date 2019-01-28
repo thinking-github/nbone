@@ -44,7 +44,7 @@ public abstract class SuperHttpServlet  implements ContentType {
 			charset = CHARSET_UTF8;
 		}
 		
-		Assert.notNull(response);
+		Assert.notNull(response," HttpServletResponse response is null.");
 		
 		//"text/html;charset=utf-8"
 		String contentHead = (new StringBuilder()).append(contentType).append(SUB_CHARSET_PREFIX).append(charset).toString();

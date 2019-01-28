@@ -61,6 +61,7 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
     public int update(Class<?> entityClass, Map<String, Object> fieldMap);
+   
 	
 	/**
 	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)
@@ -68,6 +69,31 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public int updateSelective(Object object);
+	
+	 /**
+     * 有选择的更新实体
+     * @param object 更新参数
+     * @param whereEntity 更新条件
+     * @return
+     */
+    public int updateSelective(Object object, Object whereEntity);
+    
+    /**
+     * 有选择的更新实体
+     * @param object 更新参数
+     * @param whereMap 更新条件
+     * @return
+     */
+    public int updateSelective(Object object, Map<String, Object> whereMap);
+
+
+	/**
+	 * 有选择的更新实体
+	 * @param object 更新参数
+	 * @param whereString 更新条件
+	 * @return
+	 */
+	public int updateSelective(Object object, String whereString);
 	
 	/**
 	 *  保存或者更新数据

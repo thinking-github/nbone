@@ -12,6 +12,8 @@ import org.nbone.persistence.exception.PersistenceBaseRuntimeException;
 import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.support.PageSuport;
 import org.nbone.util.lang.ToStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
@@ -21,6 +23,8 @@ import org.springframework.jdbc.core.RowMapper;
  *
  */
 public class SqlModel<T> {
+
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	/**
 	 * sql语句
 	 */
@@ -44,7 +48,7 @@ public class SqlModel<T> {
 	/**
 	 * group by/order by 子句
 	 */
-	private String  afterWhere;
+	private String[]  afterWhere;
 	
 	
 	@SuppressWarnings("rawtypes")
@@ -79,16 +83,29 @@ public class SqlModel<T> {
 		print(sql);
 		return sql;
 	}
-	
-	public String getPlainSql(){
+
+	/**
+	 * 	if(afterWhere != null && afterWhere.length > 0) {
+	 		afterWhereString = afterWhere[0];
+	 	}
+	 * @return
+	 */
+	private String getPlainSql(){
 		//外层where 之后语句
-		if(afterWhere == null || afterWhere.length() == 0) {
+		if(afterWhere == null || afterWhere.length == 0) {
 			//实体内where 之后语句
 			if(parameter instanceof DomainQuery) {
 				DomainQuery domainQuery = (DomainQuery) parameter;
-				StringBuilder sBuilder = new StringBuilder(); 
+				StringBuilder sBuilder = new StringBuilder();
+
+				String appendWhere = domainQuery.appendWhere();
+				appendWhere = appendWhere(appendWhere);
+				if(appendWhere != null && appendWhere.length() > 0){
+					sBuilder.append(appendWhere);
+				}
+
 				String groupBy = domainQuery.groupBy();
-				if(groupBy!= null && groupBy.length() > 0) {
+				if(groupBy != null && groupBy.length() > 0) {
 					sBuilder.append(" ").append(groupBy);
 				}
 				String having = domainQuery.having();
@@ -99,26 +116,40 @@ public class SqlModel<T> {
 				if(orderBy != null && orderBy.length() > 0) {
 					sBuilder.append(" ").append(orderBy);
 				}
-				afterWhere = sBuilder.toString();
+				//afterWhere = sBuilder.toString();
+				return  sql+ " " + sBuilder.toString();
 			}else{
 				
 				return sql;
 				
 			}
 		}
-		return sql+ " " + afterWhere;
+
+		String afterWhereString = null;
+
+		if(afterWhere.length == 1){
+			afterWhereString = afterWhere[0];
+
+		}else  if(afterWhere.length == 2){
+			String appendWhere = afterWhere[0];
+			afterWhereString = appendWhere(appendWhere);
+			afterWhereString   = afterWhereString + " " +afterWhere[1];
+		}else {
+
+		}
+		return sql+ " " + afterWhereString;
 	}
 
 	/**
 	 * 
 	 * @param pageNum
 	 * @param pageSize
-	 * @param afterWhere order by 子句
+	 *  afterWhere order by 子句
 	 * @return
 	 */
 	public String getPageSql(int pageNum ,int pageSize){
 		String pageSql  = "";
-		String tempSql  = getPlainSql() ;
+		String tempSql  = getPlainSql();
 		
 		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
 			pageSql = PageSuport.toMysqlPage(tempSql, pageNum, pageSize);
@@ -132,7 +163,8 @@ public class SqlModel<T> {
 	
 	
 	public String getCountSql(){
-		String countSql = PageSuport.getCountSqlString(sql);
+		String tempSql  = getPlainSql();
+		String countSql = PageSuport.getCountSqlString(tempSql);
 		return countSql;
 	}
 	
@@ -172,30 +204,49 @@ public class SqlModel<T> {
 	public RowMapper<?> getRowMapper(){
 		return tableMapper.getRowMapper();
 	}
-	
-	public String getAfterWhere() {
+
+	public String[] getAfterWhere() {
 		return afterWhere;
 	}
 
-	public void setAfterWhere(String afterWhere) {
+	public void setAfterWhere(String[] afterWhere) {
 		this.afterWhere = afterWhere;
 	}
 
 	private void print(){
 		if(JdbcOptions.showSql){
-			System.out.println(toString());
-			System.out.println(getPrintSqlParameter());
+			//System.out.println(toString());
+			//System.out.println(getPrintSqlParameter());
+
+			logger.info(toString());
+			logger.info(getPrintSqlParameter().toString());
 		}
 	}
 	
 	private void print(String printSql){
 		if(JdbcOptions.showSql){
-			System.out.println(printSql);
-			System.out.println(getPrintSqlParameter());
+			//System.out.println(printSql);
+			//System.out.println(getPrintSqlParameter());
+
+			logger.info(printSql);
+			logger.info(getPrintSqlParameter().toString());
 		}
 	}
-	
-	
+
+	private String appendWhere(String appendWhere){
+		if(appendWhere != null && appendWhere.length() > 0) {
+			StringBuilder stringBuilder = new StringBuilder();
+			if(sql.contains(" where ") || sql.contains(" WHERE ")){
+				stringBuilder.append(" ").append(appendWhere);
+			}else {
+				stringBuilder.append(" where 1=1 ").append(appendWhere);
+			}
+			return stringBuilder.toString();
+		}
+
+		return  null;
+	}
+
 	public StringBuilder getPrintSqlParameter(){
 		
 		StringBuilder print = new StringBuilder();

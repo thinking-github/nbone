@@ -69,10 +69,35 @@ public class PagerModel<T> implements Serializable {
 	public PagerModel(int pageSize) {
 		this.pageSize = pageSize;
 	}
+	
+	public PagerModel(int pageNow,int pageSize) {
+		this.pageNow = pageNow;
+		this.pageSize = pageSize;
+	}
 
 	public PagerModel(List<T> rows) {
 		this.rows = rows;
 		this.total = rows == null ? 0 : rows.size();
+	}
+	
+	public PagerModel(long total,List<T> rows) {
+		this.total = total;
+		this.rows = rows;
+	}
+	public PagerModel(int total,List<T> rows) {
+		this.total = total;
+		this.rows = rows;
+	}
+	
+	public PagerModel(long total,List<T> rows,int pageNow,int pageSize) {
+		this.total = total;
+		this.rows = rows;
+		this.pageNow = pageNow;
+		this.pageSize = pageSize;
+	}
+	
+	public PagerModel(int total,List<T> rows,int pageNow,int pageSize) {
+		this((long)total, rows, pageNow, pageSize);
 	}
 
 	public int getPageNow() {

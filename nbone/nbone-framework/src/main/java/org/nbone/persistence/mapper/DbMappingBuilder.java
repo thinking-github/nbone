@@ -76,7 +76,7 @@ public class DbMappingBuilder {
      * 由传入的entity对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
      * @param <E>
      * 
-     * @param dtoClass
+     * @param entityClass
      * @return TableMapper
      */
     public  <E> TableMapper<E> buildTableMapper(Class<E> entityClass) {

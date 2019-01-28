@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.CaseFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.mapping.ResultMap;
@@ -12,11 +13,14 @@ import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.nbone.constants.CaseName;
 import org.nbone.framework.mybatis.MySqlSessionTemplate;
+import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
 import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
 import org.nbone.framework.spring.support.ComponentFactory;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.util.JpaAnnotationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -26,7 +30,11 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class MyMapperUtils {
 	public static Log logger  =  LogFactory.getLog(MyMapperUtils.class);
-	static Configuration configuration; 
+	static Configuration configuration;
+
+	static CaseName caseName;
+
+
 	static{
 		try {
 			 MySqlSessionTemplate	mySqlSessionTemplate = ComponentFactory.getBean(MySqlSessionTemplate.class);
@@ -41,7 +49,47 @@ public class MyMapperUtils {
 		
 			
 		}
+
+		//java.util.Map map = ComponentFactory.getContext().getBeansOfType(JdbcComponentConfig.class);
+
+		JdbcComponentConfig componentConfig = ComponentFactory.getBean(JdbcComponentConfig.class);
+
+		caseName = componentConfig.getDbCaseName();
 	
+	}
+
+	/**
+	 *  UPPER_CAMEL  --> LOWER_UNDERSCORE / UPPER_UNDERSCORE / LOWER_CAMEL
+	 * @param name
+	 * @param caseName
+	 * @return
+	 */
+	public static String caseFormat(String name ,CaseName caseName){
+		String tableName ;
+		switch (caseName) {
+			case LOWER_UNDERSCORE:
+				tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+
+				break;
+
+			case UPPER_UNDERSCORE:
+				tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
+
+				break;
+
+			case LOWER_CAMEL:
+				tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
+			
+				break;
+
+
+			default:
+				tableName = name;
+				break;
+		}
+
+		return  tableName;
+
 	}
 	
 	public static  ResultMap getResultMap(String namespace,String id) {
@@ -54,21 +102,39 @@ public class MyMapperUtils {
 		return configuration.getResultMap(fullId.toString());
 	}
 	/**
-	 * 	sqlMapping 中需添加   <sql id="tableName">ts_project</sql>
+	 * 	sqlMapping 中需添加   <sql id="tableName">ts_project</sql><br/>
+	 * 	使用顺序,优先使用配置文件，JPA次之,类名最次之。
 	 * @param namespace
+	 * @param entityClass
 	 * @return
 	 */
-	public static String getTableName(String namespace) {
-		XNode xNode = configuration.getSqlFragments().get(namespace+".tableName");
-		if(xNode != null){
-			return xNode.getStringBody();
+	public static String getTableName(String namespace, Class<?> entityClass) {
+		try {
+			XNode xNode = configuration.getSqlFragments().get(namespace+".tableName");
+			if(xNode != null){
+				return xNode.getStringBody();
+			}
+		} catch (Exception e) {
+			logger.warn(">>>>>"+namespace+".tableName"+" not setting.");
+
+			String tableName  = JpaAnnotationUtils.getTableName(entityClass);
+
+			if(tableName == null || tableName.length() == 0){
+				logger.warn(">>>>>Jpa Annotation tableName"+" not setting, use className format.");
+				String className = entityClass.getSimpleName();
+				tableName = caseFormat(className,caseName);
+			}
+
+			return  tableName;
+
 		}
+
 		return null;
 	}
 
 	
 	public static <E> TableMapper<E> resultMap2TableMapper(Class<E> entityClass,String namespace,String id) {
-		String tableName  = getTableName(namespace);
+		String tableName  = getTableName(namespace,entityClass);
 		
 		if(tableName == null){
 			//logger.warn("mybatis resultMap not has table name mapping.--thinking");
@@ -87,6 +153,9 @@ public class MyMapperUtils {
 			String dbFieldName  = resultMapping.getColumn();
 			primaryList.add(dbFieldName);
 		}
+		if(primaryList.size() >2){
+			logger.warn(">>>>>联合主键数量超过2个,请注意检查!");
+		}
 		tableMapper.setDbTableName(tableName);
 		tableMapper.setPrimaryKeys(primaryList);
 		
@@ -97,6 +166,10 @@ public class MyMapperUtils {
 			Class<?> javaType = resultMapping.getJavaType();
 			
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(entityClass, fieldName);
+			if(propertyDescriptor == null){
+				throw  new  NullPointerException(fieldName + " property is not exist.");
+
+			}
 			FieldMapper fieldMapper = new FieldMapper(propertyDescriptor);
 			Field field;
 			try {

@@ -35,6 +35,7 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	/**
 	 * 当扩展的方法无法实现新的需求是可用此方法获取Spring SuperJdbcTemplate
 	 */
+	@Override
 	public Connection getSuperConnection(){
 		return this.getConnection();
 	}
@@ -42,6 +43,7 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 	/**
 	 * 当扩展的方法无法实现新的需求是可用此方法获取Spring SuperJdbcTemplate
 	 */
+	@Override
 	public JdbcTemplate getSuperJdbcTemplate(){
 		
 		return this.getJdbcTemplate();
@@ -49,7 +51,7 @@ public class BaseJdbcDao extends JdbcDaoSupportX implements IBaseJdbcDao {
 
 	
 	
-	  //**************************************queryForBean*************************************************
+	//*******************************queryForBean*****************************
       
 	/**
 	 * @see #queryForBeanWithSql(String, Object[], int[], Class)

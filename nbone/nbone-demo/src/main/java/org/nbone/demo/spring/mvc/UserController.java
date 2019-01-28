@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("user")
 public class UserController {
-	
 	/*
-	 * ------------------基本映射--------------------
+	 * ------------基本映射-----------
+	 * http://localhost:8080/user/add
 	 */
 	@RequestMapping("add")
 	public String add(User user){
 		return "index";
 	}
-	
+	/*
+	 * http://localhost:8080/user/update
+	 */
 	@RequestMapping("update")
 	public String update(User user){
 		return "index";
 	}
-	
 	/*
+	 * http://localhost:8080/user/addMore
 	 * 组合对象 当含有相同的属性时值都是最后一个
 	 */
 	@RequestMapping("addMore")
@@ -37,19 +39,18 @@ public class UserController {
 		return "index";
 	}
 	/*
-	 * user.name =chenyicheng
-	 * teacher.name = thinking
-	 * 需要封装两个基本对象
+	 * http://ip:port/user/addMoreMultiple?user.name=chenyicheng&teacher.name=thinking
+	 * 原生框架内提供的方案需要封装两个基本对象
 	 */
-	@RequestMapping("addMore")
+	@RequestMapping("addMoreMultiple")
 	public String addMore(StudentAndTeacher stuTea){
 		return "index";
 	}
 	
-	/*
-	 * Json 转换,手动Json字符串转化	
+	/* http://ip:port/user/addMoreJson?name=chenyicheng&teacherJsonStr={"id":"1","name":"yu"}&teacherJsonStr=[]
+	 * form 表单很有复合参数,Json 转换,手动Json字符串转化	
 	 */
-	@RequestMapping("addMore")
+	@RequestMapping("addMoreJson")
 	public String addMoreJson(User user,String teacherJsonStr,String teacherJsonList){
 		
 		//teacherJsonStr to Teacher Object
@@ -59,7 +60,7 @@ public class UserController {
 	}
 	
 	/*
-	 * 返回对象封装
+	 * 比如对普通对象返回 进行封装 添加状态码和异常消息
 	 * {successful:成功状态,errCode:"",message:"",resultValue:""  ....以后扩展问题需要修改源代码}
 	 */
 	@ResponseBody

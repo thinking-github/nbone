@@ -12,6 +12,8 @@ import org.nbone.lang.BaseObject;
 import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BatchSqlSession;
 import org.nbone.util.reflect.GenericsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 
@@ -27,7 +29,9 @@ import org.springframework.data.domain.Page;
 public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> extends BaseObject  implements SuperService<T, IdType>{
 	
 	private BaseServiceDomain<P,IdType> baseServiceDomain   = new BaseServiceDomain<P, IdType>();
-	
+
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
+
 	private BatchSqlSession namedJdbcDao;
 	
 	private Class<T> dtoClass;
@@ -232,25 +236,36 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 
 	@Override
 	public List<T> getForList(T object) {
+		return getForList(object,null);
+	}
+	
+	@Override
+	public List<T> getForList(T object, String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
-		List<P> beans = baseServiceDomain.getForList(bean);
+		List<P> beans = baseServiceDomain.getForList(bean,afterWhere);
 		
 		return listBean2ListDto(beans);
 	}
+
+	
+
 	@Override
 	public List<T> queryForList(T object) {
+		return queryForList(object,null);
+	}
+	@Override
+	public List<T> queryForList(T object, String... afterWhere) {
 		if(object == null){
 			return new ArrayList<T>(0);
 		}
 		
 		P bean = this.copyProperties(object, targetClass);
 		List<P> beans;
-		beans = baseServiceDomain.queryForList(bean);
+		beans = baseServiceDomain.queryForList(bean,afterWhere);
 		List<T> dtos  = listBean2ListDto(beans);
 		
 		return dtos;
 	}
-	
 	
 	@Override
 	public void batchInsert(T[] objects) {

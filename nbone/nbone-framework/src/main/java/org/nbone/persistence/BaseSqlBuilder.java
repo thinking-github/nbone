@@ -132,85 +132,60 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	//update 
 	@Override
 	public SqlModel<Object>  updateSql(Object object) throws BuilderSQLException {
-		
-        SqlModel<Object>  model =  update(object, new Function<TableMapper<?>, StringBuilder>() {
-			@Override
-			public StringBuilder apply(TableMapper<?> tableMapper) {
-				StringBuilder fieldSql = new StringBuilder(); 
-			    int columnCount = 0;
-		        List<FieldMapper> fields =  tableMapper.getFieldMapperList();
-		        for (FieldMapper fieldMapper : fields) {
-		            String fieldName = fieldMapper.getFieldName();
-		            String dbFieldName =  fieldMapper.getDbFieldName();
-		            if(fieldMapper.isPrimaryKey()){
-		            	continue;
-		            }
-		            
-		            columnCount ++;
-		            if(columnCount > 1){
-		            	fieldSql.append(",");
-		            }
-		            fieldSql.append(dbFieldName).append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
-		            //tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
-		        }
-		        
-				return fieldSql;
-			}
-		});
-        
-        return model;
+
+        return updateSql(object,false,null);
 		
 	}
-	
-	
+	@Override
+	public SqlModel<Object>  updateSelectiveSql(final Object object) throws BuilderSQLException {
+		return updateSql(object,true,null);
+	}
+
+	@Override
+	public SqlModel<Object> updateSql(final Object object, final boolean isSelective,String whereSql) throws BuilderSQLException {
+		SqlModel<Object> sqlModel = update(object, new Function<TableMapper<?>, StringBuilder>() {
+			@Override
+			public StringBuilder apply(TableMapper<?> tableMapper) {
+				StringBuilder fieldSql = new StringBuilder();
+				boolean allFieldNull = true;
+				int columnCount = 0;
+				List<FieldMapper> fields =  tableMapper.getFieldMapperList();
+				for (FieldMapper fieldMapper : fields) {
+					String fieldName = fieldMapper.getFieldName();
+					String dbFieldName =  fieldMapper.getDbFieldName();
+					Object value = PropertyUtil.getProperty(object, fieldName);
+					//XXX: beark primaryKey update
+					if(fieldMapper.isPrimaryKey()){
+						continue;
+					}
+					// isSelective = true
+					if (isSelective && value == null) {
+						continue;
+					}
+
+					allFieldNull = false;
+					columnCount ++;
+					if(columnCount > 1){
+						fieldSql.append(",");
+					}
+					fieldSql.append(dbFieldName).append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
+					//tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
+
+				}
+				//XXX: allFieldNull
+				if (allFieldNull) {
+					throw new RuntimeException(object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
+				}
+				return fieldSql;
+			}
+		},whereSql);
+		return sqlModel;
+	}
+
 	@Override
 	public <T> SqlModel<Map<String, ?>> updateSql(Class<T> entityClass, Map<String, ?> fieldsMap, boolean isDbFieldName)
 			throws BuilderSQLException {
-		
-		
 		return null;
-	}
-
-
-	@Override
-	public SqlModel<Object>  updateSelectiveSql(final Object object) throws BuilderSQLException {
-
-        SqlModel<Object> sqlModel = update(object, new Function<TableMapper<?>, StringBuilder>() {
-			@Override
-			public StringBuilder apply(TableMapper<?> tableMapper) {
-				StringBuilder fieldSql = new StringBuilder(); 
-				boolean allFieldNull = true;
-		        int columnCount = 0;
-		        List<FieldMapper> fields =  tableMapper.getFieldMapperList();
-		        for (FieldMapper fieldMapper : fields) {
-		            String fieldName = fieldMapper.getFieldName();
-		            String dbFieldName =  fieldMapper.getDbFieldName();
-		            Object value = PropertyUtil.getProperty(object, fieldName);
-		            //XXX: beark primaryKey update
-		            if(fieldMapper.isPrimaryKey()){
-		            	continue;
-		            }
-		            if (value == null) {
-		                continue;
-		            }
-		            allFieldNull = false;
-		            columnCount ++;
-		            if(columnCount > 1){
-		            	fieldSql.append(",");
-		            }
-		            fieldSql.append(dbFieldName).append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
-		            //tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
-		            
-		        }
-		        //XXX: allFieldNull
-		        if (allFieldNull) {
-		            throw new RuntimeException(object.getClass().getName()+ "'s all fields are null, how can i build sql for it?!");
-		        }
-				return fieldSql;
-			}
-		});
-        
-        return sqlModel;
 	}
 	
 	@Override
@@ -251,18 +226,19 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		        }
 			return fieldSql;
 			}
-		});
+		},null);
 		
         return sqlModel;
 	
 	}
 	/**
+	 *  update tableName set name='chen' where id = 1
 	 * update 更新公共回调方法
 	 * @param object
 	 * @param function
 	 * @return
 	 */
-	protected SqlModel<Object> update(Object object,Function<TableMapper<?>,StringBuilder> function){
+	protected SqlModel<Object> update(Object object,Function<TableMapper<?>,StringBuilder> function,String whereSqlPart){
 		
 		TableMapper<?> tableMapper =  checkBuildUpdate(object);
 		   
@@ -271,12 +247,19 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         tableSql.append("update ").append(tableName).append(" set ");
         
         //XXX: fields  callback
-        StringBuilder partSql = function.apply(tableMapper);
-        tableSql.append(partSql);
+        StringBuilder setSql = function.apply(tableMapper);
+        tableSql.append(setSql);
         
         //where id = 1
         StringBuffer whereSql = new StringBuffer(" where ");
-        whereSql.append(primaryKeysCondition(object, tableMapper));
+        if(whereSqlPart == null || whereSqlPart.trim().length() ==0){
+
+			whereSql.append(primaryKeysCondition(object, tableMapper));
+		}else{
+
+			whereSql.append(whereSqlPart);
+		}
+
         
         String sql = tableSql.append(whereSql).toString();
         
@@ -399,7 +382,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 			return SqlModel.EmptySqlModel;
 		}
 		TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
-		String all = tableMapper.getSelectAllSql();
+		String all = tableMapper.getSelectAllSql(false);
 		String[]  primaryKeys = tableMapper.getPrimaryKeys();
 		
 		
@@ -424,8 +407,14 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	public SqlModel<Object> selectSqlById(Object object) throws BuilderSQLException {
 		Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
 		TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
-        
-        StringBuffer selectSql = new StringBuffer(tableMapper.getSelectAllSql());
+
+		boolean isDistinct = false;
+		if(object instanceof Distinct){
+			Distinct distinct = (Distinct) object;
+			isDistinct = distinct.isDistinct();
+		}
+
+        StringBuffer selectSql = new StringBuffer(tableMapper.getSelectAllSql(isDistinct));
         
         StringBuffer whereSql = new StringBuffer(" where ");
         whereSql.append(primaryKeysCondition(object,tableMapper));
@@ -441,7 +430,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 public <T> SqlModel<T> selectAllSql(Class<T> entityClass) throws BuilderSQLException{
 		 Assert.notNull(entityClass, "Sorry,I refuse to build sql for a null entityClass!");
 		 TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
-	     String sql = tableMapper.getSelectAllSql().toString();
+	     String sql = tableMapper.getSelectAllSql(false);
 		 SqlModel<T> sqlModel = new SqlModel<T>(sql, null, tableMapper);
 		return sqlModel;
 	 }
@@ -479,7 +468,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 public <T> SqlModel<T> selectSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException{
 		 Assert.notNull(entityClass, "Sorry,I refuse to build sql for a null entityClass!");
 		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(entityClass);
-		 String allsql = tableMapper.getSelectAllSql();
+		 String allsql = tableMapper.getSelectAllSql(false);
 		 
 		 String[]  primaryKeys =tableMapper.getPrimaryKeys();
 		 StringBuilder in  =   SqlUtils.list2In(primaryKeys[0], ids);
@@ -493,7 +482,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 
 	 
 	@Override
-	public <T> SqlModel<T>  selectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException {
+	public <T> SqlModel<T>  selectSql(Object object,FieldLevel fieldLevel,String... afterWhere) throws BuilderSQLException {
 		SqlConfig sqlConfig = SqlConfig.getSqlConfig(-1);
 		sqlConfig.setFieldLevel(fieldLevel);
 		
@@ -506,7 +495,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String afterWhere) throws BuilderSQLException {
+	public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String... afterWhere) throws BuilderSQLException {
 		SqlConfig sqlConfig = SqlConfig.getSqlConfig(SqlConfig.PrimaryMode);
 		sqlConfig.setFieldLevel(fieldLevel);
 		
@@ -540,22 +529,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 		    Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
 		    
 		    TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
-		    String[] fieldNames  = sqlConfig.getFieldNames();
-		    String allsql;
-		    // 1.优先使用自定义查询，
-		    if(fieldNames == null || fieldNames.length == 0){
-		    	 //2.字段级别次之
-		    	 FieldLevel fieldLevel = sqlConfig.getFieldLevel();
-		    	 if(fieldLevel == null){
-		    		 allsql = tableMapper.getSelectAllSql();
-		    	 }else{
-		    		 allsql = tableMapper.getSelectAllSql(fieldLevel);
-		    	 }
-		    	
-		    }else{
-		    	 allsql = tableMapper.getSelectAllSql(fieldNames, sqlConfig.isDbFieldMode());
-		    }
-		    
+
+
+			String allsql  = getSelectSqlBeforeWhere(object,tableMapper,sqlConfig);
+
 	        StringBuffer selectSql = new StringBuffer(allsql).append(" where 1 = 1 ");
 	        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
 	      
@@ -639,22 +616,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 			Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
 			
 		    TableMapper<?> tableMapper =  DbMappingBuilder.ME.getTableMapper(object.getClass());
-		    String[] fieldNames = sqlConfig.getFieldNames();
-		    String allsql;
-		    // 1.优先使用自定义查询，
-		    if(fieldNames == null || fieldNames.length ==0){
-		    	//2.字段级别次之
-		    	 FieldLevel fieldLevel = sqlConfig.getFieldLevel();
-		    	 if(fieldLevel == null){
-		    		 allsql = tableMapper.getSelectAllSql();
-		    	 }else{
-		    		 allsql = tableMapper.getSelectAllSql(fieldLevel);
-		    	 }
-		    	 
-		    }else{
-		    	 allsql = tableMapper.getSelectAllSql(fieldNames, sqlConfig.isDbFieldMode()); 
-		    }
-		    StringBuilder  selectSqlAndWhere = new StringBuilder(allsql);
+
+			String selectsql = getSelectSqlBeforeWhere(object,tableMapper,sqlConfig);
+
+		    StringBuilder  selectSqlAndWhere = new StringBuilder(selectsql);
 	        
             StringBuilder whereSql = getWhereSql(object,tableMapper ,sqlConfig);
             selectSqlAndWhere.append(whereSql);
@@ -662,8 +627,42 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 			String sql = selectSqlAndWhere.toString();
 		    SqlModel<Object>  model = new SqlModel<Object> (sql, object,tableMapper);
 			return model;
+	}
+
+	/**
+	 * 获取查询sql  where 之前的语句 select * from  test
+	 * @param object
+	 * @param tableMapper
+	 * @param sqlConfig
+	 * @return
+	 */
+	private  String getSelectSqlBeforeWhere(Object object,TableMapper<?> tableMapper,SqlConfig sqlConfig){
+
+		String[] fieldNames = sqlConfig.getFieldNames();
+		String allsql;
+
+		boolean isDistinct = false;
+		if(object instanceof Distinct){
+			Distinct distinct = (Distinct) object;
+			isDistinct = distinct.isDistinct();
 		}
-	
+
+		// 1.优先使用自定义查询，
+		if(fieldNames == null || fieldNames.length ==0){
+			//2.字段级别次之
+			FieldLevel fieldLevel = sqlConfig.getFieldLevel();
+			if(fieldLevel == null){
+				allsql = tableMapper.getSelectAllSql(isDistinct);
+			}else{
+				allsql = tableMapper.getSelectAllSql(fieldLevel,isDistinct);
+			}
+
+		}else{
+			allsql = tableMapper.getSelectAllSql(fieldNames, sqlConfig.isDbFieldMode(),isDistinct);
+		}
+		return  allsql;
+	}
+
 	private  StringBuilder getWhereSql(Object object,TableMapper<?> tableMapper,SqlConfig sqlConfig){
 		StringBuilder selectSql = new StringBuilder(" where 1 = 1 ");
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
@@ -733,7 +732,8 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	 */
 	private StringBuffer primaryKeysCondition(Object object,TableMapper<?> tableMapper) throws BuilderSQLException{
 		Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
-		
+
+		// object PrimaryKey value validata
 		String[]  primaryKeys = tableMapper.getPrimaryKeys();
         for (int i = 0; i < primaryKeys.length; i++) {
             FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[i]);
@@ -750,7 +750,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 	/**
 	 * where主键条件
 	 * <p> eg: id = 1 and name = chen 
-	 * @param object
+	 * @param entityClass
 	 * @param tableMapper
 	 * @return
 	 */
@@ -764,7 +764,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             
             String fieldName = fieldMapper.getFieldName();
             
-            if(i > 0){
+           if(i > 0){
             	sql.append(" and ");
            }
             sql.append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);

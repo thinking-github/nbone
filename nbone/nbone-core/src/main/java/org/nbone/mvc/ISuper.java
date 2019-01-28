@@ -55,6 +55,13 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @param object
 	 */
 	public void updateSelective(T object);
+
+	/**
+	 * 根据 whereql 更新一条记录(有选择的更新,为空的数据丢弃)
+	 * @param object
+	 * @param  whereql id = 1 and name = 'chen'
+	 */
+	public void updateSelective(T object ,String whereql);
     
 	/**
 	 * 按实体中的id删除数据
@@ -114,12 +121,15 @@ public interface ISuper<T,PK extends Serializable> {
 	public List<T> getForList(T object);
 	
 	/**
+	 * getForList(index,"and status != -1"," order by  create_time DESC"); <br>
+	 *
+	 * getForList(index," order by  create_time DESC"); <br>
 	 * 按照实体中的参数查询实体列表
 	 * @param object
 	 * @param afterWhere group by/order by 子句
 	 * @return {@link List}
 	 */
-	public List<T> getForList(T object,String afterWhere);
+	public List<T> getForList(T object,String... afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式）
@@ -128,12 +138,25 @@ public interface ISuper<T,PK extends Serializable> {
 	 */
 	public List<T> queryForList(T object);
 	/**
+	 * queryForList(index,"and status != -1"," order by  create_time DESC"); <br>
+	 *
+	 * queryForList(index," order by  create_time DESC"); <br>
+	 *
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式）
 	 * @param object
 	 * @param afterWhere afterWhere group by/order by 子句
 	 * @return {@link List}
 	 */
-	public List<T> queryForList(T object,String afterWhere);
+	public List<T> queryForList(T object,String... afterWhere);
+
+
+	/**
+	 *  execute DDL
+	 * @param sql
+	 * @return
+	 */
+	public boolean execute(String sql);
+
 	
 	
 	

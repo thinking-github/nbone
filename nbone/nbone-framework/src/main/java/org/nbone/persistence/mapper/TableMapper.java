@@ -113,7 +113,7 @@ public class TableMapper<T> {
 	/**
 	 * 设定预定的容量  XXX： thinking 2016-08-02
 	 * @param entityClazz
-	 * @param initialCapacity
+	 * @param fieldInitialCapacity
 	 */
 	public TableMapper(Class<T> entityClazz,int fieldInitialCapacity) {
 		fieldInitialCapacity = fieldInitialCapacity +5;
@@ -240,7 +240,7 @@ public class TableMapper<T> {
 		this.entityClazz = entityClazz;
 	}
     /**
-     * @see #fieldMapperCache
+     * @see #fieldMappers
      */
 	public Map<String, FieldMapper> getFieldMappers() {
 		
@@ -383,16 +383,20 @@ public class TableMapper<T> {
 	 * 查询全部sql (返回副本)
 	 * @return
 	 */
-	public String getSelectAllSql() {
+	public String getSelectAllSql(boolean distinct) {
 		if(selectAllSql == null){
 			String[] cols = this.getColumnNames();
 			if(cols == null){
 				//XXX: 特殊情况处理
 				StringBuilder selectAllSql = new StringBuilder();
-				selectAllSql.append("SELECT * FROM ").append(this.getDbTableName());
+				selectAllSql.append("SELECT ");
+				if(distinct){
+					selectAllSql.append("DISTINCT ");
+				}
+				selectAllSql.append(" * FROM ").append(this.getDbTableName());
 				return selectAllSql.toString();
 			}
-		    this.selectAllSql = getSelectAllSql(cols, true);
+		    this.selectAllSql = getSelectAllSql(cols, true,distinct);
 		}
 		
 		return selectAllSql;
@@ -403,19 +407,26 @@ public class TableMapper<T> {
 	 * @param isDbFieldName true为数据库字段名称,false 为Java字段名称
 	 * @return
 	 */
-	public String getSelectAllSql(String[] fieldNames,boolean isDbFieldName) {
+	public String getSelectAllSql(String[] fieldNames,boolean isDbFieldName,boolean distinct) {
 		if(fieldNames == null || fieldNames.length == 0){
-			return getSelectAllSql();
+			return getSelectAllSql(distinct);
 		}
 	    StringBuilder selectAllSql = new StringBuilder();
 		selectAllSql.append("SELECT ");
-		
+		if(distinct){
+			selectAllSql.append("DISTINCT ");
+		}
 		if(isDbFieldName){
 				selectAllSql.append(StringUtils.arrayToDelimitedString(fieldNames, ","));
 			
 		}else{
 			for (int i = 0; i < fieldNames.length; i++) {
 				String dbFieldName = getDbFieldName(fieldNames[i]);
+
+				if(dbFieldName == null || dbFieldName.length() == 0){
+					throw  new IllegalArgumentException(fieldNames[i]+" java property mapping dbFieldName is null.");
+				}
+
 				if(i > 0){
 					selectAllSql.append(",");
 				}
@@ -428,13 +439,16 @@ public class TableMapper<T> {
 		return selectAllSql.toString();
 	}
 	
-	public String getSelectAllSql(FieldLevel fieldLevel) {
+	public String getSelectAllSql(FieldLevel fieldLevel,boolean distinct) {
 		if(fieldLevel == null || fieldLevel == FieldLevel.ALL || !fieldPropertyLoad){
-			return getSelectAllSql();
+			return getSelectAllSql(distinct);
 		}
 		// query column
 		StringBuilder selectAllSql = new StringBuilder();
 		selectAllSql.append("SELECT ");
+		if(distinct){
+			selectAllSql.append("DISTINCT ");
+		}
 		int count = 0;
 		int inputLevel = fieldLevel.getId();
 		for (int i = 0; i < fieldMapperList.size(); i++) {
@@ -484,7 +498,7 @@ public class TableMapper<T> {
 	
 	public String getSelectSqlWithId() {
 		if(selectSqlWithId == null){
-			StringBuilder selectSqlWithIdTemp = new StringBuilder(getSelectAllSql());
+			StringBuilder selectSqlWithIdTemp = new StringBuilder(getSelectAllSql(false));
 			
 			String  primaryKey=  getPrimaryKey();
 			if(primaryKey == null){

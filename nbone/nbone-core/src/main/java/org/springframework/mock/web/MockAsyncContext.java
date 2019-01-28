@@ -60,7 +60,7 @@ public class MockAsyncContext implements AsyncContext {
 
 
 	public void addDispatchHandler(Runnable handler) {
-		Assert.notNull(handler);
+		Assert.notNull(handler,"Runnable handler is null.");
 		this.dispatchHandlers.add(handler);
 	}
 

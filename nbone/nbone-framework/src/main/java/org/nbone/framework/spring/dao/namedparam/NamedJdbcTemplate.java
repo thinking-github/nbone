@@ -62,11 +62,8 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-		String afterWhereString = null;
-		if(afterWhere != null && afterWhere.length > 0) {
-			afterWhereString = afterWhere[0];
-		}
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,(FieldLevel)null,afterWhereString);
+
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,(FieldLevel)null,afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}
@@ -78,11 +75,8 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-		String afterWhereString = null;
-		if(afterWhere != null && afterWhere.length > 0) {
-			afterWhereString = afterWhere[0];
-		}
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhereString);
+
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 	/**
@@ -92,13 +86,9 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param pageSize
 	 * @return
 	 */
-	
 	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-		String afterWhereString = null;
-		if(afterWhere != null && afterWhere.length > 0) {
-			afterWhereString = afterWhere[0];
-		}
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhereString);
+
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhere);
 		
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
@@ -107,7 +97,29 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 		Number number = queryForObject(sql, paramSource, Long.class);
 		return (number != null ? number.longValue() : 0);
 	}
-	
+
+
+
+	public <T> List<T> getForLimit(Object object,int limit,String... afterWhere){
+		String afterWhereString = null;
+		if(afterWhere != null && afterWhere.length > 0) {
+			afterWhereString = afterWhere[0];
+		}
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,(FieldLevel)null,afterWhereString);
+		return processLimit(sqlModel, object, limit);
+
+	}
+	public <T> List<T> queryForLimit(Object object ,int limit,String... afterWhere){
+		String afterWhereString = null;
+		if(afterWhere != null && afterWhere.length > 0) {
+			afterWhereString = afterWhere[0];
+		}
+		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,null,afterWhereString);
+		return processLimit(sqlModel, object, limit);
+	}
+
+
+
 	@SuppressWarnings("unchecked")
 	private <T> Page<T>  processPage(SqlModel<Object> sqlModel,Object object,int pageNum ,int pageSize,String... afterWhere){
 		if(sqlModel == null){
@@ -134,6 +146,26 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 		
 		return page;
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> List<T>  processLimit(SqlModel<Object> sqlModel,Object object ,int pageSize,String... afterWhere){
+		if(sqlModel == null){
+			throw new BuilderSQLException("sqlModel is null.");
+		}
+
+		if(pageSize <= 0 ){
+			pageSize = 10;
+		}
+
+		String pageSql  = sqlModel.getPageSql(1, pageSize);
+
+		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
+
+		List<T> rows = jdbcTemplate.query(getPreparedStatementCreator(pageSql,paramSource), rowMapper);
+		return rows;
+
 	}
 
 }

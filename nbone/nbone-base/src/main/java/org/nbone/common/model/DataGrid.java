@@ -18,6 +18,15 @@ public class DataGrid<T> implements Serializable{
 	private Long total = 0L;
 	private List<T> rows = new ArrayList<T>();
 
+
+	public DataGrid() {
+	}
+
+	public DataGrid(Long total, List<T> rows) {
+		this.total = total;
+		this.rows = rows;
+	}
+
 	public Long getTotal() {
 		return total;
 	}

@@ -46,20 +46,20 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <T> List<T> getForList(Object object,String afterWhere) {
+	public <T> List<T> getForList(Object object,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 	@Override
-	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String afterWhere) {
+	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 
 	@Override
-	public <T> List<T> queryForList(Object object,String afterWhere) {
+	public <T> List<T> queryForList(Object object,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported queryForList operation.");
 	}
 	@Override
-	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String afterWhere) {
+	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported queryForList operation.");
 	}
 	@Override
@@ -91,6 +91,17 @@ public abstract class BaseSqlSession implements SqlSession {
 	public <T> Page<T> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported findForPage operation.");
 	}
+
+	@Override
+	public <T> List<T> getForLimit(Object object, int limit, String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported getForLimit operation.");
+	}
+
+	@Override
+	public <T> List<T> queryForLimit(Object object, int limit, String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported queryForLimit operation.");
+	}
+
 
 
 	
@@ -139,6 +150,21 @@ public abstract class BaseSqlSession implements SqlSession {
 	public int updateSelective(Object object) {
 		throw new UnsupportedOperationException("unsupported update operation.");
 	}
+
+
+	@Override
+	public int updateSelective(Object object, Object whereEntity) {
+		throw new UnsupportedOperationException("unsupported update operation.");
+	}
+	@Override
+	public int updateSelective(Object object, Map<String, Object> whereMap) {
+		throw new UnsupportedOperationException("unsupported update operation.");
+	}
+	@Override
+	public int updateSelective(Object object, String whereString) {
+		throw new UnsupportedOperationException("unsupported update operation.");
+	}
+
 
 	@Override
 	public void saveOrUpdate(Object object) {
@@ -189,5 +215,5 @@ public abstract class BaseSqlSession implements SqlSession {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 
-	
+
 }

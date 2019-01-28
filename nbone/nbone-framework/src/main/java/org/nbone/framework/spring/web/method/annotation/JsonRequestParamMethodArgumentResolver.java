@@ -40,7 +40,8 @@ public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMe
 		super(null);
 	}
 	
-	public boolean supportsParameter(MethodParameter parameter) {
+	@Override
+    public boolean supportsParameter(MethodParameter parameter) {
 
 		return parameter.hasParameterAnnotation(JsonRequestParam.class);
 	}

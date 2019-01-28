@@ -2,9 +2,10 @@ package org.nbone.demo.spring.mvc;
 
 import java.util.List;
 
+import org.nbone.demo.common.domain.StudentAndTeacher;
 import org.nbone.demo.common.domain.Teacher;
 import org.nbone.demo.common.domain.User;
-import org.nbone.framework.spring.web.bind.annotation.ClassMethodNameRequestMapping;
+import org.nbone.framework.spring.web.bind.annotation.DefaultRequestMapping;
 import org.nbone.framework.spring.web.bind.annotation.ItemResponseBody;
 import org.nbone.framework.spring.web.bind.annotation.JsonRequestParam;
 import org.nbone.framework.spring.web.bind.annotation.Namespace;
@@ -20,9 +21,9 @@ import org.springframework.web.client.RestClientException;
  */
 @Controller
 //@RequestMapping("user")
-@ClassMethodNameRequestMapping
+//@ClassMethodNameRequestMapping
+@DefaultRequestMapping
 public class UserController1 {
-	
 	/*
 	 * http://localhost:8080/user/add
 	 * 简化映射关系 默认使用方法名称作为映射
@@ -30,20 +31,23 @@ public class UserController1 {
 	public String add(User user){
 		return "index";
 	}
-	
+	/*
+	 * http://localhost:8080/user/update
+	 */
 	public String update(User user){
 		return "index";
 	}
 	
-	/* http://localhost:8080/user/addMore
-	 * user.name =chenyicheng, teacher.name = thinking
+	/* http://localhost:8080/user/addMore?user.name=chenyicheng&teacher.name=thinking
 	 * 支持命名空间
 	 */
-	public String addMore(@Namespace("user")User user,@Namespace("teacher")Teacher teacher){
-		return "index";
+	@ItemResponseBody
+	public Object addMore(@Namespace("user")User user,@Namespace("teacher")Teacher teacher){
+		StudentAndTeacher st = new StudentAndTeacher(user,teacher);
+		return st;
 	}
 	
-	/*
+	/*http://localhost:8080/user/addMoreJson?name=chenyicheng&teacherJsonStr={"id":"1","name":"yu"}&teacherJsonStr=[]
 	 * 支持Json String 自动换成 Java Object、Java List,(Spring 其实也支持List参数,前提是将list封装到VO中)
 	 */
 	@RequestMapping("addMoreJson")
@@ -52,8 +56,9 @@ public class UserController1 {
 		
 		return "index";
 	}
+	
 	/* http://localhost:8080/user/getUserList
-	 * ItemResponseBody 注解自动包装对象 
+	 * @ItemResponseBody 注解自动包装对象
 	 */
 	@ItemResponseBody
 	public Object getUserList(User user){
@@ -63,7 +68,7 @@ public class UserController1 {
 			throw new RestClientException("操作失败!",e);
 		}
 		
-		return new Object();
+		return user;
 	}
 	
 	/*

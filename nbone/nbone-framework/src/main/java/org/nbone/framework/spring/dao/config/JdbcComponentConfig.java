@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nbone.constants.CaseName;
 import org.nbone.framework.spring.SpringEnv;
 import org.nbone.framework.spring.dao.JdbcDaoSupportX;
 import org.nbone.framework.spring.support.ComponentFactory;
@@ -42,7 +43,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Configuration("jdbcComponent")
 @ComponentScan(basePackages="org.nbone.framework.spring.dao")
 @PropertySource(name="jdbcComponentConig",value="classpath:/org/nbone/framework/spring/dao/config/jdbc-comp.properties")
-@Lazy
 @Import(ComponentFactory.class)
 public class JdbcComponentConfig implements ApplicationContextAware,InitializingBean{
 	
@@ -76,6 +76,15 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 	
 	private boolean debug = false;
 	private boolean showSql = false;
+
+	/**
+	 * 数据库命名规则
+	 */
+	private CaseName dbCaseName = CaseName.LOWER_UNDERSCORE;
+	/**
+	 *  resultMap id  "BaseResultMap"
+	 */
+	private String  mybatisMapperId = "BaseResultMap";
 	
 	
 
@@ -130,6 +139,24 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 		JdbcOptions.showSql = showSql; 
 	}
 
+
+	public CaseName getDbCaseName() {
+		return dbCaseName;
+	}
+
+	public void setDbCaseName(CaseName dbCaseName) {
+		this.dbCaseName = dbCaseName;
+	}
+
+	public String getMybatisMapperId() {
+		return mybatisMapperId;
+	}
+
+	public void setMybatisMapperId(String mybatisMapperId) {
+		this.mybatisMapperId = mybatisMapperId;
+	}
+
+
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
@@ -150,6 +177,7 @@ public class JdbcComponentConfig implements ApplicationContextAware,Initializing
 		String dataSourceName = env.getProperty("nbone.datasource.name");
 		System.out.println("========================="+name);
 		System.out.println("========================="+dataSourceName);
+		System.out.println("========================="+mybatisMapperId);
 	}
 
 

@@ -27,17 +27,32 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  */
 public class NamespaceModelAttributeMethodProcessor  extends BaseMethodArgumentResolver{
 
-	
+	public static final char separatorChar = ':';
+
+
 	private final boolean annotationNotRequired;
+	private char separator;
 	
 	public NamespaceModelAttributeMethodProcessor() {
 		this.annotationNotRequired = false;
+		this.separator = separatorChar;
 	}
 	public NamespaceModelAttributeMethodProcessor(boolean annotationNotRequired) {
 		this.annotationNotRequired = annotationNotRequired;
+		this.separator = separatorChar;
 	}
-	
-	
+
+	public NamespaceModelAttributeMethodProcessor(char separator) {
+		this.annotationNotRequired = false;
+		this.separator = separator;
+	}
+
+	public NamespaceModelAttributeMethodProcessor(boolean annotationNotRequired, char separator) {
+		this.annotationNotRequired = annotationNotRequired;
+		this.separator = separator;
+	}
+
+
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		
@@ -127,7 +142,7 @@ public class NamespaceModelAttributeMethodProcessor  extends BaseMethodArgumentR
 		Namespace annot = parameter.getParameterAnnotation(Namespace.class);
 		String attrName= (annot != null) ? annot.value() : null;
 		if(StringUtils.hasText(attrName)){
-			binder.setFieldDefaultPrefix(attrName+":");
+			binder.setFieldDefaultPrefix(attrName+separator);
 		}
 		ServletRequest servletRequest = request.getNativeRequest(ServletRequest.class);
 		ServletRequestDataBinder servletBinder = (ServletRequestDataBinder) binder;

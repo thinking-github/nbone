@@ -41,8 +41,8 @@ public class JsonRequestBodyMethodProcessor  extends AbstractMessageConverterMet
 
 	@SuppressWarnings("unchecked")
 	protected final static List<HttpMessageConverter<?>> messageConverters = (List<HttpMessageConverter<?>>) JsonProcessor.msgConverters;
-	
-	protected JsonRequestBodyMethodProcessor() {
+
+	public JsonRequestBodyMethodProcessor() {
 		super(messageConverters);
 	}
 
@@ -78,8 +78,9 @@ public class JsonRequestBodyMethodProcessor  extends AbstractMessageConverterMet
 	}
 	
 
+	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+								  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
 		Object argument = readWithMessageConverters(webRequest, parameter, parameter.getGenericParameterType());
 
@@ -119,6 +120,7 @@ public class JsonRequestBodyMethodProcessor  extends AbstractMessageConverterMet
 	 * @param parameter the method argument
 	 * @return {@code true} if the next method argument is not of type {@link Errors}.
 	 */
+	@Override
 	protected boolean isBindExceptionRequired(WebDataBinder binder, MethodParameter parameter) {
 		int i = parameter.getParameterIndex();
 		Class<?>[] paramTypes = parameter.getMethod().getParameterTypes();
