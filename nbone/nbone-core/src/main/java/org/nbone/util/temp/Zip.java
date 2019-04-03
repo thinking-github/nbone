@@ -1,20 +1,13 @@
 package org.nbone.util.temp;
 
 
-/**
- *@类名称：com.frontier.util.Zip
- *@类描述：
- *@创建人：luhao
- *@创建时间：2012-5-25 上午11:26:46
- *@version
- */
-
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
+ * com.frontier.util.Zip
  * 功能:zip压缩、解压
  * 说明:本程序通过ZipOutputStream和ZipInputStream实现了zip压缩和解压功能.
  * 问题:由于java.util.zip包并不支持汉字,当zip文件中有名字为中文的文件时,
@@ -27,19 +20,18 @@ import java.util.zip.ZipOutputStream;
  * 不使用java.util.zip的包,把ant.jar放到classpath中.
  * 程序中使用import org.apache.tools.zip.*;
  * <p/>
- * 仅供编程学习参考.
  *
  * @author Winty
- * @date 2008-8-3
  * @Usage: 压缩:java Zip -zip "directoryName"
  * 解压:java Zip -unzip "fileName.zip"
+ * @since 2008-8-3
  */
 
 public class Zip {
-    private ZipInputStream zipIn;      //解压Zip
-    private ZipOutputStream zipOut;     //压缩Zip    
+    private ZipInputStream zipIn;
+    private ZipOutputStream zipOut;
     private ZipEntry zipEntry;
-    private int bufSize;    //size of bytes
+    private int bufSize;
     private byte[] buf;
     private int readedBytes;
 
@@ -52,12 +44,16 @@ public class Zip {
         this.buf = new byte[this.bufSize];
     }
 
-    //压缩文件夹内的文件    
-    public void doZip(String zipDirectory) {//zipDirectoryPath:需要压缩的文件夹名
+    /**
+     * 压缩文件夹内的文件
+     *
+     * @param zipDirectory 需要压缩的文件夹名
+     */
+    public void doZip(String zipDirectory) {
         File zipDir;
 
         zipDir = new File(zipDirectory);
-        String zipFileName = zipDir.getName() + ".zip";//压缩后生成的zip文件名    
+        String zipFileName = zipDir.getName() + ".zip";
 
         try {
             this.zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFileName)));
@@ -68,21 +64,23 @@ public class Zip {
         }
     }
 
-    //由doZip调用,递归完成目录文件读取    
+    /**
+     * 由doZip调用,递归完成目录文件读取
+     */
     private void handleDir(File dir, ZipOutputStream zipOut) throws IOException {
         FileInputStream fileIn;
         File[] files;
 
         files = dir.listFiles();
 
-        if (files.length == 0) {//如果目录为空,则单独创建之.
+        //如果目录为空,则单独创建.
+        if (files.length == 0) {
             //ZipEntry的isDirectory()方法中,目录以"/"结尾.    
             this.zipOut.putNextEntry(new ZipEntry(dir.toString() + "/"));
             this.zipOut.closeEntry();
-        } else {//如果目录不为空,则分别处理目录和文件.
+        } else {
+            //如果目录不为空,则分别处理目录和文件.
             for (File fileName : files) {
-                //System.out.println(fileName);    
-
                 if (fileName.isDirectory()) {
                     handleDir(fileName, this.zipOut);
                 } else {
@@ -99,8 +97,12 @@ public class Zip {
         }
     }
 
-    //解压指定zip文件    
-    public void unZip(String unZipfileName) {//unZipfileName需要解压的zip文件名
+    /**
+     * 解压指定zip文件
+     *
+     * @param unZipfileName 需要解压的zip文件名
+     */
+    public void unZip(String unZipfileName) {
         FileOutputStream fileOut;
         File file;
 
@@ -109,7 +111,6 @@ public class Zip {
 
             while ((this.zipEntry = this.zipIn.getNextEntry()) != null) {
                 file = new File(this.zipEntry.getName());
-                //System.out.println(file);///    
 
                 if (this.zipEntry.isDirectory()) {
                     file.mkdirs();
@@ -133,12 +134,13 @@ public class Zip {
         }
     }
 
-    //设置缓冲区大小    
+    /**
+     * 设置缓冲区大小
+     */
     public void setBufSize(int bufSize) {
         this.bufSize = bufSize;
     }
 
-    //测试Zip类    
     public static void main(String[] args) throws Exception {
         if (args.length == 2) {
             String name = args[1];

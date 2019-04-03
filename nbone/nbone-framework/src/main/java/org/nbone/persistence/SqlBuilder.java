@@ -157,44 +157,24 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public <T> SqlModel<T> selectSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException;
-	 
-	 /**
-	  * 根据实体中的参数查询(全部使用等号)
-	  * @param object
-	  * @param fieldLevel 根据字段级别查询,参数可为null
-	  * @param afterWhere group by /order  by 子句 参数可为null
-	  * @return
-	  * @throws Exception
-	  */
-	 public <T> SqlModel<T> selectSql(Object object,FieldLevel fieldLevel,String... afterWhere) throws BuilderSQLException;
-	 
-	 /**
-	  * 根据实体中的参数查询
-	  * <p> number use = ;String use Like
-	  * @param object
-	  * @param fieldLevel 根据字段级别查询,参数可为null
-	  * @param afterWhere group by /order  by 子句 参数可为null
-	  * @return
-	  * @throws BuilderSQLException
-	  */
-	 public <T> SqlModel<T> simpleSelectSql(Object object,FieldLevel fieldLevel,String... afterWhere) throws BuilderSQLException;
-	 
-	 /**
-	  * 根据实体中的参数查询
-	  * @param object
-	  * @param fieldLevel 根据字段级别查询,参数可为null
-	  * @return
-	  * @throws BuilderSQLException
-	  */
-	 public <T> SqlModel<T> middleModeSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
-	 /**
-	  * 根据实体中的参数查询
-	  * @param object
-	  * @param fieldLevel 根据字段级别查询,参数可为null
-	  * @return
-	  * @throws BuilderSQLException
-	  */
-	 public <T> SqlModel<T> highModeSelectSql(Object object,FieldLevel fieldLevel) throws BuilderSQLException;
+
+	/**
+	 * 根据实体中的参数查询
+	 * <ol>
+	 *  <li>  -1: number use = ;String use =  (全部使用等号)</li>
+	 * 	<li> simpleModel: number use = ;String use Like</li>
+	 * 	<li> middleModel: </li>
+	 * 	<li>highModel: </li>
+	 * </ol>
+	 * @param object
+	 * @param fieldLevel 根据字段级别查询,参数可为null
+	 * @param  model sqlConfig构建模型级别
+	 * @param afterWhere group by /order  by 子句 参数可为null
+	 * @return
+	 * @throws BuilderSQLException
+	 */
+	 public <T> SqlModel<T> sqlConfigSelectSql(Object object,FieldLevel fieldLevel,int model,String... afterWhere) throws BuilderSQLException;
+
 	 /**
 	  * 根据实体中的参数查询
 	  * @param object
@@ -202,7 +182,7 @@ public interface SqlBuilder {
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public  SqlModel<Map<String,Object>> objectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
+	 public  SqlModel<Map<String,?>> objectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
 	
 	 /**
 	  * 根据实体中的参数查询

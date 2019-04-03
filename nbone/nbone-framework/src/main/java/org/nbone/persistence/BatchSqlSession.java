@@ -16,14 +16,14 @@ public interface BatchSqlSession extends SqlSession {
 	 * @param objects
 	 * @return
 	 */
-	public int[] batchInsert(Object[] objects);
+	public int[] batchInsert(Object[] objects,boolean jdbcBatch);
 	
 	/**
 	 * 批量添加
 	 * @param objects
 	 * @return
 	 */
-	public int[] batchInsert(Collection<?> objects);
+	public int[] batchInsert(Collection<?> objects,boolean jdbcBatch);
 	
 	/**
 	 * 批量更新
@@ -40,14 +40,15 @@ public interface BatchSqlSession extends SqlSession {
 	public int[] batchUpdate(Collection<?> objects);
 	/**
 	 * 批量删除(不用in语句实现)
-	 * @param objects
+	 * @param clazz
+	 * @param  ids
 	 * @return
 	 */
 	public <T> int[] batchDelete(Class<T> clazz,Serializable[] ids);
 	
 	/**
 	 * 批量删除(不用in语句实现)
-	 * @param objects
+	 * @param clazz
 	 * @return
 	 */
 	public <T> int[] batchDelete(Class<T> clazz,List<Serializable> ids);

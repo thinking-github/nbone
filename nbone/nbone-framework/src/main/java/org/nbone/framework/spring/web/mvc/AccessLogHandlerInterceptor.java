@@ -1,5 +1,6 @@
 package org.nbone.framework.spring.web.mvc;
 
+import org.nbone.framework.spring.web.filter.RequestIdFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
@@ -29,9 +30,11 @@ public class AccessLogHandlerInterceptor implements HandlerInterceptor {
             throws Exception {
         //time.set(System.currentTimeMillis());
         request.setAttribute(METHOD_START_TS, System.currentTimeMillis());
+        String requestId = (String) request.getAttribute(RequestIdFilter.REQUEST_ID);
         //记录请求的内容
-        String message = String.format("Request URL: %s %s %s ContentType: %s Content-Length: %s User-Agent: %s",
-                request.getMethod(), getUri(request), request.getProtocol(), request.getContentType(), request.getContentLength(), request.getHeader("User-Agent"));
+        String message = String.format("Request URL: %s %s %s ContentType: %s Content-Length: %s User-Agent: %s requestId: %s",
+                request.getMethod(), getUri(request), request.getProtocol(), request.getContentType(),
+                request.getContentLength(), request.getHeader("User-Agent"),requestId);
         logger.info(message);
 
         if (handler instanceof HandlerMethod) {
@@ -66,8 +69,9 @@ public class AccessLogHandlerInterceptor implements HandlerInterceptor {
         request.setAttribute(METHOD_END_TS, end);
         Long start = (Long) request.getAttribute(METHOD_START_TS);
         long xx = end - start;
+        String requestId = (String) request.getAttribute(RequestIdFilter.REQUEST_ID);
 
-        logger.info("status:" + response.getStatus() + " 耗时 : " + (xx) + "ms");
+        logger.info(request.getRequestURI() + " status:" + response.getStatus() + " 耗时 : " + (xx) + "ms requestId: "+requestId);
 
     }
 

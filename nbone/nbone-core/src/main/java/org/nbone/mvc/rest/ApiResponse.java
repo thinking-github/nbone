@@ -19,11 +19,22 @@ public class ApiResponse<T> {
 	private static String SUCCESS_MESSAGE   = "success";
 	private static String ERROR_MESSAGE     = "failed";
 
+	/**
+	 * 唯一的request id，用于问题定位
+	 */
+	private String requestId;
 	
 	private int code;
 	private String status;
 	private String message;
 	private T data;
+
+	/**
+	 *
+	 * logId 唯一的log id，用于问题定位
+	 */
+	private String logId;
+
 
 
 	public ApiResponse() {
@@ -69,6 +80,19 @@ public class ApiResponse<T> {
 	}
 
 
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+
+	public ApiResponse<T> requestId(String requestId) {
+		this.requestId = requestId;
+		return this;
+	}
+
 
 	public int getCode() {
 		return code;
@@ -99,10 +123,15 @@ public class ApiResponse<T> {
 		this.data = data;
 	}
 
+	public String getLogId() {
+		return logId;
+	}
 
+	public void setLogId(String logId) {
+		this.logId = logId;
+	}
 
-
-    public static <T> ApiResponse<T> errorResponse(String msg) {
+	public static <T> ApiResponse<T> errorResponse(String msg) {
         return errorResponse(ERROR_CODE, msg != null ? msg : ERROR_MESSAGE);
     }
 

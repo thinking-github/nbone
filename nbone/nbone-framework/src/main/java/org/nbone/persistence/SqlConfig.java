@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nbone.persistence.annotation.FieldLevel;
+import org.nbone.persistence.util.SqlUtils;
 
 /**
  * 
@@ -143,7 +144,77 @@ public class SqlConfig {
 		return resultMap;
 	}
 
-	
+	public static String  dbInNumber(String dbFieldName,boolean isIn,String values) {
+		if(values == null){
+			return  null;
+		}
+		if(dbFieldName == null){
+			throw  new IllegalArgumentException("dbFieldName  is null.");
+		}
+
+		String operType = isIn ? " in " : " not in ";
+		StringBuilder sqlsb= new StringBuilder();
+		// and id in (1,2,3)
+		sqlsb.append(" and ").append(dbFieldName).append(" ").append(operType).append(" (").append(values).append(")");
+		return sqlsb.toString();
+	}
+
+	public  static String  dbBetween(String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
+		if(dbFieldName == null){
+			throw  new IllegalArgumentException("dbFieldName is null.");
+		}
+		if(beginFieldName == null || endFieldName == null){
+			throw  new IllegalArgumentException("beginFieldName or endFieldName is null.");
+		}
+
+		StringBuilder sqlsb= new StringBuilder();
+		String operType = is ? " between " : " not between ";
+		// and status between :beginStatus and :endStatus
+		sqlsb.append(" and ").append(dbFieldName).append(operType).append(":"+beginFieldName).append(" and ").append(":"+endFieldName);
+		return sqlsb.toString();
+	}
+
+
+
+	public static SqlConfig  build() {
+		return new SqlConfig();
+	}
+	public SqlConfig withFieldNames(String[] fieldNames) {
+		this.fieldNames = fieldNames;
+		return this;
+	}
+	/**
+	 *
+	 * @param fieldName
+	 * @param isIn
+	 * @param values   object[] / List / number strings -> 1,2,3,4,5 / strings list-> 693fe72810,f84f369553
+	 * @return
+	 */
+	public  SqlConfig  in(String fieldName,boolean isIn,Object values) {
+		this.sqlMode = HighMode;
+		this.sqlPds.addSqlPdIn(fieldName,isIn, values);
+		return this;
+	}
+
+	/**
+	 *
+	 * @param fieldName
+	 * @param isIn
+	 * @param values  "1,2,3,4,5"
+	 * @return
+	 */
+	public  SqlConfig  inNumber(String fieldName,boolean isIn,String values) {
+		return in(fieldName,isIn,values);
+	}
+
+	public  SqlConfig  between(String fieldName,Object beginValue,Object endValue) {
+		this.sqlMode = HighMode;
+		this.sqlPds.addSqlPdBetween(fieldName,beginValue, endValue);
+		return this;
+	}
+
+
+
 	
 	public SqlConfig addSqlPd(String fieldName,String operType) {
 		this.sqlPds.addSqlPd(fieldName, operType);
@@ -154,17 +225,11 @@ public class SqlConfig {
 		this.sqlPds.addSqlPdBetween(fieldName, beginValue, endValue);
 		return this;
 	}
-	public SqlConfig addSqlPdIn(String fieldName,Object[] values) {
-		this.sqlPds.addSqlPdIn(fieldName, values);
+	public SqlConfig addSqlPdIn(String fieldName,boolean isIn,Object[] values) {
+		this.sqlPds.addSqlPdIn(fieldName,isIn, values);
 		return this;
 	}
-	
-	public SqlConfig addSqlPdNotIn(String fieldName,Object[] values) {
-		this.sqlPds.addSqlPdNotIn(fieldName, values);
-		return this;
-	}
-	
-	
+
 	
 	public SqlConfig addSqlPd(SqlPropertyDescriptor hqlPd) {
 		this.sqlPds.addSqlPd(hqlPd);

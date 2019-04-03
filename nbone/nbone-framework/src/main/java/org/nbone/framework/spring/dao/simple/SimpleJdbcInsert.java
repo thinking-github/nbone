@@ -1,11 +1,15 @@
 package org.nbone.framework.spring.dao.simple;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsertOperations;
 import org.springframework.jdbc.support.KeyHolder;
@@ -133,6 +137,57 @@ public class SimpleJdbcInsert extends AbstractJdbcInsert implements SimpleJdbcIn
 	public int[] executeBatch(SqlParameterSource... batch) {
 		return doExecuteBatch(batch);
 	}
+
+
+	//------------------------------------
+	// XXX: thinking new add
+	public int dbExecuteBatch(SqlParameterSource... batch) {
+		checkCompiled();
+		// insert into () values(),(),(),()
+		String sql = getInsertString();
+		StringBuilder insertSqls =  new StringBuilder(sql);
+		String append = sql.substring(sql.lastIndexOf('('));
+		for (int i = 0; i < batch.length -1 ; i++) {
+			insertSqls.append(",").append(append);
+		}
+
+		List<List<Object>> batchValues = new ArrayList<List<Object>>(batch.length);
+		for (SqlParameterSource parameterSource : batch) {
+			batchValues.add(matchInParameterValuesWithInsertColumns(parameterSource));
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("Executing statement " + insertSqls + " with batch of size: " + batchValues.size());
+		}
+
+		int row  = getJdbcTemplate().update(insertSqls.toString(),
+				new PreparedStatementSetter() {
+					@Override
+					public void setValues(PreparedStatement ps) throws SQLException {
+						setParameterValues(ps,batchValues,getInsertTypes());
+					}
+				});
+
+		logger.debug("Executing statement with result of size: " + row);
+		return row;
+	}
+
+	private void setParameterValues(PreparedStatement preparedStatement, List<List<Object>> values, int... columnTypes) throws SQLException {
+		int colIndex = 0;
+		for (List<Object> beanValues : values) {
+			for (Object value : beanValues) {
+				colIndex++;
+				if (columnTypes == null || colIndex > columnTypes.length) {
+					StatementCreatorUtils.setParameterValue(preparedStatement, colIndex, SqlTypeValue.TYPE_UNKNOWN, value);
+				}
+				else {
+					StatementCreatorUtils.setParameterValue(preparedStatement, colIndex, columnTypes[colIndex - 1], value);
+				}
+			}
+
+		}
+	}
+
+
 
 
 }

@@ -16,6 +16,10 @@ public class SqlPropertyDescriptor implements QueryOperator {
 	public static  Set<String>  OperTypeSet =  new HashSet<String>();
 	private String fieldName;
 	/**
+	 * 实体属性类型
+	 */
+	private Class<?> propertyType;
+	/**
 	 * 如果是where子句 请设置为true 否则为false
 	 */
 	private boolean hasWhere = true;
@@ -34,7 +38,7 @@ public class SqlPropertyDescriptor implements QueryOperator {
 	private String  endValueMark = lt_eq;
 	
 	/**
-	 *特殊值 in 
+	 *特殊值 in  object[] / List / String List 1,2,3,4,5
 	 */
 	private Object  specialValue;
 	
@@ -61,14 +65,28 @@ public class SqlPropertyDescriptor implements QueryOperator {
 	    this.operType = in;
    }
 
+	public SqlPropertyDescriptor(String fieldName, String operType, Object specialValue) {
+		this.fieldName = fieldName;
+		this.operType = operType;
+		this.specialValue = specialValue;
+	}
 
 
-   public String getFieldName() {
+
+	public String getFieldName() {
 		return fieldName;
 	}
 
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
+	}
+
+	public Class<?> getPropertyType() {
+		return propertyType;
+	}
+
+	public void setPropertyType(Class<?> propertyType) {
+		this.propertyType = propertyType;
 	}
 
 	public boolean isHasWhere() {
@@ -85,6 +103,15 @@ public class SqlPropertyDescriptor implements QueryOperator {
 
 	public void setOperType(String operType) {
 		this.operType = operType;
+	}
+
+	/**
+	 * 是否属于 in 查询
+	 * @return
+	 */
+	public boolean isIn() {
+
+		return SqlPropertyDescriptor.in.equalsIgnoreCase(operType) || SqlPropertyDescriptor.not_in.equalsIgnoreCase(operType);
 	}
 
 	public boolean isBetween() {

@@ -18,17 +18,17 @@ public class BaseSqlBuilderTest {
 	};
 	@Test
 	public void testbuildSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(getTsProjectDTO(),(FieldLevel)null,null);
-		SqlModel<Object> sqlModel1 = sqlBuilder.selectSql(getTsProjectDTO(),FieldLevel.ALL,null);
-		SqlModel<Object> sqlModel2 = sqlBuilder.selectSql(getTsProjectDTO(),FieldLevel.ID,null);
-		SqlModel<Object> sqlModel3 = sqlBuilder.selectSql(getTsProjectDTO(),FieldLevel.TWO,null);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),(FieldLevel)null,-1);
+		SqlModel<Object> sqlModel1 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),FieldLevel.ALL,-1);
+		SqlModel<Object> sqlModel2 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),FieldLevel.ID,-1);
+		SqlModel<Object> sqlModel3 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),FieldLevel.TWO,-1);
 		System.out.println(sqlModel.getSql());
 		System.out.println(sqlModel1.getSql());
 	}
 	
 	//@Test
 	public void testbuildSimpleSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(getTsProjectDTO(),null,null);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,SqlConfig.PrimaryMode);
 		System.out.println(sqlModel.getSql());
 		
 	}
@@ -82,14 +82,14 @@ public class BaseSqlBuilderTest {
 		object.setId(9L);
 		SqlConfig sqlConfig  = new SqlConfig();
 		sqlConfig.addSqlPd("createDt", QueryOperator.is_not_null);
-		sqlConfig.addSqlPdIn("id", new Object[]{1,2,3});
+		sqlConfig.addSqlPdIn("id",true, new Object[]{1,2,3});
 		sqlConfig.addSqlPdBetween("modifyDt", new Date(), new Date());
 		
 		sqlConfig.addSqlPropertyRange("createDt","modifyDt", new Date());
 		
 		sqlConfig.setOrderFieldASC("id","modify_dt");
 		sqlConfig.setOrderFieldDESC("create_dt");
-		SqlModel<Map<String, Object>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
+		SqlModel<Map<String, ?>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
 		
 		System.out.println(sqlModel.getSql());
 	}

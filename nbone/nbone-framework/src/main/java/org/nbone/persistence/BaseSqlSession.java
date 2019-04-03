@@ -86,7 +86,12 @@ public abstract class BaseSqlSession implements SqlSession {
 	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported queryForPage operation.");
 	}
-	
+
+	@Override
+	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize, SqlConfig sqlConfig) {
+		throw new UnsupportedOperationException("unsupported queryForPage operation.");
+	}
+
 	@Override
 	public <T> Page<T> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported findForPage operation.");
@@ -104,7 +109,7 @@ public abstract class BaseSqlSession implements SqlSession {
 
 
 
-	
+	@Override
 	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType){
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}

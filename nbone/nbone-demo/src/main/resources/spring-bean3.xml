@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+						   http://www.springframework.org/schema/beans/spring-beans.xsd
+						   http://www.springframework.org/schema/context
+						   http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--scope="prototype" -->
+    <bean id="a" class="org.nbone.demo.spring.bean.StudentA" scope="prototype">
+        <property name="studentB" ref="b"></property>
+    </bean>
+    <bean id="b" class="org.nbone.demo.spring.bean.StudentB" scope="prototype">
+        <property name="studentC" ref="c"></property>
+    </bean>
+    <bean id="c" class="org.nbone.demo.spring.bean.StudentC" scope="prototype">
+        <property name="studentA" ref="a"></property>
+    </bean>
+</beans>

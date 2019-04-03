@@ -47,20 +47,21 @@ public class UserService extends BaseServiceDomain<User,Long> implements SuperSe
 	//严格操作规约查询 select * from user where name ='chenyicheng' and age = 18
 	@Override
 	public List<User> getForList(User object) {
-		return namedJdbcDao.getForList(object,null);
+		return namedJdbcDao.getForList(object);
 	}
 	//常用操作规约查询 select * from user where name like '%chenyicheng%' and age = 18
 	@Override
 	public List<User> queryForList(User object) {
-		return namedJdbcDao.queryForList(object,(String)null);
+		return namedJdbcDao.queryForList(object);
 	}
 	//自定义操作符号查询 select * from user where name like '%chenyicheng%' and age >= 18
-	public List<User> queryForList(User object,SqlConfig config) {
+
+	public List<User> queryForList(User object, SqlConfig config) {
 		return namedJdbcDao.queryForList(object,config);
 	}
 	//按需查询(定义字段级别) select id,name,age from user where name like '%chen%' and age = 18
 	public List<User> queryForList(User object,FieldLevel fieldLevel) {
-		return namedJdbcDao.queryForList(object,fieldLevel,null);
+		return namedJdbcDao.queryForList(object,fieldLevel);
 	}
 	//按需查询 select id from user where name name ='chenyicheng' and age = 18
 	@Override
@@ -105,12 +106,12 @@ public class UserService extends BaseServiceDomain<User,Long> implements SuperSe
 	}
 	//批量操作 增 删 改
 	@Override
-	public void batchInsert(Collection<User> objects) {
-		super.batchInsert(objects);
+	public void batchInsert(Collection<User> objects,boolean jdbcBatch) {
+		super.batchInsert(objects,jdbcBatch);
 	}
 	@Override
-	public void batchInsert(User[] objects) {
-		super.batchInsert(objects);
+	public void batchInsert(User[] objects,boolean jdbcBatch) {
+		super.batchInsert(objects,jdbcBatch);
 	}
 	@Override
 	public void batchUpdate(Collection<User> objects) {

@@ -306,7 +306,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
 		
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,fieldLevel,afterWhere);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,fieldLevel,-1,afterWhere);
 		checkSqlModel(sqlModel);
 			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
@@ -322,7 +322,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 	@Override
 	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		SqlModel<Object> sqlModel = sqlBuilder.simpleSelectSql(object,fieldLevel,afterWhere);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,fieldLevel,SqlConfig.PrimaryMode,afterWhere);
 		checkSqlModel(sqlModel);
 			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
@@ -333,7 +333,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
 		
-		SqlModel<Map<String,Object>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
+		SqlModel<Map<String,?>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
 		checkSqlModel(sqlModel);
 			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
@@ -362,13 +362,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	 * @return
 	 */
 	@Override
-	public int[] batchInsert(Object[] objects) {
-		return simpleJdbcDao.batchInsert(objects);
+	public int[] batchInsert(Object[] objects,boolean jdbcBatch) {
+		return simpleJdbcDao.batchInsert(objects,jdbcBatch);
 	}
 
 	@Override
-	public int[] batchInsert(Collection<?> objects) {
-		return simpleJdbcDao.batchInsert(objects);
+	public int[] batchInsert(Collection<?> objects,boolean jdbcBatch) {
+		return simpleJdbcDao.batchInsert(objects,jdbcBatch);
 	}
 
 	@Override
@@ -458,6 +458,11 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		return namedJdbcTemplate.queryForPage(object, pageNum, pageSize,afterWhere);
+	}
+
+	@Override
+	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize, SqlConfig sqlConfig) {
+		return namedJdbcTemplate.queryForPage(object,pageNum,pageSize,sqlConfig);
 	}
 
 	@Override

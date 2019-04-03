@@ -29,9 +29,9 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	/**
 	 * @param objects
 	 */
-	public void batchInsert(T[] objects);
+	public void batchInsert(T[] objects,boolean jdbcBatch);
 	
-	public void batchInsert(Collection<T> objects);
+	public void batchInsert(Collection<T> objects,boolean jdbcBatch);
 	
 	
 	public void batchUpdate(T[] objects);

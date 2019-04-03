@@ -115,7 +115,7 @@ public class AutoBaseDaoInterceptor implements Interceptor {
             } else if ("delete".equals(id) || "deleteAuto".equals(id)) {
             	model = MybatisSqlBuilder.oxm_me.deleteSqlByEntityParams(parameterObject,true);
             } else if ("select".equals(id) || "get".equals(id)) {
-            	model = MybatisSqlBuilder.oxm_me.selectSql(parameterObject,FieldLevel.ALL,null);
+            	model = MybatisSqlBuilder.oxm_me.sqlConfigSelectSql(parameterObject,FieldLevel.ALL,-1);
             }
             logger.info("================AutoCRUDInterceptor==========================");
             logger.info(model.getSql());

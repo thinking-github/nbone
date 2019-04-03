@@ -72,14 +72,14 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	 */
 	
 
-	protected void initMybatisOrm(String namespace,String id) {
-		baseServiceDomain.initMybatisOrm(namespace, id);
+	protected void initMybatisOrm(String namespace,String id,boolean lazyBuild) {
+		baseServiceDomain.initMybatisOrm(namespace, id,lazyBuild);
 		
 	}
 	
 	
-	protected void initMybatisOrm(Class<?> namespace,String id) {
-		this.initMybatisOrm(namespace.getName(), id);
+	protected void initMybatisOrm(Class<?> namespace,String id,boolean lazyBuild) {
+		this.initMybatisOrm(namespace.getName(), id,lazyBuild);
 	}
 	
 	/*	@Autowired @PostConstruct
@@ -268,14 +268,14 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 	
 	@Override
-	public void batchInsert(T[] objects) {
+	public void batchInsert(T[] objects,boolean jdbcBatch) {
 		List<P> beans = this.copyProperties(objects, targetClass);
-		baseServiceDomain.batchInsert(beans);
+		baseServiceDomain.batchInsert(beans,jdbcBatch);
 	}
 	@Override
-	public void batchInsert(Collection<T> objects) {
+	public void batchInsert(Collection<T> objects,boolean jdbcBatch) {
 		List<P> beans = this.copyProperties(objects, targetClass);
-		baseServiceDomain.batchInsert(beans);
+		baseServiceDomain.batchInsert(beans,jdbcBatch);
 	}
 
 	@Override

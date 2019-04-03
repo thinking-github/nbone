@@ -16,7 +16,8 @@ public class DataGrid<T> implements Serializable{
 	
 	private static final long serialVersionUID = -6534177227713614502L;
 	private Long total = 0L;
-	private List<T> rows = new ArrayList<T>();
+	private Integer totalPages;
+	private List<T> rows;
 
 
 	public DataGrid() {
@@ -24,6 +25,12 @@ public class DataGrid<T> implements Serializable{
 
 	public DataGrid(Long total, List<T> rows) {
 		this.total = total;
+		this.rows = rows;
+	}
+
+	public DataGrid(Long total, Integer totalPages, List<T> rows) {
+		this.total = total;
+		this.totalPages = totalPages;
 		this.rows = rows;
 	}
 
@@ -35,6 +42,14 @@ public class DataGrid<T> implements Serializable{
 		this.total = total;
 	}
 
+	public Integer getTotalPages() {
+		return totalPages;
+	}
+
+	public void setTotalPages(Integer totalPages) {
+		this.totalPages = totalPages;
+	}
+
 	public List<T> getRows() {
 		return rows;
 	}
@@ -42,5 +57,6 @@ public class DataGrid<T> implements Serializable{
 	public void setRows(List<T> rows) {
 		this.rows = rows;
 	}
+
 
 }

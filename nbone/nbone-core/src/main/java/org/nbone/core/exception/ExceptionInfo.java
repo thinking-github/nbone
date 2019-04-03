@@ -1,17 +1,25 @@
 package org.nbone.core.exception;
 
 
-
 /**
  *
  * @author chenyicheng
  * @version 1.0
  * @since 2017/6/1.
  */
-
 public class ExceptionInfo {
 
+    /**
+     * 唯一的request id，用于问题定位
+     */
+    private String requestId;
+    /**
+     * 返回操作成功代码 或者错误代码
+     */
     private int code;
+    /**
+     * 返回操作成功消息 或者错误消息
+     */
     private String message;
 
     /**
@@ -85,6 +93,19 @@ public class ExceptionInfo {
 
         this.exceptionName = exceptionName;
 
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public ExceptionInfo requestId(String requestId) {
+        this.requestId = requestId;
+        return this;
     }
 
     public int getCode() {

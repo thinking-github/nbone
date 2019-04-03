@@ -1,6 +1,8 @@
 package org.nbone.framework.spring.dao.simple;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -158,34 +162,39 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 
 	
 	@Override
-	public int[] batchInsert(Object[] objects) {
+	public int[] batchInsert(Object[] objects,boolean jdbcBatch) {
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.length];
+		insertProcess(objects[0]);
 		for (int i = 0; i < objects.length; i++) {
-			if(i == 0){
-				insertProcess(objects[0]);
-			}
 			batch[i] = new EntityPropertySqlParameterSource(objects[i]);
 		}
-		int[] row  = simpleJdbcInsert.executeBatch(batch);
+        int[] row;
+        if(jdbcBatch){
+            row  = simpleJdbcInsert.executeBatch(batch);
+        }else {
+            row = dbBatchInsert(batch);
+        }
 		return row;
 	}
 	
 	@Override
-	public int[] batchInsert(Collection<?> objects) {
+	public int[] batchInsert(Collection<?> objects,boolean jdbcBatch) {
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.size()];
 		int index = 0 ; 
 		for (Object object : objects) {
-			if(index == 0){
-				insertProcess(object);
-			}
 			batch[index] = new EntityPropertySqlParameterSource(object);
 			index ++;
 		}
-		int[] row  = simpleJdbcInsert.executeBatch(batch);
+		insertProcess(batch[0].getObject());
+        int[] row;
+        if(jdbcBatch){
+             row  = simpleJdbcInsert.executeBatch(batch);
+        }else {
+		    row = dbBatchInsert(batch);
+        }
 		return row;
 	}
 
-	
 	@Override
 	public int[] batchUpdate(Object[] objects) {
 		return null;
@@ -204,6 +213,26 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	@Override
 	public <T> int[] batchDelete(Class<T> clazz, List<Serializable> ids) {
 		return null;
+	}
+
+
+    /**
+     *  使用DB 批量模式
+     *  INSERT INTO tdcode
+     *  (status, tdcode_content, node_id, tenant_code, member_code, batch_id, batch_attach_id,
+     *   scan_num, first_scan, recent_scan, create_time, update_time, create_by, update_by)
+     *  VALUES
+     *  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),
+     *  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     * @param batch
+     * @return
+     */
+	private int[] dbBatchInsert(SqlParameterSource... batch){
+
+        int count = simpleJdbcInsert.dbExecuteBatch(batch);
+
+		return new int[]{count};
+
 	}
 
 }

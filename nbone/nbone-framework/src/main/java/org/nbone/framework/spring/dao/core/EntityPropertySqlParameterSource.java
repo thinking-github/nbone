@@ -25,9 +25,11 @@ import org.springframework.jdbc.core.namedparam.AbstractSqlParameterSource;
  */
 public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSource{
 
+
 	private final BeanWrapper beanWrapper;
 	
 	private final TableMapper<?> tableMapper;
+	private final  Object object;
 	
 	private Map<String, FieldMapper> dbFieldNameMap;
 	
@@ -36,6 +38,7 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 		this.tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
 		this.dbFieldNameMap = tableMapper.getFieldMappers();
 		this.beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(object);
+		this.object = object;
 		
 	}
     /***
@@ -72,4 +75,7 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 		return StatementCreatorUtils.javaTypeToSqlParameterType(propType);
 	}
 
+	public Object getObject() {
+		return object;
+	}
 }

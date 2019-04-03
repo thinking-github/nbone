@@ -1,5 +1,7 @@
 package org.nbone.mvc;
 
+
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -137,6 +139,8 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return  {@link List}
 	 */
 	public List<T> queryForList(T object);
+
+
 	/**
 	 * queryForList(index,"and status != -1"," order by  create_time DESC"); <br>
 	 *
@@ -148,6 +152,8 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return {@link List}
 	 */
 	public List<T> queryForList(T object,String... afterWhere);
+
+
 
 
 	/**

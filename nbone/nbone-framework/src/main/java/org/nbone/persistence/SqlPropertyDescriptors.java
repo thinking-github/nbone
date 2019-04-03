@@ -40,15 +40,15 @@ public class SqlPropertyDescriptors {
 		this.sqlPds.put(fieldName, sqlPropertyDescriptor);
 		return this;
 	}
-	public SqlPropertyDescriptors addSqlPdIn(String fieldName,Object[] values) {
-		SqlPropertyDescriptor sqlPropertyDescriptor = new SqlPropertyDescriptor(fieldName,values);
-		this.sqlPds.put(fieldName, sqlPropertyDescriptor);
-		return this;
-	}
-	
-	public SqlPropertyDescriptors addSqlPdNotIn(String fieldName,Object[] values) {
+
+	public SqlPropertyDescriptors addSqlPdIn(String fieldName,boolean isIn,Object values) {
 		SqlPropertyDescriptor sqlPropertyDescriptor = new SqlPropertyDescriptor(fieldName);
-		sqlPropertyDescriptor.setOperType(QueryOperator.not_in);
+		sqlPropertyDescriptor.setSpecialValue(values);
+		if(isIn){
+			sqlPropertyDescriptor.setOperType(QueryOperator.in);
+		}else {
+			sqlPropertyDescriptor.setOperType(QueryOperator.not_in);
+		}
 		this.sqlPds.put(fieldName, sqlPropertyDescriptor);
 		return this;
 	}

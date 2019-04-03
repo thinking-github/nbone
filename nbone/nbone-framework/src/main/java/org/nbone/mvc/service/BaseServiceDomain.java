@@ -13,6 +13,7 @@ import org.nbone.lang.BaseObject;
 import org.nbone.lang.MathOperation;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.BatchSqlSession;
+import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlSession;
 import org.nbone.util.reflect.GenericsUtils;
 import org.slf4j.Logger;
@@ -74,27 +75,37 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
      * @param namespace  映射文件的命名空间
      * @param id    resultMap id
      */
-	protected void initMybatisOrm(String namespace,String id) {
+	protected void initMybatisOrm(String namespace,String id,boolean lazyBuild) {
 		this.setNamespace(namespace);
 		this.setId(id);
+		if(!lazyBuild){
+			builded();
+		}
 	}
 	
+	protected void initMybatisOrm(Class<?> namespace,String id,boolean lazyBuild) {
+		this.initMybatisOrm(namespace.getName(), id,lazyBuild);
+	}
+
 	protected void initMybatisOrm(Class<?> namespace,String id) {
-		this.initMybatisOrm(namespace.getName(), id);
+		this.initMybatisOrm(namespace.getName(), id,true);
 	}
 
 	protected void initMybatisOrm(Class<?> namespace,String id,String tableName) {
-		this.initMybatisOrm(namespace.getName(), id);
 		this.setTableName(tableName);
+		this.initMybatisOrm(namespace.getName(), id,true);
+
 	}
 
 	protected void initMybatisOrm(Class<?> namespace) {
 
 		String id = jdbcComponentConfig.getMybatisMapperId();
-		this.initMybatisOrm(namespace.getName(), id);
+		this.initMybatisOrm(namespace.getName(), id,true);
 	}
 	
-	/*	@Autowired @PostConstruct
+	/*
+	@Autowired
+	@PostConstruct
 	@Override
 	protected void initMybatisOrm() {
 		super.initMybatisOrm(TsProjectBeanDao.class,"BaseResultMap");
@@ -270,7 +281,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 	@Override
 	public List<P> queryForList(P object) {
-		return queryForList(object,null);
+		return queryForList(object, (String[]) null);
 	}
 	@Override
 	public List<P> queryForList(P object, String... afterWhere) {
@@ -278,6 +289,9 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		List<P> beans  = namedJdbcDao.queryForList(object,afterWhere);	
 		return beans;
 	}
+
+
+
 
 	@Override
 	public boolean execute(String sql) {
@@ -337,14 +351,14 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	 * 批量处理增/删/改
 	 */
 	@Override
-	public void batchInsert(P[] objects) {
+	public void batchInsert(P[] objects,boolean jdbcBatch) {
 		checkBuilded();
-		namedJdbcDao.batchInsert(objects);
+		namedJdbcDao.batchInsert(objects,jdbcBatch);
 	}
 	@Override
-	public void batchInsert(Collection<P> objects) {
+	public void batchInsert(Collection<P> objects,boolean jdbcBatch) {
 		checkBuilded();
-		namedJdbcDao.batchInsert(objects);
+		namedJdbcDao.batchInsert(objects,jdbcBatch);
 	}
 	
 	@Override
@@ -426,7 +440,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		if(page == null){
 			return null;
 		}
-		DataGrid<T> dataGrid = new DataGrid<T>(page.getTotalElements(),page.getContent());
+		DataGrid<T> dataGrid = new DataGrid<T>(page.getTotalElements(),page.getTotalPages(),page.getContent());
 
 		return dataGrid;
 	}

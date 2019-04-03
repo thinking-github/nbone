@@ -91,6 +91,7 @@ public class SqlModel<T> {
 	 * @return
 	 */
 	private String getPlainSql(){
+		String afterWhereString = null;
 		//外层where 之后语句
 		if(afterWhere == null || afterWhere.length == 0) {
 			//实体内where 之后语句
@@ -99,46 +100,56 @@ public class SqlModel<T> {
 				StringBuilder sBuilder = new StringBuilder();
 
 				String appendWhere = domainQuery.appendWhere();
-				appendWhere = appendWhere(appendWhere);
-				if(appendWhere != null && appendWhere.length() > 0){
-					sBuilder.append(appendWhere);
-				}
+				appendWhere(sBuilder,appendWhere);
 
 				String groupBy = domainQuery.groupBy();
-				if(groupBy != null && groupBy.length() > 0) {
-					sBuilder.append(" ").append(groupBy);
-				}
 				String having = domainQuery.having();
-				if(having != null && having.length() > 0) {
-					sBuilder.append(" ").append(having);
-				}
 				String orderBy = domainQuery.orderBy();
-				if(orderBy != null && orderBy.length() > 0) {
-					sBuilder.append(" ").append(orderBy);
-				}
-				//afterWhere = sBuilder.toString();
+				appendSql(sBuilder,groupBy);
+				appendSql(sBuilder,having);
+				appendSql(sBuilder,orderBy);
+
 				return  sql+ " " + sBuilder.toString();
-			}else{
-				
-				return sql;
-				
 			}
+		} else {
+			StringBuilder sBuilder = new StringBuilder();
+			for (String append : afterWhere) {
+				 appendWhere(sBuilder,append);
+			}
+			afterWhereString = sBuilder.toString();
+		}
+		if(afterWhereString != null){
+			return sql+ " " + afterWhereString;
 		}
 
-		String afterWhereString = null;
-
-		if(afterWhere.length == 1){
-			afterWhereString = afterWhere[0];
-
-		}else  if(afterWhere.length == 2){
-			String appendWhere = afterWhere[0];
-			afterWhereString = appendWhere(appendWhere);
-			afterWhereString   = afterWhereString + " " +afterWhere[1];
-		}else {
-
-		}
-		return sql+ " " + afterWhereString;
+		return sql;
 	}
+
+	private StringBuilder appendSql(StringBuilder sBuilder,String append){
+		if(sBuilder == null){
+			return null;
+		}
+
+		if(append != null && append.length() > 0) {
+			sBuilder.append(" ").append(append);
+		}
+
+		return  sBuilder;
+	}
+
+	private StringBuilder appendWhere(StringBuilder stringBuilder,String appendWhere){
+		if(appendWhere != null && appendWhere.length() > 0) {
+			if(sql.contains(" where ") || sql.contains(" WHERE ")){
+				stringBuilder.append(" ").append(appendWhere);
+			}else {
+				stringBuilder.append(" where 1=1 ").append(appendWhere);
+			}
+			return stringBuilder;
+		}
+
+		return  stringBuilder;
+	}
+
 
 	/**
 	 * 
@@ -233,19 +244,7 @@ public class SqlModel<T> {
 		}
 	}
 
-	private String appendWhere(String appendWhere){
-		if(appendWhere != null && appendWhere.length() > 0) {
-			StringBuilder stringBuilder = new StringBuilder();
-			if(sql.contains(" where ") || sql.contains(" WHERE ")){
-				stringBuilder.append(" ").append(appendWhere);
-			}else {
-				stringBuilder.append(" where 1=1 ").append(appendWhere);
-			}
-			return stringBuilder.toString();
-		}
 
-		return  null;
-	}
 
 	public StringBuilder getPrintSqlParameter(){
 		

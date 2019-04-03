@@ -247,33 +247,7 @@ public class StringUtil {
 	public static String decryptBASE64(String key) throws Exception {
 		return new String((new BASE64Decoder()).decodeBuffer(key));
 	}
-	/**
-	 * url加密
-	 * @author liuxd
-	 * @date 2013-10-29 下午02:59:56
-	 * @version V1.0
-	 */
-	public static String urlEncoder(String value){
-	        String code="";
-			try {
-				code = java.net.URLEncoder.encode(value,"UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return code;
-	}
-	/**
-	 * url解密
-	 * @author liuxd
-	 * @date 2013-10-29 下午03:00:08
-	 * @version V1.0
-	 */
-	public static String urlDecoder(String value){
-        String code="";
-		code = java.net.URLDecoder.decode(value);
-		return code;
-}
+
 	/**
 	 * 字符串MD5加密
 	 */

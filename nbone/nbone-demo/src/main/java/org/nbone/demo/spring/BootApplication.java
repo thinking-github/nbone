@@ -2,6 +2,7 @@ package org.nbone.demo.spring;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
+import org.nbone.framework.spring.web.filter.RequestIdFilter;
 import org.nbone.framework.spring.web.method.annotation.*;
 import org.nbone.framework.spring.web.mvc.AccessLogHandlerInterceptor;
 import org.nbone.util.DateFPUtils;
@@ -20,13 +21,13 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.Filter;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
 @Import(JdbcComponentConfig.class)
-@ComponentScan(basePackages={"com.chainnova.salix.tss.test"} )
 @MapperScan("com.chainnova.salix.tss.mapper")
 public class BootApplication extends WebMvcConfigurerAdapter {
 
@@ -69,6 +70,15 @@ public class BootApplication extends WebMvcConfigurerAdapter {
 	    returnValueHandlers.add(new RawResponseBodyMethodProcessor());
 	}
 
+
+	/**
+	 * 记录请求的ID
+	 * @return
+	 */
+	@Bean
+	public Filter requestIdFilter(){
+		return  new RequestIdFilter();
+	}
 
 	//http  accessLog
 	@Bean
