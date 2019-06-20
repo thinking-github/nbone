@@ -72,6 +72,41 @@ public class SqlUtils {
         return notinsb.toString();
     }
 
+
+    /**
+     *  [1,2,3] ---> id in (1,2,3)
+     *  ["thinking","chenyi","zhang"] ---> id in ('thinking','chenyi','zhang')
+     *
+     * @param dbFieldName 字段名称
+     * @param nameType    字段类型
+     * @param values      字段值数组
+     * @param isIn        in true , not in false
+     * @return
+     */
+    public static StringBuilder array2In(String dbFieldName, Class<?> nameType, Object[] values, boolean isIn) {
+        if(values == null){
+            return  null;
+        }
+        if(dbFieldName == null){
+            throw  new IllegalArgumentException("dbFieldName  is null.");
+        }
+        String fh = "";
+        if (nameType == String.class) {
+            fh = "'";
+        }
+
+        String operType = isIn ? " in " : " not in ";
+        StringBuilder sql = new StringBuilder(" ").append(dbFieldName).append(operType);
+        sql.append("(");
+        int length = values.length;
+        for (int i = 0; i < length - 1; i++) {
+            sql.append(fh).append(values[i]).append(fh).append(",");
+        }
+        sql.append(fh).append(values[length - 1]).append(fh);
+        sql.append(")");
+        return sql;
+    }
+
     public static StringBuilder list2In(String name, Collection<?> values) {
         return list2In(name, values.toArray());
     }

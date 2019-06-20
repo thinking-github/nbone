@@ -162,7 +162,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public int updateSelective(Object object, String whereString) {
 
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,true,whereString);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(null,object,true,whereString);
 		checkSqlModel(sqlModel);
 
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -372,9 +372,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public int[] batchUpdate(Object[] objects) {
+	public int[] batchUpdate(Object[] objects,String...propertys) {
 		//XXX: thinking 共享第一实体的sql
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0]);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0],propertys);
 		checkSqlModel(sqlModel);
 			
 		SqlParameterSource[] batchArgs = new BeanPropertySqlParameterSource[objects.length];
@@ -387,14 +387,14 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 	
 	@Override
-	public int[] batchUpdate(Collection<?> objects) {
+	public int[] batchUpdate(Collection<?> objects,String...propertys) {
 		SqlParameterSource[] batchArgs = new BeanPropertySqlParameterSource[objects.size()];
 		String sql = null;
 		int index = 0;
 		for (Object object : objects) {
 			if(index == 0 ){
 				//XXX: thinking 共享第一实体的sql
-				SqlModel<Object> sqlModel = sqlBuilder.updateSql(object);
+				SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,propertys);
 				sql = sqlModel.getSql();
 			}
 			batchArgs[index] = new BeanPropertySqlParameterSource(object);

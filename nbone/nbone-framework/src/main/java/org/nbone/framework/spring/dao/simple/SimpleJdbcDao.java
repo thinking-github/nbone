@@ -196,12 +196,12 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	}
 
 	@Override
-	public int[] batchUpdate(Object[] objects) {
+	public int[] batchUpdate(Object[] objects,String...propertys) {
 		return null;
 	}
 
 	@Override
-	public int[] batchUpdate(Collection<?> objects) {
+	public int[] batchUpdate(Collection<?> objects,String...propertys) {
 		return null;
 	}
 

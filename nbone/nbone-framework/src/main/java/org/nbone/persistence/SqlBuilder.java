@@ -36,11 +36,13 @@ public interface SqlBuilder {
 
 	 /**
 	  * 由传入的对象生成update sql语句
+	  *
 	  * @param object
+	  * @param  propertys 更新的属性字段 可为空
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> updateSql(Object object) throws BuilderSQLException;
+	 public SqlModel<Object> updateSql(Object object,String... propertys) throws BuilderSQLException;
 
 	/**
 	 * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
@@ -52,13 +54,14 @@ public interface SqlBuilder {
 
 	/**
 	 * 由传入的对象生成update sql语句
+	 * @param  propertys 更新的属性字段 可为空
 	 * @param object
 	 * @param isSelective 是否只更新不为null的值
 	 * @param whereSql    where 部分sql id=1 and name ='chen',  可为null
 	 * @return
 	 * @throws BuilderSQLException
 	 */
-	public SqlModel<Object> updateSql(Object object,boolean isSelective,String whereSql) throws BuilderSQLException;
+	public SqlModel<Object> updateSql(String[] propertys,Object object,boolean isSelective,String whereSql) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的Map对象生成update sql语句

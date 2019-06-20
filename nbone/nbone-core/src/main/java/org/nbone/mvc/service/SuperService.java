@@ -32,11 +32,14 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	public void batchInsert(T[] objects,boolean jdbcBatch);
 	
 	public void batchInsert(Collection<T> objects,boolean jdbcBatch);
-	
-	
-	public void batchUpdate(T[] objects);
-	
-	public void batchUpdate(Collection<T> objects);
+
+	/**
+	 *
+	 * @param objects
+	 * @param  propertys 更新的属性字段 可为空
+	 */
+	public void batchUpdate(T[] objects,String...propertys);
+	public void batchUpdate(Collection<T> objects,String...propertys);
 	
 	
 	public void batchDelete(Class<T> clazz,Serializable[] ids);

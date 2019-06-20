@@ -1,5 +1,6 @@
 package org.nbone.framework.spring.web.mvc;
 
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -28,6 +29,24 @@ public class ExceptionHandlerUtils {
                 .collect(Collectors.joining(","));
 
         return  msg;
+    }
+
+    public static String getMessage(BindException ex) {
+        BindingResult result = ex.getBindingResult();
+        return  getMessage(result);
+    }
+
+
+    public static String getMessage(BindingResult result) {
+        if(result.hasErrors()){
+            String msg = result.getAllErrors()
+                    .stream()
+                    .map(x -> x.getDefaultMessage())
+                    .collect(Collectors.joining(","));
+            return msg;
+        }
+
+        return  null;
     }
 
 

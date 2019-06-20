@@ -99,7 +99,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         boolean allFieldNull = true;
         int columnCount = 0;
-        List<FieldMapper> fields = tableMapper.getFieldMapperList();
+        Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
         for (FieldMapper fieldMapper : fields) {
             String fieldName = fieldMapper.getFieldName();
             String dbFieldName = fieldMapper.getDbFieldName();
@@ -131,46 +131,61 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
     //update
     @Override
-    public SqlModel<Object> updateSql(Object object) throws BuilderSQLException {
+    public SqlModel<Object> updateSql(Object object,String... propertys) throws BuilderSQLException {
 
-        return updateSql(object, false, null);
+        return updateSql(propertys,object, false, null);
 
     }
 
     @Override
     public SqlModel<Object> updateSelectiveSql(final Object object) throws BuilderSQLException {
-        return updateSql(object, true, null);
+        return updateSql(null,object, true, null);
     }
 
     @Override
-    public SqlModel<Object> updateSql(final Object object, final boolean isSelective, String whereSql) throws BuilderSQLException {
+    public SqlModel<Object> updateSql(String[] propertys,final Object object, final boolean isSelective, String whereSql) throws BuilderSQLException {
         SqlModel<Object> sqlModel = update(object, new Function<TableMapper<?>, StringBuilder>() {
             @Override
             public StringBuilder apply(TableMapper<?> tableMapper) {
                 StringBuilder fieldSql = new StringBuilder();
                 boolean allFieldNull = true;
                 int columnCount = 0;
-                List<FieldMapper> fields = tableMapper.getFieldMapperList();
-                for (FieldMapper fieldMapper : fields) {
-                    String fieldName = fieldMapper.getFieldName();
-                    String dbFieldName = fieldMapper.getDbFieldName();
-                    Object value = PropertyUtil.getProperty(object, fieldName);
-                    //XXX: beark primaryKey update
-                    if (fieldMapper.isPrimaryKey()) {
-                        continue;
-                    }
-                    // isSelective = true
-                    if (isSelective && value == null) {
-                        continue;
-                    }
+                if(propertys == null || propertys.length == 0){
+                    Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
+                    for (FieldMapper fieldMapper : fields) {
+                        String fieldName = fieldMapper.getFieldName();
+                        String dbFieldName = fieldMapper.getDbFieldName();
+                        Object value = PropertyUtil.getProperty(object, fieldName);
+                        //XXX: beark primaryKey update
+                        if (fieldMapper.isPrimaryKey()) {
+                            continue;
+                        }
+                        // isSelective = true
+                        if (isSelective && value == null) {
+                            continue;
+                        }
 
-                    allFieldNull = false;
-                    columnCount++;
-                    if (columnCount > 1) {
-                        fieldSql.append(",");
+                        allFieldNull = false;
+                        columnCount++;
+                        if (columnCount > 1) {
+                            fieldSql.append(",");
+                        }
+                        fieldSql.append(dbFieldName).append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
+                        //tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
+
                     }
-                    fieldSql.append(dbFieldName).append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
-                    //tableSql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
+                }else {
+                    allFieldNull = false;
+                    for (String property : propertys) {
+                        FieldMapper fieldMapper =   tableMapper.getFieldMapperByPropertyName(property);
+                        String fieldName = fieldMapper.getFieldName();
+                        String dbFieldName = fieldMapper.getDbFieldName();
+                        columnCount++;
+                        if (columnCount > 1) {
+                            fieldSql.append(",");
+                        }
+                        fieldSql.append(dbFieldName).append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
+                    }
 
                 }
                 //XXX: allFieldNull
@@ -199,7 +214,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
                 boolean allFieldNull = true;
                 int columnCount = 0;
-                List<FieldMapper> fields = tableMapper.getFieldMapperList();
+                Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
                 for (FieldMapper fieldMapper : fields) {
                     String fieldName = fieldMapper.getFieldName();
                     String dbFieldName = fieldMapper.getDbFieldName();
@@ -308,7 +323,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             boolean allFieldNull = true;
             sql.append(" 1=1 ");
             BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
-            List<FieldMapper> fields = tableMapper.getFieldMapperList();
+            Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
             for (FieldMapper fieldMapper : fields) {
                 String fieldName = fieldMapper.getFieldName();
                 String dbFieldName = fieldMapper.getDbFieldName();
@@ -522,7 +537,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         StringBuffer whereSql = new StringBuffer(allsql).append(" where 1 = 1 ");
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
 
-        List<FieldMapper> fields = tableMapper.getFieldMapperList();
+        Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
         Map<String, Object> namedParameters = new HashMap<String, Object>();
 
         for (FieldMapper fieldMapper : fields) {
@@ -660,7 +675,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         StringBuilder whereSql = new StringBuilder(" where 1 = 1 ");
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
 
-        List<FieldMapper> fields = tableMapper.getFieldMapperList();
+        Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
         int levelMode = sqlConfig.getSqlMode();
         for (FieldMapper fieldMapper : fields) {
             String fieldName = fieldMapper.getFieldName();

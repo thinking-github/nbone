@@ -27,7 +27,8 @@ public interface ContentType extends CharsetConstant {
 	 */
 	public final static String TXT  ="text/plain";
 	public final static String JAVA ="text/plain";
-	
+	public final static String CSV  ="text/csv";
+
 	/**
 	 * 办公文件
 	 */
@@ -59,9 +60,11 @@ public interface ContentType extends CharsetConstant {
 	
 	/**
 	 * "text/json;charset=utf-8"
+	 *  text/csv;charset=utf-8
 	 */
-	public final static String TEXT_JSON_UTF_8        =new StringBuilder(TEXT_JSON).append(SUB_CHARSET_PREFIX).append(CHARSET_UTF8).toString();
-	public final static String APPLICATION_JSON_UTF_8 =new StringBuilder(APPLICATION_JSON_VALUE).append(SUB_CHARSET_PREFIX).append(CHARSET_UTF8).toString();
+	public final static String TEXT_JSON_UTF_8        =TEXT_JSON + SUB_CHARSET_PREFIX + CHARSET_UTF8;
+    public final static String APPLICATION_JSON_UTF_8 =APPLICATION_JSON_VALUE + SUB_CHARSET_PREFIX + CHARSET_UTF8;
+	public final static String CSV_UTF8_VALUE = CSV + ";charset=UTF-8";
 	
 
 }

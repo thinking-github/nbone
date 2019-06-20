@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.nbone.util.WebIOUtils;
@@ -115,7 +116,7 @@ public class ExcelUtils {
 			throws Exception {
 		createExcelData(object, title, columns, dataList);
 	}
-	public static void export(ServletResponse response, String title, List<ExcelColumn> columns,List<Object> dataList) 
+	public static void export(HttpServletResponse response, String title, List<ExcelColumn> columns, List<Object> dataList)
 			throws Exception {
 		OutputStream os = WebIOUtils.getExcelOutputStream(response, title);
 		createExcelData(os, title, columns, dataList);

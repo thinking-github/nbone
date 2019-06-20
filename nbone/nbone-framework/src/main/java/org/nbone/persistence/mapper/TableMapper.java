@@ -2,14 +2,7 @@ package org.nbone.persistence.mapper;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.Table;
 
@@ -53,7 +46,7 @@ public class TableMapper<T> {
      */
     private String  dbTableName;
     /**
-     * 映射实体Bean classs
+     * 映射实体Bean classs  entityName
      */
     private Class<T> entityClazz;
     
@@ -61,7 +54,12 @@ public class TableMapper<T> {
      * 以数据库字段为Key , 最好使用LinkedHashMap保证key的顺序
      */
     private Map<String, FieldMapper> fieldMappers;
-    
+
+	/**
+	 * 以Java字段为Key , 最好使用LinkedHashMap保证key的顺序
+	 */
+	private Map<String, FieldMapper> propertyMappers;
+
     /**
      * 以JavaBean属性为Key
      */
@@ -70,7 +68,7 @@ public class TableMapper<T> {
     /**
      * 数据库表字段映射列表
      */
-    private  List<FieldMapper> fieldMapperList ;
+    //private  List<FieldMapper> fieldMapperList ;
     /**
      * Field Property is Load(查询级别)
      */
@@ -124,8 +122,8 @@ public class TableMapper<T> {
 		
 		this.entityClazz = entityClazz;
 		this.entityName = entityClazz.getName();
-		this.fieldMapperList =  new ArrayList<FieldMapper>(fieldInitialCapacity);
 		this.fieldMappers =  new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
+		this.propertyMappers = new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
 		this.mappedPropertys =  new HashMap<String, PropertyDescriptor>(fieldInitialCapacity);
 	}
 	
@@ -173,7 +171,8 @@ public class TableMapper<T> {
 	public List<FieldMapper> getPrimaryKeyFields() {
 		if(primaryKeyFields == null || primaryKeyFields.size() == 0){
 			primaryKeys.clear();
-			for (FieldMapper fieldMapper : fieldMapperList) {
+			for (Map.Entry<String,FieldMapper> entry : fieldMappers.entrySet()) {
+				FieldMapper fieldMapper =  entry.getValue();
 				if(fieldMapper.isPrimaryKey()){
 					primaryKeyFields.add(fieldMapper);
 					primaryKeys.add(fieldMapper.getDbFieldName());
@@ -249,9 +248,8 @@ public class TableMapper<T> {
 
 	public void setFieldMappers(Map<String, FieldMapper> fieldMappers) {
 		this.fieldMappers.putAll(fieldMappers);
-		for (Map.Entry<String,FieldMapper> entry : fieldMappers.entrySet()) {
-			this.fieldMapperList.add(entry.getValue());
-		}
+		this.propertyMappers.putAll(fieldMappers);
+
 	}
 	
 	public FieldMapper getFieldMapper(String dbFieldName) {
@@ -262,10 +260,8 @@ public class TableMapper<T> {
 		if(propertyName == null){
 			return null;
 		}
-		for (FieldMapper fieldMapper : fieldMapperList) {
-			if(propertyName.equals(fieldMapper.getFieldName())){
-				return fieldMapper;
-			}
+		if(propertyMappers.containsKey(propertyName)){
+			return propertyMappers.get(propertyName);
 		}
 		return null;
 	}
@@ -301,8 +297,8 @@ public class TableMapper<T> {
 	@SuppressWarnings("rawtypes")
 	public TableMapper addFieldMapper(String dbFieldName,FieldMapper fieldMapper) {
 		this.fieldMappers.put(dbFieldName, fieldMapper);
-		this.fieldMapperList.add(fieldMapper);
-		
+		this.propertyMappers.put(fieldMapper.getFieldName(),fieldMapper);
+
 		return this;
 	}
 
@@ -326,15 +322,10 @@ public class TableMapper<T> {
 	}
 
 	
-	
-	public List<FieldMapper> getFieldMapperList() {
-		return Collections.unmodifiableList(fieldMapperList);
+	public Collection<FieldMapper> getFieldMapperList() {
+		return Collections.unmodifiableCollection(fieldMappers.values());
 	}
 	
-	public FieldMapper getFieldMapper(int index) {
-		return fieldMapperList.get(index);
-	}
-
 
 	public boolean isFieldPropertyLoad() {
 		return fieldPropertyLoad;
@@ -451,8 +442,8 @@ public class TableMapper<T> {
 		}
 		int count = 0;
 		int inputLevel = fieldLevel.getId();
-		for (int i = 0; i < fieldMapperList.size(); i++) {
-			FieldMapper fieldMapper = fieldMapperList.get(i);
+		for (Map.Entry<String,FieldMapper> entry : fieldMappers.entrySet()) {
+			FieldMapper fieldMapper =  entry.getValue();
 			int level = fieldMapper.getFieldLevel().getId();
 			if(inputLevel >= level){
 				String dbFieldName = fieldMapper.getDbFieldName();
@@ -460,10 +451,11 @@ public class TableMapper<T> {
 					selectAllSql.append(",");
 				}
 				selectAllSql.append(dbFieldName);
-				
+
 				count ++;
 			}
 		}
+
 		selectAllSql.append(" FROM ").append(this.getDbTableName());
 		
 		return selectAllSql.toString();

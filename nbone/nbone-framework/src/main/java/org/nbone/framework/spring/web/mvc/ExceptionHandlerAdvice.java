@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,10 +34,18 @@ public class ExceptionHandlerAdvice {
 
     Logger logger = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);
 
+    /**
+     * 全局错误代码
+     */
     private int errorCode = 0;
 
     @Autowired(required = false)
     private JdbcTemplate jdbcTemplate;
+
+    /**
+     *  persistence; persistent; Persist; persisted;
+     */
+    private boolean persistence = true;
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -57,6 +66,13 @@ public class ExceptionHandlerAdvice {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean isPersistence() {
+        return persistence;
+    }
+
+    public void setPersistence(boolean persistence) {
+        this.persistence = persistence;
+    }
 
     /**
      * 非法参数异常/非法状态异常
@@ -71,6 +87,23 @@ public class ExceptionHandlerAdvice {
     }
 
 
+    /**
+     * @param ex
+     * @param req
+     * @return
+     * @Valid 的参数验证异常处理
+     */
+    @ExceptionHandler(value = BindException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Object bindException(BindException ex, HttpServletRequest req, HttpServletResponse response) {
+        logger.error("Bad argument:", ex);
+
+        String msg = ExceptionHandlerUtils.getMessage(ex);
+
+        String requestId = getRequestId(req);
+        ayncErrorLog(ex, msg, req, response);
+        return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
+    }
     /**
      * @param ex
      * @param req
@@ -110,7 +143,7 @@ public class ExceptionHandlerAdvice {
      * @param response HttpServletResponse
      */
     protected void errorLog(Exception ex, String message, HttpServletRequest request, HttpServletResponse response) {
-        if (jdbcTemplate != null) {
+        if (jdbcTemplate != null && persistence) {
             ErrorLog errorLog = new ErrorLog();
             if (message == null) {
                 message = ex.getMessage();

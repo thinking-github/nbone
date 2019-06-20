@@ -252,10 +252,12 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 
 	@Override
-	public void delete(P object) {
+	public int delete(P object) {
 		checkBuilded();
-		namedJdbcDao.delete(object);
+		return  namedJdbcDao.delete(object);
 	}
+
+
 	@Override
 	public void deleteByEntityParams(P object) {
 		checkBuilded();
@@ -362,14 +364,14 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 	
 	@Override
-	public void batchUpdate(P[] objects) {
+	public void batchUpdate(P[] objects,String...propertys) {
 		checkBuilded();
-		namedJdbcDao.batchUpdate(objects);
+		namedJdbcDao.batchUpdate(objects,propertys);
 	}
 	@Override
-	public void batchUpdate(Collection<P> objects) {
+	public void batchUpdate(Collection<P> objects,String...propertys) {
 		checkBuilded();
-		namedJdbcDao.batchUpdate(objects);
+		namedJdbcDao.batchUpdate(objects,propertys);
 	}
 	
 	@Override

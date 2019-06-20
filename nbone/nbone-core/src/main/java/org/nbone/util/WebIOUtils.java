@@ -1,8 +1,7 @@
 package org.nbone.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.sql.Date;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -52,12 +51,41 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 		response.setCharacterEncoding(charset);
 		return response;
 	}
+
+	/**
+	 * 设置附件名称和内容类型
+	 * @param response
+	 * @param contentType
+	 * @param encoding
+	 * @param fileName
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public static HttpServletResponse attachmentName(HttpServletResponse response,String contentType,String encoding,String fileName) throws UnsupportedEncodingException {
+		if(response == null){
+			return null;
+		}
+		setResponse(response,contentType,encoding);
+		if(encoding == null){
+			encoding = DEFAULT_ECODING;
+		}
+		//HttpServletResponse 添加 文件头
+		//展现下载另存在
+		if(fileName != null){
+		    // response.addHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes("gb2312"),CHARSET_ISO_8859_1));
+			response.addHeader("Content-Disposition", "attachment;filename=" +  new String(fileName.getBytes(),encoding));
+		}
+
+		return response;
+	}
+
+
 	/**
 	 * 输出资源（下载）
 	 * @param response ServletResponse
 	 * @param resourceType {@link ContentType}
 	 * @param ins 输入流
-	 * @see #exportResource(ServletResponse, InputStream, String, String)
+	 * @see #exportResource(ServletResponse,String,InputStream, String)
 	 */
 	public static void exportResource(ServletResponse response,String resourceType,InputStream ins){
 		exportResource(response,resourceType,ins, null);
@@ -69,7 +97,7 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @param bin 字节数组
 	 */
 	public static void exportResource(ServletResponse response,String resourceType,byte[] bin){
-		response = setResponse(response,resourceType,null);
+		setResponse(response,resourceType, DEFAULT_ECODING);
 		OutputStream os = null ;
 		try {
 			os = response.getOutputStream();
@@ -93,21 +121,11 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @param fileName   文件名称(包含扩展名),可为null 当为null 时输出方案不同
 	 */
 	public static void exportResource(ServletResponse response,String resourceType,InputStream ins,String fileName) {
-		
-		response = setResponse(response,resourceType,null);
-		
 		HttpServletResponse response1 = (HttpServletResponse) response;
 		
 		OutputStream os = null ;
-		
 		try {
-			
-			if(fileName != null){
-				//HttpServletResponse 添加 文件头
-				//展现下载另存在
-				response1.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(),CHARSET_ISO_8859_1));
-			}
-			
+			attachmentName(response1,resourceType,DEFAULT_ECODING,fileName);
 			os = response1.getOutputStream();
 			saveWrite(ins,os);
 		} catch (IOException e) {
@@ -125,27 +143,32 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @param fileName 文件名称(包含扩展名),可为null 当为null 时输出方案不同
 	 * @return
 	 */
-	public static OutputStream getOutputStream(ServletResponse response,String resourceType,String fileName) throws IOException {
-		response = setResponse(response, resourceType,null);
-		HttpServletResponse response1 = (HttpServletResponse) response;
-		OutputStream os = null;
-		if(fileName != null){
-			//HttpServletResponse 添加 文件头
-			//展现下载另存在
-			//response1.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes(),CHARSET_ISO_8859_1));
-			response1.addHeader("Content-Disposition", "attachment;filename="+ new String(fileName.getBytes("gb2312"),CHARSET_ISO_8859_1));
-		}
-		os = response1.getOutputStream();
-		return os;
+	public static OutputStream getOutputStream(HttpServletResponse response,String resourceType,String fileName) throws IOException {
+        attachmentName(response,resourceType,DEFAULT_ECODING,fileName);
+		return response.getOutputStream();
 		
+	}
+
+    /**
+     * 根据资源类型获取相应的字符输出流
+     * @param response
+     * @param resourceType
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+	public static Writer getWriter(HttpServletResponse response, String resourceType, String fileName) throws IOException {
+	    attachmentName(response,resourceType,DEFAULT_ECODING,fileName);
+		return response.getWriter();
+
 	}
 	/**
 	 * 
 	 * @param response
 	 * @return
-	 * @see #getOutputStream(ServletResponse, String, String)
+	 * @see #getOutputStream(HttpServletResponse, String, String)
 	 */
-	public static OutputStream getImageOutputStream(ServletResponse response) throws IOException{
+	public static OutputStream getImageOutputStream(HttpServletResponse response) throws IOException{
 		OutputStream os = getOutputStream(response, JPG, null);
 		return os;
 		
@@ -156,9 +179,9 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @param response
 	 * @param fileName
 	 * @return
-	 * @see #getOutputStream(ServletResponse, String, String)
+	 * @see #getOutputStream(HttpServletResponse, String, String)
 	 */
-	public static OutputStream getExcelOutputStream(ServletResponse response,String fileName) throws IOException{
+	public static OutputStream getExcelOutputStream(HttpServletResponse response,String fileName) throws IOException{
 		OutputStream os = getOutputStream(response, XLS, fileName);
 		return os;
 		
@@ -169,9 +192,9 @@ public abstract class WebIOUtils extends IOUtils implements ContentType{
 	 * @param response
 	 * @param fileName
 	 * @return
-	 * @see #getOutputStream(ServletResponse, String, String)
+	 * @see #getOutputStream(HttpServletResponse, String, String)
 	 */
-	public static OutputStream getTxtOutputStream(ServletResponse response,String fileName) throws IOException{
+	public static OutputStream getTxtOutputStream(HttpServletResponse response,String fileName) throws IOException{
 		OutputStream os = getOutputStream(response, TXT, fileName);;
 		
 		return os;

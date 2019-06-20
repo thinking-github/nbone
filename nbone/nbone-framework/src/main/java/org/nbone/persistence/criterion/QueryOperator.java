@@ -1,7 +1,12 @@
 package org.nbone.persistence.criterion;
+/**
+ *
+ * @author chenyicheng
+ * @version 1.0
+ * @since 2014/6/19
+ */
 
-public interface QueryOperator extends IQueryTransfer
-{
+public interface QueryOperator extends IQueryTransfer {
 
 	public static final String eq = "=";
 	public static final String not_eq = "<>";

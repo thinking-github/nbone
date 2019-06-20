@@ -69,7 +69,8 @@ public interface ISuper<T,PK extends Serializable> {
 	 * 按实体中的id删除数据
 	 * @param object
 	 */
-	public void delete(T object);
+	//public void delete(T object);
+	public int delete(T object);
 	/**
 	 * 按实体中不为空属性参数删除数据
 	 * @param object

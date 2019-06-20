@@ -183,9 +183,9 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public void delete(T object) {
+	public int delete(T object) {
 		P bean = this.copyProperties(object, targetClass);
-		baseServiceDomain.delete(bean);
+		return  baseServiceDomain.delete(bean);
 	}
 
 	@Override
@@ -279,13 +279,13 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public void batchUpdate(T[] objects) {
+	public void batchUpdate(T[] objects,String...propertys) {
 		List<P> beans = this.copyProperties(objects, targetClass);
 		baseServiceDomain.batchUpdate(beans);
 	}
 
 	@Override
-	public void batchUpdate(Collection<T> objects) {
+	public void batchUpdate(Collection<T> objects,String...propertys) {
 		List<P> beans = this.copyProperties(objects, targetClass);
 		baseServiceDomain.batchUpdate(beans);
 	}
