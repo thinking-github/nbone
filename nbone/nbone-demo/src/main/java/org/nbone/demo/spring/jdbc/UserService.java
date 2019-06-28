@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.nbone.demo.common.domain.User;
 import org.nbone.framework.spring.dao.namedparam.NamedJdbcDao;
 import org.nbone.lang.MathOperation;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.mvc.service.BaseServiceDomain;
 import org.nbone.mvc.service.SuperService;
 import org.nbone.persistence.SqlConfig;
@@ -90,19 +91,19 @@ public class UserService extends BaseServiceDomain<User,Long> implements SuperSe
 	}
 	//限制查询 select * from user where name ='chenyicheng' and age = 18 limit 10
     @Override
-	public List<User> getForLimit(Object object, int limit, String... afterWhere) {
-		return super.getForLimit(object, limit, afterWhere);
+	public List<User> getForLimit(Object object, GroupQuery group, int limit, String... afterWhere) {
+		return super.getForLimit(object, group,limit, afterWhere);
 	}
     //限制查询 select * from user where name like '%chenyicheng%' and age = 18 limit 10
 	@Override
-	public List<User> queryForLimit(Object object, int limit, String... afterWhere) {
-		return super.queryForLimit(object, limit, afterWhere);
+	public List<User> queryForLimit(Object object, GroupQuery group, int limit, String... afterWhere) {
+		return super.queryForLimit(object,group, limit, afterWhere);
 	}
 	
 	//字段计算 update set user age = age+1  where id = 1
 	@Override
-	public int updateMathOperation(Object object, MathOperation mathOperation) {
-		return super.updateMathOperation(object, mathOperation);
+	public int updateMathOperation(Object object,String property,MathOperation mathOperation) {
+		return super.updateMathOperation(object,null, mathOperation);
 	}
 	//批量操作 增 删 改
 	@Override
@@ -114,12 +115,12 @@ public class UserService extends BaseServiceDomain<User,Long> implements SuperSe
 		super.batchInsert(objects,jdbcBatch);
 	}
 	@Override
-	public void batchUpdate(Collection<User> objects) {
-		super.batchUpdate(objects);
+	public void batchUpdate(Collection<User> objects,String...propertys) {
+		super.batchUpdate(objects,propertys);
 	}
 	@Override
-	public void batchUpdate(User[] objects) {
-		super.batchUpdate(objects);
+	public void batchUpdate(User[] objects,String...propertys) {
+		super.batchUpdate(objects,propertys);
 	}
 	@Override
 	public void batchDelete(Class<User> clazz, List<Serializable> ids) {

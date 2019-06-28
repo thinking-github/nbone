@@ -28,18 +28,35 @@ public interface BatchSqlSession extends SqlSession {
 	/**
 	 * 批量更新
 	 * @param objects
-	 * @param  propertys 更新的属性字段 可为空
+	 * @param  propertys 要更新的属性字段列表 可为空 ，当为空更新全部字段
 	 * @return
 	 */
 	public int[] batchUpdate(Object[] objects,String...propertys);
-	
 	/**
 	 * 批量更新
 	 * @param objects
-	 * @param  propertys 更新的属性字段 可为空
+	 * @param  propertys 要更新的属性字段列表 可为空 ，当为空更新全部字段
 	 * @return
 	 */
 	public int[] batchUpdate(Collection<?> objects,String...propertys);
+
+	/**
+	 * 批量更新
+	 * @param objects
+	 * @param  propertys 要更新的属性字段列表 可为空 ，当为空更新全部字段
+	 * @param  conditionPropertys  条件属性  可为空， 当为空时使用主键作为条件
+	 * @return
+	 */
+	public int[] batchUpdate(Object[] objects,String[] propertys,String...conditionPropertys);
+	/**
+	 * 批量更新
+	 * @param objects
+	 * @param  propertys 要更新的属性字段列表 可为空 ，当为空更新全部字段
+	 * @param  conditionPropertys  条件属性  可为空， 当为空时使用主键作为条件
+	 * @return
+	 */
+	public int[] batchUpdate(Collection<?> objects,String[] propertys,String... conditionPropertys);
+
 	/**
 	 * 批量删除(不用in语句实现)
 	 * @param clazz

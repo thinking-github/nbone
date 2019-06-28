@@ -11,6 +11,7 @@ import org.nbone.persistence.SqlPropertyDescriptor;
 import org.nbone.persistence.SqlPropertyRange;
 import org.nbone.persistence.criterion.QueryOperator;
 import org.nbone.util.reflect.SimpleTypeMapper;
+import org.springframework.util.Assert;
 
 /**
  * @author thinking
@@ -72,39 +73,105 @@ public class SqlUtils {
         return notinsb.toString();
     }
 
+    public static StringBuilder array2In(String andOr,String dbFieldName, Class<?> nameType, Object[] values, boolean isIn){
+        return in(andOr,dbFieldName,nameType,values,isIn);
+    }
 
+    public static StringBuilder andIn(String dbFieldName, Class<?> nameType, Object values, boolean isIn) {
+        return in("and",dbFieldName,nameType,values,isIn);
+    }
+    public static StringBuilder orIn(String dbFieldName, Class<?> nameType, Object values, boolean isIn) {
+        return in("or",dbFieldName,nameType,values,isIn);
+    }
     /**
      *  [1,2,3] ---> id in (1,2,3)
-     *  ["thinking","chenyi","zhang"] ---> id in ('thinking','chenyi','zhang')
+     *  ["thinking","chenyi","zhang"] ---> and id in ('thinking','chenyi','zhang')
      *
+     * @param andOr 可为空  and/or /null
      * @param dbFieldName 字段名称
      * @param nameType    字段类型
-     * @param values      字段值数组
+     * @param values      字段值数组 数组 或者 List
      * @param isIn        in true , not in false
      * @return
      */
-    public static StringBuilder array2In(String dbFieldName, Class<?> nameType, Object[] values, boolean isIn) {
+    public static StringBuilder in(String andOr,String dbFieldName, Class<?> nameType, Object values, boolean isIn) {
         if(values == null){
             return  null;
         }
-        if(dbFieldName == null){
-            throw  new IllegalArgumentException("dbFieldName  is null.");
-        }
+        Assert.notNull(dbFieldName,"dbFieldName is null.");
         String fh = "";
         if (nameType == String.class) {
             fh = "'";
         }
+        if(andOr == null){
+            andOr = "";
+        }
 
         String operType = isIn ? " in " : " not in ";
-        StringBuilder sql = new StringBuilder(" ").append(dbFieldName).append(operType);
+        StringBuilder sql = new StringBuilder(" ").append(andOr).append(" ").append(dbFieldName).append(operType);
         sql.append("(");
-        int length = values.length;
-        for (int i = 0; i < length - 1; i++) {
-            sql.append(fh).append(values[i]).append(fh).append(",");
+
+        if(values.getClass().isArray()){
+            Object[] array  = (Object[]) values;
+            int length = array.length;
+            for (int i = 0; i < length - 1; i++) {
+                sql.append(fh).append(array[i]).append(fh).append(",");
+            }
+            sql.append(fh).append(array[length - 1]).append(fh);
+        }else if(List.class.isAssignableFrom(values.getClass())){
+            List array  = (List) values;
+            int length = array.size();
+            for (int i = 0; i < length - 1; i++) {
+                sql.append(fh).append(array.get(i)).append(fh).append(",");
+            }
+            sql.append(fh).append(array.get(length-1)).append(fh);
         }
-        sql.append(fh).append(values[length - 1]).append(fh);
+
         sql.append(")");
         return sql;
+    }
+
+    public  static StringBuilder  andBetween(String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
+        return dbBetween("and",dbFieldName,beginFieldName,endFieldName,is);
+    }
+    public  static StringBuilder  dbBetween(String andOr,String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
+        if(dbFieldName == null){
+            throw  new IllegalArgumentException("dbFieldName is null.");
+        }
+        if(beginFieldName == null || endFieldName == null){
+            throw  new IllegalArgumentException("beginFieldName or endFieldName is null.");
+        }
+        if(andOr == null){
+            andOr ="";
+        }
+
+        StringBuilder sqlsb= new StringBuilder();
+        String operType = is ? " between " : " not between ";
+        // and status between :beginStatus and :endStatus
+        sqlsb.append(" ").append(andOr).append(" ").append(dbFieldName).append(operType).append(":"+beginFieldName).append(" and ").append(":"+endFieldName);
+        return sqlsb;
+    }
+
+    public static StringBuilder andBetween(String dbFieldName,Object[] values,boolean is){
+        return dbBetween("and",dbFieldName,values,is);
+    }
+    public static StringBuilder dbBetween(String andOr,String dbFieldName,Object[] values,boolean is) {
+        if(values == null){
+            return  null;
+        }
+        Assert.notNull(dbFieldName,"dbFieldName is null.");
+        if(values.length != 2){
+            throw  new IllegalArgumentException("between values.length must = 2.");
+        }
+        if(andOr == null){
+            andOr ="";
+        }
+
+        StringBuilder sqlsb= new StringBuilder();
+        String operType = is ? " between " : " not between ";
+        // and status between :beginStatus and :endStatus
+        sqlsb.append(" ").append(andOr).append(" ").append(dbFieldName).append(operType).append(values[0]).append(" and ").append(values[1]);
+        return sqlsb;
     }
 
     public static StringBuilder list2In(String name, Collection<?> values) {

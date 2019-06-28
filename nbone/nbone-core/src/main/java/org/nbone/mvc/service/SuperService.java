@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.ISuper;
+import org.nbone.mvc.domain.GroupQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,10 +36,15 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 
 	/**
 	 *
-	 * @param objects
-	 * @param  propertys 更新的属性字段 可为空
+	 * @param objects   实体对象列表
+	 * @param  propertys 更新的属性字段 可为空，当为空更新全部字段
 	 */
 	public void batchUpdate(T[] objects,String...propertys);
+	/**
+	 *
+	 * @param objects 实体对象列表
+	 * @param  propertys 更新的属性字段 可为空，当为空更新全部字段
+	 */
 	public void batchUpdate(Collection<T> objects,String...propertys);
 	
 	
@@ -86,14 +92,22 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * getForLimit(index,10,"and status != -1"," order by  create_time DESC"); <br>
 	 *
 	 * getForLimit(index,10," order by  create_time DESC");
-	 * @param object
-	 * @param limit
-	 * @param afterWhere
+	 * @param object 查询实体参数
+	 * @param group  分组查询 可为空
+	 * @param limit 限制返回的大小
+	 * @param afterWhere  order by 子句
 	 * @return
 	 */
-	public List<T> getForLimit(Object object,int limit,String... afterWhere);
-
-	public List<T> queryForLimit(Object object,int limit,String... afterWhere);
+	public List<T> getForLimit(Object object, GroupQuery group,int limit, String... afterWhere);
+	/**
+	 *
+	 * @param object 查询实体参数
+	 * @param group  分组查询 可为空
+	 * @param limit 限制返回的大小
+	 * @param afterWhere  order by 子句
+	 * @return
+	 */
+	public List<T> queryForLimit(Object object,GroupQuery group,int limit,String... afterWhere);
 	
 	
 	//按需字段查询
@@ -119,11 +133,12 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	/**
 	 * 
 	 * @param object
+	 * @param property 计算字段名称 可为空，为空时 参数值不为空且为数字的加入进行数学计算
 	 * @param mathOperation
 	 * @return
-	 * @see SqlSession#updateMathOperation(Object, MathOperation)
+	 * @see org.nbone.persistence.SqlSession#updateMathOperation(Object, String, MathOperation)
 	 */
-	public int updateMathOperation(Object object, MathOperation mathOperation);
+	public int updateMathOperation(Object object,String property, MathOperation mathOperation);
 	
 
 

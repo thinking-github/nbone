@@ -90,7 +90,7 @@ public interface SqlSession  extends QueryOperations{
 	/**
 	 * 有选择的更新实体
 	 * @param object 更新参数
-	 * @param whereString 更新条件
+	 * @param whereString 更新条件 where sql 语句 例如 and name = chen
 	 * @return
 	 */
 	public int updateSelective(Object object, String whereString);
@@ -160,9 +160,10 @@ public interface SqlSession  extends QueryOperations{
 	/**
 	 * 对数据的字段进行数学运算 (加减乘除...)
 	 * @param object 根据实体不为null参数计算且是数字类型
+	 * @param  property 计算字段名称 可为空，为空时 参数值不为空且为数字的加入进行数学计算
 	 * @param mathOperation
 	 */
-	public int updateMathOperation(Object object,MathOperation mathOperation);
+	public int updateMathOperation(Object object,String property,MathOperation mathOperation);
 	
 	
 	

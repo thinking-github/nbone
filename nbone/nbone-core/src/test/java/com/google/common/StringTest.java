@@ -10,6 +10,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import org.junit.Test;
 
 public class StringTest {
 
@@ -26,16 +27,6 @@ public class StringTest {
 		System.out.println("-----------------------");
 		System.out.println(CaseFormat.UPPER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE).convert("ConstantName"));;
 		
-	
-		System.out.println(CharMatcher.JAVA_UPPER_CASE.trimFrom("UUUkkk"));
-		System.out.println(CharMatcher.JAVA_UPPER_CASE.removeFrom("UUUkkk"));
-		System.out.println(CharMatcher.JAVA_UPPER_CASE.retainFrom("UUUkkk"));
-		System.out.println(CharMatcher.JAVA_UPPER_CASE.replaceFrom("UUUkkk","u"));
-
-
-
-		System.out.println(CharMatcher.javaUpperCase().trimFrom("UUUkkk"));
-		
 		List<String> ss = Arrays.asList("chen","yi","cheng",null);
 		String[] strings = {"1","2","3","4","5"};
 		String join = Joiner.on(",").skipNulls().join(ss);
@@ -49,6 +40,20 @@ public class StringTest {
 		System.out.println(list);
 		
 		
+	}
+
+	@Test
+	public void testCharMatcher(){
+		/*System.out.println(CharMatcher.JAVA_UPPER_CASE.trimFrom("UUUkkk"));
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.removeFrom("UUUkkk"));
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.retainFrom("UUUkkk"));
+		System.out.println(CharMatcher.JAVA_UPPER_CASE.replaceFrom("UUUkkk","u"));*/
+
+		System.out.println(CharMatcher.javaUpperCase().trimFrom("UUUkkk"));
+		System.out.println(CharMatcher.javaUpperCase().removeFrom("UUUkkk"));
+		System.out.println(CharMatcher.javaUpperCase().retainFrom("UUUkkk"));
+		System.out.println(CharMatcher.javaUpperCase().replaceFrom("UUUkkk","u"));
+
 	}
 
 }

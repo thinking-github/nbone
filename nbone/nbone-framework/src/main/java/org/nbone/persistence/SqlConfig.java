@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Data;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.util.SqlUtils;
 
@@ -13,6 +15,7 @@ import org.nbone.persistence.util.SqlUtils;
  * @author thinking
  * @version 1.0 
  */
+@Data
 public class SqlConfig {
 	
     public static final int PrimaryMode = 0 ;
@@ -43,6 +46,10 @@ public class SqlConfig {
      * 字段级别
      */
     private FieldLevel fieldLevel;
+	/**
+	 * 分组查询
+	 */
+    private GroupQuery groupQuery;
     /**
      * 此实体Bean 引用其他的实体Bean列表
      */
@@ -144,34 +151,38 @@ public class SqlConfig {
 		return resultMap;
 	}
 
-	public static String  dbInNumber(String dbFieldName,boolean isIn,String values) {
+	public static String andInNumber(String dbFieldName,boolean isIn,String values) {
+		return dbInNumber("and",dbFieldName,isIn,values);
+	}
+	public static String dbInNumber(String andOr,String dbFieldName,boolean isIn,String values) {
 		if(values == null){
 			return  null;
 		}
 		if(dbFieldName == null){
 			throw  new IllegalArgumentException("dbFieldName  is null.");
 		}
+		if(andOr == null){ andOr = ""; }
 
 		String operType = isIn ? " in " : " not in ";
 		StringBuilder sqlsb= new StringBuilder();
 		// and id in (1,2,3)
-		sqlsb.append(" and ").append(dbFieldName).append(" ").append(operType).append(" (").append(values).append(")");
+		sqlsb.append(" ").append(andOr).append(" ").append(dbFieldName).append(" ").append(operType).append(" (").append(values).append(")");
 		return sqlsb.toString();
 	}
 
-	public  static String  dbBetween(String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
-		if(dbFieldName == null){
-			throw  new IllegalArgumentException("dbFieldName is null.");
-		}
-		if(beginFieldName == null || endFieldName == null){
-			throw  new IllegalArgumentException("beginFieldName or endFieldName is null.");
-		}
 
-		StringBuilder sqlsb= new StringBuilder();
-		String operType = is ? " between " : " not between ";
-		// and status between :beginStatus and :endStatus
-		sqlsb.append(" and ").append(dbFieldName).append(operType).append(":"+beginFieldName).append(" and ").append(":"+endFieldName);
-		return sqlsb.toString();
+	public static String in(String andOr,String dbFieldName, Class<?> nameType, Object values, boolean isIn){
+        StringBuilder sql = SqlUtils.in(andOr,dbFieldName,nameType,values,isIn);
+		return sql != null ? sql.toString():null;
+	}
+
+	public static String dbBetween(String andOr,String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
+		StringBuilder sql = SqlUtils.dbBetween(andOr,dbFieldName,beginFieldName,endFieldName,is);
+		return sql != null ? sql.toString():null;
+	}
+	public static String dbBetween(String andOr,String dbFieldName,Object[] values,boolean is) {
+		StringBuilder sql = SqlUtils.dbBetween(andOr,dbFieldName,values,is);
+		return sql != null ? sql.toString(): null;
 	}
 
 
@@ -306,61 +317,12 @@ public class SqlConfig {
 		this.dbFieldMode = dbFieldMode;
 	}
 
-	public FieldLevel getFieldLevel() {
-		return fieldLevel;
-	}
-
-	public void setFieldLevel(FieldLevel fieldLevel) {
-		this.fieldLevel = fieldLevel;
-	}
-
-	public List<Class<?>> getPojoRefs() {
-		return pojoRefs;
-	}
-
-	public void setPojoRefs(List<Class<?>> pojoRefs) {
-		this.pojoRefs = pojoRefs;
-	}
-
-
-	public int getSqlMode() {
-		return sqlMode;
-	}
-
-	public void setSqlMode(int hqlMode) {
-		this.sqlMode = hqlMode;
-	}
-
-
-	public Map<String, String> getInNumStrMap() {
-		return inNumStrMap;
-	}
-
-	public void setInNumStrMap(Map<String, String> inNumStrMap) {
-		this.inNumStrMap = inNumStrMap;
-	}
-
-	public Map<String, String> getNotinNumStrMap() {
-		return notinNumStrMap;
-	}
-
-	public void setNotinNumStrMap(Map<String, String> notinNumStrMap) {
-		this.notinNumStrMap = notinNumStrMap;
-	}
-
-	public String[] getInStringFields() {
-		return inStringFields;
-	}
 
 	public void setInStringFields(String[] inStringFields) {
 		this.inStringFields = inStringFields;
 		//XXX: stringArray2Map
 		this.inStringFieldsMap = this.stringArray2Map(inStringFields);
 		this.setSqlMode(MiddleMode);
-	}
-
-	public String[] getNotinStringFields() {
-		return notinStringFields;
 	}
 
 	public void setNotinStringFields(String[] notinStringFields) {
@@ -370,55 +332,22 @@ public class SqlConfig {
 		this.setSqlMode(MiddleMode);
 	}
 
-	public Map<String, String> getInStringFieldsMap() {
-		return inStringFieldsMap;
-	}
-
-	public void setInStringFieldsMap(Map<String, String> inStringFieldsMap) {
-		this.inStringFieldsMap = inStringFieldsMap;
-	}
-
-	public Map<String, String> getNotinStringFieldsMap() {
-		return notinStringFieldsMap;
-	}
-
-	public void setNotinStringFieldsMap(Map<String, String> notinStringFieldsMap) {
-		this.notinStringFieldsMap = notinStringFieldsMap;
-	}
-
-	public List getDtField() {
-		return dtField;
-	}
-
-	public void setDtField(List dtField) {
-		this.dtField = dtField;
-	}
-
-	public String[] getOrderFieldASC() {
-		return orderFieldASC;
-	}
 
 	/**
 	 * 当使用jdbc时 使用表字段名称
 	 * @param orderFieldASC
 	 */
-	public void setOrderFieldASC(String... orderFieldASC) {
+	public void setOrderFieldsASC(String... orderFieldASC) {
 		this.orderFieldASC = orderFieldASC;
-	}
-
-	public String[] getOrderFieldDESC() {
-		return orderFieldDESC;
 	}
 
 	/**
 	 * 当使用jdbc时 使用表字段名称
 	 * @param orderFieldDESC
 	 */
-	public void setOrderFieldDESC(String... orderFieldDESC) {
+	public void setOrderFieldsDESC(String... orderFieldDESC) {
 		this.orderFieldDESC = orderFieldDESC;
 	}
 
-    
-	
 
 }

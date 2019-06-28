@@ -19,10 +19,12 @@ import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
 import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
 import org.nbone.framework.spring.support.ComponentFactory;
 import org.nbone.persistence.mapper.FieldMapper;
+import org.nbone.persistence.mapper.MapperUtils;
 import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.util.JpaAnnotationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * @author thinking
@@ -193,6 +195,10 @@ public class MyMapperUtils {
 			}
 			tableMapper.addFieldMapper(dbFieldName, fieldMapper);
 		}
+
+		List<Field> extFields = MapperUtils.getExtFields(entityClass);
+		tableMapper.setExtFields(extFields);
+
 		  //Spring Jdbc
         RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(tableMapper);
         tableMapper.setRowMapper(rowMapper);

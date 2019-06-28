@@ -18,17 +18,17 @@ public class BaseSqlBuilderTest {
 	};
 	@Test
 	public void testbuildSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),(FieldLevel)null,-1);
-		SqlModel<Object> sqlModel1 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),FieldLevel.ALL,-1);
-		SqlModel<Object> sqlModel2 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),FieldLevel.ID,-1);
-		SqlModel<Object> sqlModel3 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),FieldLevel.TWO,-1);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,(FieldLevel)null,-1);
+		SqlModel<Object> sqlModel1 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,FieldLevel.ALL,-1);
+		SqlModel<Object> sqlModel2 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,FieldLevel.ID,-1);
+		SqlModel<Object> sqlModel3 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,FieldLevel.TWO,-1);
 		System.out.println(sqlModel.getSql());
 		System.out.println(sqlModel1.getSql());
 	}
 	
 	//@Test
 	public void testbuildSimpleSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,SqlConfig.PrimaryMode);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,null,SqlConfig.PrimaryMode);
 		System.out.println(sqlModel.getSql());
 		
 	}
@@ -72,7 +72,7 @@ public class BaseSqlBuilderTest {
 	public void testbuildUpdateSql(){
 		TsProjectDTO object = getTsProjectDTO();
 		object.setId(9L);
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,null,null);
 		System.out.println(sqlModel.getSql());
 	}
 	
@@ -87,8 +87,8 @@ public class BaseSqlBuilderTest {
 		
 		sqlConfig.addSqlPropertyRange("createDt","modifyDt", new Date());
 		
-		sqlConfig.setOrderFieldASC("id","modify_dt");
-		sqlConfig.setOrderFieldDESC("create_dt");
+		sqlConfig.setOrderFieldsASC("id","modify_dt");
+		sqlConfig.setOrderFieldsDESC("create_dt");
 		SqlModel<Map<String, ?>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
 		
 		System.out.println(sqlModel.getSql());
@@ -109,7 +109,7 @@ public class BaseSqlBuilderTest {
 		
 		SqlModel<Object> sqlModel= sqlBuilder.selectSql(object, sqlConfig);
 		
-		SqlModel<Object> sqlModel2 = sqlBuilder.updateMathOperationSql(object, MathOperation.ADD);
+		SqlModel<Object> sqlModel2 = sqlBuilder.updateMathOperationSql(object,null, MathOperation.ADD);
 		
 		SqlModel<Object> sqlModel3 = sqlBuilder.countSql(object);
 		

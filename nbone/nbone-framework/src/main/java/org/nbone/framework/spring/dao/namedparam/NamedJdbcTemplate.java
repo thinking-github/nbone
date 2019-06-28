@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import com.sun.javafx.collections.MappingChange;
 import org.nbone.framework.spring.data.domain.PageImpl;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.SqlConfig;
@@ -67,7 +68,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 */
 	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
 
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,-1,afterWhere);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,null,-1,afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}
@@ -80,7 +81,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 */
 	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
 
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null, SqlConfig.PrimaryMode,afterWhere);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,null, SqlConfig.PrimaryMode,afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 
@@ -107,7 +108,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 */
 	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
 
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,SqlConfig.PrimaryMode,afterWhere);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,null,SqlConfig.PrimaryMode,afterWhere);
 		
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
@@ -123,23 +124,25 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	}
 
 
+	/**
+	 *
+	 * @param object 参数实体对象，不为空的作为参数查询
+	 * @param group  分组对象， 可为空
+	 * @param limit  限制返回数量
+	 * @param afterWhere where 之后的语句 增加查询条件 /order by
+	 * @param <T>
+	 * @return
+	 */
+	public <T> List<T> getForLimit(Object object,GroupQuery group,int limit, String... afterWhere){
 
-	public <T> List<T> getForLimit(Object object,int limit,String... afterWhere){
-		String afterWhereString = null;
-		if(afterWhere != null && afterWhere.length > 0) {
-			afterWhereString = afterWhere[0];
-		}
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,-1,afterWhereString);
-		return processLimit(sqlModel, object, limit);
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,group,null,-1,afterWhere);
+		return processLimit(sqlModel, object, group,limit);
 
 	}
-	public <T> List<T> queryForLimit(Object object ,int limit,String... afterWhere){
-		String afterWhereString = null;
-		if(afterWhere != null && afterWhere.length > 0) {
-			afterWhereString = afterWhere[0];
-		}
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,SqlConfig.PrimaryMode,afterWhereString);
-		return processLimit(sqlModel, object, limit);
+	public <T> List<T> queryForLimit(Object object,GroupQuery group,int limit,String... afterWhere){
+
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,group,null,SqlConfig.PrimaryMode,afterWhere);
+		return processLimit(sqlModel, object,group, limit);
 	}
 
 
@@ -202,7 +205,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> List<T>  processLimit(SqlModel<Object> sqlModel,Object object ,int pageSize,String... afterWhere){
+	private <T> List<T>  processLimit(SqlModel<Object> sqlModel,Object object,GroupQuery group, int pageSize,String... afterWhere){
 		if(sqlModel == null){
 			throw new BuilderSQLException("sqlModel is null.");
 		}
@@ -214,6 +217,11 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 		String pageSql  = sqlModel.getPageSql(1, pageSize);
 
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+
+		RowMapper<T> rowMapperGroup =  sqlBuilder.getRowMapper(group);
+		if(rowMapperGroup != null){
+			rowMapper = rowMapperGroup;
+		}
 		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
 
 		List<T> rows = jdbcTemplate.query(getPreparedStatementCreator(pageSql,paramSource), rowMapper);

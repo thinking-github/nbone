@@ -2,6 +2,7 @@ package org.nbone.persistence.mapper;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.*;
 
 import javax.persistence.Table;
@@ -64,7 +65,11 @@ public class TableMapper<T> {
      * 以JavaBean属性为Key
      */
     private Map<String, PropertyDescriptor> mappedPropertys;
-    
+
+	/**
+	 * 实体类中的扩展字段 用于in 查询 和 between 查询
+	 */
+	private List<Field> extFields;
     /**
      * 数据库表字段映射列表
      */
@@ -321,7 +326,21 @@ public class TableMapper<T> {
 		return this;
 	}
 
-	
+	public List<Field> getExtFields() {
+		return extFields;
+	}
+
+	public void setExtFields(List<Field> extFields) {
+		this.extFields = extFields;
+	}
+
+	public void addExtFields(Field extField) {
+		if(this.extFields == null){
+			this.extFields = new ArrayList<Field>();
+		}
+		extFields.add(extField);
+	}
+
 	public Collection<FieldMapper> getFieldMapperList() {
 		return Collections.unmodifiableCollection(fieldMappers.values());
 	}
@@ -459,6 +478,16 @@ public class TableMapper<T> {
 		selectAllSql.append(" FROM ").append(this.getDbTableName());
 		
 		return selectAllSql.toString();
+	}
+
+	/**
+	 *   select id,count(id) countNum  from User
+	 */
+	public String getGroupSelectAllSql(String queryColumns) {
+		// query column
+		StringBuilder selectAllSql = new StringBuilder();
+		selectAllSql.append("SELECT ").append(queryColumns).append(" FROM ").append(this.getDbTableName());
+		return  selectAllSql.toString();
 	}
 
    /**

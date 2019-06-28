@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.nbone</groupId>
 		<artifactId>nbone</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -22,7 +22,7 @@
 		<hibernate.version>3.6.10.Final</hibernate.version>
 		<mybatis.version>3.4.4</mybatis.version>
 		<mybatis-spring.version>1.3.0</mybatis-spring.version>
-		<jodd.version>3.7</jodd.version>
+		<jodd.version>3.8</jodd.version>
 	</properties>
 
 
@@ -453,7 +453,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>4.12</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>

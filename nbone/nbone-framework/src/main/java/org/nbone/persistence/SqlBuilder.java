@@ -5,9 +5,12 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.nbone.lang.MathOperation;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.exception.BuilderSQLException;
+import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.model.SqlModel;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * 构建ORM映射超级接口
@@ -37,31 +40,34 @@ public interface SqlBuilder {
 	 /**
 	  * 由传入的对象生成update sql语句
 	  *
-	  * @param object
-	  * @param  propertys 更新的属性字段 可为空
+	  * @param object  实体对象
+	  * @param  propertys 更新的属性字段 可为空，为空时选择全部字段
+	  * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> updateSql(Object object,String... propertys) throws BuilderSQLException;
+	 public SqlModel<Object> updateSql(Object object,String[] propertys,String[] propertysCondition) throws BuilderSQLException;
 
 	/**
 	 * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
-	 * @param object
+	 * @param object 实体对象
+	 * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
 	 * @return
 	 * @throws BuilderSQLException
 	 */
-	public SqlModel<Object> updateSelectiveSql(Object object) throws BuilderSQLException;
+	public SqlModel<Object> updateSelectiveSql(Object object,String[] propertysCondition) throws BuilderSQLException;
 
 	/**
 	 * 由传入的对象生成update sql语句
 	 * @param  propertys 更新的属性字段 可为空
 	 * @param object
 	 * @param isSelective 是否只更新不为null的值
+	 * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
 	 * @param whereSql    where 部分sql id=1 and name ='chen',  可为null
 	 * @return
 	 * @throws BuilderSQLException
 	 */
-	public SqlModel<Object> updateSql(String[] propertys,Object object,boolean isSelective,String whereSql) throws BuilderSQLException;
+	public SqlModel<Object> updateSql(String[] propertys,Object object,boolean isSelective,String[] propertysCondition,String whereSql) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的Map对象生成update sql语句
@@ -73,13 +79,15 @@ public interface SqlBuilder {
 	  */
 	 public <T> SqlModel<Map<String,?>> updateSql(Class<T> entityClass,Map<String,?> fieldsMap,boolean isDbFieldName) throws BuilderSQLException;
 	 /**
-	  * 由传入的对象生成update sql语句(参数值不为空且为数字的加入进行数学计算)
+	  * 由传入的对象生成update sql语句 <br>
+	  *     (首选根据对propertys字段进行计算， 当propertys为空时，参数值不为空且为数字的加入进行数学计算)
 	  * @param object
+	  * @param  property 计算字段名称 可为空，为空时 参数值不为空且为数字的加入进行数学计算
 	  * @param mathOperation 数学运算类型 {@link MathOperation}
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> updateMathOperationSql(Object object,MathOperation mathOperation) throws BuilderSQLException;
+	 public SqlModel<Object> updateMathOperationSql(Object object,String property,MathOperation mathOperation) throws BuilderSQLException;
 
 
 
@@ -169,14 +177,15 @@ public interface SqlBuilder {
 	 * 	<li> middleModel: </li>
 	 * 	<li>highModel: </li>
 	 * </ol>
-	 * @param object
+	 * @param object  参数对象
+	 * @param group  构建分组查询
 	 * @param fieldLevel 根据字段级别查询,参数可为null
 	 * @param  model sqlConfig构建模型级别
 	 * @param afterWhere group by /order  by 子句 参数可为null
 	 * @return
 	 * @throws BuilderSQLException
 	 */
-	 public <T> SqlModel<T> sqlConfigSelectSql(Object object,FieldLevel fieldLevel,int model,String... afterWhere) throws BuilderSQLException;
+	 public <T> SqlModel<T> sqlConfigSelectSql(Object object,GroupQuery group,FieldLevel fieldLevel, int model, String... afterWhere) throws BuilderSQLException;
 
 	 /**
 	  * 根据实体中的参数查询
@@ -195,7 +204,10 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public SqlModel<Object> selectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
-	 
+
+
+	 public <T>RowMapper<T> getRowMapper(GroupQuery groupQuery);
+
 	 
 	 
 

@@ -26,6 +26,7 @@ import org.springframework.data.domain.Page;
  * @param <P> DomainClass 
  * @param <IdType> 
  */
+@SuppressWarnings(value = "unchecked")
 public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> extends BaseObject  implements SuperService<T, IdType>{
 	
 	private BaseServiceDomain<P,IdType> baseServiceDomain   = new BaseServiceDomain<P, IdType>();
@@ -352,9 +353,9 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public int updateMathOperation(Object object, MathOperation mathOperation) {
+	public int updateMathOperation(Object object,String property, MathOperation mathOperation) {
 		P bean = this.copyProperties(object, targetClass);
-		return baseServiceDomain.updateMathOperation(bean, mathOperation);
+		return baseServiceDomain.updateMathOperation(bean,property, mathOperation);
 	}
 
 	

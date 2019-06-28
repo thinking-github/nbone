@@ -3,6 +3,7 @@ package org.nbone.persistence;
 import java.util.Collection;
 import java.util.List;
 
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.springframework.data.domain.Page;
 /**
@@ -50,6 +51,17 @@ public interface QueryOperations {
 	 * @return
 	 */
 	public <T> List<T> getForList(Object object,FieldLevel fieldLevel,String... afterWhere);
+
+	/**
+	 *
+	 * @param object 查询实体参数
+	 * @param group  分组查询 可为空
+	 * @param fieldLevel 查询字段级别
+	 * @param afterWhere group by /order  by 子句 参数可为null
+	 * @param <T>
+	 * @return
+	 */
+	public <T> List<T> getForList(Object object,GroupQuery group,FieldLevel fieldLevel,String... afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式 number use = /String use like）
@@ -139,20 +151,22 @@ public interface QueryOperations {
 	/**
 	 * 按照实体中的参数查询实体列表并限制返回数量  (参数全部使用 等号 =)
 	 * @param object 查询实体参数
+	 * @param group  分组查询 可为空
 	 * @param limit 限制返回的大小
 	 * @param afterWhere  group by/order by 子句
 	 * @return
 	 */
-	public  <T> List<T> getForLimit(Object object, int limit,String... afterWhere);
+	public  <T> List<T> getForLimit(Object object,GroupQuery group,int limit, String... afterWhere);
 
 	/**
 	 * 按照实体中的参数查询实体列表并限制返回数量（特殊情况下不同得实现方式 number use = /String use like）
 	 * @param object 查询实体参数
+	 * @param group  分组查询 可为空
 	 * @param limit 限制返回的大小
 	 * @param afterWhere  group by/order by 子句
 	 * @return
 	 */
-	public  <T> List<T> queryForLimit(Object object, int limit,String... afterWhere);
+	public  <T> List<T> queryForLimit(Object object,GroupQuery group,int limit,String... afterWhere);
 
 
 	/**

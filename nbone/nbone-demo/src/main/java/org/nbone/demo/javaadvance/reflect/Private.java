@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
  * @version 1.0
  * @since 2019-04-01
  */
+@SuppressWarnings(value = "unchecked")
 public class Private {
 
     public static void main(String[] args) throws Exception {

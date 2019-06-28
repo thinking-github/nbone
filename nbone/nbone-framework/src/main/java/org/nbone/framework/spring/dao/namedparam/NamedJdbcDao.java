@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.lang.MathOperation;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.BaseSqlSession;
 import org.nbone.persistence.BatchSqlSession;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -130,7 +132,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public int update(Object object) {
 		
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,null,null);
 		checkSqlModel(sqlModel);
 		
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -140,7 +142,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int updateSelective(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.updateSelectiveSql(object);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSelectiveSql(object,null);
 		checkSqlModel(sqlModel);
 		
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -162,7 +164,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public int updateSelective(Object object, String whereString) {
 
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(null,object,true,whereString);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(null,object,true,null,whereString);
 		checkSqlModel(sqlModel);
 
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -300,18 +302,14 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public <T> List<T> getForList(Object object,String... afterWhere) {
 		return getForList(object, (FieldLevel)null,afterWhere);
-	}	
-	
-
+	}
 	@Override
 	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,fieldLevel,-1,afterWhere);
-		checkSqlModel(sqlModel);
-			
-		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
-		return list;
+		return list(object,null,fieldLevel,-1,afterWhere);
+	}
+	@Override
+	public <T> List<T> getForList(Object object, GroupQuery group, FieldLevel fieldLevel, String... afterWhere) {
+		return list(object,group,fieldLevel,-1,afterWhere);
 	}
 
 
@@ -322,14 +320,24 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 	@Override
 	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,fieldLevel,SqlConfig.PrimaryMode,afterWhere);
-		checkSqlModel(sqlModel);
-			
-		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
-		return list;
+		return list(object,null,fieldLevel,SqlConfig.PrimaryMode,afterWhere);
 	}
 
+	private <T> List<T> list(Object object, GroupQuery group, FieldLevel fieldLevel, int model, String... afterWhere){
+		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,group,fieldLevel,model,afterWhere);
+		checkSqlModel(sqlModel);
+
+		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+
+		RowMapper<T> rowMapperGroup =  sqlBuilder.getRowMapper(group);
+		if(rowMapperGroup != null){
+			rowMapper = rowMapperGroup;
+		}
+
+		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
+		return list;
+
+	}
 	@Override
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
 		
@@ -373,32 +381,41 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int[] batchUpdate(Object[] objects,String...propertys) {
+		return batchUpdate(objects,propertys,null);
+	}
+	
+	@Override
+	public int[] batchUpdate(Collection<?> objects,String...propertys) {
+		return batchUpdate(objects,propertys,null);
+	}
+
+	@Override
+	public int[] batchUpdate(Object[] objects, String[] propertys, String... conditionPropertys) {
 		//XXX: thinking 共享第一实体的sql
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0],propertys);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0],propertys,conditionPropertys);
 		checkSqlModel(sqlModel);
-			
+
 		SqlParameterSource[] batchArgs = new BeanPropertySqlParameterSource[objects.length];
 		for (int i = 0; i < objects.length; i++) {
 			batchArgs[i] = new BeanPropertySqlParameterSource(objects[i]);
 		}
 		int[] rows = namedPjdbcTemplate.batchUpdate(sqlModel.getSql(), batchArgs);
 		return rows;
-		
 	}
-	
+
 	@Override
-	public int[] batchUpdate(Collection<?> objects,String...propertys) {
+	public int[] batchUpdate(Collection<?> objects, String[] propertys, String... conditionPropertys) {
 		SqlParameterSource[] batchArgs = new BeanPropertySqlParameterSource[objects.size()];
 		String sql = null;
 		int index = 0;
 		for (Object object : objects) {
 			if(index == 0 ){
 				//XXX: thinking 共享第一实体的sql
-				SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,propertys);
+				SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,propertys,conditionPropertys);
 				sql = sqlModel.getSql();
 			}
 			batchArgs[index] = new BeanPropertySqlParameterSource(object);
-			
+
 			index ++;
 		}
 		int[] rows = namedPjdbcTemplate.batchUpdate(sql, batchArgs);
@@ -472,13 +489,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public <T> List<T> getForLimit(Object object, int limit, String... afterWhere) {
-		return namedJdbcTemplate.getForLimit(object,limit,afterWhere);
+	public <T> List<T> getForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
+		return namedJdbcTemplate.getForLimit(object,group,limit,afterWhere);
 	}
 
 	@Override
-	public <T> List<T> queryForLimit(Object object, int limit, String... afterWhere) {
-		return namedJdbcTemplate.queryForLimit(object,limit,afterWhere);
+	public <T> List<T> queryForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
+		return namedJdbcTemplate.queryForLimit(object,group,limit,afterWhere);
 	}
 
 
@@ -525,11 +542,11 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
      * MathOperation is null MathOperation set +
      */
 	@Override
-	public  int updateMathOperation(Object object, MathOperation mathOperation) {
+	public  int updateMathOperation(Object object,String property, MathOperation mathOperation) {
 		if(mathOperation == null ){
 			mathOperation = MathOperation.ADD;
 		}
-		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object, mathOperation);
+		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object,property, mathOperation);
 		checkSqlModel(sqlModel);
 		
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);

@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.nbone</groupId>
 		<artifactId>nbone-parent</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.1.1-SNAPSHOT</version>
 		<relativePath>../nbone-parent/pom.xml</relativePath>
 	</parent>
 
@@ -130,17 +130,11 @@
 			<artifactId>mybatis-plus</artifactId>
 			<version>1.4.8</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>
+			<version>4.12</version>
 		</dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+
+	</dependencies>
 </project>

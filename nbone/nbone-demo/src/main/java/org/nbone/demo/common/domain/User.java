@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class User implements Serializable {
+public class User extends BaseDomain implements Serializable {
 	
 	/**
 	 * 

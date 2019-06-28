@@ -197,22 +197,32 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 
 	@Override
 	public int[] batchUpdate(Object[] objects,String...propertys) {
-		return null;
+		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
 	}
 
 	@Override
 	public int[] batchUpdate(Collection<?> objects,String...propertys) {
-		return null;
+		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
+	}
+
+	@Override
+	public int[] batchUpdate(Object[] objects, String[] propertys, String... conditionPropertys) {
+		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
+	}
+
+	@Override
+	public int[] batchUpdate(Collection<?> objects, String[] propertys, String... conditionPropertys) {
+		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
 	}
 
 	@Override
 	public <T> int[] batchDelete(Class<T> clazz, Serializable[] ids) {
-		return null;
+		throw new UnsupportedOperationException("unsupported batchDelete operation.");
 	}
 
 	@Override
 	public <T> int[] batchDelete(Class<T> clazz, List<Serializable> ids) {
-		return null;
+		throw new UnsupportedOperationException("unsupported batchDelete operation.");
 	}
 
 

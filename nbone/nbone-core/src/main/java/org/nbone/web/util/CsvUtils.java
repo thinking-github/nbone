@@ -21,6 +21,8 @@ import java.util.List;
  * @since 2019/6/18
  */
 public class CsvUtils {
+
+    public final static  String  ENCODING = "encoding";
     /**
      * 标签,国家,语言,产品
      * 卿博士,cn,zh,cat
@@ -41,11 +43,18 @@ public class CsvUtils {
                            String[] header,
                            String... nameMapping) throws IOException {
         String encode = request.getParameter("encoding");
+        String dataEncoding  = response.getHeader(ENCODING);
+
         if (encode == null) {
             encode = CharsetConstant.CHARSET_UTF8;
         }
+
         //Writer writer = WebIOUtils.getWriter(response, ContentType.CSV_UTF8_VALUE,csvFileName);
         OutputStream os = WebIOUtils.getOutputStream(response, ContentType.CSV_UTF8_VALUE, csvFileName);
+        //office excel 乱码问题！
+        if(dataEncoding != null && CharsetConstant.CHARSET_UTF8_BOM.equals(dataEncoding.toUpperCase())){
+            os.write(CharsetConstant.UTF_8_BOM_HEAD);
+        }
         OutputStreamWriter writer = new OutputStreamWriter(os, Charset.forName(encode));
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(writer, CsvPreference.STANDARD_PREFERENCE);

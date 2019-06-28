@@ -27,6 +27,7 @@ import static org.nbone.persistence.enums.QueryType.*;
  * @since 2019/6/19
  */
 @Slf4j
+@SuppressWarnings(value = "unchecked")
 public class ExampleUtils {
 
     private static final List<String> IGNORE_PROPERTY = ImmutableList.of("class", "serialVersionUID");

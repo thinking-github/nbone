@@ -17,13 +17,18 @@ public interface CharsetConstant {
     
     public static final Charset GBK = Charset.forName("GBK");
     public static final Charset GB2312 = Charset.forName("GB2312");
-    
+
+	/**
+	 * UTF-8-BOM 头编码
+	 */
+	public static final byte[] UTF_8_BOM_HEAD = new byte[] { (byte) 0xEF, (byte) 0xBB,(byte) 0xBF };
     
     /**
 	 * 字符编码
 	 */
 	public final static String CHARSET_ISO_8859_1 ="ISO-8859-1";
 	public final static String CHARSET_UTF8 ="UTF-8";
+	public final static String CHARSET_UTF8_BOM ="UTF-8-BOM";
 	public final static String CHARSET_GBK = "GBK";
 	public final static String CHARSET_GB2312 = "GB2312";
 

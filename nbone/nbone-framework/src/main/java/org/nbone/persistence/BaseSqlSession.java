@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.lang.MathOperation;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
@@ -51,6 +52,10 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 	@Override
 	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported getForList operation.");
+	}
+	@Override
+	public <T> List<T> getForList(Object object, GroupQuery group, FieldLevel fieldLevel, String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 
@@ -98,12 +103,12 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <T> List<T> getForLimit(Object object, int limit, String... afterWhere) {
+	public <T> List<T> getForLimit(Object object, GroupQuery group, int limit, String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForLimit operation.");
 	}
 
 	@Override
-	public <T> List<T> queryForLimit(Object object, int limit, String... afterWhere) {
+	public <T> List<T> queryForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported queryForLimit operation.");
 	}
 
@@ -216,7 +221,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public  int updateMathOperation(Object object, MathOperation mathOperation) {
+	public  int updateMathOperation(Object object,String property, MathOperation mathOperation) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 

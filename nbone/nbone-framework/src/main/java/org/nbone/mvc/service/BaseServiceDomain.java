@@ -11,6 +11,7 @@ import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
 import org.nbone.lang.BaseObject;
 import org.nbone.lang.MathOperation;
+import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlConfig;
@@ -405,15 +406,15 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 
 	@Override
-	public List<P> getForLimit(Object object, int limit, String... afterWhere) {
+	public List<P> getForLimit(Object object, GroupQuery group, int limit, String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.getForLimit(object, limit,afterWhere);
+		return namedJdbcDao.getForLimit(object,group, limit,afterWhere);
 	}
 
 	@Override
-	public List<P> queryForLimit(Object object, int limit, String... afterWhere) {
+	public List<P> queryForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.queryForLimit(object, limit,afterWhere);
+		return namedJdbcDao.queryForLimit(object,group, limit,afterWhere);
 	}
 
 	/*
@@ -430,9 +431,9 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return namedJdbcDao.getForListWithFieldNames(object, fieldNames, false);
 	}
 	@Override
-	public int updateMathOperation(Object object, MathOperation mathOperation) {
+	public int updateMathOperation(Object object,String property, MathOperation mathOperation) {
 		checkBuilded();
-		return namedJdbcDao.updateMathOperation(object, mathOperation);
+		return namedJdbcDao.updateMathOperation(object,property, mathOperation);
 	}
 
 	/**
