@@ -35,6 +35,7 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -142,12 +143,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int updateSelective(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.updateSelectiveSql(object,null);
-		checkSqlModel(sqlModel);
-		
-		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
-		
-		return namedPjdbcTemplate.update(sqlModel.getSql(), paramSource);
+		//SqlModel<Object> sqlModel = sqlBuilder.updateSelectiveSql(object,null);
+		return updateSelective(object,(String) null);
 	}
 
 	
@@ -224,26 +221,23 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public <T> T get(Class<T> clazz, Serializable id) {
 		SqlModel<Map<String,?>> sqlModel = sqlBuilder.selectSqlById(clazz, id);
 		checkSqlModel(sqlModel);
-		//RowMapper<T> rowMapper = DbMappingBuilder.ME.getTableMapper(clazz).getRowMapper();
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(), sqlModel.getParameter(),rowMapper);
-		int row ;
-		if(list != null && (row = list.size()) > 0){
-			if(row > 1){
-				logger.warn("Primary Key query result return multiple lines ["+row+"].thinking");
-			}
-			return list.get(0);
-		}
-		return null;
+
+		//List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),sqlModel.getParameter() ,rowMapper);
+		return getOne(sqlModel.getSql(), new MapSqlParameterSource(sqlModel.getParameter()),rowMapper);
 	}
 
 	@Override
 	public <T> T get(Object object){
 		SqlModel<Object> sqlModel = sqlBuilder.selectSqlById(object);
 		checkSqlModel(sqlModel);
-			
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
+
+		return getOne(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
+	}
+
+	private <T> T getOne(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper){
+		List<T> list = namedPjdbcTemplate.query(sql,paramSource,rowMapper);
 		int row ;
 		if(list != null && (row = list.size()) > 0){
 			if(row > 1){
@@ -253,7 +247,6 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		}
 		return null;
 	}
-	
 	
 	
 	
@@ -391,6 +384,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int[] batchUpdate(Object[] objects, String[] propertys, String... conditionPropertys) {
+		if(objects == null || objects.length <= 0){
+			return new int[] {0};
+		}
 		//XXX: thinking 共享第一实体的sql
 		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0],propertys,conditionPropertys);
 		checkSqlModel(sqlModel);
@@ -405,6 +401,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int[] batchUpdate(Collection<?> objects, String[] propertys, String... conditionPropertys) {
+		if(objects == null || objects.size() <= 0){
+			return new int[] {0};
+		}
 		SqlParameterSource[] batchArgs = new BeanPropertySqlParameterSource[objects.size()];
 		String sql = null;
 		int index = 0;
@@ -424,6 +423,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public <T> int[] batchDelete(Class<T> clazz, List<Serializable> ids) {
+		 if(ids == null || ids.size() <= 0){
+			return new int[] {0};
+		 }
 		//XXX: thinking 共享第一实体的sql
 		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(clazz);
 		 String sql  = tableMapper.getDeleteSqlWithId().toString();
@@ -446,6 +448,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public <T> int[] batchDelete(Class<T> clazz, Serializable[] ids) {
+		if(ids == null || ids.length <= 0){
+			return new int[] {0};
+		}
 		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(clazz);
 		 String sql  = tableMapper.getDeleteSqlWithId().toString();
 		 final Serializable[] tempids = ids;

@@ -60,7 +60,7 @@ public interface SqlBuilder {
 	/**
 	 * 由传入的对象生成update sql语句
 	 * @param  propertys 更新的属性字段 可为空
-	 * @param object
+	 * @param object   更新实体数据
 	 * @param isSelective 是否只更新不为null的值
 	 * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
 	 * @param whereSql    where 部分sql id=1 and name ='chen',  可为null

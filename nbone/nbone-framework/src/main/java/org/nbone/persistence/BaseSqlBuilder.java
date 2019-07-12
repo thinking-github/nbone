@@ -940,5 +940,16 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         return tableMapper;
     }
 
+    public static <E> TableMapper<E> buildTableMapper(String namespace, String id) {
+        TableMapper<E> tableMapper;
+        synchronized (DbMappingBuilder.ME) {
+            //load
+            tableMapper = MyMapperUtils.resultMap2TableMapper(namespace, id);
+            DbMappingBuilder.ME.addTableMapper(tableMapper.getEntityClazz(), tableMapper);
+
+        }
+        return tableMapper;
+    }
+
 
 }

@@ -12,7 +12,7 @@ import java.util.Map;
  * @author thinking
  * @version 1.0 
  * @see org.apache.ibatis.type.JdbcType
- * @see java.sql.Types
+ * @see Types
  */
 public enum JdbcType {
 

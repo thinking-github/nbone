@@ -93,7 +93,25 @@ public class MyMapperUtils {
 		return  tableName;
 
 	}
-	
+
+	/**
+	 * 获取全部有效的 resultMap
+ 	 */
+	public static  List<ResultMapping> getResultMappings(){
+		List resultMaps = new ArrayList();
+		for (Object resultMap : configuration.getResultMaps()) {
+			if(resultMap instanceof  ResultMap && ((ResultMap)resultMap).getResultMappings().size() > 0){
+				ResultMap mapping = (ResultMap) resultMap;
+				if(mapping.getResultMappings().size() == mapping.getIdResultMappings().size()){
+					//没有设置主键
+					logger.warn("表结构信息没有设置主键");
+				}
+				resultMaps.add(resultMap);
+			}
+		}
+		return resultMaps;
+	}
+
 	public static  ResultMap getResultMap(String namespace,String id) {
 		StringBuilder fullId = new StringBuilder();
 		if(namespace != null){
@@ -134,16 +152,26 @@ public class MyMapperUtils {
 		return null;
 	}
 
-	
+	/**
+	 *
+	 * @param entityClass 可为空，当为空时使用 ResultMap type
+	 * @param namespace
+	 * @param id
+	 * @param <E>
+	 * @return
+	 */
 	public static <E> TableMapper<E> resultMap2TableMapper(Class<E> entityClass,String namespace,String id) {
+		ResultMap resultMap = getResultMap(namespace,id);
+		if(entityClass == null){
+			entityClass = (Class<E>) resultMap.getType();
+		}
 		String tableName  = getTableName(namespace,entityClass);
 		
 		if(tableName == null){
 			//logger.warn("mybatis resultMap not has table name mapping.--thinking");
 			logger.error(entityClass.getName() +" tableName is null.");
 		}
-		ResultMap resultMap = getResultMap(namespace,id);
-		Class<?>  type  = resultMap.getType();
+
 		List<ResultMapping> idsResultMapping  = resultMap.getIdResultMappings();
 		List<ResultMapping>  attrsResultMapping =   resultMap.getResultMappings();
 		
@@ -207,12 +235,9 @@ public class MyMapperUtils {
 		
 		return tableMapper;
 	}
-	
-	
-	
-	
-	
-	
-	
+
+	public static <E> TableMapper<E> resultMap2TableMapper(String namespace,String id) {
+		return  resultMap2TableMapper(null,namespace,id);
+	}
 
 }

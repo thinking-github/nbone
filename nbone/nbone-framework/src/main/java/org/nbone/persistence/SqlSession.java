@@ -65,7 +65,7 @@ public interface SqlSession  extends QueryOperations{
 	
 	/**
 	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)
-	 * @param object
+	 * @param object 更新实体参数
 	 * @return
 	 */
 	public int updateSelective(Object object);
@@ -89,8 +89,8 @@ public interface SqlSession  extends QueryOperations{
 
 	/**
 	 * 有选择的更新实体
-	 * @param object 更新参数
-	 * @param whereString 更新条件 where sql 语句 例如 and name = chen
+	 * @param object 更新实体参数
+	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，为空时默认使用主键作为条件
 	 * @return
 	 */
 	public int updateSelective(Object object, String whereString);

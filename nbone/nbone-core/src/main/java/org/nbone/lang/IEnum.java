@@ -27,4 +27,33 @@ public interface IEnum<T> {
      */
     public String getDescription();
 
+	/**
+	 * 根据code 获取枚举对象
+	 * @param enumClass
+	 * @param code String / int
+	 * @param <E>
+	 * @return
+	 */
+	public static <E extends Enum<?> & IEnum> E codeOf(Class<E> enumClass, Object code) {
+		E[] enumConstants = enumClass.getEnumConstants();
+		for (E e : enumConstants) {
+			if (e.getCode().equals(code)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 根据code 获取枚举名称信息
+	 * @param enumClass
+	 * @param code
+	 * @param <E>
+	 * @return
+	 */
+	public static <E extends Enum<?> & IEnum> String getName(Class<E> enumClass, Object code) {
+		E eenum = codeOf(enumClass, code);
+		return null == eenum ? "" : eenum.getName();
+	}
+
 }
