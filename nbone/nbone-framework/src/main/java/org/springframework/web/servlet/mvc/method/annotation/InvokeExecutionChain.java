@@ -131,7 +131,7 @@ public class InvokeExecutionChain {
                 InvokeInterceptor interceptor = interceptors[i];
                 if (interceptor instanceof MappedInvokeInterceptor) {
                     MappedInvokeInterceptor mappedInterceptor = (MappedInvokeInterceptor) interceptor;
-                    if (mappedInterceptor.matches(lookupPath, this.pathMatcher)) {
+                    if (mappedInterceptor.matches(lookupPath, this.pathMatcher,request)) {
                         mappedInterceptor.preInvoke(webRequest,args);
                     }
 

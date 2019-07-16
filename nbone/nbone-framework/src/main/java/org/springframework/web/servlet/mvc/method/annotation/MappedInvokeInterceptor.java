@@ -1,8 +1,14 @@
 package org.springframework.web.servlet.mvc.method.annotation;
 
+import com.google.common.collect.Sets;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 /**
  *  Controller Method  方法拦截器代理和映射器
@@ -20,6 +26,9 @@ public class MappedInvokeInterceptor implements InvokeInterceptor{
     private final InvokeInterceptor interceptor;
 
     private PathMatcher pathMatcher;
+
+    //new add thinking
+    private Set<RequestMethod> methods;
 
 
     /**
@@ -102,6 +111,49 @@ public class MappedInvokeInterceptor implements InvokeInterceptor{
             }
             return false;
         }
+    }
+
+
+    /**
+     *  请求路径匹配 and 请求方法匹配
+     * @param lookupPath
+     * @param pathMatcher
+     * @param request
+     * @return
+     */
+    public boolean matches(String lookupPath, PathMatcher pathMatcher, HttpServletRequest request) {
+        return  matches(lookupPath,pathMatcher) && matchRequestMethod(request.getMethod());
+    }
+
+    /**
+     *   当没有设置允许的方法时methods，全部放行, 如果设置了 method 只允许匹配的放行
+     * @param httpMethodValue
+     * @return
+     */
+    private boolean matchRequestMethod(String httpMethodValue) {
+        if(ObjectUtils.isEmpty(getMethods())){
+            return true;
+        }
+        HttpMethod httpMethod = HttpMethod.resolve(httpMethodValue);
+        if (httpMethod != null) {
+            for (RequestMethod method : getMethods()) {
+                if (httpMethod.matches(method.name())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns all {@link RequestMethod}s contained in this condition.
+     */
+    public Set<RequestMethod> getMethods() {
+        return this.methods;
+    }
+    public MappedInvokeInterceptor methods(RequestMethod... requestMethods) {
+        methods =  (requestMethods != null ? Sets.newHashSet(requestMethods) : null);
+        return this;
     }
 
     @Override

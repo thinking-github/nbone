@@ -1,6 +1,7 @@
 package org.springframework.web.servlet.mvc.method.annotation;
 
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 
 /**
@@ -41,7 +42,7 @@ public class RequestMappingHandlerAdapterX extends RequestMappingHandlerAdapter 
      * @return
      */
     public RequestMappingHandlerAdapterX addInvokeInterceptor(InvokeInterceptor invokeInterceptor) {
-        return addInvokeInterceptor(invokeInterceptor,null);
+        return addInvokeInterceptor(invokeInterceptor, null);
     }
 
     public RequestMappingHandlerAdapterX addInvokeInterceptors(InvokeInterceptor... invokeInterceptor) {
@@ -52,20 +53,33 @@ public class RequestMappingHandlerAdapterX extends RequestMappingHandlerAdapter 
         return this;
     }
 
+
+    public RequestMappingHandlerAdapterX addInvokeInterceptor(InvokeInterceptor invokeInterceptor,String ...patterns) {
+        return addInvokeInterceptor(invokeInterceptor,patterns,null);
+    }
+
+
+    public RequestMappingHandlerAdapterX addInvokeInterceptor(InvokeInterceptor invokeInterceptor, String patterns, RequestMethod... requestMethods) {
+        if(ObjectUtils.isEmpty(patterns)){
+            return addInvokeInterceptor(invokeInterceptor);
+        }
+        return addInvokeInterceptor(invokeInterceptor,new String[]{patterns},requestMethods);
+    }
     /**
      * 添加拦截器同时设置 拦截映射
      * @param invokeInterceptor 拦截器
      * @param patterns  匹配映射路径 参数可为空， 当为为空时全局拦截
+     * @param requestMethods http 请求方法  {@link RequestMethod} 可为空
      * @return
      */
-    public RequestMappingHandlerAdapterX addInvokeInterceptor(InvokeInterceptor invokeInterceptor,String ...patterns) {
+    public RequestMappingHandlerAdapterX addInvokeInterceptor(InvokeInterceptor invokeInterceptor, String[] patterns, RequestMethod... requestMethods) {
         if (invokeExecutionChain == null) {
             invokeExecutionChain = new InvokeExecutionChain(null);
         }
         if(ObjectUtils.isEmpty(patterns)){
             invokeExecutionChain.addInterceptor(invokeInterceptor);
         }else {
-            invokeExecutionChain.addInterceptor(new MappedInvokeInterceptor(patterns,invokeInterceptor));
+            invokeExecutionChain.addInterceptor(new MappedInvokeInterceptor(patterns,invokeInterceptor).methods(requestMethods));
         }
         return this;
     }
