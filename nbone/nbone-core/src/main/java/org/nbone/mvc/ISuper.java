@@ -101,10 +101,11 @@ public interface ISuper<T,PK extends Serializable> {
 	
 	/**
 	 * 按照实体中不为空的参数作为参数统计行数
-	 * @param object
+	 * @param object 参数实体
+	 * @param afterWhere 增加条件语句 如: and id in(1,2,3)
 	 * @return
 	 */
-	public long count(T object);
+	public long count(T object,String... afterWhere);
 	
 	/**
 	 * 获取数据(数据量大时不建议使用)

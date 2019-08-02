@@ -482,7 +482,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
 
     @Override
-    public SqlModel<Object> countSql(Object object) throws BuilderSQLException {
+    public SqlModel<Object> countSql(Object object, String... afterWhere) throws BuilderSQLException {
         Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
 
         TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
@@ -495,6 +495,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         String sql = countSqlAndWhere.toString();
         SqlModel<Object> model = new SqlModel<Object>(sql, object, tableMapper);
+        model.setAfterWhere(afterWhere);
         return model;
     }
 
@@ -642,6 +643,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         String sql = selectSqlAndWhere.toString();
         SqlModel<Object> model = new SqlModel<Object>(sql, object, tableMapper);
+        model.setAfterWhere(sqlConfig.getAfterWhere());
         return model;
     }
     @Override

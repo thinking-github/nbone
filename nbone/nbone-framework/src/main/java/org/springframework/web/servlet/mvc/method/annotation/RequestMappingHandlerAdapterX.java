@@ -16,6 +16,7 @@ import org.springframework.web.method.HandlerMethod;
  * @since 2019/1/25
  * @see  org.springframework.web.method.support.HandlerMethodArgumentResolverComposite  入参组合代理处理器
  * @see  org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite 出参组合代理处理器
+ * @see  org.springframework.web.servlet.mvc.WebContentInterceptor                       Web缓存拦截器
  */
 @SuppressWarnings("unused")
 public class RequestMappingHandlerAdapterX extends RequestMappingHandlerAdapter {

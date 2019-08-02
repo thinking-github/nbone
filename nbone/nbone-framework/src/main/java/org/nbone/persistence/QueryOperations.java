@@ -102,8 +102,20 @@ public interface QueryOperations {
 	 * @return
 	 */
 	public  <T> List<T> findForList(Object object,FieldLevel fieldLevel);
-	
-	
+
+
+	/**
+	 * 根据实体中的参数查询返回含有数组中的字段的列表并分页(比返回整个实体数据提高效率) (参数全部使用 等号 =)
+	 *
+	 * @param object  查询实体参数
+	 * @param fieldNames 按需返回字段 java字段名称
+	 * @param pageNum 当前页码
+	 * @param pageSize 页的大小
+	 * @param afterWhere group by/order by 子句
+	 * @param <T>
+	 * @return
+	 */
+	public  <T> Page<T> getForPage(Object object,String[] fieldNames,int pageNum, int pageSize,String... afterWhere);
 	/**
 	 * 按照实体中的参数查询实体列表并分页  (参数全部使用 等号 =)
 	 * @param object  查询实体参数
@@ -174,18 +186,20 @@ public interface QueryOperations {
 	 * @param object 查询实体参数
 	 * @param fieldName 要返回的单个字段名称 默认采用java property mapping
 	 * @param requiredType 单个字段的目标类型
+	 * @param afterWhere 追加条件语句 或者 group by /order by 子句 参数可为null 如： and id in(1,2,3,4)
 	 * @return
 	 */
-	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType);
+	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType,String... afterWhere);
 	
 	/**
 	 * 根据实体参数查询返回含有数组中的字段的列表(比返回整个实体数据提高效率)
 	 * @param object 查询实体参数
 	 * @param fieldNames java字段名称
 	 * @param dbFieldMode 是否启用数据库字段名称
+	 * @param afterWhere 追加条件语句 或者 group by /order by 子句 参数可为null 如： and id in(1,2,3,4)
 	 * @return
 	 */
-	public  <T> List<T> getForListWithFieldNames(Object object,String[] fieldNames,boolean dbFieldMode);
+	public  <T> List<T> getForListWithFieldNames(Object object,String[] fieldNames,boolean dbFieldMode,String... afterWhere);
 	
 	
 

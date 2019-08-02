@@ -140,7 +140,7 @@ public class MyMapperUtils {
 			String tableName  = JpaAnnotationUtils.getTableName(entityClass);
 
 			if(tableName == null || tableName.length() == 0){
-				logger.warn(">>>>>Jpa Annotation tableName"+" not setting, use className format.");
+				logger.warn(">>>>>"+entityClass.getName()+" Jpa Annotation tableName"+" not setting, use className format.");
 				String className = entityClass.getSimpleName();
 				tableName = caseFormat(className,caseName);
 			}

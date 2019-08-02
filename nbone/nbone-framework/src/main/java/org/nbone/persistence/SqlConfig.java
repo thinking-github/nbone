@@ -50,6 +50,11 @@ public class SqlConfig {
 	 * 分组查询
 	 */
     private GroupQuery groupQuery;
+
+	/**
+	 * 追加条件 或者 group by/order by 子句
+	 */
+	private String[] afterWhere;
     /**
      * 此实体Bean 引用其他的实体Bean列表
      */

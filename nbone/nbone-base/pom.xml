@@ -6,7 +6,8 @@
 	<parent>
 		<groupId>org.nbone</groupId>
 		<artifactId>nbone</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>${nbone.version}</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>nbone-base</artifactId>
 	<name>nbone-base</name>

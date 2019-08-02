@@ -1,6 +1,7 @@
 package org.nbone.framework.spring.web.context;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -34,6 +35,17 @@ public class ServletActionContext {
 		
 		RequestAttributes RequestA = RequestContextHolder.getRequestAttributes();
 		return request;
+	}
+
+	/**
+	 * spring 4.1 add   HttpServletResponse Response 属性
+	 * @return
+	 */
+	public static HttpServletResponse getResponse(){
+		ServletRequestAttributes servletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
+		HttpServletResponse response =  servletRequest.getResponse();
+
+		return response;
 	}
 	
 	

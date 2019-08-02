@@ -148,8 +148,16 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public <T> SqlModel<T> countSql(Class<T> entityClass) throws BuilderSQLException;
-	 
-	 public  SqlModel<Object> countSql(Object object) throws BuilderSQLException;
+
+	/**
+	 *
+	 * 根据实体的参数统计单表的行数
+	 * @param object 参数实体
+	 * @param afterWhere 增加条件语句 如: and id in(1,2,3)
+	 *
+	 * @throws BuilderSQLException
+	 */
+	 public  SqlModel<Object> countSql(Object object, String... afterWhere) throws BuilderSQLException;
 	 
 	 
 	 /**

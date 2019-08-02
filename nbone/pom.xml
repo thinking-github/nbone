@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nbone</groupId>
 	<artifactId>nbone</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>${nbone.version}</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -22,6 +22,7 @@
 
 	<properties>
 		<nbone.version>1.1.1-SNAPSHOT</nbone.version>
+		<revision>1.1.1-SNAPSHOT</revision>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.source.version>1.8</project.build.source.version>
@@ -60,12 +61,12 @@
 			<dependency>
 				<groupId>org.nbone</groupId>
 				<artifactId>nbone-core</artifactId>
-				<version>${project.version}</version>
+				<version>${nbone.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.nbone</groupId>
 				<artifactId>nbone-framework</artifactId>
-				<version>${project.version}</version>
+				<version>${nbone.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.nbone</groupId>
@@ -260,6 +261,25 @@
 				</configuration>
 			</plugin>
 
+			<!--优化、压缩发布的pom文件-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.0.1</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<outputDirectory>target</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 
 		</plugins>

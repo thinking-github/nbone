@@ -229,10 +229,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 
 	
 	@Override
-	public long count(T object) {
+	public long count(T object, String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		
-		return baseServiceDomain.count(bean);
+		return baseServiceDomain.count(bean,afterWhere);
 	}
 
 	@Override
@@ -339,15 +339,15 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType) {
+	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
-		return baseServiceDomain.getForList(bean, fieldName,requiredType);
+		return baseServiceDomain.getForList(bean, fieldName,requiredType,afterWhere);
 	}
 
 	@Override
-	public List<T> getForListWithFieldNames(Object object, String[] fieldNames) {
+	public List<T> getForListWithFieldNames(Object object, String[] fieldNames,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
-		List<P> beans = baseServiceDomain.getForListWithFieldNames(bean, fieldNames);
+		List<P> beans = baseServiceDomain.getForListWithFieldNames(bean, fieldNames,afterWhere);
 		List<T> dtos  = listBean2ListDto(beans);
 		return dtos;
 	}

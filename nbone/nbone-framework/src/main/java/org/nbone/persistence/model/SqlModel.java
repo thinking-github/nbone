@@ -46,7 +46,7 @@ public class SqlModel<T> {
 	private  TableMapper<?> tableMapper;
 	
 	/**
-	 * group by/order by 子句
+	 * 追加条件 或者 group by/order by 子句
 	 */
 	private String[]  afterWhere;
 	

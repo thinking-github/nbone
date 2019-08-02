@@ -6,8 +6,8 @@
 	<parent>
 		<groupId>org.nbone</groupId>
 		<artifactId>nbone-parent</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
-		<relativePath>../nbone-parent/pom.xml</relativePath>
+		<version>${nbone.version}</version>
+		<relativePath>../nbone-parent</relativePath>
 	</parent>
 	<artifactId>nbone-framework</artifactId>
 	<name>nbone-framework</name>

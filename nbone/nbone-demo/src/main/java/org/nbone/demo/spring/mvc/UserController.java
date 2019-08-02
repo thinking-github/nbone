@@ -5,6 +5,7 @@ import org.nbone.demo.common.domain.Teacher;
 import org.nbone.demo.common.domain.User;
 import org.nbone.mx.datacontrols.support.ResultWrapper;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 /**
@@ -19,7 +20,7 @@ public class UserController {
 	 * ------------基本映射-----------
 	 * http://localhost:8080/user/add
 	 */
-	@RequestMapping("add")
+	@PostMapping(value =  "add")
 	public String add(User user){
 		return "index";
 	}

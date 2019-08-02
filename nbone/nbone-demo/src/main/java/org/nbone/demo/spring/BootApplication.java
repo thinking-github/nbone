@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.CacheControl;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -19,12 +20,14 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.mvc.WebContentInterceptor;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @Import(JdbcComponentConfig.class)
@@ -85,9 +88,21 @@ public class BootApplication extends WebMvcConfigurerAdapter {
 	public HandlerInterceptor accessLogHandlerInterceptor(){
 		return  new AccessLogHandlerInterceptor();
 	}
+
+
+	//http cache
+	@Bean
+	public WebContentInterceptor webContentInterceptor(){
+	 	WebContentInterceptor cacheInterceptor = 	new WebContentInterceptor();
+		cacheInterceptor.addCacheMapping(CacheControl.maxAge(100, TimeUnit.MINUTES),"/cache/**");
+		cacheInterceptor.addCacheMapping(CacheControl.maxAge(120, TimeUnit.MINUTES),"/cache1/**");
+		return  cacheInterceptor;
+	}
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(accessLogHandlerInterceptor()).addPathPatterns("/**");
+		registry.addInterceptor(webContentInterceptor()).addPathPatterns("/static/**","/resource/**");
 	}
 
 	//自定义数据模型格式化

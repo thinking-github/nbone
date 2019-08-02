@@ -13,6 +13,11 @@ public class ClassUtils {
 	/** The package separator character '.' */
 	private static final char PACKAGE_SEPARATOR = '.';
 
+	/**
+	 * 如果是lang package 省略java.lang
+	 * @param className
+	 * @return
+	 */
 	public static String getSmartClassName(String className){
 		Assert.hasLength(className, "Class name must not be empty");
 		int index = className.lastIndexOf(PACKAGE_SEPARATOR);

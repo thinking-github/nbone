@@ -345,9 +345,9 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 	
 	@Override
-	public long count(P object) {
+	public long count(P object,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.count(object);
+		return namedJdbcDao.count(object,afterWhere);
 	}
 
 	/*
@@ -390,6 +390,11 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	 * --------------------分页限制结果集--------------------
 	 */
 	@Override
+	public Page<P> getForPage(Object object, String[] fieldNames,int pageNum, int pageSize,String... afterWhere) {
+		checkBuilded();
+		return namedJdbcDao.getForPage(object,fieldNames, pageNum, pageSize,afterWhere);
+	}
+	@Override
 	public Page<P> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
 		return namedJdbcDao.getForPage(object, pageNum, pageSize,afterWhere);
@@ -421,14 +426,14 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
      * ----------------------按需返回字段列----------------------
      */
 	@Override
-	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType) {
+	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType,String... afterWhere) {
 		checkBuilded();
 		return namedJdbcDao.getForList(object, fieldName,requiredType);
 	}
 	@Override
-	public List<P> getForListWithFieldNames(Object object, String[] fieldNames) {
+	public List<P> getForListWithFieldNames(Object object, String[] fieldNames,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.getForListWithFieldNames(object, fieldNames, false);
+		return namedJdbcDao.getForListWithFieldNames(object, fieldNames, false,afterWhere);
 	}
 	@Override
 	public int updateMathOperation(Object object,String property, MathOperation mathOperation) {

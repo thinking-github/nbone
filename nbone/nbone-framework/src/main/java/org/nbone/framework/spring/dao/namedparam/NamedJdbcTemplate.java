@@ -62,13 +62,16 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	/**
 	 * 单表数据分页
 	 * @param object
+	 * @param fieldNames java字段名称 可为空,为空返回全部字段
 	 * @param pageNum
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> Page<T> getForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,null,-1,afterWhere);
+	public <T> Page<T> getForPage(Object object,String[] fieldNames,int pageNum ,int pageSize,String... afterWhere){
+		SqlConfig sqlConfig = new SqlConfig(-1);
+		sqlConfig.setFieldNames(fieldNames);
+		SqlModel<T> sqlModel = (SqlModel<T>) sqlBuilder.selectSql(object, sqlConfig);
+		sqlModel.setAfterWhere(afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}

@@ -80,8 +80,12 @@ public abstract class BaseSqlSession implements SqlSession {
 	public <T> List<T> findForList(Object object, FieldLevel fieldLevel) {
 		throw new UnsupportedOperationException("unsupported findForList operation.");
 	}
-	
-	
+
+	@Override
+	public <T> Page<T> getForPage(Object object, String[] fieldNames, int pageNum, int pageSize, String... afterWhere) {
+		throw new UnsupportedOperationException("unsupported getForPage operation.");
+	}
+
 	@Override
 	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForPage operation.");
@@ -115,12 +119,12 @@ public abstract class BaseSqlSession implements SqlSession {
 
 
 	@Override
-	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType){
+	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType,String... afterWhere){
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 
 	@Override
-	public <T> List<T> getForListWithFieldNames(Object object, String[] fieldNames,boolean dbFieldMode) {
+	public <T> List<T> getForListWithFieldNames(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForListWithFieldNames operation.");
 	}
 	
@@ -216,7 +220,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public long count(Object object) {
+	public long count(Object object,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 
