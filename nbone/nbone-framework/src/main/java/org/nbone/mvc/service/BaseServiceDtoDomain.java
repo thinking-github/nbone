@@ -345,9 +345,9 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public List<T> getForListWithFieldNames(Object object, String[] fieldNames,String... afterWhere) {
+	public List<T> getForList(Object object, String[] fieldNames,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
-		List<P> beans = baseServiceDomain.getForListWithFieldNames(bean, fieldNames,afterWhere);
+		List<P> beans = baseServiceDomain.getForList(bean, fieldNames,afterWhere);
 		List<T> dtos  = listBean2ListDto(beans);
 		return dtos;
 	}

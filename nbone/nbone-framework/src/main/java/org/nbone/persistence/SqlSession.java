@@ -90,10 +90,20 @@ public interface SqlSession  extends QueryOperations{
 	/**
 	 * 有选择的更新实体
 	 * @param object 更新实体参数
+	 * @param  properties 需要更新的属性字段 可为空
 	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，为空时默认使用主键作为条件
 	 * @return
 	 */
-	public int updateSelective(Object object, String whereString);
+	public int updateSelective(Object object,String[] properties, String whereString);
+	/**
+	 * 有选择的更新实体
+	 * @param object 更新实体参数
+	 * @param  properties  需要更新的属性字段 可为空
+	 * @param  conditionFields 更新条件字段列表   可为空
+	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，为空时默认使用主键作为条件
+	 * @return
+	 */
+	public int updateSelective(Object object,String[] properties,String[] conditionFields, String whereString);
 	
 	/**
 	 *  保存或者更新数据
@@ -148,9 +158,10 @@ public interface SqlSession  extends QueryOperations{
 	/**
 	 * 统计单表的数据总行数
 	 * @param clazz
+	 * @param afterWhere 增加条件语句 如: and id in(1,2,3) 可为空
 	 * @return
 	 */
-	public long count(Class<?> clazz);
+	public long count(Class<?> clazz,String afterWhere);
 	/**
 	 * 根据实体的参数统计单表的行数
 	 * @param object

@@ -137,18 +137,18 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
     //update
     @Override
-    public SqlModel<Object> updateSql(Object object,String[] propertys,String[] propertysCondition) throws BuilderSQLException {
-        return updateSql(propertys,object, false,propertysCondition, null);
+    public SqlModel<Object> updateSql(Object object,String[] properties,String[] conditionFields) throws BuilderSQLException {
+        return updateSql(object,properties, false,conditionFields, null);
 
     }
 
     @Override
-    public SqlModel<Object> updateSelectiveSql(final Object object,String[] propertysCondition) throws BuilderSQLException {
-        return updateSql(null,object, true, propertysCondition,null);
+    public SqlModel<Object> updateSelectiveSql(final Object object,String[] conditionFields) throws BuilderSQLException {
+        return updateSql(object,null, true, conditionFields,null);
     }
 
     @Override
-    public SqlModel<Object> updateSql(String[] propertys,final Object object, final boolean isSelective,String[] propertysCondition,String whereSql)
+    public SqlModel<Object> updateSql(final Object object,String[] properties, final boolean isSelective,String[] conditionFields,String whereSql)
             throws BuilderSQLException {
         SqlModel<Object> sqlModel = update(object, new Function<TableMapper<?>, StringBuilder>() {
             @Override
@@ -156,7 +156,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                 StringBuilder fieldSql = new StringBuilder();
                 boolean allFieldNull = true;
                 int columnCount = 0;
-                if(propertys == null || propertys.length == 0){
+                if(properties == null || properties.length == 0){
                     Collection<FieldMapper> fields = tableMapper.getFieldMapperList();
                     for (FieldMapper fieldMapper : fields) {
                         String fieldName = fieldMapper.getFieldName();
@@ -182,7 +182,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                     }
                 }else {
                     allFieldNull = false;
-                    for (String property : propertys) {
+                    for (String property : properties) {
                         FieldMapper fieldMapper =   tableMapper.getFieldMapperByPropertyName(property);
                         String fieldName = fieldMapper.getFieldName();
                         String dbFieldName = fieldMapper.getDbFieldName();
@@ -200,7 +200,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                 }
                 return fieldSql;
             }
-        }, propertysCondition,whereSql);
+        }, conditionFields,whereSql);
         return sqlModel;
     }
 
@@ -270,11 +270,11 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
      *
      * @param object 实体对象
      * @param function  回调函数
-     * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
+     * @param conditionFields  属性条件 可为空， 为空时默认使用主键作为条件
      * @param  whereSqlPart 可为空， 为空时默认使用主键作为条件
      * @return
      */
-    protected SqlModel<Object> update(Object object, Function<TableMapper<?>, StringBuilder> function,String[] propertysCondition,String whereSqlPart) {
+    protected SqlModel<Object> update(Object object, Function<TableMapper<?>, StringBuilder> function,String[] conditionFields,String whereSqlPart) {
 
         TableMapper<?> tableMapper = checkBuildUpdate(object);
 
@@ -289,8 +289,8 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         //where id = 1
         StringBuffer whereSql = new StringBuffer(" where ");
 
-        if(propertysCondition != null && propertysCondition.length > 0){
-            whereSql.append(propertysCondition(object.getClass(),tableMapper,propertysCondition));
+        if(conditionFields != null && conditionFields.length > 0){
+            whereSql.append(propertysCondition(object.getClass(),tableMapper,conditionFields));
         }else  if(whereSqlPart != null && whereSqlPart.trim().length() > 0){
             whereSql.append(whereSqlPart);
         }else {
@@ -475,9 +475,13 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
     }
 
     @Override
-    public <T> SqlModel<T> countSql(Class<T> entityClass) throws BuilderSQLException {
+    public <T> SqlModel<T> countSql(Class<T> entityClass,String afterWhere) throws BuilderSQLException {
         TableMapper<T> tableMapper = DbMappingBuilder.ME.getTableMapper(entityClass);
-        return new SqlModel<T>(tableMapper.getCountSql().toString(), null, tableMapper);
+        SqlModel<T> model = new SqlModel<T>(tableMapper.getCountSql().toString(), null, tableMapper);
+        if(afterWhere != null){
+            model.setAfterWhere(new String[]{ afterWhere });
+        }
+        return model;
     }
 
 
@@ -518,22 +522,6 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         SqlModel<T> sqlModel = new SqlModel<T>(sql.toString(), null, tableMapper);
         sqlModel.setParameterArray(ids);
-        return sqlModel;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <T> SqlModel<T> sqlConfigSelectSql(Object object, GroupQuery group, FieldLevel fieldLevel, int model, String... afterWhere) throws BuilderSQLException {
-        SqlConfig sqlConfig = SqlConfig.getSqlConfig(model);
-        sqlConfig.setGroupQuery(group);
-        sqlConfig.setFieldLevel(fieldLevel);
-
-        SqlModel<T> sqlModel = (SqlModel<T>) selectSql(object, sqlConfig);
-        sqlModel.setAfterWhere(afterWhere);
-
         return sqlModel;
     }
 
@@ -900,17 +888,17 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
      *
      * @param entityClass  按实体类
      * @param tableMapper  实体映射对象
-     * @param  propertysCondition 属性条件 可为空， 当为空时自动使用主键条件
+     * @param  conditionFields 属性条件 可为空， 当为空时自动使用主键条件
      * @return
      */
-    private StringBuffer propertysCondition(Class<?> entityClass, TableMapper<?> tableMapper,String[] propertysCondition) throws BuilderSQLException {
+    private StringBuffer propertysCondition(Class<?> entityClass, TableMapper<?> tableMapper,String[] conditionFields) throws BuilderSQLException {
 
-        if(propertysCondition == null || propertysCondition.length == 0){
+        if(conditionFields == null || conditionFields.length == 0){
             return  primaryKeysCondition(entityClass,tableMapper);
         }else {
             StringBuffer sql = new StringBuffer();
-            for (int i = 0; i < propertysCondition.length; i++) {
-                String propertyName = propertysCondition[i];
+            for (int i = 0; i < conditionFields.length; i++) {
+                String propertyName = conditionFields[i];
                 FieldMapper fieldMapper = tableMapper.getFieldMapperByPropertyName(propertyName);
                 sql.append(fieldMapper.getDbFieldName());
                 String fieldName = fieldMapper.getFieldName();

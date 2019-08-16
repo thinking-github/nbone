@@ -61,9 +61,26 @@ public interface ISuper<T,PK extends Serializable> {
 	/**
 	 * 根据 whereql 更新一条记录(有选择的更新,为空的数据丢弃)
 	 * @param object
-	 * @param  whereql id = 1 and name = 'chen'
+	 * @param  whereSql id = 1 and name = 'chen'
 	 */
-	public void updateSelective(T object ,String whereql);
+	public void updateSelective(T object ,String whereSql);
+	/**
+	 * 根据 wheresql 更新一条记录(有选择的更新,为空的数据丢弃)
+	 * @param object
+	 * @param  properties 需要更新的属性字段 可为空
+	 * @param  whereSql id = 1 and name = 'chen'
+	 */
+	public void updateSelective(T object ,String[] properties,String whereSql);
+
+	/**
+	 * 有选择的更新实体
+	 * @param object 更新实体参数
+	 * @param  properties  需要更新的属性字段 可为空
+	 * @param  conditionFields 更新条件字段列表   可为空
+	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，为空时默认使用主键作为条件
+	 * @return
+	 */
+	public int updateSelective(Object object,String[] properties,String[] conditionFields, String whereString);
     
 	/**
 	 * 按实体中的id删除数据
@@ -98,7 +115,13 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return
 	 */
 	public long count();
-	
+
+	/**
+	 * 统计数据的行数
+	 * @param afterWhere 增加条件语句 如: and id in(1,2,3) 可为空
+	 * @return
+	 */
+	public long count(String afterWhere);
 	/**
 	 * 按照实体中不为空的参数作为参数统计行数
 	 * @param object 参数实体

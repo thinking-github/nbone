@@ -82,7 +82,7 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * queryForPage(index,pageNow,pageSize,"and status != -1"," order by  create_time DESC"); <br>
 	 *
 	 * queryForPage(index,pageNow,pageSize," order by  create_time DESC");
-	 * @param object 
+	 * @param object 查询实体参数
 	 * @param pageNum 当前页
 	 * @param pageSize 页的大小
 	 * @param afterWhere group by/order by 子句
@@ -91,7 +91,7 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	public Page<T> queryForPage(Object object,int pageNum,int pageSize,String... afterWhere);
 	/**
 	 * 
-	 * @param object 
+	 * @param object 查询实体参数
 	 * @param pageNum 当前页
 	 * @param pageSize 页的大小
 	 * @param afterWhere group by/order by 子句
@@ -125,7 +125,7 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	//按需字段查询
 	/**
 	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)
-	 * @param object
+	 * @param object 查询实体参数
 	 * @param fieldName 单个字段名称 默认采用java property mapping
 	 * @param requiredType 目标类型
 	 * @param afterWhere  追加条件语句 或者 order by 子句 如: and id in (1,2,3,4)
@@ -136,13 +136,13 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	
 	/**
 	 * 
-	 * @param object
-	 * @param fieldNames
+	 * @param object 查询实体参数
+	 * @param fieldNames  按需返回的java字段名称列表
 	 * @param afterWhere  追加条件语句 或者 order by 子句 如: and id in (1,2,3,4)
 	 * @return
-	 * @see SqlSession#getForListWithFieldNames(Object, String[], boolean)	
+	 * @see SqlSession#getForList(Object, String[], boolean)
 	 */
-	public List<T> getForListWithFieldNames(Object object,String[] fieldNames,String... afterWhere);
+	public List<T> getForList(Object object,String[] fieldNames,String... afterWhere);
 	
 	/**
 	 * 

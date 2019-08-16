@@ -184,7 +184,7 @@ public class MyMapperUtils {
 			primaryList.add(dbFieldName);
 		}
 		if(primaryList.size() >2){
-			logger.warn(">>>>>联合主键数量超过2个,请注意检查!");
+			logger.warn(">>>>>联合主键数量超过2个,请注意检查Class: "+entityClass.getName());
 		}
 		tableMapper.setDbTableName(tableName);
 		tableMapper.setPrimaryKeys(primaryList);

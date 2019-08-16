@@ -227,12 +227,21 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		namedJdbcDao.updateSelective(object);
 	}
 	@Override
-	public void updateSelective(P object, String whereql) {
+	public void updateSelective(P object, String whereSql) {
 		checkBuilded();
-		namedJdbcDao.updateSelective(object,whereql);
+		namedJdbcDao.updateSelective(object,null,whereSql);
+	}
+	@Override
+	public void updateSelective(P object,String[] properties, String whereSql) {
+		checkBuilded();
+		namedJdbcDao.updateSelective(object,properties,whereSql);
 	}
 
-
+	@Override
+	public int updateSelective(Object object, String[] properties, String[] conditionFields, String whereString) {
+		checkBuilded();
+		return namedJdbcDao.updateSelective(object,properties,conditionFields,whereString);
+	}
 
 	@Override
 	public void delete(IdType id) {
@@ -341,9 +350,15 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	@Override
 	public long count() {
 		checkBuilded();
-		return namedJdbcDao.count(targetClass);
+		return namedJdbcDao.count(targetClass,(String)null);
 	}
-	
+
+	@Override
+	public long count(String afterWhere) {
+		checkBuilded();
+		return namedJdbcDao.count(targetClass,afterWhere);
+	}
+
 	@Override
 	public long count(P object,String... afterWhere) {
 		checkBuilded();
@@ -431,9 +446,9 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		return namedJdbcDao.getForList(object, fieldName,requiredType);
 	}
 	@Override
-	public List<P> getForListWithFieldNames(Object object, String[] fieldNames,String... afterWhere) {
+	public List<P> getForList(Object object, String[] fieldNames,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.getForListWithFieldNames(object, fieldNames, false,afterWhere);
+		return namedJdbcDao.getForList(object, fieldNames, false,afterWhere);
 	}
 	@Override
 	public int updateMathOperation(Object object,String property, MathOperation mathOperation) {

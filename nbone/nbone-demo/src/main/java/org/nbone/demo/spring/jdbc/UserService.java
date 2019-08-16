@@ -71,8 +71,8 @@ public class UserService extends BaseServiceDomain<User,Long> implements SuperSe
 	}
 	//按需查询(给定字段列表) select id,name from user where name name ='chenyicheng' and age = 18
 	@Override
-	public List<User> getForListWithFieldNames(Object object, String[] fieldNames,String... afterWhere) {
-		return namedJdbcDao.getForListWithFieldNames(object, fieldNames,false);
+	public List<User> getForList(Object object, String[] fieldNames,String... afterWhere) {
+		return namedJdbcDao.getForList(object, fieldNames,false);
 	}
 	
 	//分页查询 select * from user where name ='chenyicheng' and age = 18

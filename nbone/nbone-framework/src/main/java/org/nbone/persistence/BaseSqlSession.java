@@ -124,7 +124,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <T> List<T> getForListWithFieldNames(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
+	public <T> List<T> getForList(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForListWithFieldNames operation.");
 	}
 	
@@ -175,10 +175,13 @@ public abstract class BaseSqlSession implements SqlSession {
 		throw new UnsupportedOperationException("unsupported update operation.");
 	}
 	@Override
-	public int updateSelective(Object object, String whereString) {
+	public int updateSelective(Object object,String[] properties, String whereString) {
 		throw new UnsupportedOperationException("unsupported update operation.");
 	}
-
+	@Override
+	public int updateSelective(Object object, String[] properties, String[] conditionFields, String whereString) {
+		throw new UnsupportedOperationException("unsupported update operation.");
+	}
 
 	@Override
 	public void saveOrUpdate(Object object) {
@@ -215,7 +218,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public long count(Class<?> clazz) {
+	public long count(Class<?> clazz,String afterWhere) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 

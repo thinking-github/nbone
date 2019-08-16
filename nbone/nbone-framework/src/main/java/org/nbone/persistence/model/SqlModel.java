@@ -139,6 +139,12 @@ public class SqlModel<T> {
 
 	private StringBuilder appendWhere(StringBuilder stringBuilder,String appendWhere){
 		if(appendWhere != null && appendWhere.length() > 0) {
+
+		/*	String upper  = appendWhere.toUpperCase();
+			if(!upper.startsWith("AND ") && !upper.startsWith(" AND ")){
+				appendWhere = "and " +appendWhere;
+			}*/
+
 			if(sql.contains(" where ") || sql.contains(" WHERE ")){
 				stringBuilder.append(" ").append(appendWhere);
 			}else {

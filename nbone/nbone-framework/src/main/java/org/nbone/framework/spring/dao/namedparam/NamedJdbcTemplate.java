@@ -29,6 +29,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
  * @version 1.0 
  * @since spring 2.0
  */
+@SuppressWarnings("unused")
 public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 
 	private  JdbcOperations jdbcTemplate;
@@ -68,10 +69,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> getForPage(Object object,String[] fieldNames,int pageNum ,int pageSize,String... afterWhere){
-		SqlConfig sqlConfig = new SqlConfig(-1);
-		sqlConfig.setFieldNames(fieldNames);
-		SqlModel<T> sqlModel = (SqlModel<T>) sqlBuilder.selectSql(object, sqlConfig);
-		sqlModel.setAfterWhere(afterWhere);
+		SqlModel<T> sqlModel = buildSqlModel(object,fieldNames,null,-1,false,afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}
@@ -82,9 +80,8 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,null, SqlConfig.PrimaryMode,afterWhere);
+	public <T> Page<T> queryForPage(Object object,String[] fieldNames,int pageNum ,int pageSize,String... afterWhere){
+		SqlModel<T> sqlModel = buildSqlModel(object,fieldNames,null,SqlConfig.PrimaryMode,false,afterWhere);
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 
@@ -98,7 +95,6 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize,SqlConfig sqlConfig){
-
 		SqlModel<Map<String,?>> sqlModel  = sqlBuilder.objectModeSelectSql(object,sqlConfig);
 		return processPage(sqlModel, object, pageNum, pageSize,sqlConfig);
 	}
@@ -110,8 +106,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,null,null,SqlConfig.PrimaryMode,afterWhere);
+		SqlModel<Object> sqlModel = buildSqlModel(object,null,null,SqlConfig.PrimaryMode,false,afterWhere);
 		
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
@@ -137,17 +132,28 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> List<T> getForLimit(Object object,GroupQuery group,int limit, String... afterWhere){
-
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,group,null,-1,afterWhere);
+		SqlModel<Object> sqlModel = buildSqlModel(object,null,group,-1,false,afterWhere);
 		return processLimit(sqlModel, object, group,limit);
 
 	}
 	public <T> List<T> queryForLimit(Object object,GroupQuery group,int limit,String... afterWhere){
-
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,group,null,SqlConfig.PrimaryMode,afterWhere);
+		SqlModel<Object> sqlModel = buildSqlModel(object,null,group,SqlConfig.PrimaryMode,false,afterWhere);
 		return processLimit(sqlModel, object,group, limit);
 	}
 
+	private SqlConfig buildSqlConfig(String[] fieldNames, GroupQuery group,int model,boolean dbFieldMode,String... afterWhere){
+		SqlConfig sqlConfig = new SqlConfig(model);
+		sqlConfig.setFieldNames(fieldNames);
+		sqlConfig.setGroupQuery(group);
+		sqlConfig.setDbFieldMode(dbFieldMode);
+		sqlConfig.setAfterWhere(afterWhere);
+		return sqlConfig;
+	}
+	private <T> SqlModel<T> buildSqlModel(Object object,String[] fieldNames, GroupQuery group,int model,boolean dbFieldMode,String... afterWhere){
+		SqlConfig sqlConfig = buildSqlConfig(fieldNames,group,model,dbFieldMode,afterWhere);
+		SqlModel<T> sqlModel = (SqlModel<T>) sqlBuilder.selectSql(object,sqlConfig);
+		return sqlModel;
+	}
 
 
 	@SuppressWarnings("unchecked")

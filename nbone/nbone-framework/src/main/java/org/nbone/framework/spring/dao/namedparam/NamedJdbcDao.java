@@ -144,7 +144,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	@Override
 	public int updateSelective(Object object) {
 		//SqlModel<Object> sqlModel = sqlBuilder.updateSelectiveSql(object,null);
-		return updateSelective(object,(String) null);
+		return updateSelective(object,null,null);
 	}
 
 	
@@ -159,9 +159,14 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public int updateSelective(Object object, String whereString) {
+	public int updateSelective(Object object, String[] properties, String whereString) {
+		return updateSelective(object,properties,null,whereString);
+	}
 
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(null,object,true,null,whereString);
+	@Override
+	public int updateSelective(Object object, String[] properties, String[] conditionFields, String whereString) {
+
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,properties,true,conditionFields,whereString);
 		checkSqlModel(sqlModel);
 
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -251,8 +256,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 	
 	@Override
-	public long count(Class<?> clazz) {
-		SqlModel<?> sqlModel =  sqlBuilder.countSql(clazz);
+	public long count(Class<?> clazz,String afterWhere) {
+		SqlModel<?> sqlModel =  sqlBuilder.countSql(clazz,afterWhere);
 		checkSqlModel(sqlModel);
 		Number number = jdbcTemplate.queryForObject(sqlModel.getSql(), Long.class);
 		
@@ -298,11 +303,16 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 	@Override
 	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		return list(object,null,fieldLevel,-1,afterWhere);
+		return list(object,null,null,fieldLevel,-1,false,afterWhere);
 	}
 	@Override
 	public <T> List<T> getForList(Object object, GroupQuery group, FieldLevel fieldLevel, String... afterWhere) {
-		return list(object,group,fieldLevel,-1,afterWhere);
+		return list(object,null,group,fieldLevel,-1,false,afterWhere);
+	}
+
+	@Override
+	public <T> List<T> getForList(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
+		return list(object,fieldNames,null,null,-1,dbFieldMode,afterWhere);
 	}
 
 
@@ -313,11 +323,17 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 	@Override
 	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		return list(object,null,fieldLevel,SqlConfig.PrimaryMode,afterWhere);
+		return list(object,null,null,fieldLevel,SqlConfig.PrimaryMode,false,afterWhere);
 	}
 
-	private <T> List<T> list(Object object, GroupQuery group, FieldLevel fieldLevel, int model, String... afterWhere){
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(object,group,fieldLevel,model,afterWhere);
+	private <T> List<T> list(Object object,String[] fieldNames, GroupQuery group, FieldLevel fieldLevel, int model,boolean dbFieldMode,String... afterWhere){
+		SqlConfig sqlConfig = SqlConfig.getSqlConfig(model);
+		sqlConfig.setFieldNames(fieldNames);
+		sqlConfig.setGroupQuery(group);
+		sqlConfig.setFieldLevel(fieldLevel);
+		sqlConfig.setDbFieldMode(dbFieldMode);
+		sqlConfig.setAfterWhere(afterWhere);
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,sqlConfig);
 		checkSqlModel(sqlModel);
 
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
@@ -483,7 +499,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
-		return namedJdbcTemplate.queryForPage(object, pageNum, pageSize,afterWhere);
+		return namedJdbcTemplate.queryForPage(object,null, pageNum, pageSize,afterWhere);
 	}
 
 	@Override
@@ -531,22 +547,6 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		
 		
 		return reuslt;
-	}
-
-
-	@Override
-	public <T> List<T> getForListWithFieldNames(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
-		SqlConfig sqlConfig = new SqlConfig(-1);
-		sqlConfig.setFieldNames(fieldNames);
-		sqlConfig.setDbFieldMode(dbFieldMode);
-		sqlConfig.setAfterWhere(afterWhere);
-		
-		SqlModel<Object> sqlModel= sqlBuilder.selectSql(object, sqlConfig);
-		checkSqlModel(sqlModel);
-		
-		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
-		return list;
 	}
 
     /**

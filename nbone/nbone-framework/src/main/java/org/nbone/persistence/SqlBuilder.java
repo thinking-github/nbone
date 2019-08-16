@@ -41,33 +41,33 @@ public interface SqlBuilder {
 	  * 由传入的对象生成update sql语句
 	  *
 	  * @param object  实体对象
-	  * @param  propertys 更新的属性字段 可为空，为空时选择全部字段
-	  * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
+	  * @param  properties 更新的属性字段 可为空，为空时选择全部字段
+	  * @param conditionFields  属性条件 可为空， 为空时默认使用主键作为条件
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public SqlModel<Object> updateSql(Object object,String[] propertys,String[] propertysCondition) throws BuilderSQLException;
+	 public SqlModel<Object> updateSql(Object object,String[] properties,String[] conditionFields) throws BuilderSQLException;
 
 	/**
 	 * 由传入的对象生成update sql语句(参数值不为空的加入)(启用安全属性设置,即为空的属性值不进行更新)
 	 * @param object 实体对象
-	 * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
+	 * @param conditionFields  属性条件 可为空， 为空时默认使用主键作为条件
 	 * @return
 	 * @throws BuilderSQLException
 	 */
-	public SqlModel<Object> updateSelectiveSql(Object object,String[] propertysCondition) throws BuilderSQLException;
+	public SqlModel<Object> updateSelectiveSql(Object object,String[] conditionFields) throws BuilderSQLException;
 
 	/**
 	 * 由传入的对象生成update sql语句
-	 * @param  propertys 更新的属性字段 可为空
-	 * @param object   更新实体数据
+	 * @param  object   更新实体数据
+	 * @param  properties 需要更新的属性字段 可为空
 	 * @param isSelective 是否只更新不为null的值
-	 * @param propertysCondition  属性条件 可为空， 为空时默认使用主键作为条件
+	 * @param conditionFields  属性条件 可为空， 为空时默认使用主键作为条件
 	 * @param whereSql    where 部分sql id=1 and name ='chen',  可为null
 	 * @return
 	 * @throws BuilderSQLException
 	 */
-	public SqlModel<Object> updateSql(String[] propertys,Object object,boolean isSelective,String[] propertysCondition,String whereSql) throws BuilderSQLException;
+	public SqlModel<Object> updateSql(Object object,String[] properties,boolean isSelective,String[] conditionFields,String whereSql) throws BuilderSQLException;
 	 
 	 /**
 	  * 由传入的Map对象生成update sql语句
@@ -144,10 +144,11 @@ public interface SqlBuilder {
 	 /**
 	  * 统计单表的数量行数
 	  * @param entityClass
+	  * @param afterWhere 增加条件语句 如: and id in(1,2,3)
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 public <T> SqlModel<T> countSql(Class<T> entityClass) throws BuilderSQLException;
+	 public <T> SqlModel<T> countSql(Class<T> entityClass,String afterWhere) throws BuilderSQLException;
 
 	/**
 	 *
@@ -177,23 +178,6 @@ public interface SqlBuilder {
 	  */
 	 public <T> SqlModel<T> selectSqlByIds(Class<T> entityClass,Object[] ids) throws BuilderSQLException;
 
-	/**
-	 * 根据实体中的参数查询
-	 * <ol>
-	 *  <li>  -1: number use = ;String use =  (全部使用等号)</li>
-	 * 	<li> simpleModel: number use = ;String use Like</li>
-	 * 	<li> middleModel: </li>
-	 * 	<li>highModel: </li>
-	 * </ol>
-	 * @param object  参数对象
-	 * @param group  构建分组查询
-	 * @param fieldLevel 根据字段级别查询,参数可为null
-	 * @param  model sqlConfig构建模型级别
-	 * @param afterWhere group by /order  by 子句 参数可为null
-	 * @return
-	 * @throws BuilderSQLException
-	 */
-	 public <T> SqlModel<T> sqlConfigSelectSql(Object object,GroupQuery group,FieldLevel fieldLevel, int model, String... afterWhere) throws BuilderSQLException;
 
 	 /**
 	  * 根据实体中的参数查询
@@ -206,7 +190,13 @@ public interface SqlBuilder {
 	
 	 /**
 	  * 根据实体中的参数查询
-	  * @param object
+	  * <ol>
+	  *  <li>  -1: number use = ;String use =  (全部使用等号)</li>
+	  * 	<li> simpleModel: number use = ;String use Like</li>
+	  * 	<li> middleModel: </li>
+	  * 	<li>highModel: </li>
+	  * </ol>
+	  * @param object  参数对象
 	  * @param sqlConfig 特殊参数定义 
 	  * @return
 	  * @throws BuilderSQLException

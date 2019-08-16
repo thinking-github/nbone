@@ -18,17 +18,15 @@ public class BaseSqlBuilderTest {
 	};
 	@Test
 	public void testbuildSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,(FieldLevel)null,-1);
-		SqlModel<Object> sqlModel1 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,FieldLevel.ALL,-1);
-		SqlModel<Object> sqlModel2 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,FieldLevel.ID,-1);
-		SqlModel<Object> sqlModel3 = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,FieldLevel.TWO,-1);
-		System.out.println(sqlModel.getSql());
+		SqlConfig sqlConfig = new SqlConfig(-1);
+		sqlConfig.setFieldLevel(FieldLevel.ALL);
+		SqlModel<Object> sqlModel1 = sqlBuilder.selectSql(getTsProjectDTO(),sqlConfig);
 		System.out.println(sqlModel1.getSql());
 	}
 	
 	//@Test
 	public void testbuildSimpleSelectSql(){
-		SqlModel<Object> sqlModel = sqlBuilder.sqlConfigSelectSql(getTsProjectDTO(),null,null,SqlConfig.PrimaryMode);
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(getTsProjectDTO(),new SqlConfig(SqlConfig.PrimaryMode));
 		System.out.println(sqlModel.getSql());
 		
 	}

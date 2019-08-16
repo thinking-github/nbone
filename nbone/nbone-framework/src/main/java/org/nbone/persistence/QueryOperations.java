@@ -194,12 +194,12 @@ public interface QueryOperations {
 	/**
 	 * 根据实体参数查询返回含有数组中的字段的列表(比返回整个实体数据提高效率)
 	 * @param object 查询实体参数
-	 * @param fieldNames java字段名称
+	 * @param fieldNames  按需返回的java字段名称列表
 	 * @param dbFieldMode 是否启用数据库字段名称
 	 * @param afterWhere 追加条件语句 或者 group by /order by 子句 参数可为null 如： and id in(1,2,3,4)
 	 * @return
 	 */
-	public  <T> List<T> getForListWithFieldNames(Object object,String[] fieldNames,boolean dbFieldMode,String... afterWhere);
+	public  <T> List<T> getForList(Object object,String[] fieldNames,boolean dbFieldMode,String... afterWhere);
 	
 	
 

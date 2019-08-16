@@ -30,6 +30,7 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
 import org.nbone.framework.mybatis.MybatisSqlBuilder;
+import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.model.SqlModel;
@@ -115,7 +116,7 @@ public class AutoBaseDaoInterceptor implements Interceptor {
             } else if ("delete".equals(id) || "deleteAuto".equals(id)) {
             	model = MybatisSqlBuilder.oxm_me.deleteSqlByEntityParams(parameterObject,true);
             } else if ("select".equals(id) || "get".equals(id)) {
-            	model = MybatisSqlBuilder.oxm_me.sqlConfigSelectSql(parameterObject,null,FieldLevel.ALL,-1);
+            	model = MybatisSqlBuilder.oxm_me.selectSql(parameterObject,new SqlConfig(-1));
             }
             logger.info("================AutoCRUDInterceptor==========================");
             logger.info(model.getSql());
