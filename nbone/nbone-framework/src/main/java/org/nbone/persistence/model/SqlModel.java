@@ -69,7 +69,12 @@ public class SqlModel<T> {
 		this.parameter = parameter;
 		this.tableMapper = tableMapper;
 	}
-	
+	public SqlModel(String sql, T parameter,TableMapper<?> tableMapper,String[] afterWhere) {
+		this.sql = sql;
+		this.parameter = parameter;
+		this.tableMapper = tableMapper;
+		this.afterWhere = afterWhere;
+	}
 	
 	
 	public static  <T> void  checkSqlModel(SqlModel<T> sqlModel) {

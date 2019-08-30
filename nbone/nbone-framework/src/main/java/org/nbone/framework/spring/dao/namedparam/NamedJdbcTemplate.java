@@ -5,13 +5,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import com.sun.javafx.collections.MappingChange;
 import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
@@ -63,13 +61,19 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	/**
 	 * 单表数据分页
 	 * @param object
-	 * @param fieldNames java字段名称 可为空,为空返回全部字段
+	 * @param sqlConfig java字段名称 可为空,为空返回全部字段
 	 * @param pageNum
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> Page<T> getForPage(Object object,String[] fieldNames,int pageNum ,int pageSize,String... afterWhere){
-		SqlModel<T> sqlModel = buildSqlModel(object,fieldNames,null,-1,false,afterWhere);
+	public <T> Page<T> getForPage(Object object,SqlConfig sqlConfig,int pageNum ,int pageSize){
+		if(sqlConfig == null){
+			sqlConfig =  SqlConfig.EMPTY;
+		}else {
+			sqlConfig.setSqlMode(-1);
+		}
+
+		SqlModel<T> sqlModel = buildSqlModel(object,sqlConfig);
 		return processPage(sqlModel, object, pageNum, pageSize);
 		
 	}
@@ -80,8 +84,13 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param pageSize
 	 * @return
 	 */
-	public <T> Page<T> queryForPage(Object object,String[] fieldNames,int pageNum ,int pageSize,String... afterWhere){
-		SqlModel<T> sqlModel = buildSqlModel(object,fieldNames,null,SqlConfig.PrimaryMode,false,afterWhere);
+	public <T> Page<T> queryForPage(Object object,SqlConfig sqlConfig,int pageNum ,int pageSize){
+		if(sqlConfig == null){
+			sqlConfig = SqlConfig.EMPTY;
+		}else {
+			sqlConfig.setSqlMode(SqlConfig.PrimaryMode);
+		}
+		SqlModel<T> sqlModel = buildSqlModel(object,sqlConfig);
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
 
@@ -106,7 +115,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @return
 	 */
 	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-		SqlModel<Object> sqlModel = buildSqlModel(object,null,null,SqlConfig.PrimaryMode,false,afterWhere);
+		SqlModel<Object> sqlModel = buildSqlModel(object,new SqlConfig(SqlConfig.PrimaryMode));
 		
 		return processPage(sqlModel, object, pageNum, pageSize);
 	}
@@ -125,39 +134,36 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	/**
 	 *
 	 * @param object 参数实体对象，不为空的作为参数查询
-	 * @param group  分组对象， 可为空
+	 * @param sqlConfig  sqlConfig对象， 可为空
 	 * @param limit  限制返回数量
-	 * @param afterWhere where 之后的语句 增加查询条件 /order by
 	 * @param <T>
 	 * @return
 	 */
-	public <T> List<T> getForLimit(Object object,GroupQuery group,int limit, String... afterWhere){
-		SqlModel<Object> sqlModel = buildSqlModel(object,null,group,-1,false,afterWhere);
-		return processLimit(sqlModel, object, group,limit);
+	public <T> List<T> getForLimit(Object object,SqlConfig sqlConfig,int limit){
+		if(sqlConfig == null){
+			sqlConfig = SqlConfig.EMPTY;
+		}else {
+			sqlConfig.setSqlMode(-1);
+		}
+		SqlModel<Object> sqlModel = buildSqlModel(object,sqlConfig);
+		return processLimit(sqlModel, object, sqlConfig.getGroupQuery(),limit);
+	}
+	public <T> List<T> queryForLimit(Object object,SqlConfig sqlConfig,int limit){
+		if(sqlConfig == null){
+			sqlConfig = SqlConfig.EMPTY;
+		}
+		SqlModel<Object> sqlModel = buildSqlModel(object,sqlConfig);
+		return processLimit(sqlModel, object,sqlConfig.getGroupQuery(), limit);
+	}
 
-	}
-	public <T> List<T> queryForLimit(Object object,GroupQuery group,int limit,String... afterWhere){
-		SqlModel<Object> sqlModel = buildSqlModel(object,null,group,SqlConfig.PrimaryMode,false,afterWhere);
-		return processLimit(sqlModel, object,group, limit);
-	}
-
-	private SqlConfig buildSqlConfig(String[] fieldNames, GroupQuery group,int model,boolean dbFieldMode,String... afterWhere){
-		SqlConfig sqlConfig = new SqlConfig(model);
-		sqlConfig.setFieldNames(fieldNames);
-		sqlConfig.setGroupQuery(group);
-		sqlConfig.setDbFieldMode(dbFieldMode);
-		sqlConfig.setAfterWhere(afterWhere);
-		return sqlConfig;
-	}
-	private <T> SqlModel<T> buildSqlModel(Object object,String[] fieldNames, GroupQuery group,int model,boolean dbFieldMode,String... afterWhere){
-		SqlConfig sqlConfig = buildSqlConfig(fieldNames,group,model,dbFieldMode,afterWhere);
+	private <T> SqlModel<T> buildSqlModel(Object object,SqlConfig sqlConfig){
 		SqlModel<T> sqlModel = (SqlModel<T>) sqlBuilder.selectSql(object,sqlConfig);
 		return sqlModel;
 	}
 
 
 	@SuppressWarnings("unchecked")
-	private <T> Page<T>  processPage(SqlModel<?> sqlModel,Object object,int pageNum ,int pageSize,String... afterWhere){
+	private <T> Page<T>  processPage(SqlModel<?> sqlModel,Object object,int pageNum ,int pageSize){
 		if(sqlModel == null){
 			throw new BuilderSQLException("sqlModel is null.");
 		}

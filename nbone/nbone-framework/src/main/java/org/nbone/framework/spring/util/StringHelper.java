@@ -1,5 +1,6 @@
 package org.nbone.framework.spring.util;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.util.NumberUtils;
  * @since 2016-08-05
  * @version 1.0.1
  */
+@SuppressWarnings("unused")
 public class StringHelper extends org.springframework.util.StringUtils {
 	
 	
@@ -21,7 +23,15 @@ public class StringHelper extends org.springframework.util.StringUtils {
 	public static List<String> delimitedListToList(String str, String delimiter) {
 		return delimitedListToList(str, delimiter,(String)null);
 	}
-	
+
+	/**
+	 *
+	 * @param str
+	 * @param delimiter
+	 * @param charsToDelete
+	 * @see org.springframework.util.StringUtils#delimitedListToStringArray(String, String, String)
+	 * @return
+	 */
 	public static List<String> delimitedListToList(String str, String delimiter, String charsToDelete) {
 		List<String> result = new ArrayList<String>();
 		if (str == null) {
@@ -51,8 +61,36 @@ public class StringHelper extends org.springframework.util.StringUtils {
 		}
 		return result;
 	}
-	
-	
+
+	/**
+	 * @param str
+	 * @param delimiter
+	 * @param targetClass
+	 * @param <T>
+	 * @return
+	 */
+	public static <T extends Number> T[] delimitedListToNumberArray(String str, String delimiter,Class<T> targetClass) {
+		List<String> temp = delimitedListToList(str, delimiter);
+		Object array = Array.newInstance(targetClass,temp.size());
+		for (int i = 0; i < temp.size(); i++) {
+			T number = NumberUtils.parseNumber(temp.get(i),targetClass);
+			Array.set(array,i,number);
+		}
+		return (T[]) array;
+	}
+
+	/**
+	 *  <li>1,2,3,4 --> Integer[]{1,2,3,4}
+	 * 	<li>1,2,3,4 --> Long[]{1,2,3,4}
+	 * @param str
+	 * @param targetClass
+	 * @param <T>
+	 * @return
+	 */
+	public static <T extends Number> T[] delimitedListToNumberArray(String str,Class<T> targetClass){
+		return delimitedListToNumberArray(str,",",targetClass);
+	}
+
 	public static <T extends Number> List<T> delimitedListToListWithNumber(String str, String delimiter,Class<T> targetClass) {
 		List<String> temp = delimitedListToList(str, delimiter);
 		List<T> result  = new ArrayList<T>(temp.size());

@@ -165,10 +165,15 @@ public interface SqlSession  extends QueryOperations{
 	/**
 	 * 根据实体的参数统计单表的行数
 	 * @param object
-	 * @param afterWhere 增加条件语句 如: and id in(1,2,3)
+	 * @param sqlConfig 查询配置 可为空
+	 *                  <li> fieldNames  按需返回字段java字段名称【返回含有数组中的字段的】,比返回整个实体数据提高效率
+	 *                  <li> groupQuery  分组查询 ,
+	 *                  <li> fieldLevel  字段级别查询,
+	 *                  <li> dbFieldMode 是否启用数据库字段名称模式,
+	 *                  <li> afterWhere  追加条件语句 或者 group by /order by 子句 参数可为null 如： and id in(1,2,3,4) （可为空）
 	 * @return
 	 */
-	public long count(Object object,String... afterWhere);
+	public long count(Object object,SqlConfig sqlConfig);
 	/**
 	 * 对数据的字段进行数学运算 (加减乘除...)
 	 * @param object 根据实体不为null参数计算且是数字类型

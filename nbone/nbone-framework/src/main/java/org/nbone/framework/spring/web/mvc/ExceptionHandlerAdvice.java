@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -104,6 +105,25 @@ public class ExceptionHandlerAdvice {
         ayncErrorLog(ex, msg, req, response);
         return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
     }
+
+    /**
+     *  请求参数绑定异常[MissingServletRequestParameterException,MissingPathVariableException,UnsatisfiedServletRequestParameterException]
+     * @param ex
+     * @param req
+     * @param response
+     * @return
+     */
+    @ExceptionHandler(value = ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Object requestBindingException(ServletRequestBindingException ex, HttpServletRequest req, HttpServletResponse response) {
+        logger.error("Bad request argument:", ex);
+
+        String msg = ex.getMessage();
+
+        String requestId = getRequestId(req);
+        ayncErrorLog(ex, msg, req, response);
+        return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
+    }
     /**
      * @param ex
      * @param req
@@ -113,7 +133,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("Bad argument:", ex);
+        logger.error("Bad request argument:", ex);
 
         String msg = ExceptionHandlerUtils.getMessage(ex);
 

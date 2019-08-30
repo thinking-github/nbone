@@ -163,6 +163,9 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	
 	@Override
 	public int[] batchInsert(Object[] objects,boolean jdbcBatch) {
+		if(objects == null || objects.length <= 0){
+			return new int[] {0};
+		}
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.length];
 		insertProcess(objects[0]);
 		for (int i = 0; i < objects.length; i++) {
@@ -179,6 +182,9 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	
 	@Override
 	public int[] batchInsert(Collection<?> objects,boolean jdbcBatch) {
+		if(objects == null || objects.size() <= 0){
+			return new int[] {0};
+		}
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.size()];
 		int index = 0 ; 
 		for (Object object : objects) {

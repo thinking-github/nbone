@@ -5,6 +5,14 @@ import java.lang.reflect.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author thinking
+ * @version 1.0
+ * @since 2019-08-20
+ * @see org.springframework.util.ReflectionUtils
+ */
+
 public class ReflectFieldUtil {
 	private final static Logger logger = LoggerFactory.getLogger(ReflectFieldUtil.class);
 	

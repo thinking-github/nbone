@@ -8,8 +8,7 @@ import org.hibernate.Session;
 import org.nbone.framework.hibernate.util.HibernateClassUtils;
 import org.nbone.framework.hibernate.util.HqlQuery;
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.SqlPropertyDescriptor;
-import org.nbone.persistence.SqlPropertyDescriptors;
+import org.nbone.persistence.SqlOperations;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +29,7 @@ public class HibernateDao extends HibernateDaoSupportX {
 		return super.getHibernateTemplate().find(hql);
 	}
 	
-	public List<Object> queryForBean(Object bean,SqlPropertyDescriptors sqlpds) {
+	public List<Object> queryForBean(Object bean, SqlOperations sqlpds) {
 		
 		SqlConfig hqlConfig;
 		if (sqlpds == null) {
@@ -38,7 +37,7 @@ public class HibernateDao extends HibernateDaoSupportX {
 		}
 		else {
 			hqlConfig = SqlConfig.getHighMode();
-			hqlConfig.setSqlPds(sqlpds);
+			hqlConfig.setSqlOperations(sqlpds);
 		}
 		return queryForBean(bean, hqlConfig);
 	}

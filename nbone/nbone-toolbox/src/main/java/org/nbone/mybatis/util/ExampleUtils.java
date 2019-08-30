@@ -7,6 +7,8 @@ import org.nbone.persistence.annotation.FieldProperty;
 import org.nbone.persistence.annotation.MappedBy;
 import org.nbone.persistence.enums.QueryType;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -15,11 +17,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
-import static org.nbone.persistence.enums.QueryType.*;
+import static org.nbone.persistence.enums.QueryType.LIKE;
 
 /**
  * @author chenyicheng
@@ -113,23 +113,53 @@ public class ExampleUtils {
                 if (StringUtils.isEmpty(oValue)) {
                     return;
                 }
-                if (field.isAnnotationPresent(FieldProperty.class)) {
-                    FieldProperty fieldProperty = field.getAnnotation(FieldProperty.class);
-                    QueryType queryType = fieldProperty.queryType();
-                    whereQueryType(queryType, criteria, name, oValue);
-                } else if (field.isAnnotationPresent(MappedBy.class)) {
-                    MappedBy mappedBy = field.getAnnotation(MappedBy.class);
-                    String fieldName    = mappedBy.name();
-                    QueryType queryType = mappedBy.queryType();
-                    whereQueryType(queryType, criteria, fieldName, oValue);
-                } else {
-                    criteria.andEqualTo(name, oValue);
-                }
+                fieldOperationType(field, oValue, criteria);
+
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 log.error("Build example error, property[{}]", name);
             }
         });
         return example;
+    }
+
+    /**
+     * 根据条件names 构建参数条件
+     *
+     * @param object         实体对象
+     * @param conditionNames 参数条件数组
+     * @return
+     */
+    public static Example buildExampleNames(Object object, String[] conditionNames) {
+
+        Class<? extends Object> clazz = object.getClass();
+        Example example = new Example(clazz);
+        Example.Criteria criteria = example.createCriteria();
+
+        for (String name : conditionNames) {
+            Field field = FieldUtils.getDeclaredField(clazz, name, true);
+            Object value = ReflectionUtils.getField(field, object);
+            if (ObjectUtils.isEmpty(value)) {
+                continue;
+            }
+            fieldOperationType(field, value, criteria);
+        }
+
+        return example;
+    }
+
+    private static void fieldOperationType(Field field, Object value, Example.Criteria criteria) {
+        if (field.isAnnotationPresent(FieldProperty.class)) {
+            FieldProperty fieldProperty = field.getAnnotation(FieldProperty.class);
+            QueryType queryType = fieldProperty.queryType();
+            whereQueryType(queryType, criteria, field.getName(), value);
+        } else if (field.isAnnotationPresent(MappedBy.class)) {
+            MappedBy mappedBy = field.getAnnotation(MappedBy.class);
+            String fieldName = mappedBy.name();
+            QueryType queryType = mappedBy.queryType();
+            whereQueryType(queryType, criteria, fieldName, value);
+        } else {
+            criteria.andEqualTo(field.getName(), value);
+        }
     }
 
     public static void andBetween(Example example, String property, Object[] vaules) {
@@ -160,11 +190,14 @@ public class ExampleUtils {
 
 
     /**
-     *
      * @param queryType
      */
 
     public static void whereQueryType(QueryType queryType, Example.Criteria criteria, String name, Object value) {
+        if (value == null) {
+            return;
+        }
+        Iterable iterable = null;
         switch (queryType) {
             case EQ:
                 criteria.andEqualTo(name, value);
@@ -185,41 +218,46 @@ public class ExampleUtils {
                 criteria.andLessThanOrEqualTo(name, value);
                 break;
             case IN:
-                criteria.andIn(name, (Iterable) value);
+                if (value.getClass().isArray()) {
+                    iterable = Arrays.asList((Object[]) value);
+                } else {
+                    iterable = (Iterable) value;
+                }
+                criteria.andIn(name, iterable);
+
                 break;
             case NOT_IN:
-                criteria.andNotIn(name, (Iterable) value);
+                if (value.getClass().isArray()) {
+                    iterable = Arrays.asList((Object[]) value);
+                } else {
+                    iterable = (Iterable) value;
+                }
+                criteria.andNotIn(name, iterable);
                 break;
 
             case BETWEEN:
-                if(value == null){
-                    break;
-                }
-                if(value.getClass().isArray()){
-                   Object[] values =  (Object[]) value;
-                    if(values.length == 2 && values[0] != null && values[1] != null){
-                        criteria.andBetween(name,values[0],values[1]);
+                if (value.getClass().isArray()) {
+                    Object[] values = (Object[]) value;
+                    if (values.length == 2 && values[0] != null && values[1] != null) {
+                        criteria.andBetween(name, values[0], values[1]);
                     }
-                }else if(value instanceof List){
+                } else if (value instanceof List) {
                     List<Object> list = (List<Object>) value;
-                    if(list.size() == 2 && list.get(0) != null && list.get(1) != null ){
-                        criteria.andBetween(name,list.get(0),list.get(1));
+                    if (list.size() == 2 && list.get(0) != null && list.get(1) != null) {
+                        criteria.andBetween(name, list.get(0), list.get(1));
                     }
                 }
                 break;
             case NOT_BETWEEN:
-                if(value == null){
-                    break;
-                }
-                if(value.getClass().isArray()){
-                    Object[] values =  (Object[]) value;
-                    if(values.length == 2 && values[0] != null && values[1] != null){
-                        criteria.andNotBetween(name,values[0],values[1]);
+                if (value.getClass().isArray()) {
+                    Object[] values = (Object[]) value;
+                    if (values.length == 2 && values[0] != null && values[1] != null) {
+                        criteria.andNotBetween(name, values[0], values[1]);
                     }
-                }else if(value instanceof List){
+                } else if (value instanceof List) {
                     List<Object> list = (List<Object>) value;
-                    if(list.size() == 2 && list.get(0) != null && list.get(1) != null ){
-                        criteria.andNotBetween(name,list.get(0),list.get(1));
+                    if (list.size() == 2 && list.get(0) != null && list.get(1) != null) {
+                        criteria.andNotBetween(name, list.get(0), list.get(1));
                     }
                 }
                 break;
@@ -231,7 +269,7 @@ public class ExampleUtils {
                 criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffux());
                 break;
             case RIGHT_LIKE:
-                criteria.andLike(name,LIKE.getValuePrefix() + value + LIKE.getValueSuffux());
+                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffux());
                 break;
             case IS_NULL:
                 criteria.andIsNull(name);

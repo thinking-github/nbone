@@ -9,6 +9,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.Set;
+
 /**
  * 以静态变量保存Spring ApplicationContext, 可在任何代码任何地方任何时候中取出ApplicaitonContext.<p>
  * get Spring ApplicationContext bean<br> <p>
@@ -30,6 +35,8 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 	protected static Log logger =  LogFactory.getLog(ComponentFactory.class);
 	private static ApplicationContext applicationContext;
     private static String message = "请先将ComponentFactory注入到spring container.thinking";
+
+	private static Validator validator;
 
 	public ComponentFactory() {
 		
@@ -163,7 +170,32 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+	/**
+	 * 实例对象验证
+	 *
+	 * @param object 需要验证的对象
+	 * @param groups 验证组
+	 * @param <T>
+	 */
+	public static  <T> void validate(T object, Class<?>... groups){
+		if(object == null){
+			return;
+		}
+		if(validator == null){
+			validator = applicationContext.getBean(Validator.class);
+		}
+		Set<ConstraintViolation<T>> set = validator.validate(object,groups);
+		if(set.size() > 0){
+			for (ConstraintViolation<T> constraintViolation : set) {
+				String propertyName =  constraintViolation.getPropertyPath().toString();
+				String message = constraintViolation.getMessage();
+				throw  new IllegalArgumentException(object.getClass().getName()+" field ["+ propertyName +"] "+message);
+			}
+
+
+		}
+	}
 	//---------------------------------------------------------------------
 	/**
 	 * input bean Is Null New Instance

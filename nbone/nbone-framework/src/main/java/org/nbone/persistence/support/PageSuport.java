@@ -6,7 +6,7 @@ public class PageSuport {
 	
 	public static String toMysqlPage(String sql,int offset, int pageSize){
 		
-		return "select sys_tempp.* from ( " + sql+ " )  sys_tempp LIMIT " + pageSize * (offset-1) + ","+ pageSize;
+		return "select temp.* from ( " + sql+ " )  temp LIMIT " + pageSize * (offset-1) + ","+ pageSize;
 	}
 	
 	public static String toOraclePage(String sql,int offset, int pageSize){

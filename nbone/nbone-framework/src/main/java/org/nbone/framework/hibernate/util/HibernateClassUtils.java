@@ -9,7 +9,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.SqlPropertyDescriptor;
+import org.nbone.persistence.SqlOperation;
 import org.nbone.persistence.util.SqlUtils;
 import org.nbone.util.reflect.SimpleTypeMapper;
 /**
@@ -72,7 +72,7 @@ public class HibernateClassUtils {
 		}
         String tabAlias = hqlConfig.getAliasName();
         
-        Map<String,SqlPropertyDescriptor> hqlpdsMap = hqlConfig.getSqlPds();
+        Map<String, SqlOperation> hqlpdsMap = hqlConfig.getSqlOperationAsMap();
         List<Class<?>> pojoRefs = hqlConfig.getPojoRefs();
         int  hqlMode =  hqlConfig.getSqlMode();
         
@@ -210,7 +210,7 @@ public class HibernateClassUtils {
 		 Map<String,String> notinNumStrMap = hqlConfig.getNotinNumStrMap();
 		 
 		 Map<String,String> InStringFieldsMap = hqlConfig.getInStringFieldsMap();
-		 Map<String,String> notinStringFieldsMap = hqlConfig.getNotinStringFieldsMap();
+		 Map<String,String> notinStringFieldsMap = null;
 		 
 		 if(SimpleTypeMapper.isPrimitiveWithNumber(fieldType)){
 			 boolean ifrun = true;
@@ -267,13 +267,13 @@ public class HibernateClassUtils {
 	//-----------------------------------------------------------------
 	protected static String toHighMode(SqlConfig hqlConfig,String fieldName,Object fieldValue,Class<?> fieldType, String aliasAndFieldName,
 			                          Map<String,Object> namedParameters){
-		SqlPropertyDescriptor hqlPropertyDescriptor = hqlConfig.getSqlPd(fieldName);
-		 boolean iswhere  = hqlPropertyDescriptor.isHasWhere();
+		SqlOperation sqlOperation = hqlConfig.getSqlOperation(fieldName);
+		 boolean iswhere  = sqlOperation.isHasWhere();
 		
 		 StringBuilder hqlsbPart = new StringBuilder();
 			
 		 if(iswhere) {
-			StringBuilder hqlpart = SqlUtils.getHibernateWhere(hqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+			StringBuilder hqlpart = SqlUtils.getHibernateWhere(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
 		 	hqlsbPart.append(hqlpart);
 		 }
 			

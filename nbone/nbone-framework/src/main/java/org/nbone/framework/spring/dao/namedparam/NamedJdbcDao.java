@@ -265,8 +265,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public long count(Object object,String... afterWhere) {
-		SqlModel<Object> sqlModel = sqlBuilder.countSql(object,afterWhere);
+	public long count(Object object,SqlConfig sqlConfig) {
+		SqlModel<Object> sqlModel = sqlBuilder.countSql(object,sqlConfig);
 		checkSqlModel(sqlModel);
 		SqlParameterSource parameterSource =  new BeanPropertySqlParameterSource(object);
 		
@@ -298,78 +298,51 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		return result;
 	}
 	@Override
-	public <T> List<T> getForList(Object object,String... afterWhere) {
-		return getForList(object, (FieldLevel)null,afterWhere);
-	}
-	@Override
-	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		return list(object,null,null,fieldLevel,-1,false,afterWhere);
-	}
-	@Override
-	public <T> List<T> getForList(Object object, GroupQuery group, FieldLevel fieldLevel, String... afterWhere) {
-		return list(object,null,group,fieldLevel,-1,false,afterWhere);
+	public <T> List<T> getForList(Object object,SqlConfig sqlConfig) {
+		if(sqlConfig == null){
+			sqlConfig = SqlConfig.EMPTY;
+		}
+		return list(object, sqlConfig);
 	}
 
 	@Override
-	public <T> List<T> getForList(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
-		return list(object,fieldNames,null,null,-1,dbFieldMode,afterWhere);
+	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
+		if(sqlConfig == null){
+			sqlConfig = SqlConfig.EMPTY;
+		}
+		return list(object,sqlConfig);
 	}
 
-
-	@Override
-	public <T> List<T> queryForList(Object object,String... afterWhere) {
-		return queryForList(object, (FieldLevel)null,afterWhere);
-	}
-	
-	@Override
-	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		return list(object,null,null,fieldLevel,SqlConfig.PrimaryMode,false,afterWhere);
-	}
-
-	private <T> List<T> list(Object object,String[] fieldNames, GroupQuery group, FieldLevel fieldLevel, int model,boolean dbFieldMode,String... afterWhere){
-		SqlConfig sqlConfig = SqlConfig.getSqlConfig(model);
-		sqlConfig.setFieldNames(fieldNames);
-		sqlConfig.setGroupQuery(group);
-		sqlConfig.setFieldLevel(fieldLevel);
-		sqlConfig.setDbFieldMode(dbFieldMode);
-		sqlConfig.setAfterWhere(afterWhere);
+	private <T> List<T> list(Object object,SqlConfig sqlConfig){
 		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,sqlConfig);
 		checkSqlModel(sqlModel);
 
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
 
-		RowMapper<T> rowMapperGroup =  sqlBuilder.getRowMapper(group);
+		RowMapper<T> rowMapperGroup =  sqlBuilder.getRowMapper(sqlConfig.getGroupQuery());
 		if(rowMapperGroup != null){
 			rowMapper = rowMapperGroup;
 		}
 
 		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
 		return list;
-
-	}
-	@Override
-	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
-		
-		SqlModel<Map<String,?>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
-		checkSqlModel(sqlModel);
-			
-		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),sqlModel.getParameter(),rowMapper);
-		return list;
 	}
     /**
-     * XXX：预留方法目前实现采用 {@link #queryForList(Object, String...)}
+     * XXX：预留方法目前实现采用 {@link #queryForList(Object, SqlConfig)}
      */
 	@Override
 	public <T> List<T> findForList(Object object) {
-		return this.queryForList(object);
+		return this.queryForList(object,null);
 	}
-	 /**
-     * XXX：预留方法目前实现采用 {@link #queryForList(Object, FieldLevel,String...)}
-     */
+
 	@Override
-	public <T> List<T> findForList(Object object, FieldLevel fieldLevel) {
-		return this.queryForList(object, fieldLevel);
+	public <T> List<T> findForList(Object object, SqlConfig sqlConfig) {
+		SqlModel<Map<String,?>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
+		checkSqlModel(sqlModel);
+
+		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),sqlModel.getParameter(),rowMapper);
+		return list;
 	}
 
 
@@ -488,18 +461,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 
 	@Override
-	public <T> Page<T> getForPage(Object object, String[] fieldNames, int pageNum, int pageSize, String... afterWhere) {
-		return namedJdbcTemplate.getForPage(object, fieldNames, pageNum, pageSize, afterWhere);
+	public <T> Page<T> getForPage(Object object, SqlConfig sqlConfig, int pageNum, int pageSize) {
+		return namedJdbcTemplate.getForPage(object, sqlConfig, pageNum, pageSize);
 	}
 
 	@Override
-	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
-		return namedJdbcTemplate.getForPage(object,null, pageNum, pageSize,afterWhere);
-	}
-
-	@Override
-	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
-		return namedJdbcTemplate.queryForPage(object,null, pageNum, pageSize,afterWhere);
+	public <T> Page<T> queryForPage(Object object,SqlConfig sqlConfig, int pageNum, int pageSize) {
+		return namedJdbcTemplate.queryForPage(object,sqlConfig, pageNum, pageSize);
 	}
 
 	@Override
@@ -514,13 +482,19 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public <T> List<T> getForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
-		return namedJdbcTemplate.getForLimit(object,group,limit,afterWhere);
+	public <T> List<T> getForLimit(Object object,SqlConfig sqlConfig, int limit) {
+		return namedJdbcTemplate.getForLimit(object,sqlConfig,limit);
+	}
+	@Override
+	public <T> List<T> getForLimit(Object object, Map<String, String> operationMap,GroupQuery group, int limit,String... afterWhere) {
+		SqlConfig sqlConfig = new SqlConfig(-1);
+		sqlConfig.addOperationMapString(operationMap).groupQuery(group).afterWhere(afterWhere);
+		return namedJdbcTemplate.getForLimit(object, sqlConfig, limit);
 	}
 
 	@Override
-	public <T> List<T> queryForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
-		return namedJdbcTemplate.queryForLimit(object,group,limit,afterWhere);
+	public <T> List<T> queryForLimit(Object object,SqlConfig sqlConfig, int limit) {
+		return namedJdbcTemplate.queryForLimit(object,sqlConfig,limit);
 	}
 
 

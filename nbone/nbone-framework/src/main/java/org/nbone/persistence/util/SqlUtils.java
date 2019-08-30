@@ -7,17 +7,58 @@ import java.util.List;
 import java.util.Map;
 
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.SqlPropertyDescriptor;
+import org.nbone.persistence.SqlOperation;
 import org.nbone.persistence.SqlPropertyRange;
 import org.nbone.persistence.criterion.QueryOperator;
 import org.nbone.util.reflect.SimpleTypeMapper;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * @author thinking
  * @version 1.0
  */
+@SuppressWarnings("unused")
 public class SqlUtils {
+
+
+    /**
+     * sql 条件列表组合
+     *
+     * @param origin 原始条件
+     * @param appendSql 追加条件
+     * @return
+     */
+    public static StringBuilder appendCondition(StringBuilder origin,CharSequence appendSql){
+        if(origin == null){
+            origin =  new StringBuilder();
+        }
+        if(appendSql != null){
+            String upper = null;
+            if(appendSql instanceof String){
+                 upper  = ((String) appendSql).toUpperCase();
+            }else if (appendSql instanceof  StringBuilder) {
+                upper  = ((StringBuilder) appendSql).toString().toUpperCase();
+            }else if (appendSql instanceof StringBuffer){
+                upper  = ((StringBuffer)  appendSql).toString().toUpperCase();
+            }else {
+                upper = appendSql.toString().toUpperCase();
+            }
+
+            if(origin.length() > 0){
+                if(!upper.startsWith("AND ") && !upper.startsWith(" AND ")){
+                    origin.append(" and " ).append(appendSql);
+                }else {
+                    origin.append(" ").append(appendSql);
+                }
+            }else {
+                if(!upper.startsWith("AND ") && !upper.startsWith(" AND ")){
+                    origin.append(appendSql);
+                }
+            }
+        }
+        return origin;
+    }
 
     /**
      * "2014-01-01,kkk,000"  to (tempA.remark = '2014-01-01' or  tempA.remark = 'kkk' or  tempA.remark = '000')<br>
@@ -152,28 +193,55 @@ public class SqlUtils {
         return sqlsb;
     }
 
-    public static StringBuilder andBetween(String dbFieldName,Object[] values,boolean is){
+    public static StringBuilder andBetween(String dbFieldName,Object values,boolean is){
         return dbBetween("and",dbFieldName,values,is);
     }
-    public static StringBuilder dbBetween(String andOr,String dbFieldName,Object[] values,boolean is) {
+
+    /**
+     *
+     * @param andOr
+     * @param dbFieldName
+     * @param values 区间数组 object[]{1,2} /字符串表示区间分割列表 1,2
+     * @param is
+     * @return
+     */
+    public static StringBuilder dbBetween(String andOr,String dbFieldName,Object values,boolean is) {
         if(values == null){
             return  null;
         }
-        Assert.notNull(dbFieldName,"dbFieldName is null.");
-        if(values.length != 2){
+        Assert.notNull(dbFieldName,"dbFieldName must not null.");
+
+        Object[] array = array(values);
+        if(array.length != 2){
             throw  new IllegalArgumentException("between values.length must = 2.");
         }
         if(andOr == null){
-            andOr ="";
+            andOr = "";
         }
 
-        StringBuilder sqlsb= new StringBuilder();
+        StringBuilder sql= new StringBuilder();
         String operType = is ? " between " : " not between ";
         // and status between :beginStatus and :endStatus
-        sqlsb.append(" ").append(andOr).append(" ").append(dbFieldName).append(operType).append(values[0]).append(" and ").append(values[1]);
-        return sqlsb;
+        sql.append(" ").append(andOr).append(" ").append(dbFieldName).append(operType).append(array[0]).append(" and ").append(array[1]);
+        return sql;
     }
 
+    public static Object[] array(Object values){
+        if(values == null){
+            return  null;
+        }
+        Object[] array = null;
+        if(values instanceof String){
+            array = StringUtils.commaDelimitedListToStringArray((String) values);
+        }else if(values.getClass().isArray()){
+            array = (Object[]) values;
+        } else if (values instanceof Collection) {
+            array = ((Collection)values).toArray();
+        }else {
+            throw new IllegalArgumentException("invalid argument values");
+        }
+        return array;
+    }
     public static StringBuilder list2In(String name, Collection<?> values) {
         return list2In(name, values.toArray());
     }
@@ -227,15 +295,15 @@ public class SqlUtils {
         return sql;
     }
 
-    public static StringBuilder getHibernateWhereIn(SqlPropertyDescriptor hqlPropertyDescriptor, Object fieldValue,
+    public static StringBuilder getHibernateWhereIn(SqlOperation sqlOperation, Object fieldValue,
                                                     String aliasAndFieldName, Map<String, Object> namedParameters) {
-        String operType = hqlPropertyDescriptor.getOperType();
-        String fieldName = hqlPropertyDescriptor.getFieldName();
-        Object specialValue = hqlPropertyDescriptor.getSpecialValue();
+        String operType = sqlOperation.getOperType();
+        String fieldName = sqlOperation.getFieldName();
+        Object specialValue = sqlOperation.getSpecialValue();
         StringBuilder hqlsb = new StringBuilder();
         String keyName = ":" + fieldName;
 
-        if (hqlPropertyDescriptor.isIn()) {
+        if (sqlOperation.isIn()) {
             //hibernate custom index keyName
             hqlsb.append(" and ").append(aliasAndFieldName).append(" ").append(operType).append("(").append(keyName).append(")");
             //XXX: special Value
@@ -249,25 +317,25 @@ public class SqlUtils {
         return hqlsb;
     }
 
-    public static StringBuilder getHibernateWhere(SqlPropertyDescriptor sqlPropertyDescriptor, Object fieldValue,
+    public static StringBuilder getHibernateWhere(SqlOperation sqlOperation, Object fieldValue,
                                                   String aliasAndFieldName, Map<String, Object> namedParameters) {
         StringBuilder hqlsb = new StringBuilder();
-        if (sqlPropertyDescriptor == null) {
+        if (sqlOperation == null) {
             return hqlsb;
         }
-        String operType = sqlPropertyDescriptor.getOperType();
-        if (sqlPropertyDescriptor.isBetween()) {
+        String operType = sqlOperation.getOperType();
+        if (sqlOperation.isBetween()) {
 
-            StringBuilder betweensql = getWhereBetween(sqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+            StringBuilder betweensql = getWhereBetween(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(betweensql);
 
-        } else if (sqlPropertyDescriptor.isIn()) {
+        } else if (sqlOperation.isIn()) {
 
-            StringBuilder insql = getHibernateWhereIn(sqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+            StringBuilder insql = getHibernateWhereIn(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(insql);
 
         } else {
-            StringBuilder sql = getCommonWherePart(sqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+            StringBuilder sql = getCommonWherePart(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(sql);
 
         }
@@ -276,12 +344,12 @@ public class SqlUtils {
     }
 
 
-    public static StringBuilder getSpringJdbcWhereIn(SqlPropertyDescriptor sqlPropertyDescriptor, Object fieldValue,
+    public static StringBuilder getSpringJdbcWhereIn(SqlOperation sqlOperation, Object fieldValue,
                                                      String aliasAndFieldName, Map<String, Object> namedParameters) {
-        String operType = sqlPropertyDescriptor.getOperType();
-        String fieldName = sqlPropertyDescriptor.getFieldName();
-        Class<?> propertyType = sqlPropertyDescriptor.getPropertyType();
-        Object specialValue = sqlPropertyDescriptor.getSpecialValue();
+        String operType = sqlOperation.getOperType();
+        String fieldName = sqlOperation.getFieldName();
+        Class<?> propertyType = sqlOperation.getPropertyType();
+        Object specialValue = sqlOperation.getSpecialValue();
         StringBuilder hqlsb = new StringBuilder();
 
         Object[] values = null;
@@ -292,12 +360,12 @@ public class SqlUtils {
 
         } else if(specialValue instanceof String){
             // and id in (1,2,3,4,5)
-            if(SimpleTypeMapper.isPrimitiveWithNumber(propertyType) && sqlPropertyDescriptor.isIn()){
+            if(SimpleTypeMapper.isPrimitiveWithNumber(propertyType) && sqlOperation.isIn()){
                 hqlsb.append(" and ").append(aliasAndFieldName).append(" ").append(operType).append(" (").append(specialValue).append(")");
                 return hqlsb;
             }
             // and id in ('693fe72810','f84f369553')
-            if(SimpleTypeMapper.isPrimitiveWithString(propertyType) && sqlPropertyDescriptor.isIn()){
+            if(SimpleTypeMapper.isPrimitiveWithString(propertyType) && sqlOperation.isIn()){
                 String useValue = ((String) specialValue).replaceAll(",","','");
                 hqlsb.append(" and ").append(aliasAndFieldName).append(" ").append(operType).append(" ('").append(useValue).append("')");
                 return hqlsb;
@@ -305,38 +373,38 @@ public class SqlUtils {
 
         }
 
-        if (values != null && sqlPropertyDescriptor.isIn()) {
-            boolean isIn = SqlPropertyDescriptor.in.equalsIgnoreCase(operType);
+        if (values != null && sqlOperation.isIn()) {
+            boolean isIn = SqlOperation.in.equalsIgnoreCase(operType);
             hqlsb.append(" and ").append(list2NamedIn(aliasAndFieldName, isIn, values, namedParameters));
         }
 
         return hqlsb;
     }
 
-    public static StringBuilder getSpringJdbcWhere(SqlPropertyDescriptor sqlPropertyDescriptor, Object fieldValue,
+    public static StringBuilder getSpringJdbcWhere(SqlOperation sqlOperation, Object fieldValue,
                                                    String aliasAndFieldName, Map<String, Object> namedParameters) {
         StringBuilder hqlsb = new StringBuilder();
-        if (sqlPropertyDescriptor == null) {
+        if (sqlOperation == null) {
             return hqlsb;
         }
-        String operType = sqlPropertyDescriptor.getOperType();
-        String fieldName = sqlPropertyDescriptor.getFieldName();
+        String operType = sqlOperation.getOperType();
+        String fieldName = sqlOperation.getFieldName();
         if(operType == null){
             StringBuilder tempSql = defaultOperType(fieldName, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(tempSql);
 
-        } else if (sqlPropertyDescriptor.isBetween()) {
+        } else if (sqlOperation.isBetween()) {
 
-            StringBuilder betweensql = getWhereBetween(sqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+            StringBuilder betweensql = getWhereBetween(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(betweensql);
 
-        } else if (sqlPropertyDescriptor.isIn()) {
+        } else if (sqlOperation.isIn()) {
 
-            StringBuilder insql = getSpringJdbcWhereIn(sqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+            StringBuilder insql = getSpringJdbcWhereIn(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(insql);
 
         } else {
-            StringBuilder sql = getCommonWherePart(sqlPropertyDescriptor, fieldValue, aliasAndFieldName, namedParameters);
+            StringBuilder sql = getCommonWherePart(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
             hqlsb.append(sql);
         }
 
@@ -344,18 +412,18 @@ public class SqlUtils {
     }
 
 
-    public static StringBuilder getWhereBetween(SqlPropertyDescriptor sqlPropertyDescriptor, Object fieldValue,
+    public static StringBuilder getWhereBetween(SqlOperation sqlOperation, Object fieldValue,
                                                 String aliasAndFieldName, Map<String, Object> namedParameters) {
         StringBuilder hqlsb = new StringBuilder();
-        String fieldName = sqlPropertyDescriptor.getFieldName();
-        boolean isBetween = sqlPropertyDescriptor.isBetween();
+        String fieldName = sqlOperation.getFieldName();
+        boolean isBetween = sqlOperation.isBetween();
         String placeholderPrefix = ":";
         String placeholderSuffix = " ";
         if (isBetween) {
-            Object beginValue = sqlPropertyDescriptor.getBeginValue();
-            Object endValue = sqlPropertyDescriptor.getEndValue();
-            String beginValueMark = sqlPropertyDescriptor.getBeginValueMark();
-            String endValueMark = sqlPropertyDescriptor.getEndValueMark();
+            Object beginValue = sqlOperation.getBeginValue();
+            Object endValue = sqlOperation.getEndValue();
+            String beginValueMark = sqlOperation.getBeginValueMark();
+            String endValueMark = sqlOperation.getEndValueMark();
 
             String beginKey = "begin" + fieldName;
             String endKey = "end" + fieldName;
@@ -386,7 +454,7 @@ public class SqlUtils {
      * @param namedParameters
      * @return
      */
-    public static StringBuilder getCommonWherePart(SqlPropertyDescriptor sqlPropertyDescriptor, Object fieldValue,
+    public static StringBuilder getCommonWherePart(SqlOperation sqlPropertyDescriptor, Object fieldValue,
                                                    String aliasAndFieldName, Map<String, Object> namedParameters) {
         StringBuilder hqlsb = new StringBuilder();
         String placeholderPrefix = ":";
@@ -402,23 +470,23 @@ public class SqlUtils {
             hqlsb.append(tempSql);
         }
         // and  user.id=5
-        else if (SqlPropertyDescriptor.OperTypeSet.contains(operType)) {
+        else if (SqlOperation.OperTypeSet.contains(operType)) {
 
             hqlsb.append(" and ").append(aliasAndFieldName).append(" ").append(operType).append(" ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
             namedParameters.put(fieldName, fieldValue);
 
-        } else if (SqlPropertyDescriptor.like.equalsIgnoreCase(operType)) {
+        } else if (SqlOperation.like.equalsIgnoreCase(operType)) {
             hqlsb.append(" and ").append(aliasAndFieldName).append(" like  '%").append(fieldValue).append("%'");
 
-        } else if (SqlPropertyDescriptor.left_like.equalsIgnoreCase(operType)) {
+        } else if (SqlOperation.left_like.equalsIgnoreCase(operType)) {
 
             hqlsb.append(" and ").append(aliasAndFieldName).append(" like  '%").append(fieldValue).append("'");
 
-        } else if (SqlPropertyDescriptor.right_like.equalsIgnoreCase(operType)) {
+        } else if (SqlOperation.right_like.equalsIgnoreCase(operType)) {
 
             hqlsb.append(" and ").append(aliasAndFieldName).append(" like  '").append(fieldValue).append("%'");
 
-        } else if (SqlPropertyDescriptor.is_null.equalsIgnoreCase(operType) || SqlPropertyDescriptor.is_not_null.equalsIgnoreCase(operType)) {
+        } else if (SqlOperation.is_null.equalsIgnoreCase(operType) || SqlOperation.is_not_null.equalsIgnoreCase(operType)) {
 
             hqlsb.append(" and ").append(aliasAndFieldName).append(" ").append(operType);
 

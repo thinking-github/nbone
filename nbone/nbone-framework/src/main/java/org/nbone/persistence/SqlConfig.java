@@ -1,9 +1,6 @@
 package org.nbone.persistence;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import lombok.Data;
 import org.nbone.mvc.domain.GroupQuery;
@@ -23,14 +20,15 @@ public class SqlConfig {
     public static final int HighMode = 2 ;
     
     public static final int ObjectMode = 3 ;
-    
-    private String aliasName = " tempA";  
+
+    public static final SqlConfig EMPTY = new SqlConfig();
+
+    private String aliasName = " tempA";
 	
 	/**
 	 * 高级时使用
 	 */
-    
-    private SqlPropertyDescriptors  sqlPds = new SqlPropertyDescriptors();
+    private SqlOperations sqlOperations = new SqlOperations();
     
     private List<SqlPropertyRange> sqlPropertyRanges = new ArrayList<SqlPropertyRange>(1);
     
@@ -38,10 +36,19 @@ public class SqlConfig {
      * 字段名称数组,用于按需返回字段
      */
     private String[] fieldNames;
+
+	/**
+	 * 扩展字段名称数组
+	 */
+	private String[] extFields;
     /**
      * 默认采用Java字段模式
      */
     private boolean dbFieldMode = false;
+	/**
+	 * 查询是否去重
+	 */
+	private boolean distinct = false;
     /**
      * 字段级别
      */
@@ -52,9 +59,14 @@ public class SqlConfig {
     private GroupQuery groupQuery;
 
 	/**
-	 * 追加条件 或者 group by/order by 子句
+	 * where 之后的语句 追加[增加]查询条件 或者 group by/order by 子句
 	 */
 	private String[] afterWhere;
+
+	/**
+	 * 排序字段 id DESC
+	 */
+	private String orderBy;
     /**
      * 此实体Bean 引用其他的实体Bean列表
      */
@@ -72,10 +84,8 @@ public class SqlConfig {
     private Map<String,String> notinNumStrMap;
     //String key
     private String[] inStringFields;
-    private String[] notinStringFields;
     private Map<String,String> inStringFieldsMap;
-    private Map<String,String> notinStringFieldsMap;
-   
+
 	private List dtField;
     /**
      * 初中高级通用
@@ -99,31 +109,33 @@ public class SqlConfig {
 	/**
      *  MiddleMode Constructor
      * @param inStringFields
-     * @param notinStringFields
      */
-    public SqlConfig(String[] inStringFields, String[] notinStringFields) {
+    public SqlConfig(String[] inStringFields) {
 		this.inStringFields = inStringFields;
-		this.notinStringFields = notinStringFields;
-		
 		this.inStringFieldsMap = stringArray2Map(inStringFields);
-		this.notinStringFieldsMap = stringArray2Map(notinStringFields);
-		
+
 		this.sqlMode = MiddleMode;
 	}
 
 	/**
      * HighMode Constructor
-     * @param hqlPds
+     * @param sqlOperationMap
      */
-	public SqlConfig(Map<String,SqlPropertyDescriptor> hqlPds){
-    	this.addSqlPds(hqlPds);
+	public SqlConfig(Map<String, SqlOperation> sqlOperationMap){
+    	this.addAll(sqlOperationMap);
     	this.sqlMode = HighMode;
     }
 	
-	public SqlConfig(SqlPropertyDescriptors hqlPds){
-    	this.sqlPds = hqlPds;
+	public SqlConfig(SqlOperations sqlOperations){
+    	this.sqlOperations = sqlOperations;
     	this.sqlMode = HighMode;
     }
+	public SqlConfig(String fieldName,String operType) {
+		addOperation(fieldName,operType);
+	}
+	public SqlConfig(String fieldName,String operType,String fieldName1,String operationType) {
+		addOperation(fieldName,operType).addOperation(fieldName1,operationType);
+	}
 	//-------------------------------------------------------------------------
 	//factory method 
 	//-------------------------------------------------------------------------
@@ -132,11 +144,11 @@ public class SqlConfig {
 	}
 	
 	public static SqlConfig getHighMode(){
-		return new SqlConfig((Map<String,SqlPropertyDescriptor>)null);
+		return new SqlConfig((Map<String, SqlOperation>)null);
 	}
 	
-	public static SqlConfig getMiddleMode(String[] inStringFields, String[] notinStringFields){
-		return new SqlConfig(inStringFields, notinStringFields);
+	public static SqlConfig getMiddleMode(String[] inStringFields){
+		return new SqlConfig(inStringFields);
 	}
 	
 
@@ -192,13 +204,62 @@ public class SqlConfig {
 
 
 
-	public static SqlConfig  build() {
+	public static SqlConfig  builder() {
 		return new SqlConfig();
+	}
+
+	public SqlConfig distinct(boolean distinct) {
+		this.distinct = distinct;
+		return this;
 	}
 	public SqlConfig withFieldNames(String[] fieldNames) {
 		this.fieldNames = fieldNames;
 		return this;
 	}
+	public SqlConfig fieldNames(String[] fieldNames) {
+		return withFieldNames(fieldNames);
+	}
+	public SqlConfig fieldNames(String fieldName,String fieldName1) {
+		return withFieldNames(new String[]{fieldName,fieldName1});
+	}
+	public SqlConfig fieldNames(String fieldName,String fieldName1,String fieldName2) {
+		return withFieldNames(new String[]{fieldName,fieldName1,fieldName2});
+	}
+
+	public SqlConfig extFields(String[] extFields) {
+		this.extFields = extFields;
+		return this;
+	}
+	public SqlConfig extFields(String fieldName) {
+		this.extFields = new String[]{fieldName};
+		return this;
+	}
+	public SqlConfig extFields(String fieldName,String fieldName1) {
+		this.extFields = new String[]{fieldName,fieldName1};
+		return this;
+	}
+	public SqlConfig fieldLevel(FieldLevel fieldLevel) {
+		this.fieldLevel = fieldLevel;
+		return this;
+	}
+	public SqlConfig groupQuery(GroupQuery groupQuery) {
+		this.groupQuery = groupQuery;
+		return this;
+	}
+	public SqlConfig afterWhere(String[]  afterWhere) {
+		this.afterWhere = afterWhere;
+		return this;
+	}
+	public SqlConfig afterWhere(String  afterWhere) {
+		this.afterWhere = new String[]{afterWhere};
+		return this;
+	}
+	public SqlConfig orderBy(String  orderBy) {
+		this.orderBy = orderBy;
+		return this;
+	}
+
+
 	/**
 	 *
 	 * @param fieldName
@@ -208,7 +269,7 @@ public class SqlConfig {
 	 */
 	public  SqlConfig  in(String fieldName,boolean isIn,Object values) {
 		this.sqlMode = HighMode;
-		this.sqlPds.addSqlPdIn(fieldName,isIn, values);
+		this.sqlOperations.addOperationIn(fieldName,isIn, values);
 		return this;
 	}
 
@@ -225,47 +286,89 @@ public class SqlConfig {
 
 	public  SqlConfig  between(String fieldName,Object beginValue,Object endValue) {
 		this.sqlMode = HighMode;
-		this.sqlPds.addSqlPdBetween(fieldName,beginValue, endValue);
+		this.sqlOperations.addOperationBetween(fieldName,beginValue, endValue);
 		return this;
 	}
 
+	public static Map<String,String> operation(String fieldName,String operationType){
+		return operation(fieldName,operationType,null,null);
+	}
+	public static Map<String,String> operation(String name,String operationType,String name1,String operationType1){
+		Map<String,String> operationMap = new HashMap<String,String>();
+		if(name != null && operationType != null){
+			operationMap.put(name,operationType);
+		}
+		if(name1 != null && operationType1 != null){
+			operationMap.put(name1,operationType1);
+		}
+		return operationMap;
+	}
+	public static Map<String,String> operation(String name,String operation,String name1,String operation1,String ... ops){
+		Map<String,String> operationMap = operation(name,operation,name1,operation1);
+		if(ops.length > 0 && ops.length % 2 == 0){
+			for (int i = 0; i < ops.length;  i = i+2) {
+				operationMap.put(ops[i],ops[i+1]);
+			}
+		}
+		return operationMap;
+	}
 
+	
+	public SqlConfig addOperation(String fieldName,String operType) {
+		this.sqlOperations.addOperation(fieldName, operType);
+		return this;
+	}
+	public  SqlConfig addOperation(String name,String operationType,String name1,String operationType1){
+		if(name != null && operationType != null){
+			addOperation(name,operationType);
+		}
+		if(name1 != null && operationType1 != null){
+			addOperation(name1,operationType1);
+		}
+		return this;
+	}
+	public SqlConfig addOperationBetween(String fieldName,Object beginValue,Object endValue) {
+		this.sqlOperations.addOperationBetween(fieldName, beginValue, endValue);
+		return this;
+	}
+	public SqlConfig addOperationBetween(String fieldName,Object[] values) {
+		this.sqlOperations.addOperationBetween(fieldName, values[0], values[1]);
+		return this;
+	}
+	public SqlConfig addOperationIn(String fieldName,boolean isIn,Object[] values) {
+		this.sqlOperations.addOperationIn(fieldName,isIn, values);
+		return this;
+	}
+	public SqlConfig addOperationIn(String fieldName, boolean isIn, Collection collection) {
+		this.sqlOperations.addOperationIn(fieldName,isIn, collection);
+		return this;
+	}
+	public SqlConfig addOperation(SqlOperation sqlOperation) {
+		this.sqlOperations.addOperation(sqlOperation);
+		return this;
+	}
+	public SqlConfig addAll(SqlOperation[] sqlOperations) {
+		this.sqlOperations.addAll(sqlOperations);
+		return this;
+	}
+	
+	public SqlConfig addAll(Map<String, SqlOperation> sqlOperationMap) {
+		this.sqlOperations.addAll(sqlOperationMap);
+		return this;
+	}
 
-	
-	public SqlConfig addSqlPd(String fieldName,String operType) {
-		this.sqlPds.addSqlPd(fieldName, operType);
+	public SqlConfig addOperationMapString(Map<String, String> sqlOperationMap) {
+		this.sqlOperations.addMapString(sqlOperationMap);
 		return this;
 	}
 	
-	public SqlConfig addSqlPdBetween(String fieldName,Object beginValue,Object endValue) {
-		this.sqlPds.addSqlPdBetween(fieldName, beginValue, endValue);
-		return this;
-	}
-	public SqlConfig addSqlPdIn(String fieldName,boolean isIn,Object[] values) {
-		this.sqlPds.addSqlPdIn(fieldName,isIn, values);
-		return this;
-	}
-
-	
-	public SqlConfig addSqlPd(SqlPropertyDescriptor hqlPd) {
-		this.sqlPds.addSqlPd(hqlPd);
-		return this;
+	public void setSqlOperations(SqlOperations sqlOperations) {
+		this.sqlOperations = sqlOperations;
 	}
 	
-	public void addSqlPds(SqlPropertyDescriptor[] sqlPds) {
-		this.sqlPds.addSqlPds(sqlPds);
-	}
-	
-	public void addSqlPds(Map<String,SqlPropertyDescriptor> sqlPds) {
-		this.sqlPds.addSqlPds(sqlPds);
-	}
-	
-	public void setSqlPds(SqlPropertyDescriptors sqlPds) {
-		this.sqlPds = sqlPds;
-	}
-	
-	public void removeHqlPd(SqlPropertyDescriptor hqlPd) {
-		this.sqlPds.removeHqlPd(hqlPd);
+	public SqlConfig remove(SqlOperation sqlOperation) {
+		this.sqlOperations.remove(sqlOperation);
+		return  this;
 	}
 	
 	//-----------------------------Range propertity------------------------------------
@@ -288,12 +391,12 @@ public class SqlConfig {
 	}
 
 
-	public Map<String,SqlPropertyDescriptor> getSqlPds() {
-		return this.sqlPds.getSqlPds();
+	public Map<String, SqlOperation> getSqlOperationAsMap() {
+		return this.sqlOperations.getSqlOperationAsMap();
 	}
 	
-	public SqlPropertyDescriptor getSqlPd(String fieldName) {
-		return this.sqlPds.getSqlPd(fieldName);
+	public SqlOperation getSqlOperation(String fieldName) {
+		return this.sqlOperations.getSqlOperation(fieldName);
 	}
 	
 
@@ -329,14 +432,6 @@ public class SqlConfig {
 		this.inStringFieldsMap = this.stringArray2Map(inStringFields);
 		this.setSqlMode(MiddleMode);
 	}
-
-	public void setNotinStringFields(String[] notinStringFields) {
-		this.notinStringFields = notinStringFields;
-		//XXX: stringArray2Map
-		this.notinStringFieldsMap = this.stringArray2Map(notinStringFields);
-		this.setSqlMode(MiddleMode);
-	}
-
 
 	/**
 	 * 当使用jdbc时 使用表字段名称

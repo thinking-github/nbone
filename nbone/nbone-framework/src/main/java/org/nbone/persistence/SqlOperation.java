@@ -10,7 +10,7 @@ import org.nbone.persistence.criterion.QueryOperator;
  * @author thinking
  * @version 1.0 
  */
-public class SqlPropertyDescriptor implements QueryOperator {
+public class SqlOperation implements QueryOperator {
 	
 	
 	public static  Set<String>  OperTypeSet =  new HashSet<String>();
@@ -43,29 +43,29 @@ public class SqlPropertyDescriptor implements QueryOperator {
 	private Object  specialValue;
 	
 
-	public SqlPropertyDescriptor(String fieldName) {
+	public SqlOperation(String fieldName) {
 		this.fieldName = fieldName;
 	}
 
-	public SqlPropertyDescriptor(String fieldName, String operType) {
+	public SqlOperation(String fieldName, String operType) {
 		this.fieldName = fieldName;
 		this.operType = operType;
 	}
 	
-   public SqlPropertyDescriptor(String fieldName,Object beginValue,Object endValue) {
+   public SqlOperation(String fieldName, Object beginValue, Object endValue) {
 	    this.fieldName = fieldName;
 		this.beginValue = beginValue;
 		this.endValue = endValue;
 		this.between = true;
 	}
    
-   public SqlPropertyDescriptor(String fieldName,Object[] values) {
+   public SqlOperation(String fieldName, Object[] values) {
 	    this.fieldName = fieldName;
 	    this.specialValue = values;
 	    this.operType = in;
    }
 
-	public SqlPropertyDescriptor(String fieldName, String operType, Object specialValue) {
+	public SqlOperation(String fieldName, String operType, Object specialValue) {
 		this.fieldName = fieldName;
 		this.operType = operType;
 		this.specialValue = specialValue;
@@ -111,7 +111,7 @@ public class SqlPropertyDescriptor implements QueryOperator {
 	 */
 	public boolean isIn() {
 
-		return SqlPropertyDescriptor.in.equalsIgnoreCase(operType) || SqlPropertyDescriptor.not_in.equalsIgnoreCase(operType);
+		return SqlOperation.in.equalsIgnoreCase(operType) || SqlOperation.not_in.equalsIgnoreCase(operType);
 	}
 
 	public boolean isBetween() {

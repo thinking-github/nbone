@@ -15,6 +15,7 @@ import java.util.List;
  * @param <T>
  * @param <PK>
  */
+@SuppressWarnings("unused")
 public interface ISuper<T,PK extends Serializable> {
 	
 	/**
@@ -44,7 +45,6 @@ public interface ISuper<T,PK extends Serializable> {
 	 *  保存或者更新数据
 	 * @param object
 	 */
-	
 	public void saveOrUpdate(T object);
 	/**
 	 *  按id更新数据
@@ -52,6 +52,16 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @return
 	 */
 	public void update(T object);
+	/**
+	 * 根据字段名称的更新单列字段
+	 *
+	 * @param object 需要更新的实体参数和条件
+	 * @param name   需要更新的属性字段
+	 * @param conditionFields 更新条件字段列表   可为空
+	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，当conditionFields和whereString 为空时默认使用主键作为条件
+	 * @return
+	 */
+	public void updateField(T object,String name,String[] conditionFields, String whereString);
 	/**
 	 * 根据主键更新一条记录(有选择的更新,为空的数据丢弃)
 	 * @param object
@@ -75,8 +85,8 @@ public interface ISuper<T,PK extends Serializable> {
 	/**
 	 * 有选择的更新实体
 	 * @param object 更新实体参数
-	 * @param  properties  需要更新的属性字段 可为空
-	 * @param  conditionFields 更新条件字段列表   可为空
+	 * @param properties  需要更新的属性字段 可为空
+	 * @param conditionFields 更新条件字段列表   可为空
 	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，为空时默认使用主键作为条件
 	 * @return
 	 */
@@ -128,7 +138,7 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @param afterWhere 增加条件语句 如: and id in(1,2,3)
 	 * @return
 	 */
-	public long count(T object,String... afterWhere);
+	public long count(T object,String afterWhere);
 	
 	/**
 	 * 获取数据(数据量大时不建议使用)
@@ -156,7 +166,7 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @param afterWhere group by/order by 子句
 	 * @return {@link List}
 	 */
-	public List<T> getForList(T object,String... afterWhere);
+	public List<T> getForList(T object,String afterWhere);
 	
 	/**
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式）
@@ -176,10 +186,7 @@ public interface ISuper<T,PK extends Serializable> {
 	 * @param afterWhere afterWhere group by/order by 子句
 	 * @return {@link List}
 	 */
-	public List<T> queryForList(T object,String... afterWhere);
-
-
-
+	public List<T> queryForList(T object,String afterWhere);
 
 	/**
 	 *  execute DDL

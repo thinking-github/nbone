@@ -47,26 +47,10 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <T> List<T> getForList(Object object,String... afterWhere) {
-		throw new UnsupportedOperationException("unsupported getForList operation.");
-	}
-	@Override
-	public <T> List<T> getForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		throw new UnsupportedOperationException("unsupported getForList operation.");
-	}
-	@Override
-	public <T> List<T> getForList(Object object, GroupQuery group, FieldLevel fieldLevel, String... afterWhere) {
+	public <T> List<T> getForList(Object object,SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
 
-	@Override
-	public <T> List<T> queryForList(Object object,String... afterWhere) {
-		throw new UnsupportedOperationException("unsupported queryForList operation.");
-	}
-	@Override
-	public <T> List<T> queryForList(Object object, FieldLevel fieldLevel,String... afterWhere) {
-		throw new UnsupportedOperationException("unsupported queryForList operation.");
-	}
 	@Override
 	public <T> List<T> queryForList(Object object, SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported queryForList operation.");
@@ -77,22 +61,17 @@ public abstract class BaseSqlSession implements SqlSession {
 		throw new UnsupportedOperationException("unsupported findForList operation.");
 	}
 	@Override
-	public <T> List<T> findForList(Object object, FieldLevel fieldLevel) {
+	public <T> List<T> findForList(Object object, SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported findForList operation.");
 	}
 
 	@Override
-	public <T> Page<T> getForPage(Object object, String[] fieldNames, int pageNum, int pageSize, String... afterWhere) {
+	public <T> Page<T> getForPage(Object object, SqlConfig sqlConfig, int pageNum, int pageSize) {
 		throw new UnsupportedOperationException("unsupported getForPage operation.");
 	}
 
 	@Override
-	public <T> Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
-		throw new UnsupportedOperationException("unsupported getForPage operation.");
-	}
-
-	@Override
-	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+	public <T> Page<T> queryForPage(Object object,SqlConfig sqlConfig, int pageNum, int pageSize) {
 		throw new UnsupportedOperationException("unsupported queryForPage operation.");
 	}
 
@@ -107,12 +86,16 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <T> List<T> getForLimit(Object object, GroupQuery group, int limit, String... afterWhere) {
+	public <T> List<T> getForLimit(Object object, SqlConfig sqlConfig, int limit) {
+		throw new UnsupportedOperationException("unsupported getForLimit operation.");
+	}
+	@Override
+	public <T> List<T> getForLimit(Object object, Map<String, String> operationMap, GroupQuery group,int limit,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForLimit operation.");
 	}
 
 	@Override
-	public <T> List<T> queryForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
+	public <T> List<T> queryForLimit(Object object,SqlConfig sqlConfig, int limit) {
 		throw new UnsupportedOperationException("unsupported queryForLimit operation.");
 	}
 
@@ -122,13 +105,6 @@ public abstract class BaseSqlSession implements SqlSession {
 	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType,String... afterWhere){
 		throw new UnsupportedOperationException("unsupported getForList operation.");
 	}
-
-	@Override
-	public <T> List<T> getForList(Object object, String[] fieldNames,boolean dbFieldMode,String... afterWhere) {
-		throw new UnsupportedOperationException("unsupported getForListWithFieldNames operation.");
-	}
-	
-	
 
 	@Override
 	public int insert(Object object) {
@@ -223,7 +199,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public long count(Object object,String... afterWhere) {
+	public long count(Object object,SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 

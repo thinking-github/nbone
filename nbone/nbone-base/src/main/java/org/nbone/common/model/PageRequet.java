@@ -1,9 +1,11 @@
 package org.nbone.common.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import javax.json.bind.annotation.JsonbTransient;
+
 /**
- * 
  * @author thinking
  * @version 1.0
  * @since 2019/6/9
@@ -15,6 +17,8 @@ public class PageRequet {
     /**
      * 起始页 @see pageNum.（他们含义一样用于兼容）
      */
+    @JsonIgnore
+    @JsonbTransient
     private Integer pageNow;
     /**
      * 起始页 @see pageNow
@@ -25,31 +29,46 @@ public class PageRequet {
      * 单页的大小（兼容pageSize大小写）
      */
     private Integer pageSize;
-    private Integer pagesize;
+    private transient Integer pagesize;
 
     /**
      * 排序语句 （兼容orderBy大小写）
      */
     private String orderBy;
-    private String orderby;
+    private transient String orderby;
 
 
     public Integer getPageNum(int def) {
-        if (pageNum == null) {
-            return def;
+        if (pageNum != null) {
+            return pageNum;
         }
-        return pageNum;
+        if (pageNow != null) {
+            return pageNow;
+        }
+        return def;
     }
-
     public Integer getPageNow(int def) {
-        if (pageNow == null) {
-            return def;
+        if (pageNow != null) {
+            return pageNow;
         }
-        return pageNow;
+        if (pageNum != null) {
+            return pageNum;
+        }
+        return def;
+    }
+    public Integer getPageNow() {
+        if (pageNow != null) {
+            return pageNow;
+        }
+        if (pageNum != null) {
+            return pageNum;
+        }
+        return 1;
     }
 
     /**
      * 获取单页的大小（兼容大小写）
+     *
      * @param def 默认值
      * @return
      */
@@ -65,6 +84,7 @@ public class PageRequet {
 
     /**
      * 获取单页的大小（兼容大小写）
+     *
      * @return
      */
     public Integer getPageSize() {
@@ -79,6 +99,7 @@ public class PageRequet {
 
     /**
      * 获取orderBy 语句 （兼容大小写）
+     *
      * @return
      */
     public String getOrderBy() {

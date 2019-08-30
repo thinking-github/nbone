@@ -6,6 +6,7 @@ package org.nbone.mvc.service;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.ISuper;
@@ -59,25 +60,13 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * getForPage(index,pageNow,pageSize," order by  create_time DESC");
 	 *
 	 * @param object 含参数实体对象
-	 * @param  fieldNames java字段名称 可为空,为空返回全部字段
+	 * @param fieldNames java字段名称 可为空,为空返回全部字段
 	 * @param pageNum 当前页
 	 * @param pageSize 页的大小
 	 * @param afterWhere group by/order by 子句
 	 * @return
 	 */
-	public Page<T> getForPage(Object object,String[] fieldNames, int pageNum,int pageSize,String... afterWhere);
-	/**
-	 * getForPage(index,pageNow,pageSize,"and status != -1"," order by  create_time DESC"); <br>
-	 *
-	 * getForPage(index,pageNow,pageSize," order by  create_time DESC");
-	 * 
-	 * @param object 
-	 * @param pageNum 当前页
-	 * @param pageSize 页的大小
-	 * @param afterWhere group by/order by 子句
-	 * @return
-	 */
-	public Page<T> getForPage(Object object,int pageNum,int pageSize,String... afterWhere);
+	public Page<T> getForPage(T object,String[] fieldNames, int pageNum,int pageSize,String... afterWhere);
 	/**
 	 * queryForPage(index,pageNow,pageSize,"and status != -1"," order by  create_time DESC"); <br>
 	 *
@@ -88,7 +77,7 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * @param afterWhere group by/order by 子句
 	 * @return
 	 */
-	public Page<T> queryForPage(Object object,int pageNum,int pageSize,String... afterWhere);
+	public Page<T> queryForPage(T object,int pageNum,int pageSize,String... afterWhere);
 	/**
 	 * 
 	 * @param object 查询实体参数
@@ -105,23 +94,14 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 *
 	 * getForLimit(index,10," order by  create_time DESC");
 	 * @param object 查询实体参数
+	 * @param operationMap 设置字段查询操作符号 = > < 等等 （可为空）
 	 * @param group  分组查询 可为空
-	 * @param limit 限制返回的大小
+	 * @param limit  限制返回的大小
 	 * @param afterWhere  order by 子句
 	 * @return
 	 */
-	public List<T> getForLimit(Object object, GroupQuery group,int limit, String... afterWhere);
-	/**
-	 *
-	 * @param object 查询实体参数
-	 * @param group  分组查询 可为空
-	 * @param limit 限制返回的大小
-	 * @param afterWhere  order by 子句
-	 * @return
-	 */
-	public List<T> queryForLimit(Object object,GroupQuery group,int limit,String... afterWhere);
-	
-	
+	public List<T> getForLimit(Object object,Map<String,String> operationMap,GroupQuery group,int limit, String... afterWhere);
+
 	//按需字段查询
 	/**
 	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)
@@ -133,16 +113,6 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * @see SqlSession#getForList(Object, String)
 	 */
 	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType,String... afterWhere);
-	
-	/**
-	 * 
-	 * @param object 查询实体参数
-	 * @param fieldNames  按需返回的java字段名称列表
-	 * @param afterWhere  追加条件语句 或者 order by 子句 如: and id in (1,2,3,4)
-	 * @return
-	 * @see SqlSession#getForList(Object, String[], boolean)
-	 */
-	public List<T> getForList(Object object,String[] fieldNames,String... afterWhere);
 	
 	/**
 	 * 

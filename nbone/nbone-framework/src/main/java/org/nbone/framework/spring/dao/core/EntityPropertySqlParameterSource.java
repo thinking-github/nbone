@@ -47,7 +47,9 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
      */
 	@Override
 	public boolean hasValue(String paramName) {
-		String propertyName  = dbFieldNameMap.get(paramName).getFieldName();
+		FieldMapper fieldMapper = dbFieldNameMap.get(paramName);
+		check(fieldMapper,paramName);
+		String propertyName  = fieldMapper.getFieldName();
 		return this.beanWrapper.isReadableProperty(propertyName);
 	}
 	/***
@@ -56,7 +58,9 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
      */
 	@Override
 	public Object getValue(String paramName) throws IllegalArgumentException {
-		String propertyName  = dbFieldNameMap.get(paramName).getFieldName();
+		FieldMapper fieldMapper = dbFieldNameMap.get(paramName);
+		check(fieldMapper,paramName);
+		String propertyName  = fieldMapper.getFieldName();
 		return this.beanWrapper.getPropertyValue(propertyName);
 	}
 
@@ -66,7 +70,9 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
      */
 	@Override
 	public int getSqlType(String paramName) {
-		String propertyName  = dbFieldNameMap.get(paramName).getFieldName();
+		FieldMapper fieldMapper = dbFieldNameMap.get(paramName);
+		check(fieldMapper,paramName);
+		String propertyName  = fieldMapper.getFieldName();
 		int sqlType = super.getSqlType(propertyName);
 		if (sqlType != TYPE_UNKNOWN) {
 			return sqlType;
@@ -77,5 +83,11 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 
 	public Object getObject() {
 		return object;
+	}
+
+	private  void check(FieldMapper fieldMapper,String paramName){
+		if(fieldMapper == null){
+			throw new IllegalArgumentException("["+object.getClass().getName()+"] Cannot resolve field: " +paramName);
+		}
 	}
 }

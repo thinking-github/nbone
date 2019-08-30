@@ -3,6 +3,7 @@ package org.nbone.mvc.service;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -31,7 +32,7 @@ import org.springframework.util.Assert;
  * @param <P>
  * @param <IdType>
  */
-public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObject implements SuperService<P, IdType>{
+public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObject implements BaseService<P, IdType>{
 
 	protected final  Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -220,7 +221,12 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 		checkBuilded();
 		namedJdbcDao.updateSelective(object);
 	}
-	
+
+	@Override
+	public void updateField(P object, String name, String[] conditionFields, String whereString) {
+		updateSelective(object,new String[]{name},conditionFields,whereString);
+	}
+
 	@Override
 	public void updateSelective(P object) {
 		checkBuilded();
@@ -283,27 +289,72 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 
 	@Override
 	public List<P> getForList(P object) {
-		return getForList(object,null);
+		return getForList(object,(SqlConfig) null);
 	}
 	@Override
-	public List<P> getForList(P object, String... afterWhere) {
-		checkBuilded();
-		List<P> beans =  namedJdbcDao.getForList(object,afterWhere);
-		return beans;
+	public List<P> getForList(P object, String afterWhere) {
+		SqlConfig sqlConfig = null;
+		if(afterWhere != null){
+			sqlConfig = new SqlConfig(-1).afterWhere(afterWhere);
+		}
+		return getForList(object,sqlConfig);
 	}
 	@Override
 	public List<P> queryForList(P object) {
-		return queryForList(object, (String[]) null);
+		return queryForList(object,  (SqlConfig)null);
 	}
 	@Override
-	public List<P> queryForList(P object, String... afterWhere) {
+	public List<P> queryForList(P object, String afterWhere) {
+		SqlConfig sqlConfig = null;
+		if(afterWhere != null){
+			sqlConfig = new SqlConfig(SqlConfig.PrimaryMode).afterWhere(afterWhere);
+		}
+		return queryForList(object,sqlConfig);
+	}
+
+	//--- SqlConfig sqlConfig support
+	@Override
+	public List<P> getForList(P object, SqlConfig sqlConfig) {
 		checkBuilded();
-		List<P> beans  = namedJdbcDao.queryForList(object,afterWhere);	
+		List<P> beans =  namedJdbcDao.getForList(object,sqlConfig);
 		return beans;
 	}
 
+	@Override
+	public List<P> queryForList(P object, SqlConfig sqlConfig) {
+		checkBuilded();
+		List<P> beans =  namedJdbcDao.queryForList(object,sqlConfig);
+		return beans;
+	}
 
+	@Override
+	public List<P> getForLimit(P object, SqlConfig sqlConfig, int limit) {
+		checkBuilded();
+		return namedJdbcDao.getForLimit(object,sqlConfig, limit);
+	}
+	@Override
+	public List<P> queryForLimit(P object,SqlConfig sqlConfig,int limit) {
+		checkBuilded();
+		return namedJdbcDao.queryForLimit(object,sqlConfig, limit);
+	}
 
+	@Override
+	public Page<P> getForPage(P object, SqlConfig sqlConfig, int pageNum, int pageSize) {
+		checkBuilded();
+		return namedJdbcDao.getForPage(object,sqlConfig,pageNum,pageSize);
+	}
+
+	@Override
+	public Page<P> queryForPage(P object, SqlConfig sqlConfig, int pageNum, int pageSize) {
+		checkBuilded();
+		return namedJdbcDao.queryForPage(object,sqlConfig,pageNum,pageSize);
+	}
+
+	@Override
+	public long count(P object, SqlConfig sqlConfig) {
+		checkBuilded();
+		return namedJdbcDao.count(object,sqlConfig);
+	}
 
 	@Override
 	public boolean execute(String sql) {
@@ -349,8 +400,7 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	
 	@Override
 	public long count() {
-		checkBuilded();
-		return namedJdbcDao.count(targetClass,(String)null);
+		return count(null);
 	}
 
 	@Override
@@ -360,9 +410,12 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 
 	@Override
-	public long count(P object,String... afterWhere) {
-		checkBuilded();
-		return namedJdbcDao.count(object,afterWhere);
+	public long count(P object,String afterWhere) {
+		SqlConfig sqlConfig = null;
+		if(afterWhere != null){
+			sqlConfig = new SqlConfig(-1).afterWhere(afterWhere);
+		}
+		return count(object,sqlConfig);
 	}
 
 	/*
@@ -405,19 +458,15 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	 * --------------------分页限制结果集--------------------
 	 */
 	@Override
-	public Page<P> getForPage(Object object, String[] fieldNames,int pageNum, int pageSize,String... afterWhere) {
-		checkBuilded();
-		return namedJdbcDao.getForPage(object,fieldNames, pageNum, pageSize,afterWhere);
+	public Page<P> getForPage(P object, String[] fieldNames,int pageNum, int pageSize,String... afterWhere) {
+		SqlConfig sqlConfig =  new SqlConfig(-1).fieldNames(fieldNames).afterWhere(afterWhere);
+		return getForPage(object,sqlConfig,pageNum,pageSize);
 	}
 	@Override
-	public Page<P> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+	public Page<P> queryForPage(P object, int pageNum, int pageSize,String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.getForPage(object, pageNum, pageSize,afterWhere);
-	}
-	@Override
-	public Page<P> queryForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
-		checkBuilded();
-		return namedJdbcDao.queryForPage(object, pageNum, pageSize,afterWhere);
+		SqlConfig sqlConfig =  new SqlConfig(SqlConfig.PrimaryMode).afterWhere(afterWhere);
+		return namedJdbcDao.queryForPage(object,sqlConfig, pageNum, pageSize);
 	}
 	@Override
 	public Page<P> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
@@ -426,15 +475,9 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 
 	@Override
-	public List<P> getForLimit(Object object, GroupQuery group, int limit, String... afterWhere) {
+	public List<P> getForLimit(Object object, Map<String, String> operationMap,GroupQuery group,int limit, String... afterWhere) {
 		checkBuilded();
-		return namedJdbcDao.getForLimit(object,group, limit,afterWhere);
-	}
-
-	@Override
-	public List<P> queryForLimit(Object object,GroupQuery group, int limit, String... afterWhere) {
-		checkBuilded();
-		return namedJdbcDao.queryForLimit(object,group, limit,afterWhere);
+		return namedJdbcDao.getForLimit(object,operationMap, group,limit,afterWhere);
 	}
 
 	/*
@@ -444,11 +487,6 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType,String... afterWhere) {
 		checkBuilded();
 		return namedJdbcDao.getForList(object, fieldName,requiredType);
-	}
-	@Override
-	public List<P> getForList(Object object, String[] fieldNames,String... afterWhere) {
-		checkBuilded();
-		return namedJdbcDao.getForList(object, fieldNames, false,afterWhere);
 	}
 	@Override
 	public int updateMathOperation(Object object,String property, MathOperation mathOperation) {

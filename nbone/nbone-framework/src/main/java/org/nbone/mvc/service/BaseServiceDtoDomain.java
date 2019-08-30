@@ -229,7 +229,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 
 	
 	@Override
-	public long count(T object, String... afterWhere) {
+	public long count(T object, String afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		
 		return baseServiceDomain.count(bean,afterWhere);
@@ -241,7 +241,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 	
 	@Override
-	public List<T> getForList(T object, String... afterWhere) {
+	public List<T> getForList(T object, String afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		List<P> beans = baseServiceDomain.getForList(bean,afterWhere);
 		
@@ -255,7 +255,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 		return queryForList(object,null);
 	}
 	@Override
-	public List<T> queryForList(T object, String... afterWhere) {
+	public List<T> queryForList(T object, String afterWhere) {
 		if(object == null){
 			return new ArrayList<T>(0);
 		}
@@ -303,10 +303,10 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public Page<T> getForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+	public Page<T> getForPage(Object object,String[] fieldNames, int pageNum, int pageSize,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		
-		Page<P> page = baseServiceDomain.getForPage(bean, pageNum, pageSize,afterWhere);
+		Page<P> page = baseServiceDomain.getForPage(bean,fieldNames, pageNum, pageSize,afterWhere);
 		List<P> beans = page.getContent();
 		List<T> dtos  = listBean2ListDto(beans);
 		
@@ -342,14 +342,6 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	public <E> List<E> getForList(Object object, String fieldName,Class<E> requiredType,String... afterWhere) {
 		P bean = this.copyProperties(object, targetClass);
 		return baseServiceDomain.getForList(bean, fieldName,requiredType,afterWhere);
-	}
-
-	@Override
-	public List<T> getForList(Object object, String[] fieldNames,String... afterWhere) {
-		P bean = this.copyProperties(object, targetClass);
-		List<P> beans = baseServiceDomain.getForList(bean, fieldNames,afterWhere);
-		List<T> dtos  = listBean2ListDto(beans);
-		return dtos;
 	}
 
 	@Override

@@ -79,9 +79,9 @@ public class BaseSqlBuilderTest {
 		TsProjectDTO object = getTsProjectDTO();
 		object.setId(9L);
 		SqlConfig sqlConfig  = new SqlConfig();
-		sqlConfig.addSqlPd("createDt", QueryOperator.is_not_null);
-		sqlConfig.addSqlPdIn("id",true, new Object[]{1,2,3});
-		sqlConfig.addSqlPdBetween("modifyDt", new Date(), new Date());
+		sqlConfig.addOperation("createDt", QueryOperator.is_not_null);
+		sqlConfig.addOperationIn("id",true, new Object[]{1,2,3});
+		sqlConfig.addOperationBetween("modifyDt", new Date(), new Date());
 		
 		sqlConfig.addSqlPropertyRange("createDt","modifyDt", new Date());
 		
@@ -109,7 +109,7 @@ public class BaseSqlBuilderTest {
 		
 		SqlModel<Object> sqlModel2 = sqlBuilder.updateMathOperationSql(object,null, MathOperation.ADD);
 		
-		SqlModel<Object> sqlModel3 = sqlBuilder.countSql(object);
+		SqlModel<Object> sqlModel3 = sqlBuilder.countSql(object,sqlConfig);
 		
 		System.out.println(sqlModel.getSql());
 		System.out.println(sqlModel2.getSql());

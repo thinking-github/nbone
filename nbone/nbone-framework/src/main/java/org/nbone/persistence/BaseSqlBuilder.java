@@ -28,6 +28,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
 import com.google.common.base.Function;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * 根据JPA注解构建sql
@@ -51,8 +54,8 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
     private String placeholderPrefix = "";
     private String placeholderSuffix = "";
 
-    public final static String TableNameIsNullMSG = "table name  must not is null. --thinking";
-    public final static String PrimaryKeyIsNullMSG = "primary Keys must not is null. --thinking";
+    public final static String TABLE_NAME_NULL_MSG = "table name  must not is null. --thinking";
+    public final static String PRIMARY_KEY_NULL_MSG = "primary Keys must not is null. --thinking";
 
 
     private JdbcFrameWork jdbcFrameWork;
@@ -290,7 +293,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         StringBuffer whereSql = new StringBuffer(" where ");
 
         if(conditionFields != null && conditionFields.length > 0){
-            whereSql.append(propertysCondition(object.getClass(),tableMapper,conditionFields));
+            whereSql.append(propertiesCondition(object,tableMapper,conditionFields,whereSqlPart));
         }else  if(whereSqlPart != null && whereSqlPart.trim().length() > 0){
             whereSql.append(whereSqlPart);
         }else {
@@ -311,7 +314,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         String primaryKey = tableMapper.getPrimaryKey();
 
         if (primaryKey == null) {
-            throw new RuntimeException(PrimaryKeyIsNullMSG);
+            throw new RuntimeException(PRIMARY_KEY_NULL_MSG);
         }
         return tableMapper;
     }
@@ -444,14 +447,10 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlModel<Object> selectSqlById(Object object) throws BuilderSQLException {
-        Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
+        Assert.notNull(object, "entity object must be not null.");
         TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
 
         boolean isDistinct = false;
-        if (object instanceof Distinct) {
-            Distinct distinct = (Distinct) object;
-            isDistinct = distinct.isDistinct();
-        }
 
         StringBuffer selectSql = new StringBuffer(tableMapper.getSelectAllSql(isDistinct));
 
@@ -486,20 +485,22 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
 
     @Override
-    public SqlModel<Object> countSql(Object object, String... afterWhere) throws BuilderSQLException {
+    public SqlModel<Object> countSql(Object object, SqlConfig sqlConfig) throws BuilderSQLException {
         Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
+        if(sqlConfig == null){
+            sqlConfig = SqlConfig.EMPTY;
+        }
 
         TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
         String countSql = tableMapper.getCountSql();
 
         StringBuilder countSqlAndWhere = new StringBuilder(countSql);
 
-        StringBuilder whereSql = getWhereSql(object, tableMapper, new SqlConfig(-1));
+        StringBuilder whereSql = getWhereSql(object, tableMapper,sqlConfig);
         countSqlAndWhere.append(whereSql);
 
         String sql = countSqlAndWhere.toString();
-        SqlModel<Object> model = new SqlModel<Object>(sql, object, tableMapper);
-        model.setAfterWhere(afterWhere);
+        SqlModel<Object> model = new SqlModel<Object>(sql, object, tableMapper,sqlConfig.getAfterWhere());
         return model;
     }
 
@@ -550,37 +551,37 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                 continue;
             }
             Object fieldValue = bw.getPropertyValue(fieldName);
-            SqlPropertyDescriptor sqlPropertyDescriptor = sqlConfig.getSqlPd(fieldName);
+            SqlOperation sqlOperation = sqlConfig.getSqlOperation(fieldName);
             //XXX：特殊情况可为空
-            if (fieldValue == null && sqlPropertyDescriptor != null) {
-                sqlPropertyDescriptor.setPropertyType(fieldType);
-                String operType = sqlPropertyDescriptor.getOperType();
-                if (SqlPropertyDescriptor.is_null.equalsIgnoreCase(operType) || SqlPropertyDescriptor.is_not_null.equalsIgnoreCase(operType)) {
+            if (fieldValue == null && sqlOperation != null) {
+                sqlOperation.setPropertyType(fieldType);
+                String operType = sqlOperation.getOperType();
+                if (SqlOperation.is_null.equalsIgnoreCase(operType) || SqlOperation.is_not_null.equalsIgnoreCase(operType)) {
 
-                    StringBuilder sqlpd = SqlUtils.getCommonWherePart(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+                    StringBuilder sqlpd = SqlUtils.getCommonWherePart(sqlOperation, fieldValue, dbFieldName, namedParameters);
                     whereSql.append(sqlpd);
                     continue;
 
-                } else if (sqlPropertyDescriptor.isIn()) {
+                } else if (sqlOperation.isIn()) {
 
-                    StringBuilder sqlpd = SqlUtils.getSpringJdbcWhereIn(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+                    StringBuilder sqlpd = SqlUtils.getSpringJdbcWhereIn(sqlOperation, fieldValue, dbFieldName, namedParameters);
                     whereSql.append(sqlpd);
                     continue;
 
-                } else if (sqlPropertyDescriptor.isBetween()) {
-                    StringBuilder sqlpd = SqlUtils.getWhereBetween(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+                } else if (sqlOperation.isBetween()) {
+                    StringBuilder sqlpd = SqlUtils.getWhereBetween(sqlOperation, fieldValue, dbFieldName, namedParameters);
                     whereSql.append(sqlpd);
                     continue;
                 }
             }
             //XXX: 2016-08-10  string not is ""
             if (fieldValue != null && !fieldValue.equals("")) {
-                if (sqlPropertyDescriptor == null) {
-                    sqlPropertyDescriptor = new SqlPropertyDescriptor(fieldName);
-                    sqlPropertyDescriptor.setPropertyType(fieldType);
+                if (sqlOperation == null) {
+                    sqlOperation = new SqlOperation(fieldName);
+                    sqlOperation.setPropertyType(fieldType);
 
                 }
-                StringBuilder sqlWhere = SqlUtils.getSpringJdbcWhere(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+                StringBuilder sqlWhere = SqlUtils.getSpringJdbcWhere(sqlOperation, fieldValue, dbFieldName, namedParameters);
                 //StringBuilder sqlWhere = SqlUtils.getCommonWherePart(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
 
                 whereSql.append(sqlWhere);
@@ -618,7 +619,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlModel<Object> selectSql(Object object, SqlConfig sqlConfig) {
-        Assert.notNull(object, "Sorry,I refuse to build sql for a null object!");
+        Assert.notNull(object, "entity object must be not null.");
 
         TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
 
@@ -630,8 +631,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         selectSqlAndWhere.append(whereSql);
 
         String sql = selectSqlAndWhere.toString();
-        SqlModel<Object> model = new SqlModel<Object>(sql, object, tableMapper);
-        model.setAfterWhere(sqlConfig.getAfterWhere());
+        SqlModel<Object> model = new SqlModel<Object>(sql, object, tableMapper,sqlConfig.getAfterWhere());
         return model;
     }
     @Override
@@ -667,12 +667,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         String[] fieldNames = sqlConfig.getFieldNames();
         String allsql = null;
 
-        boolean isDistinct = false;
-        if (object instanceof Distinct) {
-            Distinct distinct = (Distinct) object;
-            isDistinct = distinct.isDistinct();
-        }
-
+        boolean isDistinct    = sqlConfig.isDistinct();
         GroupQuery groupQuery = sqlConfig.getGroupQuery();
         if(groupQuery == null){
             // 1.优先使用自定义查询，
@@ -734,101 +729,157 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
 
             } else if (levelMode == SqlConfig.HighMode) {
-                SqlPropertyDescriptor sqlPropertyDescriptor = sqlConfig.getSqlPd(fieldName);
-                if (sqlPropertyDescriptor == null) {
-                    sqlPropertyDescriptor = new SqlPropertyDescriptor(fieldName);
+                SqlOperation sqlOperation = sqlConfig.getSqlOperation(fieldName);
+                if (sqlOperation == null) {
+                    sqlOperation = new SqlOperation(fieldName);
                 }
-                //SqlUtils.getSpringJdbcWhere(sqlPropertyDescriptor, fieldValue, dbFieldName, namedParameters);
+                //SqlUtils.getSpringJdbcWhere(sqlOperation, fieldValue, dbFieldName, namedParameters);
 
 
             } else {
-                whereSql.append(" and ").append(dbFieldName).append(" = ");
+                SqlOperation sqlOperation = sqlConfig.getSqlOperation(fieldName);
+                String operationType = "=";
+                if(sqlOperation != null){
+                    operationType = sqlOperation.getOperType();
+                }
+                whereSql.append(" and ").append(dbFieldName).append(" ").append(operationType).append(" ");
                 whereSql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
             }
         }
-       //扩展属性条件查询 in / between
-        extFieldsCondition(object,tableMapper,whereSql);
+        //扩展属性条件查询 in / between
+        extFieldsCondition(object,sqlConfig.getExtFields(),tableMapper,whereSql);
+
 
         GroupQuery groupQuery = sqlConfig.getGroupQuery();
         if(groupQuery != null){
+            if(groupQuery.getOrderBySql() != null && sqlConfig.getOrderBy() != null){
+                throw  new IllegalArgumentException("Invalid order configuration on 'groupQuery.orderby' and 'sqlConfig.orderby' attributes have been set.These attributes are mutually exclusive.");
+            }
             whereSql.append(groupQuery.getGroupBySql());
             whereSql.append(groupQuery.getOrderBySql());
+        }
+        if(StringUtils.hasLength(sqlConfig.getOrderBy())){
+            whereSql.append( " order by ").append(sqlConfig.getOrderBy());
         }
         return whereSql;
     }
 
     /**
+     *  extFieldNames<li> string name
+     *               <li> string[] names
+     *               <li> Collection names
      * extPropertysCondition
      */
-    private void extFieldsCondition(Object object, TableMapper<?> tableMapper,StringBuilder whereSql){
-        List<Field> extFields = tableMapper.getExtFields();
-        if(extFields != null && extFields.size() > 0){
-            for (Field field : extFields) {
-                MappedBy mappedBy = field.getAnnotation(MappedBy.class);
-                String fieldName    = mappedBy.name();
-                QueryType queryType = mappedBy.queryType();
-                FieldMapper fieldMapper =  tableMapper.getFieldMapperByPropertyName(fieldName);
-                String dbFieldName  = fieldMapper.getDbFieldName();
-                Class<?>  fieldType = field.getType();
-                StringBuilder  extSql = null;
-                try {
-                    boolean accessible = field.isAccessible();
-                    field.setAccessible(true);
-                    Object value  = field.get(object);
-                    field.setAccessible(accessible);
-                    switch (queryType) {
-                        case IN:
-                            if(fieldType.isArray()){
-                                extSql =  SqlUtils.andIn(dbFieldName,fieldMapper.getPropertyType(),value,true);
-                            }
-                            else if(Collection.class.isAssignableFrom(fieldType)){
-                                Object[] array = ((Collection)value).toArray();
-                                extSql = SqlUtils.andIn(dbFieldName,fieldMapper.getPropertyType(),array,true);
-                            }
-                            break;
-                        case NOT_IN:
-                            if(fieldType.isArray()){
-                                extSql =  SqlUtils.andIn(dbFieldName,fieldMapper.getPropertyType(), value,false);
-                            }
-                            else if(Collection.class.isAssignableFrom(fieldType)){
-                                Object[] array = ((Collection)value).toArray();
-                                extSql = SqlUtils.andIn(dbFieldName,fieldMapper.getPropertyType(),array,false);
-                            }
-                            break;
-                        case BETWEEN:
-                            if(fieldType.isArray()){
-                                extSql =  SqlUtils.andBetween(dbFieldName,(Object[]) value,true);
-                            }
-                            else if(Collection.class.isAssignableFrom(fieldType)){
-                                Object[] array = ((Collection)value).toArray();
-                                extSql = SqlUtils.andBetween(dbFieldName,array,true);
-                            }
-                            break;
-                        case NOT_BETWEEN:
-                            if(fieldType.isArray()){
-                                extSql =  SqlUtils.andBetween(dbFieldName,(Object[]) value,false);
-                            }
-                            else if(Collection.class.isAssignableFrom(fieldType)){
-                                Object[] array = ((Collection)value).toArray();
-                                extSql = SqlUtils.andBetween(dbFieldName,array,false);
-                            }
-
-                            break;
-                        default:
-                            break;
+    private StringBuilder extFieldsCondition(Object object, Object extFieldNames, TableMapper<?> tableMapper, StringBuilder whereSql){
+        if(!ObjectUtils.isEmpty(extFieldNames)){
+            if(extFieldNames.getClass().isArray()){
+                for (String extFieldName : (String[])extFieldNames) {
+                    StringBuilder extFieldSql =  extFieldCondition(object,extFieldName,tableMapper,"and");
+                    if(extFieldSql != null){
+                        whereSql.append(" ") .append(extFieldSql);
                     }
-                } catch (IllegalAccessException e) {
-                    logger.error(e.getMessage());
                 }
-
+            }else if( extFieldNames instanceof Collection){
+                for (String extFieldName : (Collection<String>)extFieldNames) {
+                    StringBuilder extFieldSql =  extFieldCondition(object,extFieldName,tableMapper,"and");
+                    if(extFieldSql != null){
+                        whereSql.append(" ") .append(extFieldSql);
+                    }
+                }
+            }
+            else if(extFieldNames instanceof String){
+                StringBuilder extFieldSql =  extFieldCondition(object, (String) extFieldNames,tableMapper,"and");
+                if(extFieldSql != null){
+                    whereSql.append(" ") .append(extFieldSql);
+                }
+            }
+        }else {
+            List<Field> extFields = tableMapper.getExtFields();
+            if(extFields == null || extFields.size() == 0){
+                return whereSql;
+            }
+            for (Field field : extFields) {
+                StringBuilder extSql =  extFieldCondition(object,field,tableMapper,"and");
                 if(extSql != null){
                     whereSql.append(extSql);
                 }
             }
         }
+        return whereSql;
 
     }
 
+    private StringBuilder extFieldCondition(Object object, Field field,TableMapper<?> tableMapper,String andOr){
+        MappedBy mappedBy = field.getAnnotation(MappedBy.class);
+        String fieldName    = mappedBy.name();
+        QueryType queryType = mappedBy.queryType();
+        FieldMapper fieldMapper =  tableMapper.getFieldMapperByPropertyName(fieldName);
+        String dbFieldName  = fieldMapper.getDbFieldName();
+        Class<?>  fieldType = field.getType();
+
+        boolean accessible = field.isAccessible();
+        ReflectionUtils.makeAccessible(field);
+        Object value  =  ReflectionUtils.getField(field,object);
+        field.setAccessible(accessible);
+        if(value == null){
+            return null;
+        }
+        StringBuilder  extSql = null;
+        switch (queryType) {
+            case IN:
+                if(fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)){
+                    extSql =  SqlUtils.in(andOr,dbFieldName,fieldMapper.getPropertyType(),value,true);
+                }
+                break;
+            case NOT_IN:
+                if(fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)){
+                    extSql =  SqlUtils.in(andOr,dbFieldName,fieldMapper.getPropertyType(), value,false);
+                }
+                break;
+            case BETWEEN:
+                if(fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)){
+                    extSql =  SqlUtils.dbBetween(andOr,dbFieldName, value,true);
+                }
+                break;
+            case NOT_BETWEEN:
+                if(fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)){
+                    extSql =  SqlUtils.dbBetween(andOr,dbFieldName,value,false);
+                }
+                break;
+            default:
+                break;
+        }
+
+        return  extSql;
+    }
+
+    private StringBuilder extFieldCondition(Object object, String extFieldName,TableMapper<?> tableMapper,String andOr)  {
+        Field field = ReflectionUtils.findField(object.getClass(),extFieldName);
+        if(field == null){
+            throw  new IllegalArgumentException("class [" + object.getClass().getName() + "] Cannot resolve field: " +extFieldName );
+        }
+        return  extFieldCondition(object,field,tableMapper,andOr);
+    }
+
+    /**
+     * 获取对象的属性值
+     *
+     * @param bean
+     * @param name
+     * @return
+     */
+    private  Object getProperty(Object bean, String name) {
+        Field field = ReflectionUtils.findField(bean.getClass(),name);
+        if(field == null){
+            throw  new IllegalArgumentException("class [" + bean.getClass().getName() + "] Cannot resolve field: " +name );
+        }
+        boolean accessible = field.isAccessible();
+        ReflectionUtils.makeAccessible(field);
+        Object value  =  ReflectionUtils.getField(field,bean);
+        field.setAccessible(accessible);
+
+        return value;
+    }
 
     //-----------------------------------------------------------------------------
     //
@@ -868,13 +919,13 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         String[] primaryKeys = tableMapper.getPrimaryKeys();
         StringBuffer sql = new StringBuffer();
         for (int i = 0; i < primaryKeys.length; i++) {
-            sql.append(primaryKeys[i]);
-            FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[i]);
-            String fieldName = fieldMapper.getFieldName();
-
             if (i > 0) {
                 sql.append(" and ");
             }
+            FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[i]);
+            String fieldName = fieldMapper.getFieldName();
+
+            sql.append(primaryKeys[i]);
             sql.append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
             //sql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
         }
@@ -886,31 +937,46 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
      * where 属性条件
      * <p> eg: id = 1 and name = chen
      *
-     * @param entityClass  按实体类
+     * @param object  按实体对象
      * @param tableMapper  实体映射对象
-     * @param  conditionFields 属性条件 可为空， 当为空时自动使用主键条件
+     * @param conditionFields 属性条件 可为空， 当为空时自动使用主键条件
+     * @param appendSql  追加条件sql   and status !=1
      * @return
      */
-    private StringBuffer propertysCondition(Class<?> entityClass, TableMapper<?> tableMapper,String[] conditionFields) throws BuilderSQLException {
-
-        if(conditionFields == null || conditionFields.length == 0){
-            return  primaryKeysCondition(entityClass,tableMapper);
-        }else {
-            StringBuffer sql = new StringBuffer();
+    private StringBuilder propertiesCondition(Object object, TableMapper<?> tableMapper,String[] conditionFields,String appendSql) throws BuilderSQLException {
+        StringBuilder sql = new StringBuilder();
+        if(conditionFields != null){
+            List<String> extFields= new ArrayList<String>();
+            int hasValueCount = 0;
             for (int i = 0; i < conditionFields.length; i++) {
                 String propertyName = conditionFields[i];
                 FieldMapper fieldMapper = tableMapper.getFieldMapperByPropertyName(propertyName);
-                sql.append(fieldMapper.getDbFieldName());
-                String fieldName = fieldMapper.getFieldName();
+                //extFields process
+                if(fieldMapper ==null){
+                    extFields.add(propertyName);
+                    continue;
+                }
+                Object value  = getProperty(object,propertyName);
+                if(value == null){
+                    logger.warn("class [" + object.getClass().getName() + "] field " +propertyName +" = null.thinking");
+                    continue;
+                }
 
-                if (i > 0) {
+                if (hasValueCount > 0) {
                     sql.append(" and ");
                 }
+                String fieldName = fieldMapper.getFieldName();
+                sql.append(fieldMapper.getDbFieldName());
                 sql.append(" = ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
+                hasValueCount ++;
                 //sql.append(",").append("jdbcType=").append(fieldMapper.getJdbcType().toString());
             }
-            return sql;
-            }
+            // not input extField use default config
+            extFieldsCondition(object,extFields,tableMapper,sql);
+        }
+
+        SqlUtils.appendCondition(sql,appendSql);
+        return sql;
     }
 
 
