@@ -4,7 +4,9 @@ import org.nbone.persistence.annotation.MappedBy;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -31,8 +33,22 @@ public class MapperUtils {
         return extFields;
     }
 
-
-    ;
+    public static Map<String,Field> getExtFieldsMap(Class<?> entityClass) {
+        Field[] fields = entityClass.getDeclaredFields();
+        Map<String,Field> extFields = null;
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(MappedBy.class)) {
+                if (extFields == null) {
+                    extFields = new HashMap<String,Field>();
+                }
+               /* MappedBy mappedBy = field.getAnnotation(MappedBy.class);
+                String fieldName    = mappedBy.name();
+                QueryType queryType = mappedBy.queryType();*/
+                extFields.put(field.getName(),field);
+            }
+        }
+        return extFields;
+    }
 
 
 }

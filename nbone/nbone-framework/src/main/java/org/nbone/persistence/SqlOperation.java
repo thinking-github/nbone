@@ -3,180 +3,193 @@ package org.nbone.persistence;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.nbone.mvc.domain.QueryCondition;
 import org.nbone.persistence.criterion.QueryOperator;
 
 /**
- * 
  * @author thinking
- * @version 1.0 
+ * @version 1.0
  */
 public class SqlOperation implements QueryOperator {
-	
-	
-	public static  Set<String>  OperTypeSet =  new HashSet<String>();
-	private String fieldName;
-	/**
-	 * 实体属性类型
-	 */
-	private Class<?> propertyType;
-	/**
-	 * 如果是where子句 请设置为true 否则为false
-	 */
-	private boolean hasWhere = true;
-	/**
-	 * String Type Default is  like/number Type Default  is =
-	 */
-	private String  operType;
-	
-	private boolean  between = false;
-	
-	
-	private Object  beginValue;
-	private Object  endValue;
-	
-	private String  beginValueMark = gt_eq;
-	private String  endValueMark = lt_eq;
-	
-	/**
-	 *特殊值 in  object[] / List / String List 1,2,3,4,5
-	 */
-	private Object  specialValue;
-	
 
-	public SqlOperation(String fieldName) {
-		this.fieldName = fieldName;
-	}
+    public static Set<String> OPERATION_TYPE_SET = new HashSet<String>();
+    /**
+     * 字段名称
+     */
+    private String fieldName;
+    /**
+     * 实体属性类型
+     */
+    private Class<?> propertyType;
+    /**
+     * 如果是where子句 请设置为true 否则为false
+     */
+    private boolean hasWhere = true;
+    /**
+     * String Type Default is  like/number Type Default  is =
+     */
+    private String operationType;
 
-	public SqlOperation(String fieldName, String operType) {
-		this.fieldName = fieldName;
-		this.operType = operType;
-	}
-	
-   public SqlOperation(String fieldName, Object beginValue, Object endValue) {
-	    this.fieldName = fieldName;
-		this.beginValue = beginValue;
-		this.endValue = endValue;
-		this.between = true;
-	}
-   
-   public SqlOperation(String fieldName, Object[] values) {
-	    this.fieldName = fieldName;
-	    this.specialValue = values;
-	    this.operType = in;
-   }
+    private boolean between = false;
 
-	public SqlOperation(String fieldName, String operType, Object specialValue) {
-		this.fieldName = fieldName;
-		this.operType = operType;
-		this.specialValue = specialValue;
-	}
+    private String beginRule = gt_eq;
+    private String endRule = lt_eq;
+
+    /**
+     * specialValue 特殊值<li> in  object[] / List / String List 1,2,3,4,5
+     * <li> between   object[]
+     */
+    private Object value;
 
 
+    public SqlOperation(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-	public String getFieldName() {
-		return fieldName;
-	}
+    public SqlOperation(String fieldName, String operationType) {
+        this.fieldName = fieldName;
+        this.operationType = operationType;
+    }
 
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
+    public SqlOperation(String fieldName, Object beginValue, Object endValue) {
+        this.fieldName = fieldName;
+        this.value = new Object[]{beginValue, endValue};
+        this.between = true;
+    }
 
-	public Class<?> getPropertyType() {
-		return propertyType;
-	}
+    public SqlOperation(String fieldName, Object[] values, boolean between) {
+        this.fieldName = fieldName;
+        this.value = values;
+        this.between = between;
+        if (!between) {
+            this.operationType = in;
+        }
+    }
 
-	public void setPropertyType(Class<?> propertyType) {
-		this.propertyType = propertyType;
-	}
+    public SqlOperation(String fieldName, Object[] values) {
+        this.fieldName = fieldName;
+        this.value = values;
+        this.operationType = in;
+    }
 
-	public boolean isHasWhere() {
-		return hasWhere;
-	}
+    public SqlOperation(String fieldName, String operationType, Object value) {
+        this.fieldName = fieldName;
+        this.operationType = operationType;
+        this.value = value;
+    }
 
-	public void setHasWhere(boolean hasWhere) {
-		this.hasWhere = hasWhere;
-	}
+    public SqlOperation(QueryCondition condition) {
+        this(condition.getField(),condition.getRule(),condition.getValue());
+    }
 
-	public String getOperType() {
-		return operType;
-	}
+    public String getFieldName() {
+        return fieldName;
+    }
 
-	public void setOperType(String operType) {
-		this.operType = operType;
-	}
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-	/**
-	 * 是否属于 in 查询
-	 * @return
-	 */
-	public boolean isIn() {
+    public Class<?> getPropertyType() {
+        return propertyType;
+    }
 
-		return SqlOperation.in.equalsIgnoreCase(operType) || SqlOperation.not_in.equalsIgnoreCase(operType);
-	}
+    public void setPropertyType(Class<?> propertyType) {
+        this.propertyType = propertyType;
+    }
 
-	public boolean isBetween() {
-		return between;
-	}
+    public boolean isHasWhere() {
+        return hasWhere;
+    }
 
-	public void setBetween(boolean between) {
-		this.between = between;
-	}
+    public void setHasWhere(boolean hasWhere) {
+        this.hasWhere = hasWhere;
+    }
 
-	public Object getBeginValue() {
-		return beginValue;
-	}
+    public String getOperationType() {
+        return operationType;
+    }
 
-	public void setBeginValue(Object beginValue) {
-		this.beginValue = beginValue;
-	}
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
 
-	public Object getEndValue() {
-		return endValue;
-	}
+    /**
+     * 是否属于 in 查询
+     *
+     * @return
+     */
+    public boolean isIn() {
+        return SqlOperation.in.equalsIgnoreCase(operationType) || SqlOperation.not_in.equalsIgnoreCase(operationType);
+    }
 
-	public void setEndValue(Object endValue) {
-		this.endValue = endValue;
-	}
+    public boolean isBetween() {
+        return between;
+    }
 
-	public String getBeginValueMark() {
-		return beginValueMark;
-	}
+    public void setBetween(boolean between) {
+        this.between = between;
+    }
 
-	public void setBeginValueMark(String beginValueMark) {
-		this.beginValueMark = beginValueMark;
-	}
+    public Object getBeginValue() {
+        if (value != null && value.getClass().isArray()) {
+            Object[] values = (Object[]) value;
+            if (values.length != 2) {
+                throw new IllegalArgumentException("sqlOperation.value array length != 2 , length=" + values.length);
+            }
+            return values[0];
+        }
+        return null;
+    }
 
-	public String getEndValueMark() {
-		return endValueMark;
-	}
+    public Object getEndValue() {
+        if (value != null && value.getClass().isArray()) {
+            Object[] values = (Object[]) value;
+            if (values.length != 2) {
+                throw new IllegalArgumentException("sqlOperation.value array length != 2 , length=" + values.length);
+            }
+            return values[1];
+        }
+        return null;
+    }
 
-	public void setEndValueMark(String endValueMark) {
-		this.endValueMark = endValueMark;
-	}
+    public String getBeginRule() {
+        return beginRule;
+    }
 
-	public Object getSpecialValue() {
-		return specialValue;
-	}
+    public void setBeginRule(String beginRule) {
+        this.beginRule = beginRule;
+    }
 
+    public String getEndRule() {
+        return endRule;
+    }
 
-	public void setSpecialValue(Object specialValue) {
-		this.specialValue = specialValue;
-	}
+    public void setEndRule(String endRule) {
+        this.endRule = endRule;
+    }
 
+    public Object getValue() {
+        return value;
+    }
 
-	//------------------------------------------------------------------
-	@Override
-	public String transfer(String s) {
-		return null;
-	}
-	
-	static{
-		OperTypeSet.add(eq);
-		OperTypeSet.add(not_eq);
-		OperTypeSet.add(lt);
-		OperTypeSet.add(gt);
-		OperTypeSet.add(lt_eq);
-		OperTypeSet.add(gt_eq);
-	}
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    //------------------------------------------------------------------
+    @Override
+    public String transfer(String s) {
+        return null;
+    }
+
+    static {
+        OPERATION_TYPE_SET.add(eq);
+        OPERATION_TYPE_SET.add(not_eq);
+        OPERATION_TYPE_SET.add(lt);
+        OPERATION_TYPE_SET.add(gt);
+        OPERATION_TYPE_SET.add(lt_eq);
+        OPERATION_TYPE_SET.add(gt_eq);
+    }
 
 }

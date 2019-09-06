@@ -6,9 +6,7 @@ import java.util.Map;
 
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
-import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.exception.BuilderSQLException;
-import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.model.SqlModel;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -187,21 +185,24 @@ public interface SqlBuilder {
 	  * @throws BuilderSQLException
 	  */
 	 public  SqlModel<Map<String,?>> objectModeSelectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
-	
-	 /**
-	  * 根据实体中的参数查询
-	  * <ol>
-	  *  <li>  -1: number use = ;String use =  (全部使用等号)</li>
-	  * 	<li> simpleModel: number use = ;String use Like</li>
-	  * 	<li> middleModel: </li>
-	  * 	<li>highModel: </li>
-	  * </ol>
-	  * @param object  参数对象
-	  * @param sqlConfig 特殊参数定义 
-	  * @return
-	  * @throws BuilderSQLException
-	  */
-	 public SqlModel<Object> selectSql(Object object,SqlConfig sqlConfig) throws BuilderSQLException;
+
+	/**
+	 * 根据实体中的参数查询
+	 * <ol>
+	 * <li>  -1: number use = ;String use =  (全部使用等号)</li>
+	 * <li> simpleModel: number use = ;String use Like</li>
+	 * <li> middleModel: </li>
+	 * <li>highModel: </li>
+	 * </ol>
+	 *
+	 * @param object    参数对象
+	 * @param sqlConfig 特殊参数定义
+	 * @return
+	 * @throws BuilderSQLException
+	 */
+	public SqlModel<Object> selectSql(Object object, SqlConfig sqlConfig) throws BuilderSQLException;
+
+	public SqlModel<Map<String, ?>> selectSql(Map<String,?> columnMap, SqlConfig sqlConfig) throws BuilderSQLException;
 
 
 	 public <T>RowMapper<T> getRowMapper(GroupQuery groupQuery);

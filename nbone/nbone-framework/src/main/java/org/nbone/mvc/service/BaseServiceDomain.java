@@ -423,24 +423,34 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	 */
 	@Override
 	public void batchInsert(P[] objects,boolean jdbcBatch) {
-		checkBuilded();
-		namedJdbcDao.batchInsert(objects,jdbcBatch);
+		this.batchInsert(objects,null,jdbcBatch);
 	}
 	@Override
 	public void batchInsert(Collection<P> objects,boolean jdbcBatch) {
-		checkBuilded();
-		namedJdbcDao.batchInsert(objects,jdbcBatch);
+		this.batchInsert(objects,null,jdbcBatch);
 	}
-	
+
 	@Override
-	public void batchUpdate(P[] objects,String...propertys) {
+	public void batchInsert(Object[] objects, String[] insertProperties, boolean jdbcBatch) {
 		checkBuilded();
-		namedJdbcDao.batchUpdate(objects,propertys);
+		namedJdbcDao.batchInsert(objects,insertProperties,jdbcBatch);
+	}
+
+	@Override
+	public void batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch) {
+		checkBuilded();
+		namedJdbcDao.batchInsert(objects,insertProperties,jdbcBatch);
+	}
+
+	@Override
+	public void batchUpdate(P[] objects,String...properties) {
+		checkBuilded();
+		namedJdbcDao.batchUpdate(objects,properties);
 	}
 	@Override
-	public void batchUpdate(Collection<P> objects,String...propertys) {
+	public void batchUpdate(Collection<P> objects,String...properties) {
 		checkBuilded();
-		namedJdbcDao.batchUpdate(objects,propertys);
+		namedJdbcDao.batchUpdate(objects,properties);
 	}
 	
 	@Override

@@ -52,8 +52,8 @@ public class BaseSqlBuilderTest {
 		object.setCode("2");
 		
 		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntityParams(object, false);
-		String sqld = sqlModel.getTableMapper().getDeleteSqlWithId();
-		String sqls = sqlModel.getTableMapper().getSelectSqlWithId();
+		String sqld = sqlModel.getEntityMapper().getDeleteSqlWithId();
+		String sqls = sqlModel.getEntityMapper().getSelectSqlWithId();
 		System.out.println(sqlModel.getSql());
 		System.out.println(sqld);
 		System.out.println(sqls);

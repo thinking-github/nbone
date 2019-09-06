@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
@@ -107,22 +108,34 @@ public class ExceptionHandlerAdvice {
     }
 
     /**
-     *  请求参数绑定异常[MissingServletRequestParameterException,MissingPathVariableException,UnsatisfiedServletRequestParameterException]
+     *  请求参数绑定异常<li>  ServletRequestBindingException [MissingServletRequestParameterException,
+     *                                                      MissingPathVariableException,
+     *                                                      UnsatisfiedServletRequestParameterException]
+     *                <li> HttpRequestMethodNotSupportedException
+     *                <li> MissingServletRequestPartException
+     *                <li> NoHandlerFoundException
+     *                <li> HttpMediaTypeException[HttpMediaTypeNotSupportedException,HttpMediaTypeNotAcceptableException]
      * @param ex
      * @param req
      * @param response
      * @return
      */
-    @ExceptionHandler(value = ServletRequestBindingException.class)
+    @ExceptionHandler(value = ServletException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Object requestBindingException(ServletRequestBindingException ex, HttpServletRequest req, HttpServletResponse response) {
+    public Object requestException(ServletException ex, HttpServletRequest req, HttpServletResponse response) {
         logger.error("Bad request argument:", ex);
 
-        String msg = ex.getMessage();
+        String msg = ExceptionHandlerUtils.getMessage(ex);
 
         String requestId = getRequestId(req);
         ayncErrorLog(ex, msg, req, response);
         return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
+    }
+
+    @ExceptionHandler(value = ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Object requestBindingException(ServletRequestBindingException ex, HttpServletRequest req, HttpServletResponse response) {
+        return  requestException(ex,req,response);
     }
     /**
      * @param ex

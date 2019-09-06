@@ -51,6 +51,16 @@ public interface QueryOperations {
 	public <T> List<T> getForList(Object object, SqlConfig sqlConfig);
 
 	/**
+	 * 查询（根据 columnMap 条件）
+	 *
+	 * @param columnMap   columnMap 表字段 map 对象
+	 * @param sqlConfig  设置字段为数据库字段对应模式和entityClass
+	 * @param <T>
+	 * @return
+	 */
+	public <T> List<T> getForList(Map<String, ?> columnMap,SqlConfig sqlConfig);
+
+	/**
 	 * 按照实体中不为空的参数查询实体列表(参数默认使用 number use = /String use like)(支持字段查询符号操作 =  > < >= <=  is null is not null)
 	 * @param object 查询实体参数
 	 * @param sqlConfig 查询配置
@@ -88,6 +98,19 @@ public interface QueryOperations {
 	 */
 	public  <T> Page<T> getForPage(Object object,SqlConfig sqlConfig,int pageNum, int pageSize);
 	/**
+	 * 根据实体中的参数查询实体列表并分页(比返回整个实体数据提高效率) (参数默认全部使用 等号 =)【按照实体中的参数查询实体列表并分页】
+	 *
+	 * @param paramMap  查询参数
+	 * @param sqlConfig 按需返回字段java字段名称【返回含有数组中的字段的】,afterWhere group by/order by 子句 （可为空）
+	 * @param pageNum 当前页码
+	 * @param pageSize 页的大小
+	 * @param
+	 * @param <T>
+	 * @return
+	 */
+
+	public  <T> Page<T> getForPage(Map<String,?> paramMap,SqlConfig sqlConfig,int pageNum, int pageSize);
+	/**
 	 * 按照实体中的参数查询实体列表并分页（特殊情况下不同得实现方式 参数默认number use = /String use like）
 	 * @param object  查询实体参数
 	 * @param sqlConfig 按需返回字段java字段名称【返回含有数组中的字段的】,afterWhere group by/order by 子句 （可为空）
@@ -107,17 +130,18 @@ public interface QueryOperations {
 	 * @return
 	 */
 	public  <T> Page<T> queryForPage(Object object,int pageNum, int pageSize,SqlConfig sqlConfig);
-	
+
+	public  <T> Page<T> findForPage(Object object,int pageNum, int pageSize,String... afterWhere);
 	/**
 	 * 按照实体中的参数查询实体列表并分页
 	 * @param object 查询实体参数
 	 * @param pageNum 当前页码
 	 * @param pageSize 页的大小
-	 * @param afterWhere  group by/order by 子句
+	 * @param sqlConfig  group by/order by 子句
 	 * @return
 	 * {@link #findForList(Object)}
 	 */
-	public  <T> Page<T> findForPage(Object object,int pageNum, int pageSize,String... afterWhere);
+	public  <T> Page<T> findForPage(Object object,int pageNum, int pageSize,SqlConfig sqlConfig);
 
 	/**
 	 * 按照实体中的参数查询实体列表并限制返回数量  (参数全部使用 等号 =)

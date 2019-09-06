@@ -2,9 +2,11 @@ package org.nbone.framework.spring.dao.core;
 
 import java.util.Map;
 
-import org.nbone.persistence.mapper.DbMappingBuilder;
+import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.mapper.FieldMapper;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.EntityMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.jdbc.core.StatementCreatorUtils;
@@ -25,18 +27,18 @@ import org.springframework.jdbc.core.namedparam.AbstractSqlParameterSource;
  */
 public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSource{
 
-
+	private static final Logger logger = LoggerFactory.getLogger(EntityPropertySqlParameterSource.class);
 	private final BeanWrapper beanWrapper;
 	
-	private final TableMapper<?> tableMapper;
+	private final EntityMapper<?> entityMapper;
 	private final  Object object;
 	
 	private Map<String, FieldMapper> dbFieldNameMap;
 	
 	
 	public EntityPropertySqlParameterSource(Object object) {
-		this.tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
-		this.dbFieldNameMap = tableMapper.getFieldMappers();
+		this.entityMapper = MappingBuilder.ME.getTableMapper(object.getClass());
+		this.dbFieldNameMap = entityMapper.getFieldMappers();
 		this.beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(object);
 		this.object = object;
 		
@@ -87,6 +89,7 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 
 	private  void check(FieldMapper fieldMapper,String paramName){
 		if(fieldMapper == null){
+			logger.error("table name '{}',columns : {}",entityMapper.getDbTableName(),entityMapper.getCommaDelimitedColumns());
 			throw new IllegalArgumentException("["+object.getClass().getName()+"] Cannot resolve field: " +paramName);
 		}
 	}

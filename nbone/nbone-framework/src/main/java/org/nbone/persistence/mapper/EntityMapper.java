@@ -22,7 +22,11 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.jdbc.core.RowMapper
  * 
  */
-public class TableMapper<T> {
+public class EntityMapper<T> {
+
+	public final static String  S = "s";
+	public final static String BETWEEN  = "Between";
+	public final static String _BETWEEN = "_between";
     /**
      * 当使用注解定义实体Bean时使用
      */
@@ -35,21 +39,15 @@ public class TableMapper<T> {
      * 数据库表主键映射列表：（单个字段的唯一键）（几个字段组合起来的唯一键）
      */
     private List<FieldMapper> primaryKeyFields = new ArrayList<FieldMapper>(1);
-    
-    /**
-     * 映射实体Bean的全名称(包含包名称)<br>
-     * 请使用 entityClazz
-     */
-    @Deprecated 
-    private String  entityName;
+
     /**
      * 数据库表的名称
      */
     private String  dbTableName;
     /**
-     * 映射实体Bean classs  entityName
+     * 映射实体Bean class  entityName
      */
-    private Class<T> entityClazz;
+    private Class<T> entityClass;
     
     /**
      * 以数据库字段为Key , 最好使用LinkedHashMap保证key的顺序
@@ -69,7 +67,7 @@ public class TableMapper<T> {
 	/**
 	 * 实体类中的扩展字段 用于in 查询 和 between 查询
 	 */
-	private List<Field> extFields;
+	private Map<String,Field> extFields;
     /**
      * 数据库表字段映射列表
      */
@@ -109,24 +107,23 @@ public class TableMapper<T> {
     
     
 
-	public TableMapper(Class<T> entityClazz) {
+	public EntityMapper(Class<T> entityClazz) {
 		this(entityClazz, 10);
 	}
 	
 	/**
 	 * 设定预定的容量  XXX： thinking 2016-08-02
-	 * @param entityClazz
+	 * @param entityClass
 	 * @param fieldInitialCapacity
 	 */
-	public TableMapper(Class<T> entityClazz,int fieldInitialCapacity) {
+	public EntityMapper(Class<T> entityClass, int fieldInitialCapacity) {
 		fieldInitialCapacity = fieldInitialCapacity +5;
 		
 		if(fieldInitialCapacity < 10){
 			fieldInitialCapacity = 10;
 		}
 		
-		this.entityClazz = entityClazz;
-		this.entityName = entityClazz.getName();
+		this.entityClass = entityClass;
 		this.fieldMappers =  new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
 		this.propertyMappers = new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
 		this.mappedPropertys =  new HashMap<String, PropertyDescriptor>(fieldInitialCapacity);
@@ -191,8 +188,12 @@ public class TableMapper<T> {
 		this.primaryKeyFields = primaryKeyFields;
 	}
 
+	/**
+	 * 映射实体Bean的全名称(包含包名称)
+	 * @return
+	 */
 	public String getEntityName() {
-		return entityName;
+		return entityClass.getName();
 	}
     
 	/**
@@ -207,7 +208,7 @@ public class TableMapper<T> {
 		if(dbTableName == null){
 			//2.
 			if(tableMapperAnnotation == null){
-				Annotation[] anns  = entityClazz.getDeclaredAnnotations();
+				Annotation[] anns  = entityClass.getDeclaredAnnotations();
 				for (Annotation annotation : anns) {
 					if(annotation instanceof Table){
 						Table table  = (Table) annotation;
@@ -225,7 +226,7 @@ public class TableMapper<T> {
 			}
 			//4.
 			if(dbTableName == null){
-				dbTableName = entityClazz.getSimpleName();
+				dbTableName = entityClass.getSimpleName();
 			}
 		}
 		
@@ -236,12 +237,12 @@ public class TableMapper<T> {
 		this.dbTableName = dbTableName;
 	}
 
-	public Class<T> getEntityClazz() {
-		return entityClazz;
+	public Class<T> getEntityClass() {
+		return entityClass;
 	}
 
-	public void setEntityClazz(Class<T> entityClazz) {
-		this.entityClazz = entityClazz;
+	public void setEntityClass(Class<T> entityClass) {
+		this.entityClass = entityClass;
 	}
     /**
      * @see #fieldMappers
@@ -260,15 +261,12 @@ public class TableMapper<T> {
 	public FieldMapper getFieldMapper(String dbFieldName) {
 		return fieldMappers.get(dbFieldName);
 	}
-	
+
 	public FieldMapper getFieldMapperByPropertyName(String propertyName) {
-		if(propertyName == null){
+		if (propertyName == null) {
 			return null;
 		}
-		if(propertyMappers.containsKey(propertyName)){
-			return propertyMappers.get(propertyName);
-		}
-		return null;
+		return propertyMappers.get(propertyName);
 	}
 	
 	/**
@@ -300,7 +298,7 @@ public class TableMapper<T> {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public TableMapper addFieldMapper(String dbFieldName,FieldMapper fieldMapper) {
+	public EntityMapper addFieldMapper(String dbFieldName, FieldMapper fieldMapper) {
 		this.fieldMappers.put(dbFieldName, fieldMapper);
 		this.propertyMappers.put(fieldMapper.getFieldName(),fieldMapper);
 
@@ -321,24 +319,31 @@ public class TableMapper<T> {
 		return mappedPropertys.get(fieldName);
 	}
 	@SuppressWarnings("rawtypes")
-	public TableMapper addPropertyDescriptor(String fieldName,PropertyDescriptor pd) {
+	public EntityMapper addPropertyDescriptor(String fieldName, PropertyDescriptor pd) {
 		this.mappedPropertys.put(fieldName, pd);
 		return this;
 	}
 
-	public List<Field> getExtFields() {
-		return extFields;
+	public Collection<Field> getExtFields() {
+		return extFields.values();
 	}
 
-	public void setExtFields(List<Field> extFields) {
+	public Field getExtField(String fieldName) {
+		if (extFields == null) {
+			return null;
+		}
+		return extFields.get(fieldName);
+	}
+
+	public void setExtFields(Map<String,Field> extFields) {
 		this.extFields = extFields;
 	}
 
 	public void addExtFields(Field extField) {
 		if(this.extFields == null){
-			this.extFields = new ArrayList<Field>();
+			this.extFields = new HashMap<String,Field>();
 		}
-		extFields.add(extField);
+		extFields.put(extField.getName(),extField);
 	}
 
 	public Collection<FieldMapper> getFieldMapperList() {

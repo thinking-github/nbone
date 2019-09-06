@@ -33,7 +33,7 @@ public class ServletActionContext {
 		ServletRequestAttributes servletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
 		HttpServletRequest request =  servletRequest.getRequest();
 		
-		RequestAttributes RequestA = RequestContextHolder.getRequestAttributes();
+		//RequestAttributes RequestA = RequestContextHolder.getRequestAttributes();
 		return request;
 	}
 

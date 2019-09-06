@@ -6,6 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import javax.servlet.ServletException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class ExceptionHandlerUtils {
 
-
+    public final static String[] JAVA_LONG = {"java.lang.","java.net."};
     /**
      * 解析 @Valid 的参数验证异常的消息
      *
@@ -27,17 +28,34 @@ public class ExceptionHandlerUtils {
     public static String getMessage(MethodArgumentNotValidException ex) {
 
         BindingResult result = ex.getBindingResult();
-        String msg = result.getAllErrors()
+
+       /* String msg = result.getAllErrors()
                 .stream()
                 .map(x -> x.getDefaultMessage())
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(","));*/
 
-        return msg;
+        return getMessage(result);
     }
 
     public static String getMessage(BindException ex) {
         BindingResult result = ex.getBindingResult();
         return getMessage(result);
+    }
+
+    public static String getMessage(ServletException ex) {
+        String message = ex.getMessage();
+        if (message == null) {
+            return null;
+        }
+        if (message.length() <= 128) {
+            return message;
+        } else {
+            for (String regex : JAVA_LONG) {
+                message = message.replaceAll(regex, "");
+            }
+
+        }
+        return message;
     }
 
 
@@ -52,7 +70,9 @@ public class ExceptionHandlerUtils {
                 errorMessage = errorMessage.replaceAll("java.lang.", "");
                 if (error instanceof FieldError) {
                     FieldError fieldError = (FieldError) error;
-                    msg = String.format("[%s = %s] %s", fieldError.getField(), fieldError.getRejectedValue(), errorMessage);
+                    String fieldName = fieldError.getField();
+                    // Column 'type' cannot be null
+                    msg = String.format("field '%s' %s [%s = %s]", fieldName, errorMessage, fieldName, fieldError.getRejectedValue());
                 } else {
                     msg = String.format("[%s] %s", error.getObjectName(), errorMessage);
                 }

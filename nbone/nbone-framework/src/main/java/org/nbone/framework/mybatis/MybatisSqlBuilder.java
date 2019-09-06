@@ -3,13 +3,13 @@ package org.nbone.framework.mybatis;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.mapper.FieldMapper;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.EntityMapper;
 
 /**
  * 通过自定义tableMapper and FieldMapper 生成SQl
  * @author thinking
  * @since 2015-12-12
- * @see TableMapper
+ * @see EntityMapper
  * @see FieldMapper
  *
  */

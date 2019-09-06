@@ -36,17 +36,36 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	public void batchInsert(Collection<T> objects,boolean jdbcBatch);
 
 	/**
+	 * 批量添加
+	 * @param objects 实体对象
+	 * @param insertProperties 可选的插入字段（可为空）
+	 * @param jdbcBatch true jdbc batch, false db batch
+	 *
+	 * @return
+	 */
+	public void batchInsert(Object[] objects,String[] insertProperties,boolean jdbcBatch);
+	/**
+	 * 批量添加
+	 * @param objects 实体对象
+	 * @param insertProperties 可选的插入字段（可为空）
+	 * @param jdbcBatch true jdbc batch, false db batch
+	 *
+	 * @return
+	 */
+	public void batchInsert(Collection<?> objects,String[] insertProperties,boolean jdbcBatch);
+
+	/**
 	 *
 	 * @param objects   实体对象列表
-	 * @param  propertys 更新的属性字段 可为空，当为空更新全部字段
+	 * @param properties 更新的属性字段 可为空，当为空更新全部字段
 	 */
-	public void batchUpdate(T[] objects,String...propertys);
+	public void batchUpdate(T[] objects,String...properties);
 	/**
 	 *
 	 * @param objects 实体对象列表
-	 * @param  propertys 更新的属性字段 可为空，当为空更新全部字段
+	 * @param  properties 更新的属性字段 可为空，当为空更新全部字段
 	 */
-	public void batchUpdate(Collection<T> objects,String...propertys);
+	public void batchUpdate(Collection<T> objects,String...properties);
 	
 	
 	public void batchDelete(Class<T> clazz,Serializable[] ids);

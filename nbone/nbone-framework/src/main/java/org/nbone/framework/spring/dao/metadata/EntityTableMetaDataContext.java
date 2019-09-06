@@ -32,7 +32,7 @@ public class EntityTableMetaDataContext extends TableMetaDataContext {
 
 			List<String> tableColumns= this.getTableColumns();
 			if(tableColumns == null || tableColumns.size() ==0){
-				logger.error(">>>>> table columns is Empty.");
+				logger.error(">>>>> table "+this.getTableName()+" columns is Empty.");
 			}
 
 			for (String column : this.getTableColumns()) {

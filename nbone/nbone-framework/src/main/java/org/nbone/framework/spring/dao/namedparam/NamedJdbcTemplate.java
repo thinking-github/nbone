@@ -75,7 +75,22 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 
 		SqlModel<T> sqlModel = buildSqlModel(object,sqlConfig);
 		return processPage(sqlModel, object, pageNum, pageSize);
-		
+	}
+	/**
+	 * 单表数据分页
+	 * @param columnMap
+	 * @param sqlConfig java字段名称 可为空,为空返回全部字段
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	public <T> Page<T> getForPage(Map<String,?> columnMap,SqlConfig sqlConfig,int pageNum ,int pageSize){
+		if(sqlConfig == null){
+			sqlConfig =  SqlConfig.EMPTY;
+		}
+
+		SqlModel<Map<String, ?>> sqlModel = (SqlModel<Map<String,?>>) sqlBuilder.selectSql(columnMap,sqlConfig);
+		return processPage(sqlModel, columnMap, pageNum, pageSize,sqlConfig);
 	}
 	/**
 	 * 单表数据分页
@@ -99,25 +114,12 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	 * @param object
 	 * @param pageNum
 	 * @param pageSize
-	 * @param sqlConfig
-	 * @param <T>
 	 * @return
 	 */
-	public <T> Page<T> queryForPage(Object object,int pageNum ,int pageSize,SqlConfig sqlConfig){
+	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,SqlConfig sqlConfig){
 		SqlModel<Map<String,?>> sqlModel  = sqlBuilder.objectModeSelectSql(object,sqlConfig);
-		return processPage(sqlModel, object, pageNum, pageSize,sqlConfig);
-	}
-	/**
-	 * 单表数据分页
-	 * @param object
-	 * @param pageNum
-	 * @param pageSize
-	 * @return
-	 */
-	public <T> Page<T> findForPage(Object object,int pageNum ,int pageSize,String... afterWhere){
-		SqlModel<Object> sqlModel = buildSqlModel(object,new SqlConfig(SqlConfig.PrimaryMode));
 		
-		return processPage(sqlModel, object, pageNum, pageSize);
+		return processPage(sqlModel, object, pageNum, pageSize,sqlConfig);
 	}
 	
 	public long queryForLong(String sql, SqlParameterSource paramSource) throws DataAccessException {
@@ -220,7 +222,7 @@ public class NamedJdbcTemplate  extends NamedParameterJdbcTemplate{
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> List<T>  processLimit(SqlModel<Object> sqlModel,Object object,GroupQuery group, int pageSize,String... afterWhere){
+	private <T> List<T>  processLimit(SqlModel<Object> sqlModel,Object object,GroupQuery group, int pageSize){
 		if(sqlModel == null){
 			throw new BuilderSQLException("sqlModel is null.");
 		}

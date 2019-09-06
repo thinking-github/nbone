@@ -4,16 +4,13 @@ import java.beans.PropertyDescriptor;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nbone.persistence.mapper.DbMappingBuilder;
+import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.mapper.FieldMapper;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.EntityMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.NotWritablePropertyException;
@@ -43,17 +40,17 @@ public class EntityPropertyRowMapper<T> implements RowMapper<T> {
 	private Map<String, PropertyDescriptor> mappedFields;
 	
 	
-	private TableMapper<T> tableMapper;
+	private EntityMapper<T> entityMapper;
 	
 	
 	public EntityPropertyRowMapper(Class<T> mappedClass) {
-		this(DbMappingBuilder.getEntityMapper(mappedClass));
+		this(MappingBuilder.getEntityMapper(mappedClass));
 	}
 	
-	public EntityPropertyRowMapper(TableMapper<T> tableMapper) {
-		this.tableMapper  = tableMapper;
-		this.mappedClass = tableMapper.getEntityClazz();
-		this.mappedFields = tableMapper.getMappedPropertys();
+	public EntityPropertyRowMapper(EntityMapper<T> entityMapper) {
+		this.entityMapper = entityMapper;
+		this.mappedClass = entityMapper.getEntityClass();
+		this.mappedFields = entityMapper.getMappedPropertys();
 		this.initialize(mappedClass);
 	}
 	
@@ -78,7 +75,7 @@ public class EntityPropertyRowMapper<T> implements RowMapper<T> {
 		for (int index = 1; index <= columnCount; index++) {
 			String column = JdbcUtils.lookupColumnName(rsmd, index);
 			String dbFieldName = column.replaceAll(" ", "");
-			FieldMapper fieldMapper = this.tableMapper.getFieldMapper(dbFieldName);
+			FieldMapper fieldMapper = this.entityMapper.getFieldMapper(dbFieldName);
 			PropertyDescriptor pd;
 			if (fieldMapper != null && (pd=fieldMapper.getPropertyDescriptor()) != null ) {
 				try {

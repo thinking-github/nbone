@@ -4,6 +4,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.CaseFormat;
 import org.apache.commons.logging.Log;
@@ -20,11 +21,10 @@ import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
 import org.nbone.framework.spring.support.ComponentFactory;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.MapperUtils;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.util.JpaAnnotationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * @author thinking
@@ -160,7 +160,7 @@ public class MyMapperUtils {
 	 * @param <E>
 	 * @return
 	 */
-	public static <E> TableMapper<E> resultMap2TableMapper(Class<E> entityClass,String namespace,String id) {
+	public static <E> EntityMapper<E> resultMap2TableMapper(Class<E> entityClass, String namespace, String id) {
 		ResultMap resultMap = getResultMap(namespace,id);
 		if(entityClass == null){
 			entityClass = (Class<E>) resultMap.getType();
@@ -175,7 +175,7 @@ public class MyMapperUtils {
 		List<ResultMapping> idsResultMapping  = resultMap.getIdResultMappings();
 		List<ResultMapping>  attrsResultMapping =   resultMap.getResultMappings();
 		
-		TableMapper<E> tableMapper = new TableMapper<E>(entityClass,attrsResultMapping.size());
+		EntityMapper<E> entityMapper = new EntityMapper<E>(entityClass,attrsResultMapping.size());
 		
 		//primary key
 		List<String> primaryList = new ArrayList<String>(1);
@@ -186,8 +186,8 @@ public class MyMapperUtils {
 		if(primaryList.size() >2){
 			logger.warn(">>>>>联合主键数量超过2个,请注意检查Class: "+entityClass.getName());
 		}
-		tableMapper.setDbTableName(tableName);
-		tableMapper.setPrimaryKeys(primaryList);
+		entityMapper.setDbTableName(tableName);
+		entityMapper.setPrimaryKeys(primaryList);
 		
 		//field 
 		for (ResultMapping resultMapping : attrsResultMapping) {
@@ -221,22 +221,22 @@ public class MyMapperUtils {
             		break;
             	}
 			}
-			tableMapper.addFieldMapper(dbFieldName, fieldMapper);
+			entityMapper.addFieldMapper(dbFieldName, fieldMapper);
 		}
 
-		List<Field> extFields = MapperUtils.getExtFields(entityClass);
-		tableMapper.setExtFields(extFields);
+		Map<String,Field> extFields = MapperUtils.getExtFieldsMap(entityClass);
+		entityMapper.setExtFields(extFields);
 
 		  //Spring Jdbc
-        RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(tableMapper);
-        tableMapper.setRowMapper(rowMapper);
+        RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(entityMapper);
+        entityMapper.setRowMapper(rowMapper);
         
-        tableMapper.setFieldPropertyLoad(true);
+        entityMapper.setFieldPropertyLoad(true);
 		
-		return tableMapper;
+		return entityMapper;
 	}
 
-	public static <E> TableMapper<E> resultMap2TableMapper(String namespace,String id) {
+	public static <E> EntityMapper<E> resultMap2TableMapper(String namespace, String id) {
 		return  resultMap2TableMapper(null,namespace,id);
 	}
 

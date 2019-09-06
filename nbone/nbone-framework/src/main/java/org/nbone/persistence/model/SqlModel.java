@@ -4,12 +4,10 @@ package org.nbone.persistence.model;
 import java.util.Map;
 
 import org.nbone.context.system.SystemContext;
-import org.nbone.lang.BaseObject;
 import org.nbone.mvc.domain.DomainQuery;
 import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.JdbcOptions;
-import org.nbone.persistence.exception.PersistenceBaseRuntimeException;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.support.PageSuport;
 import org.nbone.util.lang.ToStringUtils;
 import org.slf4j.Logger;
@@ -43,7 +41,7 @@ public class SqlModel<T> {
 	/**
 	 *实体映射信息
 	 */
-	private  TableMapper<?> tableMapper;
+	private EntityMapper<?> entityMapper;
 	
 	/**
 	 * 追加条件 或者 group by/order by 子句
@@ -64,15 +62,15 @@ public class SqlModel<T> {
 		this.parameter = parameter;
 	}
 	
-	public SqlModel(String sql, T parameter,TableMapper<?> tableMapper) {
+	public SqlModel(String sql, T parameter, EntityMapper<?> entityMapper) {
 		this.sql = sql;
 		this.parameter = parameter;
-		this.tableMapper = tableMapper;
+		this.entityMapper = entityMapper;
 	}
-	public SqlModel(String sql, T parameter,TableMapper<?> tableMapper,String[] afterWhere) {
+	public SqlModel(String sql, T parameter, EntityMapper<?> entityMapper, String[] afterWhere) {
 		this.sql = sql;
 		this.parameter = parameter;
-		this.tableMapper = tableMapper;
+		this.entityMapper = entityMapper;
 		this.afterWhere = afterWhere;
 	}
 	
@@ -211,20 +209,20 @@ public class SqlModel<T> {
 		this.parameterArray = parameterArray;
 	}
 
-	public TableMapper<?> getTableMapper() {
-		return  tableMapper;
+	public EntityMapper<?> getEntityMapper() {
+		return entityMapper;
 	}
 
-	public void  setTableMapper(TableMapper<?> tableMapper) {
-		this.tableMapper = tableMapper;
+	public void setEntityMapper(EntityMapper<?> entityMapper) {
+		this.entityMapper = entityMapper;
 	}
 	
 	public String[] getPrimaryKeys() {
-		return tableMapper.getPrimaryKeys();
+		return entityMapper.getPrimaryKeys();
 	}
 	
 	public RowMapper<?> getRowMapper(){
-		return tableMapper.getRowMapper();
+		return entityMapper.getRowMapper();
 	}
 
 	public String[] getAfterWhere() {

@@ -124,14 +124,16 @@ public class SqlUtils {
     public static StringBuilder orIn(String dbFieldName, Class<?> nameType, Object values, boolean isIn) {
         return in("or",dbFieldName,nameType,values,isIn);
     }
+
     /**
-     *  [1,2,3] ---> id in (1,2,3)
-     *  ["thinking","chenyi","zhang"] ---> and id in ('thinking','chenyi','zhang')
+     * <li>number string "1,2,3" ---> id in (1,2,3)
+     * <li>[1,2,3] ---> id in (1,2,3)
+     * <li>["thinking","chenyi","zhang"] ---> and id in ('thinking','chenyi','zhang')
      *
-     * @param andOr 可为空  and/or /null
-     * @param dbFieldName 字段名称
+     * @param andOr       可为空  and/or /null
+     * @param dbFieldName db字段名称
      * @param nameType    字段类型
-     * @param values      字段值数组 数组 或者 List
+     * @param values      字段值数组 数组或者List
      * @param isIn        in true , not in false
      * @return
      */
@@ -148,10 +150,14 @@ public class SqlUtils {
             andOr = "";
         }
 
-        String operType = isIn ? " in " : " not in ";
-        StringBuilder sql = new StringBuilder(" ").append(andOr).append(" ").append(dbFieldName).append(operType);
-        sql.append("(");
+        String operationType = isIn ? " in " : " not in ";
+        StringBuilder sql = new StringBuilder(" ").append(andOr).append(" ").append(dbFieldName).append(operationType);
+        if (Number.class.isAssignableFrom(nameType) && values instanceof String) {
+            sql.append("(").append(values).append(")");
+            return sql;
+        }
 
+        sql.append("(");
         if(values.getClass().isArray()){
             Object[] array  = (Object[]) values;
             int length = array.length;
@@ -172,10 +178,37 @@ public class SqlUtils {
         return sql;
     }
 
-    public  static StringBuilder  andBetween(String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
-        return dbBetween("and",dbFieldName,beginFieldName,endFieldName,is);
+    /**
+     * number string "1,2,3" ---> id in (1,2,3)
+     *
+     * @param andOr       可为空  and/or /null
+     * @param dbFieldName db字段名称
+     * @param isIn        in true , not in false
+     * @param values      number string "1,2,3"
+     * @return
+     */
+    public static String inNumber(String andOr, String dbFieldName, boolean isIn, String values) {
+        if (values == null) {
+            return null;
+        }
+        if (dbFieldName == null) {
+            throw new IllegalArgumentException("dbFieldName  is null.");
+        }
+        if (andOr == null) {
+            andOr = "";
+        }
+
+        String operationType = isIn ? " in " : " not in ";
+        StringBuilder sql = new StringBuilder();
+        // and id in (1,2,3)
+        sql.append(" ").append(andOr).append(" ").append(dbFieldName).append(operationType).append("(").append(values).append(")");
+        return sql.toString();
     }
-    public  static StringBuilder  dbBetween(String andOr,String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
+
+    public  static StringBuilder  andBetween(String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
+        return between("and",dbFieldName,beginFieldName,endFieldName,is);
+    }
+    public  static StringBuilder between(String andOr,String dbFieldName,String beginFieldName,String endFieldName,boolean is) {
         if(dbFieldName == null){
             throw  new IllegalArgumentException("dbFieldName is null.");
         }
@@ -194,18 +227,20 @@ public class SqlUtils {
     }
 
     public static StringBuilder andBetween(String dbFieldName,Object values,boolean is){
-        return dbBetween("and",dbFieldName,values,is);
+        return between("and",dbFieldName,values,is);
     }
 
     /**
+     * <li>number string "1,3" ---> id between  1 and 3
+     * <li>[1,3] ---> id between 1 and 3
      *
      * @param andOr
      * @param dbFieldName
-     * @param values 区间数组 object[]{1,2} /字符串表示区间分割列表 1,2
+     * @param values      区间数组 object[]{1,2} /字符串表示区间分割列表 1,2
      * @param is
      * @return
      */
-    public static StringBuilder dbBetween(String andOr,String dbFieldName,Object values,boolean is) {
+    public static StringBuilder between(String andOr,String dbFieldName,Object values,boolean is) {
         if(values == null){
             return  null;
         }
@@ -238,7 +273,7 @@ public class SqlUtils {
         } else if (values instanceof Collection) {
             array = ((Collection)values).toArray();
         }else {
-            throw new IllegalArgumentException("invalid argument values");
+            throw new IllegalArgumentException("invalid argument values: "+ values);
         }
         return array;
     }
@@ -297,9 +332,9 @@ public class SqlUtils {
 
     public static StringBuilder getHibernateWhereIn(SqlOperation sqlOperation, Object fieldValue,
                                                     String aliasAndFieldName, Map<String, Object> namedParameters) {
-        String operType = sqlOperation.getOperType();
+        String operType = sqlOperation.getOperationType();
         String fieldName = sqlOperation.getFieldName();
-        Object specialValue = sqlOperation.getSpecialValue();
+        Object specialValue = sqlOperation.getValue();
         StringBuilder hqlsb = new StringBuilder();
         String keyName = ":" + fieldName;
 
@@ -323,16 +358,16 @@ public class SqlUtils {
         if (sqlOperation == null) {
             return hqlsb;
         }
-        String operType = sqlOperation.getOperType();
+        String operationType = sqlOperation.getOperationType();
         if (sqlOperation.isBetween()) {
 
-            StringBuilder betweensql = getWhereBetween(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
-            hqlsb.append(betweensql);
+            StringBuilder between = getWhereBetween(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
+            hqlsb.append(between);
 
         } else if (sqlOperation.isIn()) {
 
-            StringBuilder insql = getHibernateWhereIn(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
-            hqlsb.append(insql);
+            StringBuilder inSql = getHibernateWhereIn(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
+            hqlsb.append(inSql);
 
         } else {
             StringBuilder sql = getCommonWherePart(sqlOperation, fieldValue, aliasAndFieldName, namedParameters);
@@ -346,10 +381,10 @@ public class SqlUtils {
 
     public static StringBuilder getSpringJdbcWhereIn(SqlOperation sqlOperation, Object fieldValue,
                                                      String aliasAndFieldName, Map<String, Object> namedParameters) {
-        String operType = sqlOperation.getOperType();
+        String operType = sqlOperation.getOperationType();
         String fieldName = sqlOperation.getFieldName();
         Class<?> propertyType = sqlOperation.getPropertyType();
-        Object specialValue = sqlOperation.getSpecialValue();
+        Object specialValue = sqlOperation.getValue();
         StringBuilder hqlsb = new StringBuilder();
 
         Object[] values = null;
@@ -387,7 +422,7 @@ public class SqlUtils {
         if (sqlOperation == null) {
             return hqlsb;
         }
-        String operType = sqlOperation.getOperType();
+        String operType = sqlOperation.getOperationType();
         String fieldName = sqlOperation.getFieldName();
         if(operType == null){
             StringBuilder tempSql = defaultOperType(fieldName, fieldValue, aliasAndFieldName, namedParameters);
@@ -422,8 +457,8 @@ public class SqlUtils {
         if (isBetween) {
             Object beginValue = sqlOperation.getBeginValue();
             Object endValue = sqlOperation.getEndValue();
-            String beginValueMark = sqlOperation.getBeginValueMark();
-            String endValueMark = sqlOperation.getEndValueMark();
+            String beginRule = sqlOperation.getBeginRule();
+            String endRule = sqlOperation.getEndRule();
 
             String beginKey = "begin" + fieldName;
             String endKey = "end" + fieldName;
@@ -433,10 +468,10 @@ public class SqlUtils {
 
             hqlsb.append(" and ");
             hqlsb.append(" ( ");
-            hqlsb.append(aliasAndFieldName).append(" ").append(beginValueMark).append(" ");
+            hqlsb.append(aliasAndFieldName).append(" ").append(beginRule).append(" ");
             hqlsb.append(placeholderPrefix).append(beginKey).append(placeholderSuffix);
             hqlsb.append(" and ");
-            hqlsb.append(aliasAndFieldName).append(" ").append(endValueMark).append(" ");
+            hqlsb.append(aliasAndFieldName).append(" ").append(endRule).append(" ");
             hqlsb.append(placeholderPrefix).append(endKey).append(placeholderSuffix);
             hqlsb.append(" ) ");
 
@@ -462,7 +497,7 @@ public class SqlUtils {
         if (sqlPropertyDescriptor == null) {
             return hqlsb;
         }
-        String operType = sqlPropertyDescriptor.getOperType();
+        String operType = sqlPropertyDescriptor.getOperationType();
         String fieldName = sqlPropertyDescriptor.getFieldName();
 
         if(operType == null){
@@ -470,7 +505,7 @@ public class SqlUtils {
             hqlsb.append(tempSql);
         }
         // and  user.id=5
-        else if (SqlOperation.OperTypeSet.contains(operType)) {
+        else if (SqlOperation.OPERATION_TYPE_SET.contains(operType)) {
 
             hqlsb.append(" and ").append(aliasAndFieldName).append(" ").append(operType).append(" ").append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
             namedParameters.put(fieldName, fieldValue);

@@ -81,6 +81,7 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 		this.generatedKeyNames = new String[0];
 		this.insertString = null;
 		this.insertTypes = null;
+		this.declaredColumns.clear();
 	}
 
 	/**

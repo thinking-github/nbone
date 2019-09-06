@@ -89,10 +89,10 @@ public class FieldMapper {
 	}
 
 	public Class<?> getPropertyType() {
-		if(propertyType == null){
+		if (propertyType == null) {
 			propertyType = propertyDescriptor.getPropertyType();
 		}
-		
+
 		return propertyType;
 	}
 

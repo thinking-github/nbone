@@ -1,8 +1,7 @@
 package org.nbone.framework.spring.dao.simple;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +13,9 @@ import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
 import org.nbone.persistence.BaseSqlSession;
 import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlSession;
-import org.nbone.persistence.mapper.DbMappingBuilder;
+import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.mapper.FieldMapper;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.util.PropertyUtil;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
@@ -61,7 +59,7 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	
 	@Override
 	public int insert(Object object) {
-		insertProcess(object);
+		insertProcess(object,null);
 		int row  = simpleJdbcInsert.execute(new EntityPropertySqlParameterSource(object));
 		return row;
 	}
@@ -70,9 +68,9 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	@Override
 	public int insert(Class<?> entityClass, Map<String, Object> fieldMap) {
 		simpleJdbcInsert.reuse();
-		TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(entityClass);
-		simpleJdbcInsert.withTableName(tableMapper.getDbTableName());
-		String primaryKey = tableMapper.getPrimaryKey();
+		EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(entityClass);
+		simpleJdbcInsert.withTableName(entityMapper.getDbTableName());
+		String primaryKey = entityMapper.getPrimaryKey();
 		Object value  = fieldMap.get(primaryKey);
 		if(value == null){
 			simpleJdbcInsert.usingGeneratedKeyColumns(primaryKey);
@@ -83,15 +81,15 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 
 	@Override
 	public Serializable save(Object object) {
-		insertProcess(object);
+		insertProcess(object,null);
 		Number id = simpleJdbcInsert.executeAndReturnKey(new EntityPropertySqlParameterSource(object));
 		return id;
 	}
 
 	@Override
 	public Object add(Object object) {
-		TableMapper<?> tableMapper = insertProcess(object);
-		String[]  primaryKeys= tableMapper.getPrimaryKeys();
+		EntityMapper<?> entityMapper = insertProcess(object,null);
+		String[]  primaryKeys= entityMapper.getPrimaryKeys();
 		
 		Number num = simpleJdbcInsert.executeAndReturnKey(new EntityPropertySqlParameterSource(object));
 		
@@ -103,21 +101,33 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 		return object;
 	}
 	
-	private TableMapper<?> insertProcess(Object object){
+	private EntityMapper<?> insertProcess(Object object, String[] insertProperties){
 		simpleJdbcInsert.reuse();
-		TableMapper<?> tableMapper = DbMappingBuilder.ME.getTableMapper(object.getClass());
-		String[]  primaryKeys= tableMapper.getPrimaryKeys();
+		EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(object.getClass());
+		String[]  primaryKeys= entityMapper.getPrimaryKeys();
 		
-		FieldMapper fieldMapper = tableMapper.getFieldMapper(primaryKeys[0]);
+		FieldMapper fieldMapper = entityMapper.getFieldMapper(primaryKeys[0]);
 		Class<?> cls = fieldMapper.getPropertyType();
-		simpleJdbcInsert.withTableName(tableMapper.getDbTableName());
-		
+		simpleJdbcInsert.withTableName(entityMapper.getDbTableName());
+		// option insertProperties
+		if(insertProperties != null && insertProperties.length > 0){
+			List<String> columnNames = new ArrayList<String>();
+			for (String insertProperty : insertProperties) {
+				String column = entityMapper.getDbFieldName(insertProperty);
+				if(column != null){
+					columnNames.add(column);
+				}
+			}
+
+			simpleJdbcInsert.setColumnNames(columnNames);
+		}
+
 		Object value = PropertyUtil.getProperty(object, fieldMapper.getFieldName());
 		//XXX：当是数字且为空时使用自动生成主键
 		if(value == null && (Number.class.isAssignableFrom(cls) || long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls))){
 			simpleJdbcInsert.usingGeneratedKeyColumns(primaryKeys);
 		}
-		return tableMapper;
+		return entityMapper;
 	}
 
 	@Override
@@ -163,61 +173,71 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 	
 	@Override
 	public int[] batchInsert(Object[] objects,boolean jdbcBatch) {
-		if(objects == null || objects.length <= 0){
-			return new int[] {0};
-		}
-		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.length];
-		insertProcess(objects[0]);
-		for (int i = 0; i < objects.length; i++) {
-			batch[i] = new EntityPropertySqlParameterSource(objects[i]);
-		}
-        int[] row;
-        if(jdbcBatch){
-            row  = simpleJdbcInsert.executeBatch(batch);
-        }else {
-            row = dbBatchInsert(batch);
-        }
-		return row;
+		return batchInsert(objects,null,jdbcBatch);
 	}
 	
 	@Override
 	public int[] batchInsert(Collection<?> objects,boolean jdbcBatch) {
-		if(objects == null || objects.size() <= 0){
+		return  batchInsert(objects,null,jdbcBatch);
+	}
+
+	@Override
+	public int[] batchInsert(Object[] objects, String[] insertProperties, boolean jdbcBatch) {
+		if(objects == null || objects.length <= 0){
 			return new int[] {0};
 		}
-		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.size()];
-		int index = 0 ; 
-		for (Object object : objects) {
-			batch[index] = new EntityPropertySqlParameterSource(object);
-			index ++;
+		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.length];
+		insertProcess(objects[0],insertProperties);
+		for (int i = 0; i < objects.length; i++) {
+			batch[i] = new EntityPropertySqlParameterSource(objects[i]);
 		}
-		insertProcess(batch[0].getObject());
-        int[] row;
-        if(jdbcBatch){
-             row  = simpleJdbcInsert.executeBatch(batch);
-        }else {
-		    row = dbBatchInsert(batch);
-        }
+		int[] row;
+		if(jdbcBatch){
+			row  = simpleJdbcInsert.executeBatch(batch);
+		}else {
+			row = dbBatchInsert(batch);
+		}
 		return row;
 	}
 
 	@Override
-	public int[] batchUpdate(Object[] objects,String...propertys) {
+	public int[] batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch) {
+		if(objects == null || objects.size() <= 0){
+			return new int[] {0};
+		}
+		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.size()];
+		int index = 0 ;
+		for (Object object : objects) {
+			batch[index] = new EntityPropertySqlParameterSource(object);
+			index ++;
+		}
+		insertProcess(batch[0].getObject(),insertProperties);
+		int[] row;
+		if(jdbcBatch){
+			row  = simpleJdbcInsert.executeBatch(batch);
+		}else {
+			row = dbBatchInsert(batch);
+		}
+		return row;
+	}
+
+	@Override
+	public int[] batchUpdate(Object[] objects,String...properties) {
 		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
 	}
 
 	@Override
-	public int[] batchUpdate(Collection<?> objects,String...propertys) {
+	public int[] batchUpdate(Collection<?> objects,String...properties) {
 		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
 	}
 
 	@Override
-	public int[] batchUpdate(Object[] objects, String[] propertys, String... conditionPropertys) {
+	public int[] batchUpdate(Object[] objects, String[] properties, String... conditionPropertys) {
 		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
 	}
 
 	@Override
-	public int[] batchUpdate(Collection<?> objects, String[] propertys, String... conditionPropertys) {
+	public int[] batchUpdate(Collection<?> objects, String[] properties, String... conditionPropertys) {
 		throw new UnsupportedOperationException("unsupported batchUpdate operation.");
 	}
 

@@ -16,8 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
-import org.nbone.persistence.annotation.FieldLevel;
-import org.nbone.persistence.annotation.FieldProperty;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
 /**
@@ -26,29 +24,29 @@ import org.springframework.jdbc.core.RowMapper;
  * @version 1.0 
  */
 @SuppressWarnings("unchecked")
-public class DbMappingBuilder {
+public class MappingBuilder {
 	
 	/**
      * 缓存TableMapper
      */
-    private  Map<Class<?>, TableMapper<? extends Object>> tableMapperCache = new ConcurrentHashMap<Class<?>, TableMapper<? extends Object>>(32);
+    private  Map<Class<?>, EntityMapper<? extends Object>> tableMapperCache = new ConcurrentHashMap<Class<?>, EntityMapper<? extends Object>>(32);
     /**
      * 全局应用程序实例
      */
-    public final static DbMappingBuilder ME = new DbMappingBuilder();
+    public final static MappingBuilder ME = new MappingBuilder();
     
     
     /**
      * 返回缓存副本
      * @return
      */
-    public synchronized Map<Class<?>, TableMapper<? extends Object>>  getTableMappers() {
-		return new HashMap<Class<?>, TableMapper<? extends Object>>(tableMapperCache);
+    public synchronized Map<Class<?>, EntityMapper<? extends Object>>  getTableMappers() {
+		return new HashMap<Class<?>, EntityMapper<? extends Object>>(tableMapperCache);
 	}
     
     
-    public <E> TableMapper<E> getTableMapper(Class<E> entityClass) {
-    	TableMapper<E> tm = (TableMapper<E>) tableMapperCache.get(entityClass);
+    public <E> EntityMapper<E> getTableMapper(Class<E> entityClass) {
+    	EntityMapper<E> tm = (EntityMapper<E>) tableMapperCache.get(entityClass);
     	if(tm == null){
     		tm = buildTableMapper(entityClass);
     	}
@@ -61,13 +59,13 @@ public class DbMappingBuilder {
      * @return 
      */
 	public <E> boolean isTableMappered(Class<E> entityClass) {
-    	TableMapper<E> tm = (TableMapper<E>) tableMapperCache.get(entityClass);
+    	EntityMapper<E> tm = (EntityMapper<E>) tableMapperCache.get(entityClass);
     	
 		return tm == null ? false : true;
 	}
 	
-	public <E> DbMappingBuilder addTableMapper(Class<E> entityClass,TableMapper<E> tableMapper) {
-		tableMapperCache.put(entityClass, tableMapper);
+	public <E> MappingBuilder addTableMapper(Class<E> entityClass, EntityMapper<E> entityMapper) {
+		tableMapperCache.put(entityClass, entityMapper);
     	
 		return this;
 	}
@@ -79,19 +77,19 @@ public class DbMappingBuilder {
      * @param entityClass
      * @return TableMapper
      */
-    public  <E> TableMapper<E> buildTableMapper(Class<E> entityClass) {
+    public  <E> EntityMapper<E> buildTableMapper(Class<E> entityClass) {
 
         
-        TableMapper<E> tableMapper = null;
+        EntityMapper<E> entityMapper = null;
         synchronized (tableMapperCache) {
-            tableMapper = (TableMapper<E>) tableMapperCache.get(entityClass);
-            if (tableMapper != null) {
-                return tableMapper;
+            entityMapper = (EntityMapper<E>) tableMapperCache.get(entityClass);
+            if (entityMapper != null) {
+                return entityMapper;
             }
             
             //Column Field mapper
             Field[] fields = entityClass.getDeclaredFields();
-            tableMapper = new TableMapper<E>(entityClass,fields.length);
+            entityMapper = new EntityMapper<E>(entityClass,fields.length);
             //table Entity mapper
             Annotation[] classAnnotations = entityClass.getDeclaredAnnotations();
             if (classAnnotations.length == 0) {
@@ -100,11 +98,11 @@ public class DbMappingBuilder {
             
             if(entityClass.isAnnotationPresent(Table.class) && entityClass.isAnnotationPresent(Entity.class)){
             	Table an  = entityClass.getAnnotation(Table.class);
-            	tableMapper.setTableMapperAnnotation(an);
-            	tableMapper.setDbTableName(an.name() != null ? an.name() : entityClass.getSimpleName());
+            	entityMapper.setTableMapperAnnotation(an);
+            	entityMapper.setDbTableName(an.name() != null ? an.name() : entityClass.getSimpleName());
             	
             }
-            if (tableMapper.getTableMapperAnnotation() == null) {
+            if (entityMapper.getTableMapperAnnotation() == null) {
                 throw new RuntimeException("Class " + entityClass.getName() + " has no 'TableMapperAnnotation', "
                         + "which has the database table information," + " I can't build 'TableMapper' for it.");
             }
@@ -155,24 +153,24 @@ public class DbMappingBuilder {
                   }
                   
                   
-                  tableMapper.addFieldMapper(fieldMapper.getDbFieldName(), fieldMapper);
-                  tableMapper.addPropertyDescriptor(field.getName(), pd);
+                  entityMapper.addFieldMapper(fieldMapper.getDbFieldName(), fieldMapper);
+                  entityMapper.addPropertyDescriptor(field.getName(), pd);
                 	
               
             }
             
-            tableMapper.setPrimaryKeys(primaryKeys);
-            tableMapper.setFieldPropertyLoad(true);
+            entityMapper.setPrimaryKeys(primaryKeys);
+            entityMapper.setFieldPropertyLoad(true);
             //Spring Jdbc
-            RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(tableMapper);
-            tableMapper.setRowMapper(rowMapper);
+            RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(entityMapper);
+            entityMapper.setRowMapper(rowMapper);
             
-            tableMapperCache.put(entityClass, tableMapper);
-            return tableMapper;
+            tableMapperCache.put(entityClass, entityMapper);
+            return entityMapper;
         }
     }
 
-    public static  <E> TableMapper<E> getEntityMapper(Class<E> entityClass) {
+    public static  <E> EntityMapper<E> getEntityMapper(Class<E> entityClass) {
     	return ME.getTableMapper(entityClass);
     }
     

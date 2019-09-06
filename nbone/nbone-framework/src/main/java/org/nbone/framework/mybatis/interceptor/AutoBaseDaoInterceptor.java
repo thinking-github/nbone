@@ -14,7 +14,6 @@ import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -31,8 +30,6 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.session.Configuration;
 import org.nbone.framework.mybatis.MybatisSqlBuilder;
 import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.annotation.FieldLevel;
-import org.nbone.persistence.mapper.TableMapper;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.util.reflect.ReflectFieldUtil;
 

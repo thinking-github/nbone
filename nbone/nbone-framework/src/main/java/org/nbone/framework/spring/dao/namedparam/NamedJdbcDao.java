@@ -19,10 +19,9 @@ import org.nbone.persistence.BatchSqlSession;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlSession;
-import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.enums.JdbcFrameWork;
-import org.nbone.persistence.mapper.DbMappingBuilder;
-import org.nbone.persistence.mapper.TableMapper;
+import org.nbone.persistence.mapper.MappingBuilder;
+import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.model.SqlModel;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -31,7 +30,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -306,6 +304,20 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
+	public <T> List<T> getForList(Map<String, ?> columnMap,SqlConfig sqlConfig) {
+		SqlModel<Map<String,?>> sqlModel = sqlBuilder.selectSql(columnMap,sqlConfig);
+		checkSqlModel(sqlModel);
+		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
+
+		RowMapper<T> rowMapperGroup =  sqlBuilder.getRowMapper(sqlConfig.getGroupQuery());
+		if(rowMapperGroup != null){
+			rowMapper = rowMapperGroup;
+		}
+		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),columnMap,rowMapper);
+		return list;
+	}
+
+	@Override
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
 		if(sqlConfig == null){
 			sqlConfig = SqlConfig.EMPTY;
@@ -362,22 +374,32 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public int[] batchUpdate(Object[] objects,String...propertys) {
-		return batchUpdate(objects,propertys,null);
-	}
-	
-	@Override
-	public int[] batchUpdate(Collection<?> objects,String...propertys) {
-		return batchUpdate(objects,propertys,null);
+	public int[] batchInsert(Object[] objects, String[] insertProperties, boolean jdbcBatch) {
+		return simpleJdbcDao.batchInsert(objects,insertProperties,jdbcBatch);
 	}
 
 	@Override
-	public int[] batchUpdate(Object[] objects, String[] propertys, String... conditionPropertys) {
+	public int[] batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch) {
+		return simpleJdbcDao.batchInsert(objects,insertProperties,jdbcBatch);
+	}
+
+	@Override
+	public int[] batchUpdate(Object[] objects,String...properties) {
+		return batchUpdate(objects,properties,null);
+	}
+	
+	@Override
+	public int[] batchUpdate(Collection<?> objects,String...properties) {
+		return batchUpdate(objects,properties,null);
+	}
+
+	@Override
+	public int[] batchUpdate(Object[] objects, String[] properties, String... conditionProperties) {
 		if(objects == null || objects.length <= 0){
 			return new int[] {0};
 		}
 		//XXX: thinking 共享第一实体的sql
-		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0],propertys,conditionPropertys);
+		SqlModel<Object> sqlModel = sqlBuilder.updateSql(objects[0],properties,conditionProperties);
 		checkSqlModel(sqlModel);
 
 		SqlParameterSource[] batchArgs = new BeanPropertySqlParameterSource[objects.length];
@@ -389,7 +411,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public int[] batchUpdate(Collection<?> objects, String[] propertys, String... conditionPropertys) {
+	public int[] batchUpdate(Collection<?> objects, String[] properties, String... conditionProperties) {
 		if(objects == null || objects.size() <= 0){
 			return new int[] {0};
 		}
@@ -399,7 +421,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		for (Object object : objects) {
 			if(index == 0 ){
 				//XXX: thinking 共享第一实体的sql
-				SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,propertys,conditionPropertys);
+				SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,properties,conditionProperties);
 				sql = sqlModel.getSql();
 			}
 			batchArgs[index] = new BeanPropertySqlParameterSource(object);
@@ -416,8 +438,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 			return new int[] {0};
 		 }
 		//XXX: thinking 共享第一实体的sql
-		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(clazz);
-		 String sql  = tableMapper.getDeleteSqlWithId().toString();
+		 EntityMapper<T> entityMapper =  MappingBuilder.ME.getTableMapper(clazz);
+		 String sql  = entityMapper.getDeleteSqlWithId().toString();
 		 final List<Serializable> tempids = ids;
 		 final int batchSize = ids.size();
 		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
@@ -440,8 +462,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		if(ids == null || ids.length <= 0){
 			return new int[] {0};
 		}
-		 TableMapper<T> tableMapper =  DbMappingBuilder.ME.getTableMapper(clazz);
-		 String sql  = tableMapper.getDeleteSqlWithId().toString();
+		 EntityMapper<T> entityMapper =  MappingBuilder.ME.getTableMapper(clazz);
+		 String sql  = entityMapper.getDeleteSqlWithId().toString();
 		 final Serializable[] tempids = ids;
 		 final int batchSize = ids.length;
 		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
@@ -464,6 +486,10 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public <T> Page<T> getForPage(Object object, SqlConfig sqlConfig, int pageNum, int pageSize) {
 		return namedJdbcTemplate.getForPage(object, sqlConfig, pageNum, pageSize);
 	}
+	@Override
+	public <T> Page<T> getForPage(Map<String, ?> paramMap, SqlConfig sqlConfig, int pageNum, int pageSize) {
+		return namedJdbcTemplate.getForPage(paramMap, sqlConfig, pageNum, pageSize);
+	}
 
 	@Override
 	public <T> Page<T> queryForPage(Object object,SqlConfig sqlConfig, int pageNum, int pageSize) {
@@ -471,14 +497,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public <T> Page<T> queryForPage(Object object, int pageNum, int pageSize, SqlConfig sqlConfig) {
-		return namedJdbcTemplate.queryForPage(object,pageNum,pageSize,sqlConfig);
-	}
-
-	@Override
-	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize,String... afterWhere) {
+	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize,SqlConfig sqlConfig) {
 		
-		return namedJdbcTemplate.findForPage(object, pageNum, pageSize,afterWhere);
+		return namedJdbcTemplate.findForPage(object, pageNum, pageSize,sqlConfig);
 	}
 
 	@Override
