@@ -9,20 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
-import org.nbone.persistence.BaseSqlBuilder;
-import org.nbone.persistence.BaseSqlSession;
-import org.nbone.persistence.BatchSqlSession;
-import org.nbone.persistence.SqlBuilder;
-import org.nbone.persistence.SqlConfig;
-import org.nbone.persistence.SqlSession;
+import org.nbone.persistence.*;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.model.SqlModel;
+import org.nbone.web.util.RequestQueryUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,7 +48,7 @@ import org.springframework.stereotype.Repository;
 @Primary
 @Lazy
 @SuppressWarnings("unchecked")
-public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlSession,InitializingBean{
+public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlSession, RequestQuery,InitializingBean{
 	
 	@Resource(name="baseJdbcDao")
 	private BaseJdbcDao baseJdbcDao;
@@ -504,18 +501,18 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public <T> List<T> getForLimit(Object object,SqlConfig sqlConfig, int limit) {
-		return namedJdbcTemplate.getForLimit(object,sqlConfig,limit);
+		return namedJdbcTemplate.listLimit(object,sqlConfig,limit);
 	}
 	@Override
 	public <T> List<T> getForLimit(Object object, Map<String, String> operationMap,GroupQuery group, int limit,String... afterWhere) {
 		SqlConfig sqlConfig = new SqlConfig(-1);
 		sqlConfig.addOperationMapString(operationMap).groupQuery(group).afterWhere(afterWhere);
-		return namedJdbcTemplate.getForLimit(object, sqlConfig, limit);
+		return namedJdbcTemplate.listLimit(object, sqlConfig, limit);
 	}
 
 	@Override
 	public <T> List<T> queryForLimit(Object object,SqlConfig sqlConfig, int limit) {
-		return namedJdbcTemplate.queryForLimit(object,sqlConfig,limit);
+		return namedJdbcTemplate.listLimit(object,sqlConfig,limit);
 	}
 
 
@@ -559,9 +556,32 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		
 		return namedPjdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
-	
 
-	
-	
-	
+	//---------------ServletRequestQuery----------------
+	@Override
+	public <T> List<T> requestQuery(ServletRequest request, SqlConfig sqlConfig) {
+		Integer limit = RequestQueryUtils.getLimit(request);
+
+		SqlModel<Map<String, Object>> sqlModel = sqlBuilder.requestQuery(request, sqlConfig);
+		RowMapper<T> rowMapper = (RowMapper<T>) sqlModel.getRowMapper();
+		Map<String, Object> paramMap = sqlModel.getParameter();
+		SqlParameterSource paramSource = new MapSqlParameterSource(paramMap);
+		if (limit == null) {
+			return namedPjdbcTemplate.query(sqlModel.getSql(), paramSource, rowMapper);
+		}
+		paramMap.put("limit", limit);
+		return namedJdbcTemplate.queryPageRows(sqlModel, paramSource, 1, limit);
+	}
+
+	@Override
+	public <T> Page<T> requestQueryPage(ServletRequest request, SqlConfig sqlConfig) {
+		Integer pageNum = RequestQueryUtils.getPageNum(request);
+		Integer pageSize = RequestQueryUtils.getPageSize(request);
+
+		SqlModel<Map<String, Object>> sqlModel = sqlBuilder.requestQuery(request, sqlConfig);
+		Map<String, Object> paramMap = sqlModel.getParameter();
+		paramMap.put("pageNum", pageNum);
+		paramMap.put("pageSize", pageSize);
+		return namedJdbcTemplate.processPage(sqlModel, paramMap, pageNum, pageSize, true);
+	}
 }

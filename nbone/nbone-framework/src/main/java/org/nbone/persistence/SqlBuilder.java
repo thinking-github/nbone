@@ -8,7 +8,10 @@ import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.model.SqlModel;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.jdbc.core.RowMapper;
+
+import javax.servlet.ServletRequest;
 
 /**
  * 构建ORM映射超级接口
@@ -204,8 +207,17 @@ public interface SqlBuilder {
 
 	public SqlModel<Map<String, ?>> selectSql(Map<String,?> columnMap, SqlConfig sqlConfig) throws BuilderSQLException;
 
+	/**
+	 * 根据Servlet ServletRequest parameter 构建sql进行查询
+	 *
+	 * @param request   ServletRequest
+	 * @param sqlConfig
+	 * @return
+	 */
+	public SqlModel<Map<String,Object>> requestQuery(ServletRequest request, SqlConfig sqlConfig);
 
-	 public <T>RowMapper<T> getRowMapper(GroupQuery groupQuery);
+
+	public <T>RowMapper<T> getRowMapper(GroupQuery groupQuery);
 
 	 
 	 

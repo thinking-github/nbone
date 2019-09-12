@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.nbone.constants.DateConstant;
 import org.nbone.framework.mybatis.util.MyMapperUtils;
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
@@ -17,20 +18,21 @@ import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.util.SqlUtils;
+import org.nbone.util.DateFPUtils;
 import org.nbone.util.PropertyUtil;
 import org.nbone.util.reflect.SimpleTypeMapper;
+import org.nbone.web.util.RequestQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.Assert;
+import org.springframework.util.*;
 
 import com.google.common.base.Function;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+
+import javax.servlet.ServletRequest;
 
 /**
  * 根据JPA注解构建sql
@@ -635,28 +637,108 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
         String sql = selectSqlAndWhere.toString();
         SqlModel<Object> model = new SqlModel<Object>(sql, object, entityMapper,sqlConfig.getAfterWhere());
+        RowMapper rowMapper = getRowMapper(sqlConfig.getGroupQuery());
+        if(rowMapper != null){
+            model.setRowMapper(rowMapper);
+        }
+
         return model;
     }
 
     @Override
     public SqlModel<Map<String, ?>> selectSql(Map<String, ?> columnMap, SqlConfig sqlConfig) throws BuilderSQLException {
-        if (sqlConfig == null) {
-            sqlConfig = SqlConfig.EMPTY;
-        }
-        Assert.notNull(columnMap, "map  columnMap must be not null.");
+        Assert.notNull(columnMap, "map columnMap must be not null.");
+        Assert.notNull(sqlConfig, "sqlConfig config must be not null.");
         Assert.notNull(sqlConfig.getEntityClass(), "entityClass type must be not null.");
 
         EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(sqlConfig.getEntityClass());
 
-        String queryFieldsSql = getSelectSqlBeforeWhere(columnMap, entityMapper, sqlConfig);
+        String queryFields = getSelectSqlBeforeWhere(columnMap, entityMapper, sqlConfig);
 
-        StringBuilder selectSqlAndWhere = new StringBuilder(queryFieldsSql);
+        StringBuilder selectWhere = new StringBuilder(queryFields);
 
         StringBuilder whereSql = getWhereSql(columnMap, entityMapper, sqlConfig);
-        selectSqlAndWhere.append(whereSql);
+        selectWhere.append(whereSql);
 
-        String sql = selectSqlAndWhere.toString();
+        String sql = selectWhere.toString();
         SqlModel<Map<String, ?> > model = new SqlModel<Map<String, ?>>(sql, columnMap, entityMapper,sqlConfig.getAfterWhere());
+        return model;
+    }
+
+    @Override
+    public SqlModel<Map<String,Object>> requestQuery(ServletRequest request, SqlConfig sqlConfig) {
+        Assert.notNull(request, "ServletRequest request must be not null.");
+        Assert.notNull(sqlConfig, "sqlConfig config must be not null.");
+        Assert.notNull(sqlConfig.getEntityClass(), "entityClass type must be not null.");
+
+        EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(sqlConfig.getEntityClass());
+        String queryFields = getSelectSqlBeforeWhere(request, entityMapper, sqlConfig);
+
+        StringBuilder selectWhere = new StringBuilder(queryFields);
+
+        StringBuilder whereSql = new StringBuilder(" where ");
+        if (StringUtils.hasLength(sqlConfig.getFirstCondition())) {
+            whereSql.append(sqlConfig.getFirstCondition()).append(" ");
+        } else {
+            whereSql.append("1 = 1 ");
+        }
+
+        boolean dbFieldMode = sqlConfig.isDbFieldMode();
+        Enumeration<String> enumeration = request.getParameterNames();
+        List<String> extFields = new ArrayList<String>();
+        Map<String,Object> columnMap = new HashMap<String,Object>();
+        while (enumeration.hasMoreElements()) {
+            String name = enumeration.nextElement();
+            FieldMapper fieldMapper;
+            if (dbFieldMode) {
+                fieldMapper = entityMapper.getFieldMapper(name);
+            } else {
+                fieldMapper = entityMapper.getFieldMapperByPropertyName(name);
+            }
+            if (fieldMapper == null) {
+                extFields.add(name);
+                continue;
+            }
+
+            Class fieldType = fieldMapper.getPropertyType();
+            if (fieldType == Class.class) {
+                continue;
+            }
+            String nameValue = request.getParameter(name);
+            Object fieldValue = nameValue;
+            //XXX: value is null or value is ""  break
+            if (fieldValue == null || fieldValue.equals("")) {
+                continue;
+            }
+            // value format
+            if(Number.class.isAssignableFrom(fieldType)){
+                fieldValue = NumberUtils.parseNumber(nameValue,fieldType);
+            }else if(Date.class.isAssignableFrom(fieldType)){
+                fieldValue =  DateFPUtils.parseDate(nameValue, DateConstant.DEFAULT_FORMATS);
+            }
+            //按照配置追加条件
+            appendConditionSqlModel(whereSql, fieldValue, fieldMapper, sqlConfig);
+            columnMap.put(name,fieldValue);
+        }
+        //扩展属性条件查询 in / between
+        extFieldsCondition(request,columnMap, extFields, entityMapper, whereSql);
+
+        String orderBy = RequestQueryUtils.getOrderBy(request);
+        if (orderBy != null) {
+            sqlConfig.orderBy(orderBy);
+            columnMap.put("orderBy",orderBy);
+        }
+        //设置分组 排序字段
+        appendGroupOrder(whereSql, sqlConfig);
+
+        selectWhere.append(whereSql);
+
+        String sql = selectWhere.toString();
+        SqlModel<Map<String,Object>> model = new SqlModel<>(sql, columnMap, entityMapper, sqlConfig.getAfterWhere());
+        RowMapper rowMapper = getRowMapper(sqlConfig.getGroupQuery());
+        if(rowMapper != null){
+            model.setRowMapper(rowMapper);
+        }
         return model;
     }
 
@@ -795,6 +877,15 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         String dbFieldName = fieldMapper.getDbFieldName();
         Class<?> fieldType = fieldMapper.getPropertyType();
         int sqlMode = sqlConfig.getSqlMode();
+
+        // and id = :id;
+        SqlOperation sqlOperation = sqlConfig.getSqlOperation(fieldName);
+        if (sqlOperation != null && StringUtils.hasLength(sqlOperation.getOperationType())) {
+            String operationType = sqlOperation.getOperationType();
+            whereSql.append(" and ").append(dbFieldName).append(" ").append(operationType).append(" ");
+            whereSql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
+            return whereSql;
+        }
         if (sqlMode == SqlConfig.PrimaryMode) {
             if (SimpleTypeMapper.isPrimitiveWithString(fieldType)) {
 
@@ -814,7 +905,6 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
 
         } else if (sqlMode == SqlConfig.HighMode) {
-            SqlOperation sqlOperation = sqlConfig.getSqlOperation(fieldName);
             if (sqlOperation == null) {
                 sqlOperation = new SqlOperation(fieldName);
             }
@@ -822,12 +912,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
 
 
         } else {
-            SqlOperation sqlOperation = sqlConfig.getSqlOperation(fieldName);
-            String operationType = "=";
-            if(sqlOperation != null){
-                operationType = sqlOperation.getOperationType();
-            }
-            whereSql.append(" and ").append(dbFieldName).append(" ").append(operationType).append(" ");
+            whereSql.append(" and ").append(dbFieldName).append(" = ");
             whereSql.append(placeholderPrefix).append(fieldName).append(placeholderSuffix);
         }
         return  whereSql;
@@ -900,27 +985,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             }
             Field field = entityMapper.getExtField(extFieldName);
             if(field == null){
-                // try smart  matching
-                if (extFieldName.endsWith(EntityMapper.S)) {
-                    String fieldName = extFieldName.substring(0, extFieldName.length() - 1);
-                    FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
-                    if (fieldMapper != null) {
-                        String dbFieldName = fieldMapper.getDbFieldName();
-                        StringBuilder in = SqlUtils.in("and", dbFieldName, fieldMapper.getPropertyType(), value, true);
-                        if (in != null) {
-                            whereSql.append(in);
-                        }
-                    }
-                } else if (extFieldName.endsWith(EntityMapper.BETWEEN)) {
-                    String fieldName = extFieldName.substring(0, extFieldName.length() - EntityMapper.BETWEEN.length());
-                    FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
-                    between("and",value,fieldMapper,whereSql);
-
-                } else if (extFieldName.endsWith(EntityMapper._BETWEEN)) {
-                    String fieldName = extFieldName.substring(0, extFieldName.length() - EntityMapper._BETWEEN.length());
-                    FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
-                    between("and",value,fieldMapper,whereSql);
-                }
+                parameterConvention(extFieldName,value,false,entityMapper,whereSql);
                 logger.warn("class [" + entityMapper.getEntityName() + "] Cannot resolve field: " + extFieldName);
                 continue;
             }
@@ -931,6 +996,62 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         }
         return whereSql;
     }
+
+    private StringBuilder extFieldsCondition(ServletRequest request,Map<String,Object> columnMap,List<String> extFieldNames,
+                                             EntityMapper<?> entityMapper, StringBuilder whereSql) {
+        for (String extFieldName : extFieldNames) {
+            Object value  = request.getParameter(extFieldName);
+            if (value == null) {
+                continue;
+            }
+            columnMap.put(extFieldName,value);
+            Field field = entityMapper.getExtField(extFieldName);
+            if(field == null){
+                parameterConvention(extFieldName,value,true,entityMapper,whereSql);
+                logger.warn("class [" + entityMapper.getEntityName() + "] Cannot resolve field: " + extFieldName);
+                continue;
+            }
+            StringBuilder extFieldSql =  extFieldValueCondition(value,field, entityMapper,"and");
+            if(extFieldSql != null){
+                whereSql.append(" ") .append(extFieldSql);
+            }
+        }
+        return whereSql;
+    }
+
+
+    /**
+     * 按照参数规约查询
+     */
+    private StringBuilder parameterConvention(String extFieldName, Object value,boolean format, EntityMapper<?> entityMapper, StringBuilder whereSql) {
+        // try smart  matching
+        if (extFieldName.endsWith(EntityMapper.S)) {
+            String fieldName = extFieldName.substring(0, extFieldName.length() - 1);
+            FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+            if (fieldMapper != null) {
+                String dbFieldName = fieldMapper.getDbFieldName();
+                if(format && value instanceof String &&  String.class.isAssignableFrom(fieldMapper.getPropertyType())){
+                    value = StringUtils.commaDelimitedListToStringArray((String) value);
+                }
+                StringBuilder in = SqlUtils.in("and", dbFieldName, fieldMapper.getPropertyType(), value, true);
+                if (in != null) {
+                    whereSql.append(in);
+                }
+            }
+        } else if (extFieldName.endsWith(EntityMapper.BETWEEN)) {
+            String fieldName = extFieldName.substring(0, extFieldName.length() - EntityMapper.BETWEEN.length());
+            FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+            between("and", value, fieldMapper, whereSql);
+
+        } else if (extFieldName.endsWith(EntityMapper._BETWEEN)) {
+            String fieldName = extFieldName.substring(0, extFieldName.length() - EntityMapper._BETWEEN.length());
+            FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+            between("and", value, fieldMapper, whereSql);
+        }
+
+        return whereSql;
+    }
+
 
     private StringBuilder between(String andOr,Object value, FieldMapper fieldMapper, StringBuilder whereSql) {
         if (value == null || fieldMapper == null) {

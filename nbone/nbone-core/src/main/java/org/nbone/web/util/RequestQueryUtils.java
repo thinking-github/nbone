@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -33,7 +34,7 @@ public class RequestQueryUtils {
         return getRequestQuery(getRequest());
     }
 
-    public static RequestQuery getRequestQuery(HttpServletRequest request) {
+    public static RequestQuery getRequestQuery(ServletRequest request) {
 
         Integer pageNum = getPageNum(request);
         Integer pageSize = getPageSize(request);
@@ -44,16 +45,28 @@ public class RequestQueryUtils {
         return requestQuery;
     }
 
-    public static Integer getPageNum(HttpServletRequest request) {
+    /**
+     * pageNum ->pageNo -> pageNow ->page -> currentPage -> pageNumber
+     *
+     * @param request
+     * @return
+     */
+    public static Integer getPageNum(ServletRequest request) {
         String pageNum = request.getParameter(PAGE_NUM);
         if (StringUtils.isEmpty(pageNum)) {
+            pageNum = request.getParameter("pageNo");
+        }
+        if (StringUtils.isEmpty(pageNum)) {
             pageNum = request.getParameter("pageNow");
+        }
+        if (StringUtils.isEmpty(pageNum)) {
+            pageNum = request.getParameter("page");
         }
         if (StringUtils.isEmpty(pageNum)) {
             pageNum = request.getParameter("currentPage");
         }
         if (StringUtils.isEmpty(pageNum)) {
-            pageNum = request.getParameter("page");
+            pageNum = request.getParameter("pageNumber");
         }
 
         // format
@@ -63,10 +76,25 @@ public class RequestQueryUtils {
         return 1;
     }
 
-    public static Integer getPageSize(HttpServletRequest request) {
+    /**
+     * pageSize -> pagesize -> count
+     *
+     * @param request
+     * @return
+     */
+    public static Integer getPageSize(ServletRequest request) {
         String pageSize = request.getParameter(PAGE_SIZE);
         if (StringUtils.isEmpty(pageSize)) {
             pageSize = request.getParameter("pagesize");
+        }
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = request.getParameter("count");
+        }
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = request.getParameter("size");
+        }
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = request.getParameter("length");
         }
         if (StringUtils.hasLength(pageSize)) {
             return Integer.valueOf(pageSize);
@@ -78,7 +106,7 @@ public class RequestQueryUtils {
         return getLimit(getRequest());
     }
 
-    public static Integer getLimit(HttpServletRequest request) {
+    public static Integer getLimit(ServletRequest request) {
         String limit = request.getParameter(LIMIT);
         if (StringUtils.hasLength(limit)) {
             return Integer.valueOf(limit);
@@ -90,10 +118,13 @@ public class RequestQueryUtils {
         return getOrderBy(getRequest());
     }
 
-    public static String getOrderBy(HttpServletRequest request) {
+    public static String getOrderBy(ServletRequest request) {
         String orderBy = request.getParameter(ORDER_BY);
         if (StringUtils.isEmpty(orderBy)) {
             orderBy = request.getParameter("orderby");
+        }
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = request.getParameter("sort");
         }
         if (StringUtils.hasLength(orderBy)) {
             return orderBy;

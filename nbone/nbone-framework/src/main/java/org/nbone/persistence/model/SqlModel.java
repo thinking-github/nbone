@@ -42,7 +42,12 @@ public class SqlModel<T> {
 	 *实体映射信息
 	 */
 	private EntityMapper<?> entityMapper;
-	
+
+	/**
+	 * 结果集映射
+	 */
+	private RowMapper<?> rowMapper;
+
 	/**
 	 * 追加条件 或者 group by/order by 子句
 	 */
@@ -220,9 +225,15 @@ public class SqlModel<T> {
 	public String[] getPrimaryKeys() {
 		return entityMapper.getPrimaryKeys();
 	}
-	
-	public RowMapper<?> getRowMapper(){
+
+	public RowMapper<?> getRowMapper() {
+		if (rowMapper != null) {
+			return rowMapper;
+		}
 		return entityMapper.getRowMapper();
+	}
+	public void setRowMapper(RowMapper<?> rowMapper) {
+		this.rowMapper = rowMapper;
 	}
 
 	public String[] getAfterWhere() {
@@ -260,13 +271,13 @@ public class SqlModel<T> {
 		StringBuilder print = new StringBuilder();
 		if(parameter != null){
 			if(parameter instanceof Map){
-				print .append("Jdbc Parameter Map :").append(parameter) ;
+				print .append(">>>>>Jdbc Parameter Map :").append(parameter) ;
 			}else{
-				print.append("Jdbc Parameter POJO : ").append(ToStringUtils.toStringMultiLine(parameter));
+				print.append(">>>>>Jdbc Parameter POJO : ").append(ToStringUtils.toStringMultiLine(parameter));
 			}
 		}else{
 			if(parameterArray != null){
-				print.append("Jdbc parameterArray : ").append(parameterArray);
+				print.append(">>>>>Jdbc parameterArray : ").append(parameterArray);
 			}
 		}
 		

@@ -325,6 +325,9 @@ public class EntityMapper<T> {
 	}
 
 	public Collection<Field> getExtFields() {
+		if (extFields == null) {
+			return null;
+		}
 		return extFields.values();
 	}
 
