@@ -31,12 +31,12 @@ public class EnumUtils {
     /**
      * 获取枚举类名称的所有属性
      * 
-     * @param enumClass
+     * @param className enum className
      * @return
      */
-    public static <T> IEnum<T>[] getEnums(String enumClazzName) {
+    public static <T> IEnum<T>[] getEnums(String className) {
         try {
-        	Class<?> clazz = ClassUtils.forName(enumClazzName, ClassUtils.getDefaultClassLoader());
+        	Class<?> clazz = ClassUtils.forName(className, ClassUtils.getDefaultClassLoader());
             return getEnums(clazz);
         } catch (ClassNotFoundException e) {
         	logger.error(e);

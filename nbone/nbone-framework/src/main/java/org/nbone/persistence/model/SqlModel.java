@@ -3,10 +3,12 @@ package org.nbone.persistence.model;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.nbone.context.system.SystemContext;
 import org.nbone.mvc.domain.DomainQuery;
 import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.JdbcOptions;
+import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.support.PageSuport;
 import org.nbone.util.lang.ToStringUtils;
@@ -72,11 +74,11 @@ public class SqlModel<T> {
 		this.parameter = parameter;
 		this.entityMapper = entityMapper;
 	}
-	public SqlModel(String sql, T parameter, EntityMapper<?> entityMapper, String[] afterWhere) {
+	public SqlModel(String sql, T parameter, EntityMapper<?> entityMapper, SqlConfig sqlConfig) {
 		this.sql = sql;
 		this.parameter = parameter;
 		this.entityMapper = entityMapper;
-		this.afterWhere = afterWhere;
+		this.afterWhere = sqlConfig.getAfterWhere();
 	}
 	
 	
@@ -273,7 +275,8 @@ public class SqlModel<T> {
 			if(parameter instanceof Map){
 				print .append(">>>>>Jdbc Parameter Map :").append(parameter) ;
 			}else{
-				print.append(">>>>>Jdbc Parameter POJO : ").append(ToStringUtils.toStringMultiLine(parameter));
+				String pojoString = ToStringUtils.toString(parameter, ToStringStyle.MULTI_LINE_STYLE,true);
+				print.append(">>>>>Jdbc Parameter POJO : ").append(pojoString);
 			}
 		}else{
 			if(parameterArray != null){

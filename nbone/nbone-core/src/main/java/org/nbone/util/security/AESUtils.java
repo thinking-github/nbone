@@ -167,9 +167,7 @@ public class AESUtils {
 
 	public static void main(String[] args) throws Exception {
 
-		String md5 = Md5encyptUtil.getEncryptedPwd("novell");
-		System.out.println(md5);
-		String aes = AESUtils.encrypt(md5, AESUtils.keySeed);
+		String aes = AESUtils.encrypt("chen", AESUtils.keySeed);
 		System.out.println(aes);
 		String apString = AESUtils.decrypt(aes, AESUtils.keySeed);
 		System.out.println(apString);

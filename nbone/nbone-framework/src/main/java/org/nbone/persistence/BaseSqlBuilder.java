@@ -188,7 +188,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                 }else {
                     allFieldNull = false;
                     for (String property : properties) {
-                        FieldMapper fieldMapper =   tableMapper.getFieldMapperByPropertyName(property);
+                        FieldMapper fieldMapper =   tableMapper.getFieldMapperByProperty(property);
                         String fieldName = fieldMapper.getFieldName();
                         String dbFieldName = fieldMapper.getDbFieldName();
                         columnCount++;
@@ -502,7 +502,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         countSqlAndWhere.append(whereSql);
 
         String sql = countSqlAndWhere.toString();
-        SqlModel<Object> model = new SqlModel<Object>(sql, object, entityMapper,sqlConfig.getAfterWhere());
+        SqlModel<Object> model = new SqlModel<Object>(sql, object, entityMapper,sqlConfig);
         return model;
     }
 
@@ -636,12 +636,11 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         selectSqlAndWhere.append(whereSql);
 
         String sql = selectSqlAndWhere.toString();
-        SqlModel<Object> model = new SqlModel<Object>(sql, object, entityMapper,sqlConfig.getAfterWhere());
+        SqlModel<Object> model = new SqlModel<Object>(sql, object, entityMapper,sqlConfig);
         RowMapper rowMapper = getRowMapper(sqlConfig.getGroupQuery());
         if(rowMapper != null){
             model.setRowMapper(rowMapper);
         }
-
         return model;
     }
 
@@ -661,7 +660,11 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         selectWhere.append(whereSql);
 
         String sql = selectWhere.toString();
-        SqlModel<Map<String, ?> > model = new SqlModel<Map<String, ?>>(sql, columnMap, entityMapper,sqlConfig.getAfterWhere());
+        SqlModel<Map<String, ?> > model = new SqlModel<Map<String, ?>>(sql, columnMap, entityMapper,sqlConfig);
+        RowMapper rowMapper = getRowMapper(sqlConfig.getGroupQuery());
+        if(rowMapper != null){
+            model.setRowMapper(rowMapper);
+        }
         return model;
     }
 
@@ -693,7 +696,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             if (dbFieldMode) {
                 fieldMapper = entityMapper.getFieldMapper(name);
             } else {
-                fieldMapper = entityMapper.getFieldMapperByPropertyName(name);
+                fieldMapper = entityMapper.getFieldMapperByProperty(name);
             }
             if (fieldMapper == null) {
                 extFields.add(name);
@@ -734,7 +737,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         selectWhere.append(whereSql);
 
         String sql = selectWhere.toString();
-        SqlModel<Map<String,Object>> model = new SqlModel<>(sql, columnMap, entityMapper, sqlConfig.getAfterWhere());
+        SqlModel<Map<String,Object>> model = new SqlModel<>(sql, columnMap, entityMapper, sqlConfig);
         RowMapper rowMapper = getRowMapper(sqlConfig.getGroupQuery());
         if(rowMapper != null){
             model.setRowMapper(rowMapper);
@@ -844,7 +847,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             if(dbFieldMode){
                 fieldMapper = entityMapper.getFieldMapper(entry.getKey());
             }else {
-                fieldMapper = entityMapper.getFieldMapperByPropertyName(entry.getKey());
+                fieldMapper = entityMapper.getFieldMapperByProperty(entry.getKey());
             }
             if (fieldMapper == null) {
                 extFields.add(entry.getKey());
@@ -1027,7 +1030,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         // try smart  matching
         if (extFieldName.endsWith(EntityMapper.S)) {
             String fieldName = extFieldName.substring(0, extFieldName.length() - 1);
-            FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+            FieldMapper fieldMapper = entityMapper.getFieldMapperByProperty(fieldName);
             if (fieldMapper != null) {
                 String dbFieldName = fieldMapper.getDbFieldName();
                 if(format && value instanceof String &&  String.class.isAssignableFrom(fieldMapper.getPropertyType())){
@@ -1040,12 +1043,12 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             }
         } else if (extFieldName.endsWith(EntityMapper.BETWEEN)) {
             String fieldName = extFieldName.substring(0, extFieldName.length() - EntityMapper.BETWEEN.length());
-            FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+            FieldMapper fieldMapper = entityMapper.getFieldMapperByProperty(fieldName);
             between("and", value, fieldMapper, whereSql);
 
         } else if (extFieldName.endsWith(EntityMapper._BETWEEN)) {
             String fieldName = extFieldName.substring(0, extFieldName.length() - EntityMapper._BETWEEN.length());
-            FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+            FieldMapper fieldMapper = entityMapper.getFieldMapperByProperty(fieldName);
             between("and", value, fieldMapper, whereSql);
         }
 
@@ -1086,7 +1089,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         MappedBy mappedBy = field.getAnnotation(MappedBy.class);
         String fieldName = mappedBy.name();
         QueryType queryType = mappedBy.queryType();
-        FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(fieldName);
+        FieldMapper fieldMapper = entityMapper.getFieldMapperByProperty(fieldName);
         String dbFieldName = fieldMapper.getDbFieldName();
         Class<?> fieldType = field.getType();
         StringBuilder extSql = null;
@@ -1224,7 +1227,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             int hasValueCount = 0;
             for (int i = 0; i < conditionFields.length; i++) {
                 String propertyName = conditionFields[i];
-                FieldMapper fieldMapper = entityMapper.getFieldMapperByPropertyName(propertyName);
+                FieldMapper fieldMapper = entityMapper.getFieldMapperByProperty(propertyName);
                 //extFields process
                 if(fieldMapper ==null){
                     extFields.add(propertyName);

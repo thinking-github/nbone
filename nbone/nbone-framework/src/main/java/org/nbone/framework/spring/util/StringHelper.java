@@ -11,7 +11,7 @@ import org.springframework.util.NumberUtils;
  * @since 2016-08-05
  * @version 1.0.1
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused","unchecked"})
 public class StringHelper extends org.springframework.util.StringUtils {
 	
 	

@@ -48,6 +48,11 @@ public class SqlConfig {
     private String[] fieldNames;
 
     /**
+     * @MapKey 将返回的List 转换成Map默认使用主键作为map key
+     */
+    private String mapKey;
+
+    /**
      * 扩展字段名称数组
      */
     private String[] extFields;
@@ -258,6 +263,11 @@ public class SqlConfig {
 
     public SqlConfig fieldNames(String fieldName, String fieldName1, String fieldName2) {
         return withFieldNames(new String[]{fieldName, fieldName1, fieldName2});
+    }
+
+    public SqlConfig mapKey(String mapKey) {
+        this.mapKey = mapKey;
+        return this;
     }
 
     public SqlConfig extFields(String[] extFields) {

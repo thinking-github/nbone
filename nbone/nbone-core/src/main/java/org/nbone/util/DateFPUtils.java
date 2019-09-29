@@ -28,7 +28,9 @@ import org.nbone.constants.DateConstant;
  * @see 2015-08-08
  */
 public class DateFPUtils implements DateConstant {
+
 	private static Log logger = LogFactory.getLog(DateFPUtils.class);
+
 	protected static SimpleDateFormat globalFormat = new SimpleDateFormat();
 
 	/**
@@ -306,18 +308,5 @@ public class DateFPUtils implements DateConstant {
 		return null;
 	}
 
-	public static void main(String[] args) throws ParseException {
-		System.out.println(new Date(0L));
-		System.out.println(new Timestamp(0L));
-		System.out.println("iii" + parseDateByLongString("3"));
-
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
-		String longtime = "1452232280151";
-		// Date date = dateFormat.parse(longtime);
-		System.out.println("jjjjjjjjjjj==" + dateFormat.format(new Date()));
-		 DateUtils.parseDate(longtime,DateConstant.DEFAULT_FORMATS);
-		System.out.println(System.currentTimeMillis());
-		System.out.println(1452232280151L);
-	}
 
 }

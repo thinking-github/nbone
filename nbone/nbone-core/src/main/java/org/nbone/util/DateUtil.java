@@ -40,6 +40,7 @@ import org.springframework.util.Assert;
  * @serial 1.0
  * @see DateUtils
  */
+@SuppressWarnings("unused")
 public class DateUtil extends DateFPUtils  implements DateConstant{
 
 	/**
@@ -49,7 +50,6 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @author thinking     
 	 */
 	public static Timestamp toTimestamp(Date date) {
-		Assert.notNull(date);
 		return new Timestamp(date.getTime());
 	}
 	
@@ -83,7 +83,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 相应的 Date 型日期
 	 */
 	public static Date getDate(int year, int month, int day) {
-		Assert.isTrue(month > 0 && month < 13);
+		Assert.isTrue(month > 0 && month < 13,"month must range[0,12]");
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(year, convertRealMonthToCalendarMonth(month), day, 0, 0, 0);
 		return calendar.getTime();
@@ -107,10 +107,10 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 返回一个对应的日期
 	 */
 	public static Date getDateTime(int year, int month, int day, int hour, int minute, int second) {
-		Assert.isTrue(month > 0 && month <= 12);
-		Assert.isTrue(hour >= 0 && hour <= 23);
-		Assert.isTrue(minute >= 0 && minute <= 60);
-		Assert.isTrue(second >= 0 && second <= 60);
+		Assert.isTrue(month > 0 && month <= 12,"month must range[0,12]");
+		Assert.isTrue(hour >= 0 && hour <= 23, "hour must range[0,23]");
+		Assert.isTrue(minute >= 0 && minute <= 60,"minute must range[0,60]");
+		Assert.isTrue(second >= 0 && second <= 60,"second must range[0,60]");
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(year, convertRealMonthToCalendarMonth(month), day, hour, minute, second);
 		return calendar.getTime();
@@ -166,8 +166,8 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 当开始日期比结束日期早时返回 true
 	 */
 	public static boolean isStartBeforeEndDate(Date startDate, Date endDate) {
-		Assert.notNull(startDate, "StartDate is null");
-		Assert.notNull(endDate, "EndDate is null");
+		Assert.notNull(startDate, "StartDate must not be null");
+		Assert.notNull(endDate, "EndDate must not be null");
 		return resetTime(startDate).compareTo(resetTime(endDate)) < 0;
 	}
 
@@ -181,8 +181,8 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 当开始时间比结束时间早时返回 true
 	 */
 	public static boolean isStartBeforeEndTime(Date startTime, Date endTime) {
-		Assert.notNull(startTime, "StartTime is null");
-		Assert.notNull(endTime, "EndTime is null");
+		Assert.notNull(startTime, "StartTime must not be null");
+		Assert.notNull(endTime, "EndTime must not be null");
 		return startTime.getTime() <= endTime.getTime();
 	}
 
@@ -194,7 +194,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 当给定日期是否为对应日期月份的第一天返回 true
 	 */
 	public static boolean isStartOfTheMonth(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return 1 == calendar.get(Calendar.DATE);
@@ -208,7 +208,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 当给定日期是否为对应日期年份的第一天返回 true
 	 */
 	public static boolean isStartOfTheYear(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return (0 == calendar.get(Calendar.MONTH)) && (1 == calendar.get(Calendar.DATE));
@@ -222,7 +222,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期的月份
 	 */
 	public static int getMonth(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return convertCalendarMonthToRealMonth(calendar.get(Calendar.MONTH));
@@ -236,7 +236,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期的年份
 	 */
 	public static int getYear(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.YEAR);
@@ -250,7 +250,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期的是该周的第几天
 	 */
 	public static int getDayOfWeek(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_WEEK) - 1;
@@ -264,7 +264,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期是该月的第几天
 	 */
 	public static int getDayOfMonth(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_MONTH);
@@ -278,7 +278,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期是当年的第几天
 	 */
 	public static int getDayOfYear(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_YEAR);
@@ -292,7 +292,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期是当天的几点
 	 */
 	public static int getHour(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.HOUR_OF_DAY);
@@ -306,7 +306,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期的分钟
 	 */
 	public static int getMinute(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.MINUTE);
@@ -320,7 +320,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 给定日期的秒数
 	 */
 	public static int getSecond(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.SECOND);
@@ -437,7 +437,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 加好后的日期
 	 */
 	public static Date addSeconds(Date date, int numSeconds) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return DateUtils.addSeconds(date, numSeconds);
 	}
 
@@ -451,7 +451,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 加好后的日期
 	 */
 	public static Date addDays(Date date, int numDays) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return DateUtils.addDays(date, numDays);
 	}
 
@@ -465,7 +465,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 加好后的日期
 	 */
 	public static Date addHours(Date date, int numHours) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return DateUtils.addHours(date, numHours);
 	}
 
@@ -479,7 +479,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 加好后的日期
 	 */
 	public static Date addMinutes(Date date, int numMins) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return DateUtils.addMinutes(date, numMins);
 	}
 
@@ -493,7 +493,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 加好后的日期
 	 */
 	public static Date addMonths(Date date, int numMonths) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return DateUtils.addMonths(date, numMonths);
 	}
 
@@ -507,7 +507,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 加好后的日期
 	 */
 	public static Date addYears(Date date, int numYears) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return DateUtils.addYears(date, numYears);
 	}
 	
@@ -519,7 +519,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 * @return 小时、分钟、秒被清零的日期
 	 */
 	public static Date resetTime(Date date) {
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		return getDate(getYear(date), getMonth(date), getDayOfMonth(date));
 	}
 
@@ -660,7 +660,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 		} else {
 			thisDate = parseDate(month, pattern);
 		}
-		Assert.notNull(thisDate);
+		Assert.notNull(thisDate,"date must not be null.");
 		if (isStartOfTheMonth(thisDate)) {
 			return thisDate;
 		} else {
@@ -680,7 +680,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 */
 	public static Date getFirstDateOfTheMonth(Date date) {
 
-		Assert.notNull(date);
+		Assert.notNull(date,"date must not be null.");
 		if (isStartOfTheMonth(date)) {
 			return date;
 		} else {
@@ -702,7 +702,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 */
 	public static Date getLastDateOfTheMonth(String month, String pattern) {
 		Date firstDateOfTheMonth = getFirstDateOfTheMonth(month, pattern);
-		Assert.notNull(firstDateOfTheMonth);
+		Assert.notNull(firstDateOfTheMonth,"date must not be null.");
 		int daysOfTheMonth = getLastDayOfTheMonth(firstDateOfTheMonth) - 1;
 		Date lastDateOfTheMonth = addDays(firstDateOfTheMonth, daysOfTheMonth);
 		return lastDateOfTheMonth;
@@ -717,7 +717,7 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 */
 	public static Date getLastDateOfTheMonth(Date date) {
 		Date firstDateOfTheMonth = getFirstDateOfTheMonth(date);
-		Assert.notNull(firstDateOfTheMonth);
+		Assert.notNull(firstDateOfTheMonth,"date must not be null.");
 		int daysOfTheMonth = getLastDayOfTheMonth(firstDateOfTheMonth) - 1;
 		Date lastDateOfTheMonth = addDays(firstDateOfTheMonth, daysOfTheMonth);
 		return lastDateOfTheMonth;
@@ -808,8 +808,8 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 	 *        
 	 */
 	public static double getDatetimeGap(Date startDatetime, Date endDatetime,Integer dateType) {
-		Assert.notNull(startDatetime, "startDatetime not be null");
-		Assert.notNull(startDatetime, "endDatetime not be null");
+		Assert.notNull(startDatetime, "startDatetime must  not be null");
+		Assert.notNull(startDatetime, "endDatetime must not be null");
 		
 		long apple = endDatetime.getTime() - startDatetime.getTime();
 		if(dateType == null){
@@ -943,29 +943,4 @@ public class DateUtil extends DateFPUtils  implements DateConstant{
 		return (new SimpleDateFormat("EEEE")).format(c.getTime());
 	}
 
-
-	public static void main(String[] args) {
-		String month = "2009.07.11";
-		String pattern = "yyyy-MM-dd";
-		String pattern1 = "yyyy-MM-dd hh:mm:ss";
-		String dbDate = "2013-01-20";
-		
-		String str11 = "2014-06-09 16:00:00";
-		String str22 = "2013-09-05 04:30:00";
-		
-		System.out.println(getDatetimeGap(parseDate(str11, DEFAULT_DATETIME_PATTERN),getCurrentDate(),Calendar.MINUTE));
-		
-		System.out.println("======================");
-		System.out.println(new Timestamp(addDays(getCurrentDate(), 1).getTime()));
-		
-		Date end  = addSeconds(getCurrentDate(), 60);
-		System.out.println(getDiffDatetime(new Date(), end, TimeUnit.MINUTES));
-		System.out.println(getDatetimeGap(new Date(), end, Calendar.MINUTE));
-		
-		System.out.println((int)1.2);
-		globalFormat.applyPattern(DEFAULT_DATE_PATTERN);
-		globalFormat.applyPattern(DEFAULT_DATETIME_PATTERN);
-		System.out.println(formatDate(getSystemTimestamp(),"  "));
-		
-	}
 }

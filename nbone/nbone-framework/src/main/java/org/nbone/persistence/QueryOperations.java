@@ -61,6 +61,17 @@ public interface QueryOperations {
 	public <T> List<T> getForList(Map<String, ?> columnMap,SqlConfig sqlConfig);
 
 	/**
+	 * 根据 entity bean含有参数的属性组装查询条件 hibernate get method(参数默认全部使用 等号 =)
+	 *
+	 * @param object    查询实体参数
+	 * @param sqlConfig 查询配置
+	 * @param <K>
+	 * @param <V>
+	 * @return return map 将返回的List 转换成Map默认使用主键作为map key
+	 */
+	public <K, V> Map<K, V> getMapWithMapKey(Object object, SqlConfig sqlConfig);
+
+	/**
 	 * 按照实体中不为空的参数查询实体列表(参数默认使用 number use = /String use like)(支持字段查询符号操作 =  > < >= <=  is null is not null)
 	 * @param object 查询实体参数
 	 * @param sqlConfig 查询配置

@@ -56,6 +56,11 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
+	public <K, V> Map<K, V> getMapWithMapKey(Object object, SqlConfig sqlConfig) {
+		throw new UnsupportedOperationException("unsupported getMapWithMapKey operation.");
+	}
+
+	@Override
 	public <T> List<T> queryForList(Object object, SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported queryForList operation.");
 	}

@@ -1,16 +1,12 @@
 package org.nbone.util.lang;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * 
  * @author SmallRaccoon
@@ -36,13 +32,6 @@ public class StringUtil {
 		return strGrp;
 	}
 
-	public static String getClassSimpleName(Class<?> clazz) {
-		String name = clazz.getName();
-		if (StringUtils.isEmpty(name))
-			return null;
-		int lastIndex = name.lastIndexOf(".");
-		return name.substring(lastIndex + 1, name.length());
-	}
 
 	public static String nvl(String str1, String str2) {
 		if (StringUtils.isEmpty(str1))
@@ -228,38 +217,6 @@ public class StringUtil {
 			}
 		}
 		return obj;
-	}
-
-	/**
-	 * 字符串加密
-	 * 
-	 * @version V1.0
-	 */
-	public static String encryptBASE64(byte[] key) throws Exception {
-		return (new BASE64Encoder()).encodeBuffer(key);
-	}
-
-	/**
-	 * 字符串解密
-	 * 
-	 * @version V1.0
-	 */
-	public static String decryptBASE64(String key) throws Exception {
-		return new String((new BASE64Decoder()).decodeBuffer(key));
-	}
-
-	/**
-	 * 字符串MD5加密
-	 */
-	public static String doMD5Encrypt(String oriMessage) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] b = md.digest(oriMessage.getBytes());
-			return byteToHexString(b);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package org.nbone.framework.spring.web.mvc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.nbone.core.exception.ExceptionInfo;
 import org.nbone.core.exception.ExceptionUtils;
 import org.nbone.framework.spring.web.filter.RequestIdFilter;
@@ -80,9 +81,10 @@ public class ExceptionHandlerAdvice {
      * 非法参数异常/非法状态异常
      */
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     public Object baseIllegelException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("baseIllegelException:", ex);
+        logger.error("baseIllegelException:["+req.getRequestURI()+"]", ex);
+
         String requestId = getRequestId(req);
         ayncErrorLog(ex, ex.getMessage(), req, response);
         return new ExceptionInfo(errorCode, ex.getMessage(), ex).requestId(requestId);
@@ -98,13 +100,8 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object bindException(BindException ex, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("Bad argument:", ex);
-
         String msg = ExceptionHandlerUtils.getMessage(ex);
-
-        String requestId = getRequestId(req);
-        ayncErrorLog(ex, msg, req, response);
-        return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
+        return exception(ex,msg,req,response);
     }
 
     /**
@@ -123,13 +120,8 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = ServletException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object requestException(ServletException ex, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("Bad request argument:", ex);
-
         String msg = ExceptionHandlerUtils.getMessage(ex);
-
-        String requestId = getRequestId(req);
-        ayncErrorLog(ex, msg, req, response);
-        return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
+        return exception(ex,msg,req,response);
     }
 
     @ExceptionHandler(value = ServletRequestBindingException.class)
@@ -144,16 +136,32 @@ public class ExceptionHandlerAdvice {
      * @Valid 的参数验证异常处理
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     public Object methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("Bad request argument:", ex);
-
         String msg = ExceptionHandlerUtils.getMessage(ex);
+        return exception(ex,msg,req,response);
+    }
+
+    @ExceptionHandler(value = JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public Object jsonException(JsonProcessingException ex, HttpServletRequest req, HttpServletResponse response) {
+        String msg = ExceptionHandlerUtils.getMessage(ex);
+        return exception(ex,msg,req,response);
+    }
+
+    private Object exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
+        logger.error("Bad request argument:[" + req.getRequestURI() + "]", ex);
+
+        if(message == null){
+            message = ex.getMessage();
+        }
+        String msg = message;
 
         String requestId = getRequestId(req);
         ayncErrorLog(ex, msg, req, response);
         return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
     }
+
 
 
     protected String getRequestId(WebRequest request) {

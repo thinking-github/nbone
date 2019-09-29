@@ -42,7 +42,7 @@ public class ExceptionHandlerUtils {
         return getMessage(result);
     }
 
-    public static String getMessage(ServletException ex) {
+    public static String getMessage(Exception ex) {
         String message = ex.getMessage();
         if (message == null) {
             return null;

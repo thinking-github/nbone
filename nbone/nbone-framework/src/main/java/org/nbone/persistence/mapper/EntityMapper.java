@@ -148,15 +148,26 @@ public class EntityMapper<T> {
 		}
 		return primaryKeys;
 	}
-	
-	public String getPrimaryKey(){
+
+	public String getPrimaryKey() {
 		List<String> primaryKeys = getPrimaryKeyList();
-		
-		if(primaryKeys == null || primaryKeys.size() <= 0 ){
+		if (primaryKeys == null || primaryKeys.size() <= 0) {
 			return null;
 		}
-		
 		return primaryKeys.get(0);
+	}
+
+	public FieldMapper getPrimaryKeyFieldMapper() {
+		List<FieldMapper> fieldMappers = getPrimaryKeyFields();
+		if (fieldMappers != null && fieldMappers.size() > 0) {
+			return fieldMappers.get(0);
+		}
+		return null;
+	}
+
+	public String getPrimaryKeyProperty() {
+		FieldMapper fieldMapper = getPrimaryKeyFieldMapper();
+		return fieldMapper != null ? fieldMapper.getFieldName() : null;
 	}
 
 	public void setPrimaryKeys(String[] primaryKeys) {
@@ -262,7 +273,7 @@ public class EntityMapper<T> {
 		return fieldMappers.get(dbFieldName);
 	}
 
-	public FieldMapper getFieldMapperByPropertyName(String propertyName) {
+	public FieldMapper getFieldMapperByProperty(String propertyName) {
 		if (propertyName == null) {
 			return null;
 		}
@@ -283,7 +294,7 @@ public class EntityMapper<T> {
 	 * @return
 	 */
 	public String getDbFieldName(String fieldName) {
-		FieldMapper fieldMapper = getFieldMapperByPropertyName(fieldName);
+		FieldMapper fieldMapper = getFieldMapperByProperty(fieldName);
 		if(fieldMapper == null){
 			return null;
 		}
@@ -301,7 +312,6 @@ public class EntityMapper<T> {
 	public EntityMapper addFieldMapper(String dbFieldName, FieldMapper fieldMapper) {
 		this.fieldMappers.put(dbFieldName, fieldMapper);
 		this.propertyMappers.put(fieldMapper.getFieldName(),fieldMapper);
-
 		return this;
 	}
 

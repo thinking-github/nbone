@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 
 import org.nbone.framework.spring.dao.BaseJdbcDao;
+import org.nbone.framework.spring.dao.core.RowMapperWithMapExtractor;
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.*;
@@ -26,9 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -315,6 +314,20 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
+	public <K, T> Map<K, T> getMapWithMapKey(Object object, SqlConfig sqlConfig) {
+
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, sqlConfig);
+		checkSqlModel(sqlModel);
+		String mapKey = sqlConfig != null ? sqlConfig.getMapKey() : null;
+
+		RowMapper<T> rowMapper = (RowMapper<T>) sqlModel.getRowMapper();
+
+		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
+		Map<?, T> map = namedPjdbcTemplate.query(sqlModel.getSql(), paramSource, new RowMapperWithMapExtractor<T>(rowMapper, mapKey));
+		return (Map<K, T>) map;
+	}
+
+	@Override
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
 		if(sqlConfig == null){
 			sqlConfig = SqlConfig.EMPTY;
@@ -327,11 +340,6 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		checkSqlModel(sqlModel);
 
 		RowMapper<T> rowMapper =   (RowMapper<T>) sqlModel.getRowMapper();
-
-		RowMapper<T> rowMapperGroup =  sqlBuilder.getRowMapper(sqlConfig.getGroupQuery());
-		if(rowMapperGroup != null){
-			rowMapper = rowMapperGroup;
-		}
 
 		List<T> list = namedPjdbcTemplate.query(sqlModel.getSql(),new BeanPropertySqlParameterSource(object),rowMapper);
 		return list;

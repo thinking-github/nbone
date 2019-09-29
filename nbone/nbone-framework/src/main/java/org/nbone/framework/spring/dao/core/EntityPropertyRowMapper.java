@@ -113,4 +113,11 @@ public class EntityPropertyRowMapper<T> implements RowMapper<T> {
 		return JdbcUtils.getResultSetValue(rs, index, pd.getPropertyType());
 	}
 
+	public Class<T> getMappedClass() {
+		return mappedClass;
+	}
+
+	public EntityMapper<T> getEntityMapper() {
+		return entityMapper;
+	}
 }

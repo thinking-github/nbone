@@ -33,11 +33,9 @@ import org.apache.commons.logging.LogFactory;
 
 
 @SuppressWarnings({"unchecked","rawtypes"})
-public class ReflectionUtils
-{
+public class ReflectionUtils {
 	private static Log logger = LogFactory.getLog(ReflectionUtils.class);
-    public static Field[] getDeclaredAndInheritedFields(final Class type, final boolean returnFinalFields)
-    {
+    public static Field[] getDeclaredAndInheritedFields(final Class type, final boolean returnFinalFields) {
         List<Field> allFields = new ArrayList<Field>();
         allFields.addAll(getValidFields(type.getDeclaredFields(), returnFinalFields));
         Class parent = type.getSuperclass();
@@ -63,8 +61,7 @@ public class ReflectionUtils
 		return getDeclaredAndInheritedMethods(type, new ArrayList());
 	}
 	
-    protected static List<Method> getDeclaredAndInheritedMethods(final Class type, List<Method> methods)
-    {
+    protected static List<Method> getDeclaredAndInheritedMethods(final Class type, List<Method> methods) {
         if ((type == null) || (type == Object.class))
         {
             return methods;
@@ -88,8 +85,7 @@ public class ReflectionUtils
         return methods;
     }
 
-    public static List<Field> getValidFields(final Field[] fields, final boolean returnFinalFields)
-    {
+    public static List<Field> getValidFields(final Field[] fields, final boolean returnFinalFields) {
         List<Field> validFields = new ArrayList<Field>();
         // we ignore static and final fields
         for (Field field : fields)
@@ -124,8 +120,7 @@ public class ReflectionUtils
      *            the interface class we want to check against
      * @return true if type implements interfaceClass, else false
      */
-    public static boolean implementsInterface(final Class type, final Class interfaceClass)
-    {
+    public static boolean implementsInterface(final Class type, final Class interfaceClass) {
         return interfaceClass.isAssignableFrom(type);
     }
 
