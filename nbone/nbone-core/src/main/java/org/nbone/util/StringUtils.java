@@ -325,19 +325,6 @@ public class StringUtils {
 			return str;
 	}
 
-	public static boolean equals(String str1, String str2) {
-		if (str1 == null)
-			return str2 == null;
-		else
-			return str1.equals(str2);
-	}
-
-	public static boolean equalsIgnoreCase(String str1, String str2) {
-		if (str1 == null)
-			return str2 == null;
-		else
-			return str1.equalsIgnoreCase(str2);
-	}
 
 	public static boolean isAlpha(String str) {
 		if (str == null)

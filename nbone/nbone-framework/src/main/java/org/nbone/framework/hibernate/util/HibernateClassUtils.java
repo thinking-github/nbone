@@ -73,7 +73,7 @@ public class HibernateClassUtils {
         String tabAlias = hqlConfig.getAliasName();
         
         Map<String, SqlOperation> hqlpdsMap = hqlConfig.getSqlOperationAsMap();
-        List<Class<?>> pojoRefs = hqlConfig.getPojoRefs();
+        List<Class<?>> entityReferences = hqlConfig.getEntityReferences();
         int  hqlMode =  hqlConfig.getSqlMode();
         
         if(callbackAliasName != null){
@@ -138,9 +138,9 @@ public class HibernateClassUtils {
 				else{}
 				
 				 //Object include Object
-				if(pojoRefs != null && pojoRefs.size() > 0 ){
-					for (int j = 0; j < pojoRefs.size(); j++) {
-						if(fieldType == pojoRefs.get(j)){
+				if(entityReferences != null && entityReferences.size() > 0 ){
+					for (int j = 0; j < entityReferences.size(); j++) {
+						if(fieldType == entityReferences.get(j)){
 							String callbackAliasName1  =  aliasAndFieldName;
 							Object callBean = fieldValue;
 							HqlQuery callquery = getWhere(callBean, hqlConfig, callbackAliasName1);

@@ -7,6 +7,7 @@ import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.mvc.domain.RequestQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.util.SqlUtils;
+import org.omg.CORBA.OBJ_ADAPTER;
 
 /**
  * @author thinking
@@ -30,8 +31,6 @@ public class SqlConfig {
      */
     private SqlOperations sqlOperations = new SqlOperations();
 
-    private List<SqlPropertyRange> sqlRanges = new ArrayList<SqlPropertyRange>(1);
-
     /**
      * 实体类型
      */
@@ -51,6 +50,15 @@ public class SqlConfig {
      * @MapKey 将返回的List 转换成Map默认使用主键作为map key
      */
     private String mapKey;
+
+    /**
+     * @MapKey map key Type (可为空, 为空时使用目标实体字段类型)
+     */
+    private Class<?> mapKeyType;
+    /**
+     * map key 对应的值 可为空默认entity
+     */
+    private String mapValueName;
 
     /**
      * 扩展字段名称数组
@@ -81,6 +89,10 @@ public class SqlConfig {
      */
     private String firstCondition;
     /**
+     * 追加条件语句
+     */
+    private String condition;
+    /**
      * where 之后的语句 追加[增加]查询条件 或者 group by/order by 子句
      */
     private String[] afterWhere;
@@ -92,7 +104,7 @@ public class SqlConfig {
     /**
      * 此实体Bean 引用其他的实体Bean列表
      */
-    private List<Class<?>> pojoRefs;
+    private List<Class<?>> entityReferences;
     /**
      * 默认为初级
      */
@@ -124,8 +136,8 @@ public class SqlConfig {
         this.sqlMode = PrimaryMode;
     }
 
-    public SqlConfig(int hqlMode) {
-        this.sqlMode = hqlMode;
+    public SqlConfig(int mode) {
+        this.sqlMode = mode;
     }
 
     /**
@@ -222,6 +234,9 @@ public class SqlConfig {
     public static SqlConfig builder() {
         return new SqlConfig();
     }
+    public static SqlConfig builder(int mode) {
+        return new SqlConfig(mode);
+    }
 
     public SqlConfig distinct(boolean distinct) {
         this.distinct = distinct;
@@ -269,6 +284,14 @@ public class SqlConfig {
         this.mapKey = mapKey;
         return this;
     }
+    public SqlConfig mapKeyType(Class<?> mapKeyType) {
+        this.mapKeyType = mapKeyType;
+        return this;
+    }
+    public SqlConfig mapValueName(String valueName) {
+        this.mapValueName = valueName;
+        return this;
+    }
 
     public SqlConfig extFields(String[] extFields) {
         this.extFields = extFields;
@@ -302,6 +325,18 @@ public class SqlConfig {
 
     public SqlConfig firstCondition(String firstCondition) {
         this.firstCondition = firstCondition;
+        return this;
+    }
+    public SqlConfig condition(String condition) {
+        this.condition = condition;
+        return this;
+    }
+    public SqlConfig appendCondition(String appendCondition) {
+        if(this.condition == null){
+            this.condition = appendCondition;
+        }else {
+            this.condition =  this.condition + " " + appendCondition;
+        }
         return this;
     }
 
@@ -379,6 +414,10 @@ public class SqlConfig {
         this.sqlOperations.addOperation(fieldName, operType);
         return this;
     }
+    public SqlConfig addOperation(String fieldName, String operationType, Object value) {
+        this.sqlOperations.addOperation(fieldName, operationType,value);
+        return this;
+    }
 
     public SqlConfig addOperation(String name, String operationType, String name1, String operationType1) {
         if (name != null && operationType != null) {
@@ -394,19 +433,18 @@ public class SqlConfig {
         this.sqlOperations.addOperationBetween(fieldName, beginValue, endValue);
         return this;
     }
-
     public SqlConfig addOperationBetween(String fieldName, Object[] values) {
         this.sqlOperations.addOperationBetween(fieldName, values[0], values[1]);
         return this;
     }
-
-    public SqlConfig addOperationIn(String fieldName, boolean isIn, Object[] values) {
+    /**
+     * @param fieldName entity fieldName
+     * @param isIn      true in false not in
+     * @param values    Collection / Object[] / string list
+     * @return
+     */
+    public SqlConfig addOperationIn(String fieldName, boolean isIn, Object values) {
         this.sqlOperations.addOperationIn(fieldName, isIn, values);
-        return this;
-    }
-
-    public SqlConfig addOperationIn(String fieldName, boolean isIn, Collection collection) {
-        this.sqlOperations.addOperationIn(fieldName, isIn, collection);
         return this;
     }
 
@@ -439,16 +477,14 @@ public class SqlConfig {
         return this;
     }
 
-    //-----------------------------Range propertity------------------------------------
-
-    public SqlConfig addSqlPropertyRange(String leftField, String rightField, Object value) {
-        SqlPropertyRange sqlPropertyRange = new SqlPropertyRange(leftField, rightField, value);
-        sqlRanges.add(sqlPropertyRange);
+    //-----------------------------Range property------------------------------------
+    public SqlConfig addSqlOperationRange(String leftName, String rightName, Object value) {
+        this.sqlOperations.addOperationRange(leftName,rightName,value);
         return this;
     }
 
     //-------------------------------------------------------------------------
-    //seter / geter
+    //setter / getter
     //-------------------------------------------------------------------------
     public String getAliasName() {
         return aliasName;
@@ -465,15 +501,6 @@ public class SqlConfig {
 
     public SqlOperation getSqlOperation(String fieldName) {
         return this.sqlOperations.getSqlOperation(fieldName);
-    }
-
-
-    public List<SqlPropertyRange> getSqlPropertyRanges() {
-        return sqlRanges;
-    }
-
-    public void setSqlPropertyRanges(List<SqlPropertyRange> sqlRanges) {
-        this.sqlRanges = sqlRanges;
     }
 
     public Class<?> getMappingClass() {

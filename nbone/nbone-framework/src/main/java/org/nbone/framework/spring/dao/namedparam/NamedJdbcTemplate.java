@@ -1,10 +1,12 @@
 package org.nbone.framework.spring.dao.namedparam;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.nbone.framework.spring.dao.core.RowMapperWithMapExtractor;
 import org.nbone.framework.spring.data.domain.PageImpl;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.BaseSqlBuilder;
@@ -17,6 +19,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -59,6 +62,31 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
 
     }
 
+    public <T> void checkSqlModel(SqlModel<T> sqlModel) {
+        if (sqlModel == null) {
+            throw new BuilderSQLException("build param sqlModel is null.");
+        }
+    }
+
+    public <T> List<T> query(SqlModel sqlModel, SqlParameterSource paramSource)
+            throws DataAccessException {
+        checkSqlModel(sqlModel);
+        if (paramSource == null) {
+            return jdbcTemplate.query(sqlModel.getSql(), sqlModel.getRowMapper());
+        }
+        return query(sqlModel.getSql(), paramSource, sqlModel.getRowMapper());
+    }
+
+    public <T> T query(SqlModel sqlModel, Object entity, ResultSetExtractor<T> rse)
+            throws DataAccessException {
+        checkSqlModel(sqlModel);
+        if (entity == null) {
+            return jdbcTemplate.query(sqlModel.getSql(), rse);
+        }
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(entity);
+        return query(sqlModel.getSql(), paramSource, rse);
+    }
+
     /**
      * 单表数据分页
      *
@@ -69,11 +97,8 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
      * @return
      */
     public <T> Page<T> getForPage(Object object, SqlConfig sqlConfig, int pageNum, int pageSize) {
-        if (sqlConfig == null) {
-            sqlConfig = SqlConfig.EMPTY;
-        }
         SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, sqlConfig);
-        return processPage(sqlModel, object, pageNum, pageSize, false);
+        return processPage(sqlModel, pageNum, pageSize);
     }
 
     /**
@@ -86,11 +111,8 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
      * @return
      */
     public <T> Page<T> getForPage(Map<String, ?> columnMap, SqlConfig sqlConfig, int pageNum, int pageSize) {
-        if (sqlConfig == null) {
-            sqlConfig = SqlConfig.EMPTY;
-        }
         SqlModel<Map<String, ?>> sqlModel = (SqlModel<Map<String, ?>>) sqlBuilder.selectSql(columnMap, sqlConfig);
-        return processPage(sqlModel, columnMap, pageNum, pageSize, true);
+        return processPage(sqlModel, pageNum, pageSize);
     }
 
     /**
@@ -102,11 +124,8 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
      * @return
      */
     public <T> Page<T> queryForPage(Object object, SqlConfig sqlConfig, int pageNum, int pageSize) {
-        if (sqlConfig == null) {
-            sqlConfig = SqlConfig.EMPTY;
-        }
         SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, sqlConfig);
-        return processPage(sqlModel, object, pageNum, pageSize, false);
+        return processPage(sqlModel, pageNum, pageSize);
     }
 
     /**
@@ -119,8 +138,7 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
      */
     public <T> Page<T> findForPage(Object object, int pageNum, int pageSize, SqlConfig sqlConfig) {
         SqlModel<Map<String, ?>> sqlModel = sqlBuilder.objectModeSelectSql(object, sqlConfig);
-
-        return processPage(sqlModel, object, pageNum, pageSize, true);
+        return processPage(sqlModel, pageNum, pageSize);
     }
 
     public long queryForLong(String sql, SqlParameterSource paramSource) throws DataAccessException {
@@ -142,28 +160,35 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
      * @return
      */
     public <T> List<T> listLimit(Object object, SqlConfig sqlConfig, int limit) {
-        if (sqlConfig == null) {
-            sqlConfig = SqlConfig.EMPTY;
-        }
+
         SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, sqlConfig);
         SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
-        return queryPageRows(sqlModel, paramSource, 1, limit);
+        return queryList(sqlModel, paramSource, 1, limit);
     }
 
+    public <T> List<T> listLimit(Object object, SqlConfig sqlConfig, long offset, int limit) {
+        SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, sqlConfig);
+        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
+        return queryList(sqlModel, paramSource, offset, limit);
+    }
+
+    //parameterMap
     @SuppressWarnings("unchecked")
-    protected <T> Page<T> processPage(SqlModel<? extends Object> sqlModel, Object object, int pageNum, int pageSize, boolean parameterMap) {
+    protected <T> Page<T> processPage(SqlModel<?> sqlModel, int pageNum, int pageSize) {
         SqlParameterSource paramSource;
-        if (parameterMap) {
+        if (sqlModel.getParameter() instanceof Map) {
             Map<String, ?> paramMap = (Map<String, ?>) sqlModel.getParameter();
             paramSource = new MapSqlParameterSource(paramMap);
         } else {
-            paramSource = new BeanPropertySqlParameterSource(object);
+            paramSource = new BeanPropertySqlParameterSource(sqlModel.getParameter());
         }
-
-        List<T> rows = queryPageRows(sqlModel, paramSource, pageNum, pageSize);
 
         String countSql = sqlModel.getCountSql();
         long count = this.queryForLong(countSql, paramSource);
+        List<T> rows = Collections.emptyList();
+        if (count > 0) {
+            rows = queryList(sqlModel, paramSource, pageNum, pageSize);
+        }
         //zero-based page index.
         PageRequest pageRequest = new PageRequest(pageNum - 1, pageSize);
         Page<T> page = new PageImpl<T>(rows, pageRequest, count);
@@ -171,10 +196,9 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> List<T> queryPageRows(SqlModel<? extends Object> sqlModel, SqlParameterSource paramSource, int pageNum, int pageSize) {
-        if (sqlModel == null) {
-            throw new BuilderSQLException("sqlModel is null.");
-        }
+    public <T> List<T> queryList(SqlModel<?> sqlModel, SqlParameterSource paramSource, int pageNum, int pageSize) {
+        checkSqlModel(sqlModel);
+
         if (pageNum <= 0) {
             pageNum = 1;
         }
@@ -184,6 +208,21 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
         }
 
         String pageSql = sqlModel.getPageSql(pageNum, pageSize);
+
+        RowMapper<T> rowMapper = (RowMapper<T>) sqlModel.getRowMapper();
+
+        List<T> rows = jdbcTemplate.query(getPreparedStatementCreator(pageSql, paramSource), rowMapper);
+        return rows;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> queryList(SqlModel<?> sqlModel, SqlParameterSource paramSource, long offset, int pageSize) {
+        checkSqlModel(sqlModel);
+        if (pageSize <= 0) {
+            pageSize = 10;
+        }
+
+        String pageSql = sqlModel.getOffsetPageSql(offset, pageSize);
 
         RowMapper<T> rowMapper = (RowMapper<T>) sqlModel.getRowMapper();
 

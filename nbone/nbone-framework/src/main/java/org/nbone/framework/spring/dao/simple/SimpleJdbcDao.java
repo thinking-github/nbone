@@ -35,7 +35,7 @@ import org.springframework.stereotype.Repository;
 @Repository("simpleJdbcDao")
 @Primary
 @Lazy
-public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSqlSession,InitializingBean{
+public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,InitializingBean{
 	
 	@Resource(name="baseJdbcDao")
 	private BaseJdbcDao baseJdbcDao;
@@ -128,46 +128,6 @@ public class SimpleJdbcDao extends BaseSqlSession  implements SqlSession,BatchSq
 			simpleJdbcInsert.usingGeneratedKeyColumns(primaryKeys);
 		}
 		return entityMapper;
-	}
-
-	@Override
-	public int update(Object object) {
-		return 0;
-	}
-
-	@Override
-	public int updateSelective(Object object) {
-		return 0;
-	}
-
-	@Override
-	public void saveOrUpdate(Object object) {
-	}
-
-	@Override
-	public int delete(Object object) {
-		return 0;
-	}
-
-	@Override
-	public int delete(Class<?> clazz, Serializable id) {
-		return 0;
-	}
-	
-	@Override
-	public <T> int delete(Class<T> clazz, Object[] ids) {
-		return 0;
-	}
-
-
-	@Override
-	public <T> T get(Class<T> clazz, Serializable id) {
-		return null;
-	}
-	
-	@Override
-	public <T> T get(Object object) {
-		return null;
 	}
 
 	

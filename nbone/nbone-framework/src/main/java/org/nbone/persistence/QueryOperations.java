@@ -71,6 +71,8 @@ public interface QueryOperations {
 	 */
 	public <K, V> Map<K, V> getMapWithMapKey(Object object, SqlConfig sqlConfig);
 
+	public <K, V> Map<K, V> getMapWithMapKey(SqlConfig sqlConfig);
+
 	/**
 	 * 按照实体中不为空的参数查询实体列表(参数默认使用 number use = /String use like)(支持字段查询符号操作 =  > < >= <=  is null is not null)
 	 * @param object 查询实体参数
@@ -162,6 +164,17 @@ public interface QueryOperations {
 	 * @return
 	 */
 	public  <T> List<T> getForLimit(Object object,SqlConfig sqlConfig,int limit);
+
+	/**
+	 * 按照实体中的参数查询实体列表并限制返回数量  (参数全部使用 等号 = > < )
+	 *
+	 * @param object    查询实体参数
+	 * @param sqlConfig 按需返回字段java字段名称【返回含有数组中的字段的】,分组查询 ,afterWhere group by/order by 子句 （可为空）
+	 * @param offset    偏移量位置 默认为 0
+	 * @param limit     限制返回的大小
+	 * @return
+	 */
+	public <T> List<T> getForLimit(Object object, SqlConfig sqlConfig, long offset, int limit);
 
 	/**
 	 * 按照实体中的参数查询实体列表并限制返回数量  (参数全部使用 等号 =)

@@ -31,24 +31,24 @@ public enum QueryType {
     ;
 
     private final String operation;
-    private  String valuePrefix;
-    private  String valueSuffux;
-    private  Boolean isForce;
+    private String valuePrefix;
+    private String valueSuffix;
+    private Boolean isForce;
 
     QueryType(String operation) {
         this.operation = operation;
     }
 
-    QueryType(String operation, String valuePrefix, String valueSuffux) {
+    QueryType(String operation, String valuePrefix, String valueSuffix) {
         this.operation = operation;
         this.valuePrefix = valuePrefix;
-        this.valueSuffux = valueSuffux;
+        this.valueSuffix = valueSuffix;
     }
 
-    QueryType(String operation, String valuePrefix, String valueSuffux, Boolean isForce) {
+    QueryType(String operation, String valuePrefix, String valueSuffix, Boolean isForce) {
         this.operation = operation;
         this.valuePrefix = valuePrefix;
-        this.valueSuffux = valueSuffux;
+        this.valueSuffix = valueSuffix;
         this.isForce = isForce;
     }
 
@@ -69,12 +69,12 @@ public enum QueryType {
         this.valuePrefix = valuePrefix;
     }
 
-    public String getValueSuffux() {
-        return valueSuffux;
+    public String getValueSuffix() {
+        return valueSuffix;
     }
 
-    public void setValueSuffux(String valueSuffux) {
-        this.valueSuffux = valueSuffux;
+    public void setValueSuffix(String valueSuffix) {
+        this.valueSuffix = valueSuffix;
     }
 
     public Boolean getForce() {
@@ -85,9 +85,20 @@ public enum QueryType {
         isForce = force;
     }
 
+
+    public static QueryType of(String operationType) {
+        if (operationType == null) {
+            return null;
+        }
+        for (QueryType value : values()) {
+            if (value.getOperation().equalsIgnoreCase(operationType)) {
+                return value;
+            }
+        }
+        return null;
+    }
     static {
         QueryType[] QueryTypes = new QueryType[QueryType.values().length];
-        boolean var10002 = true;
         for (QueryType value : QueryType.values()) {
             QueryTypes[value.ordinal()] = value;
         }

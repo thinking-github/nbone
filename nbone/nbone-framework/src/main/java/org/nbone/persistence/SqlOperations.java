@@ -1,7 +1,6 @@
 package org.nbone.persistence;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.nbone.persistence.criterion.QueryOperator;
 
@@ -12,6 +11,8 @@ import org.nbone.persistence.criterion.QueryOperator;
 public class SqlOperations {
 
     private Map<String, SqlOperation> sqlOperation = new HashMap<String, SqlOperation>();
+
+    private List<SqlOperationRange> sqlOperationRanges;
 
 
     public SqlOperations() {
@@ -27,7 +28,11 @@ public class SqlOperations {
      * @return
      */
     public SqlOperations addOperation(String fieldName, String operationType) {
-        SqlOperation sqlOperation = new SqlOperation(fieldName, operationType);
+        return addOperation(fieldName,operationType,null);
+    }
+
+    public SqlOperations addOperation(String fieldName, String operationType,Object value) {
+        SqlOperation sqlOperation = new SqlOperation(fieldName, operationType,value);
         this.sqlOperation.put(fieldName, sqlOperation);
         return this;
     }
@@ -35,6 +40,15 @@ public class SqlOperations {
     public SqlOperations addOperationBetween(String fieldName, Object beginValue, Object endValue) {
         SqlOperation sqlOperation = new SqlOperation(fieldName, beginValue, endValue);
         this.sqlOperation.put(fieldName, sqlOperation);
+        return this;
+    }
+
+    public SqlOperations addOperationRange(String leftName, String rightName, Object value) {
+        SqlOperationRange sqlOperation = new SqlOperationRange(leftName, rightName, value);
+        if (sqlOperationRanges == null) {
+            sqlOperationRanges = new ArrayList<SqlOperationRange>();
+        }
+        sqlOperationRanges.add(sqlOperation);
         return this;
     }
 
@@ -103,6 +117,13 @@ public class SqlOperations {
 
     public Map<String, SqlOperation> getSqlOperationAsMap() {
         return sqlOperation;
+    }
+    public Collection<SqlOperation> getSqlOperations() {
+        return sqlOperation.values();
+    }
+
+    public List<SqlOperationRange> getSqlOperationRanges() {
+        return sqlOperationRanges;
     }
 
     public SqlOperation getSqlOperation(String fieldName) {

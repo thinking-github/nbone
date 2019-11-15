@@ -47,14 +47,20 @@ public class FieldMapper {
     private Class enumClass = null;
     
     private PropertyDescriptor propertyDescriptor;
-    
-    
-    
-    public FieldMapper(PropertyDescriptor propertyDescriptor) {
+
+
+	public FieldMapper(String fieldName, Class<?> propertyType, PropertyDescriptor propertyDescriptor) {
 		this.propertyDescriptor = propertyDescriptor;
+		this.fieldName = fieldName != null ? fieldName : propertyDescriptor.getName();
+		this.propertyType = propertyType != null ? propertyType : propertyDescriptor.getPropertyType();
 		Method getter = propertyDescriptor.getReadMethod();
-    	this.enumClass = getter.getReturnType().isEnum() ? getter.getReturnType() : null;
+		this.enumClass = getter.getReturnType().isEnum() ? getter.getReturnType() : null;
 	}
+
+	public FieldMapper(PropertyDescriptor propertyDescriptor) {
+    	this(propertyDescriptor.getName(),propertyDescriptor.getPropertyType(),propertyDescriptor);
+	}
+
 
     
 	public String getFieldName() {

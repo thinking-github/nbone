@@ -37,8 +37,9 @@ public class EntityPropertyRowMapper<T> implements RowMapper<T> {
 	private Class<T> mappedClass;
 	
 	/** Map of the fields we provide mapping for */
-	private Map<String, PropertyDescriptor> mappedFields;
-	
+	//private Map<String, PropertyDescriptor> mappedFields;
+	private Map<String, FieldMapper> mappedFields;
+
 	
 	private EntityMapper<T> entityMapper;
 	
@@ -50,7 +51,7 @@ public class EntityPropertyRowMapper<T> implements RowMapper<T> {
 	public EntityPropertyRowMapper(EntityMapper<T> entityMapper) {
 		this.entityMapper = entityMapper;
 		this.mappedClass = entityMapper.getEntityClass();
-		this.mappedFields = entityMapper.getMappedPropertys();
+		this.mappedFields = entityMapper.getFieldMappers();
 		this.initialize(mappedClass);
 	}
 	

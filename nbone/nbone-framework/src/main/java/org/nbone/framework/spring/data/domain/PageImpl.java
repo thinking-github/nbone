@@ -59,6 +59,10 @@ public class PageImpl<T> implements Page<T>, Serializable {
 		this(content, null, null == content ? 0 : content.size());
 	}
 
+	public PageImpl(List<T> content,long total) {
+		this(content, null, total);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.springframework.data.domain.Page#getNumber()

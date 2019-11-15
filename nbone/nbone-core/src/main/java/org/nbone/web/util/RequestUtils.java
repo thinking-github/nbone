@@ -119,4 +119,50 @@ public class RequestUtils {
     }
 
 
+    /**
+     * 获取当前远程请求的真实IP，包括处理使用代理的请求 通过serlvet框架HttpRequest获得客户端的Ip,可以穿透代理
+     *
+     * @param request 没有克隆只能在web容器中使用.
+     * @return String 返回当前远程请求的真实IP，包括处理使用代理的请求
+     */
+    public static String getRemoteVerityIP(HttpServletRequest request) {
+        if (request == null) {
+            return "request is null. unknown";
+        }
+
+        // 集群环境下负载均衡器的’x-forwarded-for‘的属性值应该设置为on否则只能获得代理服务器的ip不是客户端真实的ip
+        String remoteAddr = request.getHeader("X-Real-IP");
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        //XXX:2016-05-08
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+
+
+    public static boolean isDebug(HttpServletRequest request) {
+        int headerDebug = request.getIntHeader("debug");
+        String parameterDebug = request.getParameter("debug");
+
+        return headerDebug == 1 || "1".equals(parameterDebug);
+    }
+
+    public static boolean isTrace(HttpServletRequest request) {
+        int headerTrace = request.getIntHeader("trace");
+        String parameterTrace = request.getParameter("trace");
+
+        return headerTrace == 1 || "1".equals(parameterTrace);
+    }
+
+
 }

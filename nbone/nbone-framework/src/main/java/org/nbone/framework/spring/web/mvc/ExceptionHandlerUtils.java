@@ -1,14 +1,19 @@
 package org.nbone.framework.spring.web.mvc;
 
+import org.nbone.core.exception.ExceptionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.nbone.web.util.RequestUtils.isDebug;
+import static org.nbone.web.util.RequestUtils.isTrace;
 
 
 /**
@@ -18,7 +23,8 @@ import java.util.stream.Collectors;
  */
 public class ExceptionHandlerUtils {
 
-    public final static String[] JAVA_LONG = {"java.lang.","java.net."};
+    public final static String[] JAVA_LONG = {"java.lang.", "java.net."};
+
     /**
      * 解析 @Valid 的参数验证异常的消息
      *
@@ -42,13 +48,23 @@ public class ExceptionHandlerUtils {
         return getMessage(result);
     }
 
+    public static String getMessage(HttpServletRequest request, Exception ex) {
+        if (isDebug(request) || isTrace(request)) {
+            return ExceptionUtils.getStackTrace(ex);
+        }
+        return getMessage(ex);
+    }
+
     public static String getMessage(Exception ex) {
         String message = ex.getMessage();
         if (message == null) {
-            return null;
+            return ex.getClass().getName() + ": message = null";
         }
         if (message.length() <= 128) {
-            return message;
+            if (message.contains("Exception")) {
+                return message;
+            }
+            return ex.getClass().getSimpleName() + ": " + message;
         } else {
             for (String regex : JAVA_LONG) {
                 message = message.replaceAll(regex, "");
@@ -72,7 +88,11 @@ public class ExceptionHandlerUtils {
                     FieldError fieldError = (FieldError) error;
                     String fieldName = fieldError.getField();
                     // Column 'type' cannot be null
-                    msg = String.format("field '%s' %s [%s = %s]", fieldName, errorMessage, fieldName, fieldError.getRejectedValue());
+                    Object value = fieldError.getRejectedValue();
+                    if(value != null && value.getClass().isArray()){
+                        value = Arrays.toString((Object[]) value);
+                    }
+                    msg = String.format("field '%s' %s [%s = %s]", fieldName, errorMessage, fieldName, value);
                 } else {
                     msg = String.format("[%s] %s", error.getObjectName(), errorMessage);
                 }

@@ -7,7 +7,7 @@ import org.nbone.persistence.criterion.QueryOperator;
  * @author thinking
  * @version 1.0 
  */
-public class SqlPropertyRange implements QueryOperator{
+public class SqlOperationRange implements QueryOperator{
 	
 	private String leftField;
 	
@@ -23,10 +23,10 @@ public class SqlPropertyRange implements QueryOperator{
 	private String  rightValueMark = gt_eq;
 
 	
-	public SqlPropertyRange() {
+	public SqlOperationRange() {
 	}
 
-	public SqlPropertyRange(String leftField, String rightField, Object value) {
+	public SqlOperationRange(String leftField, String rightField, Object value) {
 		this.leftField = leftField;
 		this.rightField = rightField;
 		this.value = value;

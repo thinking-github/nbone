@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlOperation;
-import org.nbone.persistence.SqlPropertyRange;
+import org.nbone.persistence.SqlOperationRange;
 import org.nbone.persistence.criterion.QueryOperator;
 import org.nbone.util.reflect.SimpleTypeMapper;
 import org.springframework.util.Assert;
@@ -165,13 +165,20 @@ public class SqlUtils {
                 sql.append(fh).append(array[i]).append(fh).append(",");
             }
             sql.append(fh).append(array[length - 1]).append(fh);
-        }else if(List.class.isAssignableFrom(values.getClass())){
-            List array  = (List) values;
+        }else if(Collection.class.isAssignableFrom(values.getClass())){
+            Collection array  = (Collection) values;
             int length = array.size();
-            for (int i = 0; i < length - 1; i++) {
-                sql.append(fh).append(array.get(i)).append(fh).append(",");
+            int index = 0 ;
+            Object last = null;
+            for (Object value : array) {
+                if(index < length -1){
+                    sql.append(fh).append(value).append(fh).append(",");
+                }else {
+                    last = value;
+                }
+                index ++ ;
             }
-            sql.append(fh).append(array.get(length-1)).append(fh);
+            sql.append(fh).append(last).append(fh);
         }
 
         sql.append(")");
@@ -569,23 +576,23 @@ public class SqlUtils {
     /**
      * eg:beginTime <= value <= endTime (beginTime <= value and   endTime >= value)
      *
-     * @param sqlPropertyRange
+     * @param sqlOperationRange
      * @param namedParameters
      * @return
      */
-    public static StringBuilder getPropertyRange(SqlPropertyRange sqlPropertyRange, Map<String, Object> namedParameters) {
+    public static StringBuilder getPropertyRange(SqlOperationRange sqlOperationRange, Map<String, Object> namedParameters) {
         StringBuilder sqlsb = new StringBuilder();
-        if (sqlPropertyRange == null) {
+        if (sqlOperationRange == null) {
             return sqlsb;
         }
         String placeholderPrefix = ":";
         String placeholderSuffix = " ";
-        String dbleftField = sqlPropertyRange.getDbLeftField();
-        String dbrightField = sqlPropertyRange.getDbRightField();
-        String beginValueMark = sqlPropertyRange.getLeftValueMark();
-        String endValueMark = sqlPropertyRange.getRightValueMark();
-        String named = sqlPropertyRange.getLeftField() + "Range";
-        Object value = sqlPropertyRange.getValue();
+        String dbleftField = sqlOperationRange.getDbLeftField();
+        String dbrightField = sqlOperationRange.getDbRightField();
+        String beginValueMark = sqlOperationRange.getLeftValueMark();
+        String endValueMark = sqlOperationRange.getRightValueMark();
+        String named = sqlOperationRange.getLeftField() + "Range";
+        Object value = sqlOperationRange.getValue();
         namedParameters.put(named, value);
 
         sqlsb.append(" and ");

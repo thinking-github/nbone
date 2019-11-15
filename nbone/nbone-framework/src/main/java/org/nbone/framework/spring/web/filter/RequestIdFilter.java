@@ -1,5 +1,6 @@
 package org.nbone.framework.spring.web.filter;
 
+import org.nbone.web.util.RequestUtils;
 import org.springframework.core.Ordered;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,6 +40,9 @@ public class RequestIdFilter extends OncePerRequestFilter implements Ordered {
             requestId = idGenerator.generateId();
         }
 
+        if(RequestUtils.isDebug(request) || RequestUtils.isTrace(request)){
+            response.addHeader("X-ServerName",request.getServerName());
+        }
         //唯一的request id，用于问题定位
         request.setAttribute(REQUEST_ID, requestId);
         filterChain.doFilter(request, response);

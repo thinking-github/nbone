@@ -66,11 +66,17 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	
 	private static long count = 0;
 
+	private boolean mybatis = true;
+
 	
 	public BaseServiceDomain() {
 
 		this.targetClass = (Class<P>) GenericsUtils.getSuperClassGenricType(this.getClass(), 0);
 		count ++;
+	}
+	public BaseServiceDomain(boolean mybatis) {
+		this();
+		this.mybatis = mybatis;
 	}
     /**
      * 初始化mybatis 映射实体 
@@ -115,25 +121,23 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	protected  void initMybatisOrm(){
 		
 	}
-	
 
-	protected synchronized void  builded(){
-	    Assert.notNull(targetClass, "targetClass is not null.thinking");
-	    Assert.notNull(namespace, "namespace is not null.thinking");
-	    Assert.notNull(id, "id is not null.thinking");
 
-	    if(!builded){
-	    	  try {
-	  	    	BaseSqlBuilder.buildTableMapper(targetClass,namespace,id);
-	  	    	builded =  true;
-	  		  } catch (Exception e) {
-	  			builded =  false;
-	  			logger.error(e.getMessage(),e);
-	  		  }
-	  		
-	    }
-	  
-		
+	protected synchronized void builded() {
+		if (!builded) {
+			try {
+				if (mybatis) {
+					BaseSqlBuilder.buildTableMapper(targetClass, namespace, id);
+				} else {
+					BaseSqlBuilder.buildEntityMapper(targetClass);
+				}
+				builded = true;
+			} catch (Exception e) {
+				builded = false;
+				logger.error(e.getMessage(), e);
+			}
+
+		}
 	}
 	
 	protected  void checkBuilded(){

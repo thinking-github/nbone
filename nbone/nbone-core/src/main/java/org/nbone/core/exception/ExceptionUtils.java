@@ -146,8 +146,6 @@ public class ExceptionUtils {
     }
 
     private static Throwable getCauseUsingWellKnownTypes(Throwable throwable) {
-        if ((throwable instanceof Nestable))
-            return ((Nestable) throwable).getCause();
         if ((throwable instanceof SQLException))
             return ((SQLException) throwable).getNextException();
         if ((throwable instanceof InvocationTargetException)) {
@@ -198,8 +196,6 @@ public class ExceptionUtils {
             return false;
         }
 
-        if ((throwable instanceof Nestable))
-            return true;
         if ((throwable instanceof SQLException))
             return true;
         if ((throwable instanceof InvocationTargetException))

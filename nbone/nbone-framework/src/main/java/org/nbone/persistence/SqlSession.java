@@ -12,7 +12,7 @@ import java.util.Map;
  * @since 2014-12-12
  *
  */
-public interface SqlSession  extends QueryOperations{
+public interface SqlSession extends QueryOperations{
 	
 	Log logger = LogFactory.getLog(SqlSession.class);
 	/**
@@ -155,6 +155,18 @@ public interface SqlSession  extends QueryOperations{
 	 * @return
 	 */
 	public <T> T get(Object object);
+
+	/**
+	 * 根据对象实体参数查询条件获取一条记录   <br>
+	 *
+	 * <li> 1.当返回<=0条数据时返回null
+	 * <li> 2.当返回=1条数据时直接返回
+	 * <li> 3.当返回>1数据时只取第一条
+	 *
+	 * @param object
+	 * @return
+	 */
+	public <T> T getOne(Object object);
 	/**
 	 * 统计单表的数据总行数
 	 * @param clazz

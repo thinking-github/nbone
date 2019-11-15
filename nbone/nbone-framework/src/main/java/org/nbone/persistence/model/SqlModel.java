@@ -24,7 +24,7 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class SqlModel<T> {
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+	protected Logger logger = LoggerFactory.getLogger("SqlModel");
 	/**
 	 * sql语句
 	 */
@@ -176,13 +176,25 @@ public class SqlModel<T> {
 	 */
 	public String getPageSql(int pageNum ,int pageSize){
 		String pageSql  = "";
-		String tempSql  = getPlainSql();
+		String plainSql  = getPlainSql();
 		
 		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
-			pageSql = PageSuport.toMysqlPage(tempSql, pageNum, pageSize);
+			pageSql = PageSuport.toMysqlPage(plainSql, pageNum, pageSize);
 			
 		}else if (JdbcConstants.ORACLE.equals(SystemContext.CURRENT_DB_TYPE)) {
-			pageSql = PageSuport.toOraclePage(tempSql, pageNum, pageSize);
+			pageSql = PageSuport.toOraclePage(plainSql, pageNum, pageSize);
+		}
+		print(pageSql);
+		return pageSql;
+	}
+
+	public String getOffsetPageSql(long offset ,int pageSize){
+		String pageSql  = "";
+		String plainSql  = getPlainSql();
+
+		if (JdbcConstants.MYSQL.equals(SystemContext.CURRENT_DB_TYPE)) {
+			pageSql = PageSuport.mysqlOffsetPage(plainSql, offset, pageSize);
+
 		}
 		print(pageSql);
 		return pageSql;

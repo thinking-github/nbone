@@ -6,10 +6,15 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.nbone.persistence.annotation.FieldLevel;
+import org.nbone.persistence.annotation.QueryOperation;
 import org.nbone.persistence.exception.PrimaryKeyException;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -30,7 +35,7 @@ public class EntityMapper<T> {
     /**
      * 当使用注解定义实体Bean时使用
      */
-    private Annotation tableMapperAnnotation;
+    private Annotation tableAnnotation;
     /**
      * 数据库表主键类型：（单个字段的唯一键）（几个字段组合起来的唯一键）
      */
@@ -48,30 +53,28 @@ public class EntityMapper<T> {
      * 映射实体Bean class  entityName
      */
     private Class<T> entityClass;
-    
+	/**
+	 * 启用 select *
+	 */
+    private boolean selectStar;
     /**
-     * 以数据库字段为Key , 最好使用LinkedHashMap保证key的顺序
+     * 以数据库字段为Key, 数据库表字段映射列表 最好使用LinkedHashMap保证key的顺序
      */
     private Map<String, FieldMapper> fieldMappers;
 
 	/**
-	 * 以Java字段为Key , 最好使用LinkedHashMap保证key的顺序
+	 * 以JavaBean字段为Key , 最好使用LinkedHashMap保证key的顺序
 	 */
 	private Map<String, FieldMapper> propertyMappers;
-
-    /**
-     * 以JavaBean属性为Key
-     */
-    private Map<String, PropertyDescriptor> mappedPropertys;
 
 	/**
 	 * 实体类中的扩展字段 用于in 查询 和 between 查询
 	 */
-	private Map<String,Field> extFields;
-    /**
-     * 数据库表字段映射列表
-     */
-    //private  List<FieldMapper> fieldMapperList ;
+	private Map<String, QueryOperation> extFields;
+	/**
+	 * 当使用其他类(非映射实体类)实例的bean查询时使用
+	 */
+	private Map<Class<?>, Map<String, QueryOperation>> queryOperations;
     /**
      * Field Property is Load(查询级别)
      */
@@ -120,21 +123,20 @@ public class EntityMapper<T> {
 		fieldInitialCapacity = fieldInitialCapacity +5;
 		
 		if(fieldInitialCapacity < 10){
-			fieldInitialCapacity = 10;
+			fieldInitialCapacity = 16;
 		}
 		
 		this.entityClass = entityClass;
 		this.fieldMappers =  new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
 		this.propertyMappers = new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
-		this.mappedPropertys =  new HashMap<String, PropertyDescriptor>(fieldInitialCapacity);
 	}
 	
-	public Annotation getTableMapperAnnotation() {
-		return tableMapperAnnotation;
+	public Annotation getTableAnnotation() {
+		return tableAnnotation;
 	}
 
-	public void setTableMapperAnnotation(Annotation tableMapperAnnotation) {
-		this.tableMapperAnnotation = tableMapperAnnotation;
+	public void setTableAnnotation(Annotation tableAnnotation) {
+		this.tableAnnotation = tableAnnotation;
 	}
 
 	public String[] getPrimaryKeys() {
@@ -218,7 +220,7 @@ public class EntityMapper<T> {
 		//1.
 		if(dbTableName == null){
 			//2.
-			if(tableMapperAnnotation == null){
+			if(tableAnnotation == null){
 				Annotation[] anns  = entityClass.getDeclaredAnnotations();
 				for (Annotation annotation : anns) {
 					if(annotation instanceof Table){
@@ -231,8 +233,8 @@ public class EntityMapper<T> {
 				}
 			}
 			//3.
-			if(tableMapperAnnotation instanceof Table){
-				Table table  = (Table) tableMapperAnnotation;
+			if(tableAnnotation instanceof Table){
+				Table table  = (Table) tableAnnotation;
 				dbTableName = table.name();
 			}
 			//4.
@@ -255,7 +257,16 @@ public class EntityMapper<T> {
 	public void setEntityClass(Class<T> entityClass) {
 		this.entityClass = entityClass;
 	}
-    /**
+
+	public boolean isSelectStar() {
+		return selectStar;
+	}
+
+	public void setSelectStar(boolean selectStar) {
+		this.selectStar = selectStar;
+	}
+
+	/**
      * @see #fieldMappers
      */
 	public Map<String, FieldMapper> getFieldMappers() {
@@ -314,53 +325,65 @@ public class EntityMapper<T> {
 		this.propertyMappers.put(fieldMapper.getFieldName(),fieldMapper);
 		return this;
 	}
-
-	
-	
-    public Map<String, PropertyDescriptor> getMappedPropertys() {
-		return mappedPropertys;
-	}
-
-	public void setMappedPropertys(Map<String, PropertyDescriptor> mappedPropertys) {
-		this.mappedPropertys = mappedPropertys;
-	}
 	
 	public PropertyDescriptor getPropertyDescriptor(String fieldName) {
-		return mappedPropertys.get(fieldName);
-	}
-	@SuppressWarnings("rawtypes")
-	public EntityMapper addPropertyDescriptor(String fieldName, PropertyDescriptor pd) {
-		this.mappedPropertys.put(fieldName, pd);
-		return this;
+		return propertyMappers.get(fieldName).getPropertyDescriptor();
 	}
 
-	public Collection<Field> getExtFields() {
+	public Collection<QueryOperation> getExtFields() {
 		if (extFields == null) {
 			return null;
 		}
 		return extFields.values();
 	}
+	public Map<String,QueryOperation> getExtFieldsMap() {
+		return extFields;
+	}
+	public Map<String, QueryOperation> getExtFieldsMap(Class<?> beanClass) {
+		if (beanClass == null || beanClass == entityClass) {
+			return extFields;
+		}
+		if (queryOperations == null) {
+			queryOperations = new HashMap<>(4);
+			Map<String, QueryOperation> operationMap = MapperUtils.getQueryOperationMap(beanClass);
+			queryOperations.put(beanClass, operationMap);
+			return operationMap;
+		}
+		if (queryOperations.containsKey(beanClass)) {
+			return queryOperations.get(beanClass);
+		}
+		Map<String, QueryOperation> operationMap = MapperUtils.getQueryOperationMap(beanClass);
+		queryOperations.put(beanClass, operationMap);
+		return operationMap;
+	}
+	public QueryOperation getExtField(Class<?> beanClass,String fieldName) {
+		Map<String, QueryOperation> queryOperationMap = getExtFieldsMap(beanClass);
+		if(queryOperationMap == null){
+			return null;
+		}
+		return queryOperationMap.get(fieldName);
+	}
 
-	public Field getExtField(String fieldName) {
+	public QueryOperation getExtField(String fieldName) {
 		if (extFields == null) {
 			return null;
 		}
 		return extFields.get(fieldName);
 	}
 
-	public void setExtFields(Map<String,Field> extFields) {
+	public void setExtFields(Map<String,QueryOperation> extFields) {
 		this.extFields = extFields;
 	}
 
-	public void addExtFields(Field extField) {
+	public void addExtFields(QueryOperation extField) {
 		if(this.extFields == null){
-			this.extFields = new HashMap<String,Field>();
+			this.extFields = new HashMap<String,QueryOperation>();
 		}
 		extFields.put(extField.getName(),extField);
 	}
 
 	public Collection<FieldMapper> getFieldMapperList() {
-		return Collections.unmodifiableCollection(fieldMappers.values());
+		return fieldMappers.values();
 	}
 	
 
@@ -414,15 +437,16 @@ public class EntityMapper<T> {
 	public String getSelectAllSql(boolean distinct) {
 		if(selectAllSql == null){
 			String[] cols = this.getColumnNames();
-			if(cols == null){
+			if(selectStar || cols == null){
 				//XXX: 特殊情况处理
 				StringBuilder selectAllSql = new StringBuilder();
 				selectAllSql.append("SELECT ");
 				if(distinct){
 					selectAllSql.append("DISTINCT ");
 				}
-				selectAllSql.append(" * FROM ").append(this.getDbTableName());
-				return selectAllSql.toString();
+				selectAllSql.append("* FROM ").append(this.getDbTableName());
+				this.selectAllSql = selectAllSql.toString();
+				return this.selectAllSql;
 			}
 		    this.selectAllSql = getSelectAllSql(cols, true,distinct);
 		}
@@ -576,11 +600,39 @@ public class EntityMapper<T> {
 	public void setRowMapper(RowMapper<T> rowMapper) {
 		this.rowMapper = rowMapper;
 	}
-	
-	
-	
-	
-	
+
+
+	/**
+	 * @see javax.persistence.Transient
+	 */
+	public static class ExcludeTransientFieldFilter implements ReflectionUtils.FieldFilter {
+
+		private final Class<? extends Annotation> annotationType = Transient.class;
+
+		private final String[] IGNORE_PROPERTY = {"class", "serialVersionUID"};
+
+		//AnnotationUtils.getAnnotation(field, annotationType) == null;
+		// 返回 true 是需要使用的属性
+		public boolean matches(Field field) {
+			if (isIgnoreProperties(field)) {
+				return false;
+			}
+			return field.getAnnotation(annotationType) == null;
+		}
+
+		private boolean isIgnoreProperties(Field field) {
+			for (String ignore : IGNORE_PROPERTY) {
+				if (ignore.equals(field.getName())) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public String getDescription() {
+			return String.format("Annotation filter for %s", annotationType.getName());
+		}
+	}
 	
 
 }

@@ -161,7 +161,8 @@ public class MappedInvokeInterceptor implements InvokeInterceptor{
         this.interceptor.preInvoke(request,args);
     }
 
-
-
-
+    @Override
+    public void afterFinally(NativeWebRequest request, Object[] args) throws Exception {
+        this.interceptor.afterFinally(request,args);
+    }
 }

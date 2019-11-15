@@ -3,6 +3,8 @@ package org.nbone.framework.spring.web.mvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.nbone.core.exception.ExceptionInfo;
 import org.nbone.core.exception.ExceptionUtils;
+import org.nbone.core.exception.ModuleSystemException;
+import org.nbone.core.exception.SubSystemException;
 import org.nbone.framework.spring.web.filter.RequestIdFilter;
 import org.nbone.framework.spring.web.log.domain.ErrorLog;
 import org.slf4j.Logger;
@@ -82,12 +84,9 @@ public class ExceptionHandlerAdvice {
      */
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.OK)
-    public Object baseIllegelException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("baseIllegelException:["+req.getRequestURI()+"]", ex);
-
-        String requestId = getRequestId(req);
-        ayncErrorLog(ex, ex.getMessage(), req, response);
-        return new ExceptionInfo(errorCode, ex.getMessage(), ex).requestId(requestId);
+    public Object baseIllegalException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
+        String msg = ExceptionHandlerUtils.getMessage(req,ex);
+        return exception(ex,msg,req,response);
     }
 
 
@@ -120,10 +119,9 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = ServletException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object requestException(ServletException ex, HttpServletRequest req, HttpServletResponse response) {
-        String msg = ExceptionHandlerUtils.getMessage(ex);
+        String msg = ExceptionHandlerUtils.getMessage(req,ex);
         return exception(ex,msg,req,response);
     }
-
     @ExceptionHandler(value = ServletRequestBindingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object requestBindingException(ServletRequestBindingException ex, HttpServletRequest req, HttpServletResponse response) {
@@ -145,8 +143,15 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = JsonProcessingException.class)
     @ResponseStatus(HttpStatus.OK)
     public Object jsonException(JsonProcessingException ex, HttpServletRequest req, HttpServletResponse response) {
-        String msg = ExceptionHandlerUtils.getMessage(ex);
+        String msg = ExceptionHandlerUtils.getMessage(req,ex);
         return exception(ex,msg,req,response);
+    }
+
+    @ExceptionHandler(value = {ModuleSystemException.class, SubSystemException.class})
+    @ResponseStatus(HttpStatus.OK)
+    public Object subSystemException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
+        String msg = ExceptionHandlerUtils.getMessage(req,ex);
+        return exception(ex, msg, req, response);
     }
 
     private Object exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {

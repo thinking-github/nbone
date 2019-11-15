@@ -27,7 +27,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	
 	public <T> void  checkSqlModel(SqlModel<T> sqlModel) {
 		if(sqlModel == null){
-			throw new BuilderSQLException("sqlModel is null.");
+			throw new BuilderSQLException("build param sqlModel is null.");
 		}
 	}
 	
@@ -57,6 +57,10 @@ public abstract class BaseSqlSession implements SqlSession {
 
 	@Override
 	public <K, V> Map<K, V> getMapWithMapKey(Object object, SqlConfig sqlConfig) {
+		throw new UnsupportedOperationException("unsupported getMapWithMapKey operation.");
+	}
+	@Override
+	public <K, V> Map<K, V> getMapWithMapKey(SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported getMapWithMapKey operation.");
 	}
 
@@ -107,6 +111,12 @@ public abstract class BaseSqlSession implements SqlSession {
 	public <T> List<T> getForLimit(Object object, SqlConfig sqlConfig, int limit) {
 		throw new UnsupportedOperationException("unsupported getForLimit operation.");
 	}
+
+	@Override
+	public <T> List<T> getForLimit(Object object, SqlConfig sqlConfig, long offset, int limit) {
+		throw new UnsupportedOperationException("unsupported getForLimit operation.");
+	}
+
 	@Override
 	public <T> List<T> getForLimit(Object object, Map<String, String> operationMap, GroupQuery group,int limit,String... afterWhere) {
 		throw new UnsupportedOperationException("unsupported getForLimit operation.");
@@ -208,6 +218,11 @@ public abstract class BaseSqlSession implements SqlSession {
 
 	@Override
 	public <T> T get(Object object) {
+		throw new UnsupportedOperationException("unsupported  operation.");
+	}
+
+	@Override
+	public <T> T getOne(Object object) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 

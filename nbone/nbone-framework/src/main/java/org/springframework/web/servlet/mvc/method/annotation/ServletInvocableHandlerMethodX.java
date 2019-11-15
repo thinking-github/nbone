@@ -58,7 +58,13 @@ public class ServletInvocableHandlerMethodX extends ServletInvocableHandlerMetho
             invokeExecutionChain.applyPreHandle(request,args);
         }
 
-        Object returnValue = doInvoke(args);
+        Object returnValue;
+        try {
+            returnValue = doInvoke(args);
+        } finally {
+            invokeExecutionChain.applyAfterFinally(request, args);
+        }
+
         if (logger.isTraceEnabled()) {
             logger.trace("Method [" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
                     "] returned [" + returnValue + "]");

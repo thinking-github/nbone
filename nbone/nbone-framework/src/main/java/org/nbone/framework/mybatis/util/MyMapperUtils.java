@@ -19,6 +19,8 @@ import org.nbone.framework.mybatis.MySqlSessionTemplate;
 import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
 import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
 import org.nbone.framework.spring.support.ComponentFactory;
+import org.nbone.persistence.JdbcOptions;
+import org.nbone.persistence.annotation.QueryOperation;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.MapperUtils;
 import org.nbone.persistence.mapper.EntityMapper;
@@ -188,6 +190,7 @@ public class MyMapperUtils {
 		}
 		entityMapper.setDbTableName(tableName);
 		entityMapper.setPrimaryKeys(primaryList);
+		entityMapper.setSelectStar(JdbcOptions.ENABLE_STAR);
 		
 		//field 
 		for (ResultMapping resultMapping : attrsResultMapping) {
@@ -197,10 +200,10 @@ public class MyMapperUtils {
 			
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(entityClass, fieldName);
 			if(propertyDescriptor == null){
-				throw  new  NullPointerException(fieldName + " property is not exist.");
+				throw new NullPointerException(fieldName + " property is not exist.");
 
 			}
-			FieldMapper fieldMapper = new FieldMapper(propertyDescriptor);
+			FieldMapper fieldMapper = new FieldMapper(fieldName,javaType,propertyDescriptor);
 			Field field;
 			try {
 				field = entityClass.getDeclaredField(fieldName);
@@ -211,10 +214,7 @@ public class MyMapperUtils {
 				logger.error(e.getMessage(), e);
 			}
 			
-			fieldMapper.setFieldName(fieldName);
 			fieldMapper.setDbFieldName(dbFieldName);
-			fieldMapper.setPropertyType(javaType);
-			
 			for (String string : primaryList) {
 				if(string != null && string.equals(dbFieldName)){
             		fieldMapper.setPrimaryKey(true);
@@ -224,7 +224,7 @@ public class MyMapperUtils {
 			entityMapper.addFieldMapper(dbFieldName, fieldMapper);
 		}
 
-		Map<String,Field> extFields = MapperUtils.getExtFieldsMap(entityClass);
+		Map<String, QueryOperation> extFields = MapperUtils.getExtFieldsMap(entityClass);
 		entityMapper.setExtFields(extFields);
 
 		  //Spring Jdbc

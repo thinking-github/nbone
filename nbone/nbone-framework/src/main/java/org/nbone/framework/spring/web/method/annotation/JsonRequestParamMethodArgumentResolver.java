@@ -60,8 +60,7 @@ public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMe
         if (paramValues == null) {
             return null;
             
-        } 
-        
+        }
         try {
             if(paramValues.length == 1) {
                 String text = paramValues[0]; 
@@ -70,21 +69,22 @@ public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMe
                 if(MapWapper.class.isAssignableFrom(paramType)) {
                     MapWapper<?, ?> jsonMap = (MapWapper<?, ?>) paramType.newInstance();
                     
-                    MapType mapType = (MapType) getJavaType(HashMap.class);
-                    
+                    MapType mapType;
                     if(type instanceof ParameterizedType) {
-                        mapType = (MapType) mapType.narrowKey((Class<?>)((ParameterizedType)type).getActualTypeArguments()[0]);
-                        mapType = (MapType) mapType.narrowContentsBy((Class<?>)((ParameterizedType)type).getActualTypeArguments()[1]); 
+                       Type keyT =  ((ParameterizedType)type).getActualTypeArguments()[0];
+                       Type valueT = ((ParameterizedType)type).getActualTypeArguments()[1];
+                       mapType = MapType.construct(HashMap.class,getJavaType(keyT),getJavaType(valueT));
+                    }else {
+                        mapType = (MapType) getJavaType(HashMap.class);
                     }
                     jsonMap.setInnerMap(mapper.<Map>readValue(text, mapType));
                     return jsonMap;
                 }
-                
+
                 JavaType javaType = getJavaType(paramType);
-
-
-                if(Collection.class.isAssignableFrom(paramType)) {
-                    javaType = javaType.narrowContentsBy((Class<?>)((ParameterizedType)type).getActualTypeArguments()[0]);                        
+                if (Collection.class.isAssignableFrom(paramType)) {
+                    JavaType pJavaType = getJavaType(((ParameterizedType) type).getActualTypeArguments()[0]);
+                    javaType = javaType.withContentType(pJavaType);
                 }
                 //XXX:thinking
                 if(!StringUtils.hasText(text)){
@@ -108,10 +108,10 @@ public class JsonRequestParamMethodArgumentResolver extends AbstractNamedValueMe
                 "too many request json parameter '" + name + "' for method parameter type [" + paramType + "], only support one json parameter");
 	}
 	
-	protected JavaType getJavaType(Class<?> clazz) {
+	protected JavaType getJavaType(Type type) {
 		//1.x
 		//TypeFactory.type(clazz);
-        return TypeFactory.defaultInstance().constructType(clazz);
+        return TypeFactory.defaultInstance().constructType(type);
     }
 
 	@Override

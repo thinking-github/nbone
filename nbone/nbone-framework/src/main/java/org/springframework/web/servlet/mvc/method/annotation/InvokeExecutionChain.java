@@ -157,6 +157,16 @@ public class InvokeExecutionChain {
         }
     }
 
+    // invoke finally code block
+    void applyAfterFinally(NativeWebRequest webRequest, Object... args) throws Exception {
+        InvokeInterceptor[] interceptors = getInterceptors();
+        if (!ObjectUtils.isEmpty(interceptors)) {
+            for (int i = interceptors.length - 1; i >= 0; i--) {
+                InvokeInterceptor interceptor = interceptors[i];
+                interceptor.afterFinally(webRequest, args);
+            }
+        }
+    }
 
     /**
      * Delegates to the handler's {@code toString()}.

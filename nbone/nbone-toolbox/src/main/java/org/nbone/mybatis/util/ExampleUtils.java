@@ -263,13 +263,13 @@ public class ExampleUtils {
                 break;
 
             case LIKE:
-                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffux());
+                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffix());
                 break;
             case LEFT_LIKE:
-                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffux());
+                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffix());
                 break;
             case RIGHT_LIKE:
-                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffux());
+                criteria.andLike(name, LIKE.getValuePrefix() + value + LIKE.getValueSuffix());
                 break;
             case IS_NULL:
                 criteria.andIsNull(name);

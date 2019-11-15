@@ -17,7 +17,16 @@ public interface InvokeInterceptor {
      * @throws Exception
      *
      */
-    void preInvoke(NativeWebRequest request,Object... args) throws Exception;
+    void preInvoke(NativeWebRequest request, Object... args) throws Exception;
+
+    /**
+     * invoke finally code block
+     *
+     * @param request
+     * @param args
+     * @throws Exception
+     */
+    void afterFinally(NativeWebRequest request, Object[] args) throws Exception;
 
 
 

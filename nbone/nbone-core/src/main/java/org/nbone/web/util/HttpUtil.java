@@ -168,17 +168,6 @@ public class HttpUtil {
 	}
 
 	/**
-	 * 获取当前URL
-	 * 
-	 * @param request
-	 *            设置Request对象
-	 * @return String 返回当前URL
-	 */
-	public static String getCurrentURL(HttpServletRequest request) {
-		return request.getRequestURL().toString();
-	}
-
-	/**
 	 * 获取当前完整URL，包括参数
 	 * 
 	 * @param request
@@ -278,27 +267,7 @@ public class HttpUtil {
 		return params;
 	}
 
-	/**
-	 * 获取当前远程请求的真实IP，包括处理使用代理的请求
-	 * 
-	 * @param request
-	 *            设置Request对象
-	 * @return String 返回当前远程请求的真实IP，包括处理使用代理的请求
-	 */
-	public static String getRemoteVerityIP(HttpServletRequest request) {
-		String ip = request.getHeader("x-forwarded-for");
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getRemoteAddr();
-		}
 
-		return ip;
-	}
 
 	/**
 	 * 获取当前远程请求的真实MAC地址
@@ -309,7 +278,7 @@ public class HttpUtil {
 	 */
 	public static String getRemoteMac(HttpServletRequest request) {
 		/** IP Address */
-		String address = getRemoteVerityIP(request);
+		String address = RequestUtils.getRemoteVerityIP(request);
 		/** MAC Address */
 		String mac;
 
