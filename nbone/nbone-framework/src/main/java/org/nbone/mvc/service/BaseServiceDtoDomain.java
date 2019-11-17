@@ -24,12 +24,12 @@ import org.springframework.data.domain.Page;
  *
  * @param <T> DTOClass
  * @param <P> DomainClass 
- * @param <IdType> 
+ * @param <Id>
  */
 @SuppressWarnings(value = "unchecked")
-public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> extends BaseObject  implements SuperService<T, IdType>{
+public abstract  class BaseServiceDtoDomain<T,P,Id extends Serializable> extends BaseObject  implements SuperService<T, Id>{
 	
-	private BaseServiceDomain<P,IdType> baseServiceDomain   = new BaseServiceDomain<P, IdType>();
+	private BaseServiceDomain<P,Id> baseServiceDomain   = new BaseServiceDomain<P, Id>();
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -93,7 +93,7 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
     //--------------------------------------------------------------------
 	@Override
-	public IdType save(T object) {
+	public Id save(T object) {
 		P bean = this.copyProperties(object, targetClass);
 		
 		return baseServiceDomain.save(bean);
@@ -150,14 +150,14 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public void delete(IdType id) {
-		   baseServiceDomain.delete(id);	
+	public void delete(Id id,String tableName) {
+		   baseServiceDomain.delete(id,tableName);
 	}
 
 	@Override
-	public T get(IdType id) {
+	public T get(Id id,String tableName) {
 		P pojo;
-		pojo =baseServiceDomain.get(id);
+		pojo =baseServiceDomain.get(id,tableName);
 		if(pojo == null){
 			return null;
 		}
@@ -190,35 +190,35 @@ public abstract  class BaseServiceDtoDomain<T,P,IdType extends Serializable> ext
 	}
 
 	@Override
-	public void deleteByEntityParams(T object) {
+	public void deleteByEntity(T object) {
 		P bean = this.copyProperties(object, targetClass);
-		baseServiceDomain.deleteByEntityParams(bean);
+		baseServiceDomain.deleteByEntity(bean);
 	}
 
 	@Override
-	public void delete(IdType[] ids) {
-		baseServiceDomain.delete(ids);
+	public void delete(Id[] ids,String tableName) {
+		baseServiceDomain.delete(ids,tableName);
 	}
 	@Override
-	public void delete(Collection<?> ids) {
-		baseServiceDomain.delete(ids);
+	public void delete(Collection<?> ids,String tableName) {
+		baseServiceDomain.delete(ids,tableName);
 	}
 	@Override
-	public List<T> getAll() {
-		List<P> beans =  baseServiceDomain.getAll();
+	public List<T> getAll(String tableName) {
+		List<P> beans =  baseServiceDomain.getAll(tableName);
 		
 		return listBean2ListDto(beans);
 	}
 	@Override
-	public List<T> getAll(IdType[] ids) {
-		List<P> beans = baseServiceDomain.getAll(ids);
+	public List<T> getAll(Id[] ids,String tableName) {
+		List<P> beans = baseServiceDomain.getAll(ids,tableName);
 		return listBean2ListDto(beans);
 	}
 	
 
 	@Override
-	public List<T> getAll(Collection<?> ids) {
-		List<P> beans = baseServiceDomain.getAll(ids);
+	public List<T> getAll(Collection<?> ids,String tableName) {
+		List<P> beans = baseServiceDomain.getAll(ids,tableName);
 		return listBean2ListDto(beans);
 	}
 

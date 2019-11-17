@@ -85,8 +85,7 @@ public abstract class BaseObject {
 	
 	
 	public static void main(String[] args) {
-		BaseObject ss = new BaseObject() {
-		};
+		BaseObject ss = new BaseObject() {};
 		List<?> sources = new ArrayList<>();
 		ss.copyProperties(sources, BaseObject.class);
 	}

@@ -13,17 +13,17 @@ import java.util.List;
  * @since   2016年4月4日
  *
  * @param <T>
- * @param <PK>
+ * @param <Id>
  */
 @SuppressWarnings("unused")
-public interface ISuper<T,PK extends Serializable> {
+public interface ISuper<T,Id extends Serializable> {
 	
 	/**
 	 * 保存数据
 	 * @param object
 	 * @return 返回主键id
 	 */
-	public PK save(T object);
+	public Id save(T object);
 	
 	/**
 	 *  保存数据
@@ -102,24 +102,27 @@ public interface ISuper<T,PK extends Serializable> {
 	 * 按实体中不为空属性参数删除数据
 	 * @param object
 	 */
-	public void deleteByEntityParams(T object);
-	
+	public void deleteByEntity(T object);
+
 	/**
 	 * 按id删除数据
+	 *
 	 * @param id
+	 * @param tableName 支持分表和动态表名称 可为空，为空时使用默认
 	 */
-	public void delete(PK id);
+	public void delete(Id id, String tableName);
 	
-	public void delete(PK[] ids);
+	public void delete(Id[] ids,String tableName);
 	
-	public void delete(Collection<?> ids);
+	public void delete(Collection<?> ids,String tableName);
 	
 	/**
 	 * 按id获取数据
 	 * @param id
+	 * @param tableName 支持分表和动态表名称 可为空，为空时使用默认
 	 * @return
 	 */
-	public T get(PK id);
+	public T get(Id id,String tableName);
 	/**
 	 * 统计全部数据的行数
 	 * @return
@@ -144,11 +147,11 @@ public interface ISuper<T,PK extends Serializable> {
 	 * 获取数据(数据量大时不建议使用)
 	 * @return
 	 */
-	public List<T> getAll();
+	public List<T> getAll(String tableName);
 	
-	public List<T> getAll(PK[] ids);
+	public List<T> getAll(Id[] ids,String tableName);
 	
-	public List<T> getAll(Collection<?> ids);
+	public List<T> getAll(Collection<?> ids,String tableName);
 	
 	/**
 	 * 按照实体中的参数查询实体列表

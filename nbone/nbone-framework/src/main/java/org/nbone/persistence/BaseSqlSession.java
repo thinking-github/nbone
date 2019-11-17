@@ -32,17 +32,17 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 	
 	@Override
-	public <T> List<T> getAll(Class<T> clazz) {
+	public <T> List<T> getAll(Class<T> clazz,String tableName) {
 		throw new UnsupportedOperationException("unsupported getAll operation.");
 	}
 
 	@Override
-	public <T> List<T> getAll(Class<T> clazz, Collection<?> ids) {
+	public <T> List<T> getAll(Class<T> clazz, Collection<?> ids,String tableName) {
 		throw new UnsupportedOperationException("unsupported getAll operation.");
 	}
 
 	@Override
-	public <T> List<T> getAll(Class<T> clazz, Object[] ids) {
+	public <T> List<T> getAll(Class<T> clazz, Object[] ids,String tableName) {
 		throw new UnsupportedOperationException("unsupported getAll operation.");
 	}
 
@@ -198,21 +198,21 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public int delete(Class<?> clazz, Serializable id) {
+	public int delete(Class<?> clazz, Serializable id,String tableName) {
 		throw new UnsupportedOperationException("unsupported delete operation.");
 	}
 
 	@Override
-	public <T> int delete(Class<T> clazz, Object[] ids) {
+	public <T> int delete(Class<T> clazz, Object[] ids,String tableName) {
 		throw new UnsupportedOperationException("unsupported delete operation.");
 	}
 	@Override
-	public int deleteByEntityParams(Object object) {
+	public int deleteByEntity(Object object) {
 		throw new UnsupportedOperationException("unsupported deleteByEntityParams operation.");
 	}
 	
 	@Override
-	public <T> T get(Class<T> clazz, Serializable id) {
+	public <T> T get(Class<T> clazz, Serializable id,String tableName) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 

@@ -1,6 +1,7 @@
 package org.nbone.persistence.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ public class BaseEntity<T,Id extends Serializable> implements Serializable {
     /**
      * 实体编号（唯一标识）
      */
+    @javax.persistence.Id
     protected Id  id;
 
     protected String  remarks;	  // 备注

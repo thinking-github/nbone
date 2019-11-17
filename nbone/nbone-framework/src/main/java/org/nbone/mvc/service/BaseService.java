@@ -12,7 +12,7 @@ import java.util.Map;
  * @version 1.0
  * @since 2019-08-27
  */
-public interface BaseService<T,IdType extends Serializable> extends SuperService<T, IdType>  {
+public interface BaseService<T,Id extends Serializable> extends SuperService<T, Id>  {
 
     public List<T> getForList(T object, SqlConfig sqlConfig);
 

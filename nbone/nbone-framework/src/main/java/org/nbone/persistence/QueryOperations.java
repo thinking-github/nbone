@@ -15,28 +15,7 @@ import org.springframework.data.domain.Page;
  */
 public interface QueryOperations {
 	
-	
-	/**
-	 * 获取全部数据(数据量大时不建议使用)
-	 * @param clazz 映射实体类型
-	 * @return
-	 */
-	public <T> List<T> getAll(Class<T> clazz);
-	
-	/**
-	 * Returns all instances of the type with the given IDs.
-	 * @param clazz 映射实体类型
-	 * @param ids
-	 * @return
-	 */
-	public <T> List<T> getAll(Class<T> clazz,Collection<?> ids);
-	/**
-	 * Returns all instances of the type with the given IDs.
-	 * @param clazz 映射实体类型
-	 * @param ids
-	 * @return
-	 */
-	public <T> List<T> getAll(Class<T> clazz,Object[] ids);
+
 	/**
 	 * 根据 entity bean含有参数的属性组装查询条件 hibernate get method(参数默认全部使用 等号 =)
 	 * @param object 查询实体参数

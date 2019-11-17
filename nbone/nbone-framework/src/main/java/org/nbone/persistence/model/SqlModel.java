@@ -1,6 +1,7 @@
 package org.nbone.persistence.model;
 
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -10,6 +11,7 @@ import org.nbone.persistence.JdbcConstants;
 import org.nbone.persistence.JdbcOptions;
 import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.mapper.EntityMapper;
+import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.support.PageSuport;
 import org.nbone.util.lang.ToStringUtils;
 import org.slf4j.Logger;
@@ -235,9 +237,12 @@ public class SqlModel<T> {
 	public void setEntityMapper(EntityMapper<?> entityMapper) {
 		this.entityMapper = entityMapper;
 	}
-	
-	public String[] getPrimaryKeys() {
-		return entityMapper.getPrimaryKeys();
+
+	public FieldMapper getPrimaryKey() {
+		return entityMapper.getPrimaryKeyFieldMapper();
+	}
+	public List<FieldMapper> getPrimaryKeys() {
+		return entityMapper.getPrimaryKeyFields();
 	}
 
 	public RowMapper<?> getRowMapper() {

@@ -89,7 +89,7 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 
 	private  void check(FieldMapper fieldMapper,String paramName){
 		if(fieldMapper == null){
-			logger.error("table name '{}',columns : {}",entityMapper.getDbTableName(),entityMapper.getCommaDelimitedColumns());
+			logger.error("table name '{}',columns : {}",entityMapper.getTableName(object),entityMapper.getCommaDelimitedColumns());
 			throw new IllegalArgumentException("["+object.getClass().getName()+"] Cannot resolve field: " +paramName);
 		}
 	}

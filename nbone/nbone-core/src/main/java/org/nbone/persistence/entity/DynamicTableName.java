@@ -9,6 +9,7 @@ package org.nbone.persistence.entity;
  */
 public interface DynamicTableName {
 
+    String TABLE_NAME_KEY = "dynamicTableName";
 
     /**
      * 获取动态表名 - 只要有返回值，不是null和''，就会用返回值作为表名
@@ -16,5 +17,7 @@ public interface DynamicTableName {
      * @return
      */
     String getTableName();
+
+    void setTableName(String tableName);
 
 }

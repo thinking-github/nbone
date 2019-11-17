@@ -92,25 +92,14 @@ public class MappingBuilder {
             Field[] fields = entityClass.getDeclaredFields();
             EntityMapper<E> entityMapper = new EntityMapper<E>(entityClass, fields.length);
             //table Entity mapper
-            Annotation[] classAnnotations = entityClass.getDeclaredAnnotations();
-            if (classAnnotations.length == 0) {
-                throw new RuntimeException("Class " + entityClass.getName() + " has no '@Entity' annotation, can't build 'EntityMapper'.");
-            }
-
-            Entity entity = entityClass.getAnnotation(Entity.class);
-            if (entity == null) {
-                throw new RuntimeException("Class " + entityClass.getName() + " has no '@Entity' annotation, "
-                        + "which has the database table information," + "can't build 'EntityMapper'.");
-            }
-            String tableName = entity.name();
             Table table = entityClass.getAnnotation(Table.class);
             if (table != null) {
-                tableName = StringUtils.hasLength(table.name()) ? table.name() : tableName;
                 entityMapper.setTableAnnotation(table);
             }
-            entityMapper.setDbTableName(StringUtils.hasLength(tableName) ? tableName : entityClass.getSimpleName());
+            String tableName = EntityMapper.getTableName(entityClass);
+            entityMapper.setTableName(tableName);
 
-            List<String> primaryKeys = new ArrayList<String>(1);
+            List<FieldMapper> primaryKeys = new ArrayList<FieldMapper>(1);
             //serialVersionUID
             ReflectionUtils.doWithFields(entityClass, new ReflectionUtils.FieldCallback() {
                 @Override
@@ -135,7 +124,7 @@ public class MappingBuilder {
                     //主键设置
                     if (field.isAnnotationPresent(Id.class)) {
                         fieldMapper.setPrimaryKey(true);
-                        primaryKeys.add(fieldMapper.getDbFieldName());
+                        primaryKeys.add(fieldMapper);
                     }
                     //fieldMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
 
@@ -144,7 +133,7 @@ public class MappingBuilder {
 
             },excludeFieldFilter);
 
-            entityMapper.setPrimaryKeys(primaryKeys);
+            entityMapper.setPrimaryKeyFields(primaryKeys);
             entityMapper.setFieldPropertyLoad(true);
             //Spring Jdbc
             RowMapper<E> rowMapper = new EntityPropertyRowMapper<E>(entityMapper);

@@ -33,18 +33,18 @@ public class UserService extends BaseServiceDomain<User,Long> implements SuperSe
 		namedJdbcDao.update(object);
 	}
 	@Override
-	public void delete(Long id) {
-		namedJdbcDao.delete(User.class,id);
+	public void delete(Long id,String tableName) {
+		namedJdbcDao.delete(User.class,id,tableName);
 	}
 	@Override
-	public User get(Long id) {
-		return namedJdbcDao.get(id);
+	public User get(Long id,String tableName) {
+		return namedJdbcDao.get(User.class,id,tableName);
 	}
     /*根据对象实际有效参数 删除和查询 
      */
 	@Override
-	public void deleteByEntityParams(User object) {
-		super.deleteByEntityParams(object);
+	public void deleteByEntity(User object) {
+		super.deleteByEntity(object);
 	}
 	//严格操作规约查询 select * from user where name ='chenyicheng' and age = 18
 	@Override

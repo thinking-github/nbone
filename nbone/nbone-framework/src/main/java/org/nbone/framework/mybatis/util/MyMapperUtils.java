@@ -188,8 +188,7 @@ public class MyMapperUtils {
 		if(primaryList.size() >2){
 			logger.warn(">>>>>联合主键数量超过2个,请注意检查Class: "+entityClass.getName());
 		}
-		entityMapper.setDbTableName(tableName);
-		entityMapper.setPrimaryKeys(primaryList);
+		entityMapper.setTableName(tableName);
 		entityMapper.setSelectStar(JdbcOptions.ENABLE_STAR);
 		
 		//field 

@@ -18,6 +18,7 @@ import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.*;
 import org.nbone.persistence.enums.JdbcFrameWork;
+import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.model.SqlModel;
@@ -103,20 +104,12 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public Object add(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.insertSelectiveSql(object);
-		checkSqlModel(sqlModel);
-		
-		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
-		KeyHolder generatedKeyHolder =  new  GeneratedKeyHolder();
-		namedJdbcTemplate.update(sqlModel.getSql(), paramSource, generatedKeyHolder);
-		Number num = generatedKeyHolder.getKey();
-		
-		String[] primaryKeys = sqlModel.getPrimaryKeys();
-		if(primaryKeys != null && primaryKeys.length > 0){
+		Serializable num = save(object);
+		FieldMapper primaryKey = sqlBuilder.getPrimaryKey(object.getClass());
+		if(primaryKey != null){
 			BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(object);
-			beanWrapper.setPropertyValue(primaryKeys[0], num);
+			beanWrapper.setPropertyValue(primaryKey.getFieldName(), num);
 		}
-		
 		return object;
 	}
 
@@ -160,7 +153,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int delete(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntityParams(object, true);
+		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntity(object, true,null);
 		checkSqlModel(sqlModel);
 		
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -170,8 +163,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	
 
 	@Override
-	public int deleteByEntityParams(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntityParams(object, false);
+	public int deleteByEntity(Object object) {
+		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntity(object, false,null);
 		checkSqlModel(sqlModel);
 		
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
@@ -181,8 +174,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 
 	@Override
-	public int delete(Class<?> clazz, Serializable id) {
-		SqlModel<Map<String,?>> sqlModel = sqlBuilder.deleteSqlById(clazz, id);
+	public int delete(Class<?> clazz, Serializable id,String tableName) {
+		SqlModel<Map<String,?>> sqlModel = sqlBuilder.deleteSqlById(clazz, id,tableName);
 		int row = 0;
 		checkSqlModel(sqlModel);
 		
@@ -192,8 +185,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 	
 	@Override
-	public <T> int delete(Class<T> clazz, Object[] ids) {
-		SqlModel<T> sqlModel = sqlBuilder.deleteSqlByIds(clazz, ids);
+	public <T> int delete(Class<T> clazz, Object[] ids,String tableName) {
+		SqlModel<T> sqlModel = sqlBuilder.deleteSqlByIds(clazz, ids,tableName);
 		int row = 0;
 		checkSqlModel(sqlModel);
 		row = jdbcTemplate.update(sqlModel.getSql(),sqlModel.getParameterArray());
@@ -202,14 +195,14 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 
 	@Override
-	public <T> T get(Class<T> clazz, Serializable id) {
-		SqlModel<Map<String,?>> sqlModel = sqlBuilder.selectSqlById(clazz, id);
-		return getOne(sqlModel, new MapSqlParameterSource(sqlModel.getParameter()));
+	public <T> T get(Class<T> clazz, Serializable id,String tableName) {
+        SqlModel<Map<String,?>> sqlModel = sqlBuilder.selectSqlById(clazz, id,tableName);
+        return getOne(sqlModel, new MapSqlParameterSource(sqlModel.getParameter()));
 	}
 
 	@Override
 	public <T> T get(Object object){
-		SqlModel<Object> sqlModel = sqlBuilder.selectSqlById(object);
+		SqlModel<Object> sqlModel = sqlBuilder.selectSqlById(object,null);
 		return getOne(sqlModel,new BeanPropertySqlParameterSource(object));
 	}
 
@@ -256,8 +249,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 
 	@Override
-	public <T> List<T> getAll(Class<T> clazz) {
-		SqlModel<T> sqlModel = sqlBuilder.selectAllSql(clazz);
+	public <T> List<T> getAll(Class<T> clazz,String tableName) {
+		SqlModel<T> sqlModel = sqlBuilder.selectAllSql(clazz,tableName);
 		checkSqlModel(sqlModel);
 		RowMapper<T> rowMapper =    (RowMapper<T>) sqlModel.getRowMapper();
 		List<T> result  = jdbcTemplate.query(sqlModel.getSql(),rowMapper);
@@ -265,13 +258,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 	
 	@Override
-	public <T> List<T> getAll(Class<T> clazz,Collection<?> ids) {
-		return getAll(clazz, ids.toArray());
+	public <T> List<T> getAll(Class<T> clazz,Collection<?> ids,String tableName) {
+		return getAll(clazz, ids.toArray(),tableName);
 	}
 
 	@Override
-	public <T> List<T> getAll(Class<T> clazz,Object[] ids){
-		SqlModel<T> sqlModel = sqlBuilder.selectSqlByIds(clazz, ids);
+	public <T> List<T> getAll(Class<T> clazz,Object[] ids,String tableName){
+		SqlModel<T> sqlModel = sqlBuilder.selectSqlByIds(clazz, ids,tableName);
 		checkSqlModel(sqlModel);
 		RowMapper<T> rowMapper =    (RowMapper<T>) sqlModel.getRowMapper();
 		List<T> result  = jdbcTemplate.query(sqlModel.getSql(),ids,rowMapper);
@@ -364,12 +357,12 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int[] batchUpdate(Object[] objects,String...properties) {
-		return batchUpdate(objects,properties,null);
+		return batchUpdate(objects,properties,(String[])null);
 	}
 	
 	@Override
 	public int[] batchUpdate(Collection<?> objects,String...properties) {
-		return batchUpdate(objects,properties,null);
+		return batchUpdate(objects,properties,(String[])null);
 	}
 
 	@Override
@@ -418,7 +411,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		 }
 		//XXX: thinking 共享第一实体的sql
 		 EntityMapper<T> entityMapper =  MappingBuilder.ME.getTableMapper(clazz);
-		 String sql  = entityMapper.getDeleteSqlWithId().toString();
+		 String sql  = entityMapper.getDeleteSqlWithId(null).toString();
 		 final List<Serializable> tempids = ids;
 		 final int batchSize = ids.size();
 		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
@@ -442,7 +435,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 			return new int[] {0};
 		}
 		 EntityMapper<T> entityMapper =  MappingBuilder.ME.getTableMapper(clazz);
-		 String sql  = entityMapper.getDeleteSqlWithId().toString();
+		 String sql  = entityMapper.getDeleteSqlWithId(null).toString();
 		 final Serializable[] tempids = ids;
 		 final int batchSize = ids.length;
 		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {

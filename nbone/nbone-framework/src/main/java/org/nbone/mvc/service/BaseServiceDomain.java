@@ -30,9 +30,9 @@ import org.springframework.util.Assert;
  * @since 2016年3月25日下午3:39:45
  *
  * @param <P>
- * @param <IdType>
+ * @param <Id>
  */
-public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObject implements BaseService<P, IdType>{
+public  class BaseServiceDomain<P,Id extends Serializable> extends BaseObject implements BaseService<P, Id>{
 
 	protected final  Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -198,10 +198,10 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	//--------------------------------------------------------------------
 	@SuppressWarnings("unchecked")
 	@Override
-	public IdType save(P object) {
+	public Id save(P object) {
 		checkBuilded();
 		Serializable id  = namedJdbcDao.save(object);
-		return (IdType) id;
+		return (Id) id;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -254,15 +254,15 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 	}
 
 	@Override
-	public void delete(IdType id) {
+	public void delete(Id id,String tableName) {
 		checkBuilded();
-		namedJdbcDao.delete(targetClass, id);
+		namedJdbcDao.delete(targetClass, id,tableName);
 	}
 
 	@Override
-	public P get(IdType id) {
+	public P get(Id id,String tableName) {
 		checkBuilded();
-		 P bean = namedJdbcDao.get(targetClass, id);
+		 P bean = namedJdbcDao.get(targetClass, id,tableName);
 		return bean;
 	}
 
@@ -279,14 +279,14 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 
 
 	@Override
-	public void deleteByEntityParams(P object) {
+	public void deleteByEntity(P object) {
 		checkBuilded();
-		namedJdbcDao.deleteByEntityParams(object);
+		namedJdbcDao.deleteByEntity(object);
 	}
 	@Override
-	public List<P> getAll() {
+	public List<P> getAll(String tableName) {
 		checkBuilded();
-		List<P> beans = namedJdbcDao.getAll(targetClass);
+		List<P> beans = namedJdbcDao.getAll(targetClass,tableName);
 		return beans;
 	}
 
@@ -377,28 +377,28 @@ public  class BaseServiceDomain<P,IdType extends Serializable> extends BaseObjec
 
 
 	@Override
-	public void delete(IdType[] ids) {
+	public void delete(Id[] ids,String tableName) {
 		checkBuilded();
-		namedJdbcDao.delete(targetClass, ids);
+		namedJdbcDao.delete(targetClass, ids,tableName);
 	}
 	
 	@Override
-	public void delete(Collection<?> ids) {
+	public void delete(Collection<?> ids,String tableName) {
 		checkBuilded();
-		namedJdbcDao.delete(targetClass, ids.toArray());
+		namedJdbcDao.delete(targetClass, ids.toArray(),tableName);
 	}
 
 
 	@Override
-	public List<P> getAll(IdType[] ids) {
+	public List<P> getAll(Id[] ids,String tableName) {
 		checkBuilded();
-		List<P> beans = namedJdbcDao.getAll(targetClass, ids);
+		List<P> beans = namedJdbcDao.getAll(targetClass, ids,tableName);
 		return beans;
 	}
 	@Override
-	public List<P> getAll(Collection<?> ids) {
+	public List<P> getAll(Collection<?> ids,String tableName) {
 		checkBuilded();
-		List<P> beans = namedJdbcDao.getAll(targetClass, ids);
+		List<P> beans = namedJdbcDao.getAll(targetClass, ids,tableName);
 		return beans;
 	}
 	

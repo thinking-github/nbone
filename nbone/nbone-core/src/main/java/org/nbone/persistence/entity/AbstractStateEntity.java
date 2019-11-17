@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @version 1.0
  * @since 2019-11-15
  */
-public abstract class DataStateEntity<T, Id extends Serializable> extends BaseEntity<T, Id>
+public abstract class AbstractStateEntity<T, Id extends Serializable> extends BaseEntity<T, Id>
         implements Serializable {
 
     private static final long serialVersionUID = -4416407610435188430L;
@@ -16,16 +16,16 @@ public abstract class DataStateEntity<T, Id extends Serializable> extends BaseEn
      */
     protected Integer status;
 
-    public DataStateEntity(Id id, Integer status) {
+    public AbstractStateEntity(Id id, Integer status) {
         super(id);
         this.status = status;
     }
 
-    public DataStateEntity(Integer status) {
+    public AbstractStateEntity(Integer status) {
         this.status = status;
     }
 
-    public DataStateEntity() {
+    public AbstractStateEntity() {
     }
 
     public Integer getStatus() {

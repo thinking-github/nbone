@@ -69,7 +69,7 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 	public int insert(Class<?> entityClass, Map<String, Object> fieldMap) {
 		simpleJdbcInsert.reuse();
 		EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(entityClass);
-		simpleJdbcInsert.withTableName(entityMapper.getDbTableName());
+		simpleJdbcInsert.withTableName(entityMapper.getTableName(fieldMap));
 		String primaryKey = entityMapper.getPrimaryKey();
 		Object value  = fieldMap.get(primaryKey);
 		if(value == null){
@@ -89,13 +89,13 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 	@Override
 	public Object add(Object object) {
 		EntityMapper<?> entityMapper = insertProcess(object,null);
-		String[]  primaryKeys= entityMapper.getPrimaryKeys();
+		FieldMapper  primaryKey= entityMapper.getPrimaryKeyFieldMapper();
 		
 		Number num = simpleJdbcInsert.executeAndReturnKey(new EntityPropertySqlParameterSource(object));
 		
-		if(primaryKeys != null && primaryKeys.length > 0){
+		if(primaryKey != null){
 			BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(object);
-			beanWrapper.setPropertyValue(primaryKeys[0], num);
+			beanWrapper.setPropertyValue(primaryKey.getFieldName(), num);
 		}
 		
 		return object;
@@ -104,11 +104,10 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 	private EntityMapper<?> insertProcess(Object object, String[] insertProperties){
 		simpleJdbcInsert.reuse();
 		EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(object.getClass());
-		String[]  primaryKeys= entityMapper.getPrimaryKeys();
-		
-		FieldMapper fieldMapper = entityMapper.getFieldMapper(primaryKeys[0]);
+
+		FieldMapper fieldMapper = entityMapper.getPrimaryKeyFieldMapper();
 		Class<?> cls = fieldMapper.getPropertyType();
-		simpleJdbcInsert.withTableName(entityMapper.getDbTableName());
+		simpleJdbcInsert.withTableName(entityMapper.getTableName(object));
 		// option insertProperties
 		if(insertProperties != null && insertProperties.length > 0){
 			List<String> columnNames = new ArrayList<String>();
@@ -124,8 +123,9 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 
 		Object value = PropertyUtil.getProperty(object, fieldMapper.getFieldName());
 		//XXX：当是数字且为空时使用自动生成主键
-		if(value == null && (Number.class.isAssignableFrom(cls) || long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls))){
-			simpleJdbcInsert.usingGeneratedKeyColumns(primaryKeys);
+		if(value == null && (Number.class.isAssignableFrom(cls)
+				|| long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls))){
+			simpleJdbcInsert.usingGeneratedKeyColumns(entityMapper.getPrimaryKeys());
 		}
 		return entityMapper;
 	}

@@ -33,7 +33,7 @@ public class BaseSqlBuilderTest {
 	//@Test
 	public void testbuildSelectSqlByIds(){
 		
-		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.selectSqlByIds(TsProjectDTO.class, new Object[]{1030,1037});
+		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.selectSqlByIds(TsProjectDTO.class, new Object[]{1030,1037},null);
 		System.out.println(sqlModel.getSql());
 		
 	}
@@ -41,7 +41,7 @@ public class BaseSqlBuilderTest {
 	//@Test
 	public void testbuildDeleteSqlByIds(){
 		
-		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.deleteSqlByIds(TsProjectDTO.class, new Long[]{1030L,1037L});
+		SqlModel<TsProjectDTO> sqlModel = sqlBuilder.deleteSqlByIds(TsProjectDTO.class, new Long[]{1030L,1037L},null);
 		System.out.println(sqlModel.getSql());
 		
 	}
@@ -51,8 +51,8 @@ public class BaseSqlBuilderTest {
 		TsProjectDTO object = new TsProjectDTO();
 		object.setCode("2");
 		
-		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntityParams(object, false);
-		String sqld = sqlModel.getEntityMapper().getDeleteSqlWithId();
+		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntity(object, false,null);
+		String sqld = sqlModel.getEntityMapper().getDeleteSqlWithId(null);
 		String sqls = sqlModel.getEntityMapper().getSelectSqlWithId();
 		System.out.println(sqlModel.getSql());
 		System.out.println(sqld);
@@ -83,7 +83,7 @@ public class BaseSqlBuilderTest {
 		sqlConfig.addOperationIn("id",true, new Object[]{1,2,3});
 		sqlConfig.addOperationBetween("modifyDt", new Date(), new Date());
 		
-		sqlConfig.addSqlPropertyRange("createDt","modifyDt", new Date());
+		sqlConfig.addSqlOperationRange("createDt","modifyDt", new Date());
 		
 		sqlConfig.setOrderFieldsASC("id","modify_dt");
 		sqlConfig.setOrderFieldsDESC("create_dt");

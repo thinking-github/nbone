@@ -24,7 +24,7 @@ import org.springframework.data.domain.Page;
  * @param <IdType>
  */
 public interface SuperService<T,IdType extends Serializable> extends ISuper<T, IdType> {
-	
+
 	//static Logger logger = LoggerFactory.getLogger(SuperService.class);
 
 	//批量增删改

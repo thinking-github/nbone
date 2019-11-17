@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.nbone.lang.MathOperation;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 /**
  * 以实体Bean的方式实现单个对象的 增/删/改/查
@@ -124,31 +126,35 @@ public interface SqlSession extends QueryOperations{
 	 * @param object
 	 * @return
 	 */
-	public int deleteByEntityParams(Object object);
+	public int deleteByEntity(Object object);
 	
 	/**
 	 * 单表操作删除一条记录
 	 * @param clazz
 	 * @param id
+	 * @param  tableName 支持分表， 可为空,为空时使用默认表名称
 	 * @return
 	 */
-	public int delete(Class<?> clazz, Serializable id);
+	public int delete(Class<?> clazz, Serializable id,String tableName);
+
 	/**
 	 * 根据主键列表ids删除
 	 * @param clazz
 	 * @param ids
+	 * @param tableName 分表支持，可为空,为空时使用默认表名称
 	 * @return
 	 */
-	public <T> int delete(Class<T> clazz, Object[] ids);
+	public <T> int delete(Class<T> clazz, Object[] ids,String tableName);
 	/**
 	 * 根据主键获取一条记录   <br>
 	 * 参照 hibernate get method
-	 * @param clazz
-	 * @param id
+	 * @param clazz  实体类型
+	 * @param id     主键id
+	 * @param tableName 分表支持，可为空,为空时使用默认表名称
+	 * @param <T>
 	 * @return
 	 */
-	public <T> T get(Class<T> clazz, Serializable id);
-	
+	public <T> T get(Class<T> clazz, Serializable id, String tableName);
 	/**
 	 * 根据主键获取一条记录   <br>
 	 * @param object
@@ -167,6 +173,32 @@ public interface SqlSession extends QueryOperations{
 	 * @return
 	 */
 	public <T> T getOne(Object object);
+
+	/**
+	 * 获取全部数据(数据量大时不建议使用)
+	 * @param clazz 映射实体类型
+	 * @param  tableName 支持分表、动态表,可为空，为空时使用默认值
+	 * @return
+	 */
+	public <T> List<T> getAll(Class<T> clazz, String tableName);
+
+	/**
+	 * Returns all instances of the type with the given IDs.
+	 * @param clazz 映射实体类型
+	 * @param ids   查询主键列表
+	 * @param  tableName 支持分表、动态表,可为空，为空时使用默认值
+	 * @return
+	 */
+	public <T> List<T> getAll(Class<T> clazz, Collection<?> ids, String tableName);
+	/**
+	 * Returns all instances of the type with the given IDs.
+	 * @param clazz 映射实体类型
+	 * @param ids   查询主键列表
+	 * @param  tableName 支持分表、动态表,可为空，为空时使用默认值
+	 * @return
+	 */
+	public <T> List<T> getAll(Class<T> clazz,Object[] ids,String tableName);
+
 	/**
 	 * 统计单表的数据总行数
 	 * @param clazz
@@ -193,9 +225,7 @@ public interface SqlSession extends QueryOperations{
 	 * @param mathOperation
 	 */
 	public int updateMathOperation(Object object,String property,MathOperation mathOperation);
-	
-	
-	
+
 	
 	
 }

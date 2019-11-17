@@ -3,17 +3,20 @@ package org.nbone.persistence.mapper;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
+import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.annotation.QueryOperation;
+import org.nbone.persistence.entity.DynamicTableName;
 import org.nbone.persistence.exception.PrimaryKeyException;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -29,6 +32,8 @@ import org.springframework.util.StringUtils;
  */
 public class EntityMapper<T> {
 
+	private static final Logger logger = LoggerFactory.getLogger(EntityMapper.class);
+
 	public final static String  S = "s";
 	public final static String BETWEEN  = "Between";
 	public final static String _BETWEEN = "_between";
@@ -37,18 +42,15 @@ public class EntityMapper<T> {
      */
     private Annotation tableAnnotation;
     /**
-     * 数据库表主键类型：（单个字段的唯一键）（几个字段组合起来的唯一键）
-     */
-    private List<String> primaryKeys = new ArrayList<String>(1);
-    /**
-     * 数据库表主键映射列表：（单个字段的唯一键）（几个字段组合起来的唯一键）
+     * 数据库表主键映射列表：（单个字段的唯一键）（几个字段组合起来的唯一键）primaryKeys
      */
     private List<FieldMapper> primaryKeyFields = new ArrayList<FieldMapper>(1);
+    private String[] primaryKeys;
 
     /**
      * 数据库表的名称
      */
-    private String  dbTableName;
+    private String  tableName;
     /**
      * 映射实体Bean class  entityName
      */
@@ -88,21 +90,11 @@ public class EntityMapper<T> {
      */
     private String   commaDelimitedColumns;
     
-    private String selectAllSql;
-    
-    private String deleteAllSql;
-    
-    private String countSql;
     /**
      * 根据Id查询 使用?占位符
      */
     private String selectSqlWithId;
-    /**
-     * 根据Id删除 使用?占位符
-     */
-    private String deleteSqlWithId;
-    
-    
+
     /**
      * Spring Jdbc
      */
@@ -140,23 +132,21 @@ public class EntityMapper<T> {
 	}
 
 	public String[] getPrimaryKeys() {
-		List<String> primaryKeys = getPrimaryKeyList();
-		return primaryKeys.toArray(new String[primaryKeys.size()]);
-	}
-	
-	public List<String> getPrimaryKeyList() {
-		if(primaryKeys == null || primaryKeys.size() == 0){
-			 getPrimaryKeyFields();
+		if(primaryKeys == null){
+			List<FieldMapper> primaryKeyFields = getPrimaryKeyFields();
+			primaryKeys = new String[primaryKeyFields.size()];
+			for (int i = 0; i < primaryKeyFields.size(); i++) {
+				primaryKeys[i] = primaryKeyFields.get(i).getDbFieldName();
+			}
 		}
-		return primaryKeys;
+		return  primaryKeys;
 	}
-
 	public String getPrimaryKey() {
-		List<String> primaryKeys = getPrimaryKeyList();
-		if (primaryKeys == null || primaryKeys.size() <= 0) {
+		FieldMapper primaryKey = getPrimaryKeyFieldMapper();
+		if (primaryKey == null) {
 			return null;
 		}
-		return primaryKeys.get(0);
+		return primaryKey.getDbFieldName();
 	}
 
 	public FieldMapper getPrimaryKeyFieldMapper() {
@@ -172,12 +162,6 @@ public class EntityMapper<T> {
 		return fieldMapper != null ? fieldMapper.getFieldName() : null;
 	}
 
-	public void setPrimaryKeys(String[] primaryKeys) {
-		this.primaryKeys = Arrays.asList(primaryKeys);
-	}
-	public void setPrimaryKeys(List<String> primaryKeys) {
-		this.primaryKeys = primaryKeys;
-	}
 	
 	/**
 	 * 没有加载主键时加载主键字段列表和名称
@@ -185,12 +169,10 @@ public class EntityMapper<T> {
 	 */
 	public List<FieldMapper> getPrimaryKeyFields() {
 		if(primaryKeyFields == null || primaryKeyFields.size() == 0){
-			primaryKeys.clear();
 			for (Map.Entry<String,FieldMapper> entry : fieldMappers.entrySet()) {
 				FieldMapper fieldMapper =  entry.getValue();
 				if(fieldMapper.isPrimaryKey()){
 					primaryKeyFields.add(fieldMapper);
-					primaryKeys.add(fieldMapper.getDbFieldName());
 				}
 			}
 		}
@@ -215,39 +197,71 @@ public class EntityMapper<T> {
 	 * <li> 次之最后使用 entityClazz的短名称
 	 * @return TableName
 	 */
-	public String getDbTableName() {
+	private String getTableName() {
 		//当没有设置dbTableName时 使用注解映射的名称
 		//1.
-		if(dbTableName == null){
+		if(tableName == null){
 			//2.
 			if(tableAnnotation == null){
-				Annotation[] anns  = entityClass.getDeclaredAnnotations();
-				for (Annotation annotation : anns) {
-					if(annotation instanceof Table){
-						Table table  = (Table) annotation;
-						dbTableName = table.name();
-						
-						return dbTableName;
-					}
-					
-				}
+				tableName = getTableName(entityClass);
+				return tableName;
 			}
 			//3.
-			if(tableAnnotation instanceof Table){
+			else if(tableAnnotation instanceof Table){
 				Table table  = (Table) tableAnnotation;
-				dbTableName = table.name();
-			}
-			//4.
-			if(dbTableName == null){
-				dbTableName = entityClass.getSimpleName();
+				tableName = table.name();
 			}
 		}
 		
-		return dbTableName;
+		return tableName;
 	}
 
-	public void setDbTableName(String dbTableName) {
-		this.dbTableName = dbTableName;
+	public String getTableName(Object object) {
+        String tableName;
+        if (object == null) {
+            return getTableName();
+        }
+        if (object instanceof DynamicTableName) {
+            tableName = ((DynamicTableName) object).getTableName();
+            if (StringUtils.isEmpty(tableName)) {
+                String message = "class " + object.getClass() + " implements interface DynamicTableName method getTableName return not Empty";
+                logger.error(message);
+                //throw new IllegalArgumentException(message);
+                //use default
+                tableName = getTableName();
+            }
+        } else if (object instanceof Map) {
+            tableName = (String) ((Map) object).get(DynamicTableName.TABLE_NAME_KEY);
+            if (StringUtils.isEmpty(tableName)) {
+                tableName = getTableName();
+            }
+
+        } else {
+            tableName = getTableName();
+        }
+        return tableName;
+	}
+	public static String getTableName(Class<?> entityClass) {
+		Annotation[] classAnnotations = entityClass.getDeclaredAnnotations();
+		if (classAnnotations.length == 0) {
+			throw new RuntimeException("Class " + entityClass.getName() + " has no '@Entity' annotation, can't build 'EntityMapper'.");
+		}
+
+		Entity entity = entityClass.getAnnotation(Entity.class);
+		if (entity == null) {
+			throw new RuntimeException("Class " + entityClass.getName() + " has no '@Entity' annotation, "
+					+ "which has the database table information," + "can't build 'EntityMapper'.");
+		}
+		String tableName = entity.name();
+		Table table = entityClass.getAnnotation(Table.class);
+		if (table != null) {
+			tableName = StringUtils.hasLength(table.name()) ? table.name() : tableName;
+		}
+		return StringUtils.hasLength(tableName) ? tableName : entityClass.getSimpleName();
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 	public Class<T> getEntityClass() {
@@ -431,26 +445,17 @@ public class EntityMapper<T> {
 	}
 
 	/**
-	 * 查询全部sql (返回副本)
+	 * 查询全部sql
 	 * @return
 	 */
-	public String getSelectAllSql(boolean distinct) {
-		if(selectAllSql == null){
-			String[] cols = this.getColumnNames();
-			if(selectStar || cols == null){
-				//XXX: 特殊情况处理
-				StringBuilder selectAllSql = new StringBuilder();
-				selectAllSql.append("SELECT ");
-				if(distinct){
-					selectAllSql.append("DISTINCT ");
-				}
-				selectAllSql.append("* FROM ").append(this.getDbTableName());
-				this.selectAllSql = selectAllSql.toString();
-				return this.selectAllSql;
-			}
-		    this.selectAllSql = getSelectAllSql(cols, true,distinct);
+	public StringBuilder getSelectAllSql(Object object,boolean distinct,String tableName) {
+		StringBuilder selectAllSql = new StringBuilder();
+		selectAllSql.append("SELECT ");
+		if (distinct) {
+			selectAllSql.append("DISTINCT ");
 		}
-		
+		selectAllSql.append(selectStar ? "*" : this.getCommaDelimitedColumns()).append(" FROM ");
+		selectAllSql.append(StringUtils.hasLength(tableName) ? tableName : this.getTableName(object));
 		return selectAllSql;
 	}
 	/**
@@ -459,17 +464,16 @@ public class EntityMapper<T> {
 	 * @param isDbFieldName true为数据库字段名称,false 为Java字段名称
 	 * @return
 	 */
-	public String getSelectAllSql(String[] fieldNames,boolean isDbFieldName,boolean distinct) {
+	public StringBuilder getSelectAllSql(Object object,String[] fieldNames,boolean isDbFieldName,boolean distinct) {
 		if(fieldNames == null || fieldNames.length == 0){
-			return getSelectAllSql(distinct);
+			return getSelectAllSql(object,distinct,null);
 		}
-	    StringBuilder selectAllSql = new StringBuilder();
-		selectAllSql.append("SELECT ");
+	    StringBuilder selectAllSql = new StringBuilder("SELECT ");
 		if(distinct){
 			selectAllSql.append("DISTINCT ");
 		}
-		if(isDbFieldName){
-				selectAllSql.append(StringUtils.arrayToDelimitedString(fieldNames, ","));
+		if (isDbFieldName) {
+			selectAllSql.append(StringUtils.arrayToDelimitedString(fieldNames, ","));
 			
 		}else{
 			for (int i = 0; i < fieldNames.length; i++) {
@@ -486,18 +490,16 @@ public class EntityMapper<T> {
 			}
 		}
 		
-	    selectAllSql.append(" FROM ").append(this.getDbTableName());
-		
-		return selectAllSql.toString();
+	    selectAllSql.append(" FROM ").append(this.getTableName(object));
+		return selectAllSql;
 	}
 	
-	public String getSelectAllSql(FieldLevel fieldLevel,boolean distinct) {
+	public StringBuilder getSelectAllSql(Object object,FieldLevel fieldLevel,boolean distinct) {
 		if(fieldLevel == null || fieldLevel == FieldLevel.ALL || !fieldPropertyLoad){
-			return getSelectAllSql(distinct);
+			return getSelectAllSql(object,distinct,null);
 		}
 		// query column
-		StringBuilder selectAllSql = new StringBuilder();
-		selectAllSql.append("SELECT ");
+		StringBuilder selectAllSql = new StringBuilder("SELECT ");
 		if(distinct){
 			selectAllSql.append("DISTINCT ");
 		}
@@ -517,79 +519,61 @@ public class EntityMapper<T> {
 			}
 		}
 
-		selectAllSql.append(" FROM ").append(this.getDbTableName());
-		
-		return selectAllSql.toString();
+		selectAllSql.append(" FROM ").append(this.getTableName(object));
+		return selectAllSql;
 	}
 
 	/**
 	 *   select id,count(id) countNum  from User
 	 */
-	public String getGroupSelectAllSql(String queryColumns) {
+	public StringBuilder getGroupSelectAllSql(Object object,String queryColumns) {
 		// query column
-		StringBuilder selectAllSql = new StringBuilder();
-		selectAllSql.append("SELECT ").append(queryColumns).append(" FROM ").append(this.getDbTableName());
-		return  selectAllSql.toString();
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append("SELECT ").append(queryColumns).append(" FROM ").append(this.getTableName(object));
+		return  selectSql;
 	}
 
    /**
-    * 返回副本
     * @return
     */
-	public String getDeleteAllSql() {
-		if(deleteAllSql == null ){
-			StringBuilder deleteAllSqlTemp  = new StringBuilder();
-			deleteAllSqlTemp.append("delete from ").append(this.getDbTableName());
-			
-			this.deleteAllSql = deleteAllSqlTemp.toString();
-		}
-		
+	public StringBuilder getDeleteAllSql(Object object,String tableName) {
+        StringBuilder deleteAllSql = new StringBuilder();
+		String name = StringUtils.hasLength(tableName) ? tableName : this.getTableName(object);
+		deleteAllSql.append("delete from ").append(name);
 		return deleteAllSql;
 	}
 
-	public String getCountSql() {
-		if(countSql == null){
-			StringBuilder countSqlTemp = new StringBuilder();
-			countSqlTemp.append("select count(1) from ").append(this.getDbTableName());
-			
-			this.countSql = countSqlTemp.toString();
-		}
-		
+	public StringBuilder getCountSql(Object object) {
+		StringBuilder countSql = new StringBuilder();
+		countSql.append("select count(1) from ").append(this.getTableName(object));
 		return countSql;
 	}
 
 	
 	public String getSelectSqlWithId() {
 		if(selectSqlWithId == null){
-			StringBuilder selectSqlWithIdTemp = new StringBuilder(getSelectAllSql(false));
-			
+			StringBuilder querySql= getSelectAllSql(null,false,null);
 			String  primaryKey=  getPrimaryKey();
 			if(primaryKey == null){
-				throw new PrimaryKeyException("table name "+this.dbTableName +" not have primaryKey");
+				throw new PrimaryKeyException("table name "+this.tableName +" not have primaryKey");
 			}
+			querySql.append(" where ").append(primaryKey).append(" = ?");
 			
-			selectSqlWithIdTemp.append(" where ").append(primaryKey).append(" = ?");
-			
-			this.selectSqlWithId = selectSqlWithIdTemp.toString();
+			this.selectSqlWithId = querySql.toString();
 		}
-		
 		return selectSqlWithId;
 	}
 
-	public String getDeleteSqlWithId() {
-		if(deleteSqlWithId == null){
-			StringBuilder deleteSqlWithId = new StringBuilder(getDeleteAllSql());
-			
-			String  primaryKey=  getPrimaryKey();
-			if(primaryKey == null){
-				throw new PrimaryKeyException("table name "+this.dbTableName +" not have primaryKey");
-			}
-			
-			deleteSqlWithId.append(" where ").append(primaryKey).append(" = ?");
-			
-			this.deleteSqlWithId = deleteSqlWithId.toString();
-		}
-		return deleteSqlWithId;
+	public String getDeleteSqlWithId(Object object) {
+		StringBuilder deleteSql = getDeleteAllSql(object,null);
+        String  primaryKey=  getPrimaryKey();
+        if(primaryKey == null){
+            throw new PrimaryKeyException("table name "+this.tableName +" not have primaryKey");
+        }
+
+		deleteSql.append(" where ").append(primaryKey).append(" = ?");
+
+		return deleteSql.toString();
 	}
 
 	public  RowMapper<T> getRowMapper() {
@@ -613,12 +597,17 @@ public class EntityMapper<T> {
 
 		//AnnotationUtils.getAnnotation(field, annotationType) == null;
 		// 返回 true 是需要使用的属性
-		public boolean matches(Field field) {
-			if (isIgnoreProperties(field)) {
-				return false;
-			}
-			return field.getAnnotation(annotationType) == null;
-		}
+		@Override
+        public boolean matches(Field field) {
+            if (isIgnoreProperties(field)) {
+                return false;
+            }
+            //Exclude static field
+            if (Modifier.isStatic(field.getModifiers())) {
+                return false;
+            }
+            return field.getAnnotation(annotationType) == null;
+        }
 
 		private boolean isIgnoreProperties(Field field) {
 			for (String ignore : IGNORE_PROPERTY) {
