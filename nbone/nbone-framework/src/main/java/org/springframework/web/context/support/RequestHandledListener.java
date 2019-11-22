@@ -30,6 +30,8 @@ public class RequestHandledListener implements ApplicationListener<RequestHandle
     @Value("#{${spring.http.errorDelay:1000}*5}")
     private int fatalDelay;
 
+    private int fatalCount;
+
     @Override
     public void onApplicationEvent(RequestHandledEvent event) {
         long timed = event.getProcessingTimeMillis();
@@ -46,7 +48,8 @@ public class RequestHandledListener implements ApplicationListener<RequestHandle
         } else {
             // The FATAL Tag very severe error events
             // that will presumably lead the application to abort.
-            logger.error("<== " + event.getDescription() + " .FATAL");
+            fatalCount ++;
+            logger.error("<== " + event.getDescription() + " .FATAL fatalCount=" + fatalCount);
         }
 
     }

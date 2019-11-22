@@ -1,5 +1,7 @@
 package org.nbone.persistence.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,8 @@ public abstract class AbstractStateEntity<T, Id extends Serializable> extends Ba
     private static final long serialVersionUID = -4416407610435188430L;
     /**
      * 实体状态
+     *
+     * 在子类get方法中添加接口注释@ApiModelProperty(value =  "状态")
      */
     protected Integer status;
 

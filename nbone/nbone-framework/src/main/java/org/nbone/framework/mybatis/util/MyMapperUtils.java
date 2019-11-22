@@ -27,6 +27,7 @@ import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.util.JpaAnnotationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * @author thinking
@@ -202,17 +203,10 @@ public class MyMapperUtils {
 				throw new NullPointerException(fieldName + " property is not exist.");
 
 			}
-			FieldMapper fieldMapper = new FieldMapper(fieldName,javaType,propertyDescriptor);
-			Field field;
-			try {
-				field = entityClass.getDeclaredField(fieldName);
-				FieldMapper.setFieldProperty(field, fieldMapper);
-			} catch (NoSuchFieldException e) {
-				logger.error(e.getMessage(), e);
-			} catch (SecurityException e) {
-				logger.error(e.getMessage(), e);
-			}
-			
+			FieldMapper fieldMapper = new FieldMapper(fieldName, javaType, propertyDescriptor);
+			Field field = ReflectionUtils.findField(entityClass, fieldName);
+			FieldMapper.setFieldProperty(field, fieldMapper);
+
 			fieldMapper.setDbFieldName(dbFieldName);
 			for (String string : primaryList) {
 				if(string != null && string.equals(dbFieldName)){

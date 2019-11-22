@@ -154,7 +154,7 @@ public class ExceptionHandlerAdvice {
         return exception(ex, msg, req, response);
     }
 
-    private Object exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
+    protected ExceptionInfo exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
         logger.error("Bad request argument:[" + req.getRequestURI() + "]", ex);
 
         if(message == null){

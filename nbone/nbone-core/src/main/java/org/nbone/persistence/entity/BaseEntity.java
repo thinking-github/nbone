@@ -1,7 +1,11 @@
 package org.nbone.persistence.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.nbone.validation.groups.Update;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,21 +21,30 @@ public class BaseEntity<T,Id extends Serializable> implements Serializable {
     /**
      * 实体编号（唯一标识）
      */
+    @NotNull(groups = Update.class)
     @javax.persistence.Id
     protected Id  id;
 
+    @ApiModelProperty(value =  "备注信息",readOnly = true)
     protected String  remarks;	  // 备注
 
+    @ApiModelProperty(value =  "创建者")
     @Column(name = "create_by")
     protected String  createBy;	  // 创建者
+
+    @ApiModelProperty(value =  "创建时间",readOnly = true)
     @Column(name = "create_time")
     protected Date    createTime; // 创建日期
 
+    @ApiModelProperty(value =  "更新者")
     @Column(name = "update_by")
     protected String  updateBy;	  // 更新者
+
+    @ApiModelProperty(value =  "更新时间",readOnly = true)
     @Column(name = "update_time")
     protected Date    updateTime; // 更新日期
 
+    @ApiModelProperty(value =  "删除标记",readOnly = true)
     protected Integer deleted; 	  // 删除标记（0：正常；1：删除）
 
     public BaseEntity(Id id) {

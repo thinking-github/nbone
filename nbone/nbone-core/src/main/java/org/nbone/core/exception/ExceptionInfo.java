@@ -13,6 +13,12 @@ public class ExceptionInfo {
      * 唯一的request id，用于问题定位
      */
     private String requestId;
+
+    /**
+     *
+     * logId 唯一的log id，用于问题定位
+     */
+    private String logId;
     /**
      * 返回操作成功代码 或者错误代码
      */
@@ -105,6 +111,19 @@ public class ExceptionInfo {
 
     public ExceptionInfo requestId(String requestId) {
         this.requestId = requestId;
+        return this;
+    }
+
+    public String getLogId() {
+        return logId;
+    }
+
+    public void setLogId(String logId) {
+        this.logId = logId;
+    }
+
+    public ExceptionInfo logId(String logId) {
+        this.logId = logId;
         return this;
     }
 

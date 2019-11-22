@@ -16,24 +16,26 @@ public class ApiResponse<T> {
 	private static int ERROR_CODE     = 1;
 	private static int initialized    = 0;
 
-	private static String SUCCESS_MESSAGE   = "success";
-	private static String ERROR_MESSAGE     = "failed";
+	private final static String SUCCESS_MESSAGE   = "success";
+	private final static String ERROR_MESSAGE     = "failed";
+
+	//public final static ApiResponse SUCCESS_RESPONSE = new ApiResponse(SUCCESS_CODE,SUCCESS_MESSAGE);
 
 	/**
 	 * 唯一的request id，用于问题定位
 	 */
 	private String requestId;
+	/**
+	 *
+	 * logId 唯一的log id，用于问题定位
+	 */
+	private String logId;
 	
 	private int code;
 	private String status;
 	private String message;
 	private T data;
 
-	/**
-	 *
-	 * logId 唯一的log id，用于问题定位
-	 */
-	private String logId;
 
 
 
@@ -76,6 +78,7 @@ public class ApiResponse<T> {
 
 		SUCCESS_CODE = successCode;
 		ERROR_CODE = errorCode;
+		//SUCCESS_RESPONSE.setCode(SUCCESS_CODE);
 		initialized ++;
 	}
 
@@ -131,38 +134,44 @@ public class ApiResponse<T> {
 		this.logId = logId;
 	}
 
-	public static <T> ApiResponse<T> errorResponse(String msg) {
-        return errorResponse(ERROR_CODE, msg != null ? msg : ERROR_MESSAGE);
+	public ApiResponse<T> logId(String logId) {
+		this.logId = logId;
+		return this;
+	}
+
+
+	public static <T> ApiResponse<T> error(String msg) {
+        return error(ERROR_CODE, msg != null ? msg : ERROR_MESSAGE);
     }
 
-    public static <T> ApiResponse<T> errorResponse(int code, String msg) {
+    public static <T> ApiResponse<T> error(int code, String msg) {
         return new ApiResponse<>(code, msg != null ? msg : ERROR_MESSAGE);
     }
 
 
+	public static <T> ApiResponse<T> failed(String msg) {
+		return error(msg);
+	}
 
-	public static <T> ApiResponse<T> successResponse() {
+	public static <T> ApiResponse<T> failed(int code, String msg) {
+		return error(code, msg);
+	}
+
+
+	public static <T> ApiResponse<T> success() {
 		return new ApiResponse<>(SUCCESS_CODE, SUCCESS_MESSAGE);
 	}
 
-	public static <T> ApiResponse<T> successResponse(String msg) {
+	public static <T> ApiResponse<T> success(String msg) {
 		return new ApiResponse<>(SUCCESS_CODE,msg);
 	}
 
-	public static <T> ApiResponse<T> successResponse(T data) {
+	public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(SUCCESS_CODE, SUCCESS_MESSAGE, data);
-    }
-
-    public static ApiResponse<Map<String, Object>> successResponse(Map<String, Object> data) {
-        return new ApiResponse(SUCCESS_CODE, SUCCESS_MESSAGE, data);
     }
 
 
 	public static <T> ApiResponse<T> response(int code, String msg, T data) {
 		return new ApiResponse(code, msg, data);
 	}
-    
-    public static ApiResponse<Map<String, Object>> response(int code, String msg, Map<String, Object> data) {
-        return new ApiResponse(code, msg, data);
-    }
 }
