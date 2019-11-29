@@ -1,5 +1,7 @@
 package org.nbone.persistence.entity;
 
+import java.io.Serializable;
+
 /**
  * 实现动态表名时，实体类需要实现该接口
  *
@@ -19,5 +21,25 @@ public interface DynamicTableName {
     String getTableName();
 
     void setTableName(String tableName);
+
+
+    /**
+     * 计算分片表名称
+     *
+     * @param baseName
+     * @param first
+     * @return
+     */
+    static String shardingTableName(String baseName, Serializable first) {
+        return baseName + "_" + first;
+    }
+
+    static String shardingTableName(String baseName, Serializable first, Serializable second) {
+        return baseName + "_" + first + "_" + second;
+    }
+
+    static String shardingTableName(String baseName, Serializable first, Serializable second, Serializable third) {
+        return baseName + "_" + first + "_" + second + "_" + third;
+    }
 
 }

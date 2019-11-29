@@ -1,10 +1,7 @@
 package org.nbone.framework.spring.web.mvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.nbone.core.exception.ExceptionInfo;
-import org.nbone.core.exception.ExceptionUtils;
-import org.nbone.core.exception.ModuleSystemException;
-import org.nbone.core.exception.SubSystemException;
+import org.nbone.core.exception.*;
 import org.nbone.framework.spring.web.filter.RequestIdFilter;
 import org.nbone.framework.spring.web.log.domain.ErrorLog;
 import org.slf4j.Logger;
@@ -37,7 +34,7 @@ import java.util.concurrent.Executors;
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
 
-    Logger logger = LoggerFactory.getLogger(ExceptionHandlerAdvice.class);
+    Logger logger = LoggerFactory.getLogger("exceptionHandlerAdvice");
 
     /**
      * 全局错误代码
@@ -85,6 +82,13 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.OK)
     public Object baseIllegalException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
+        String msg = ExceptionHandlerUtils.getMessage(req,ex);
+        return exception(ex,msg,req,response);
+    }
+
+    @ExceptionHandler(value = {InvalidArgumentException.class, InvalidStateException.class})
+    @ResponseStatus(HttpStatus.OK)
+    public Object invalidArgumentException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
         return exception(ex,msg,req,response);
     }
@@ -155,7 +159,13 @@ public class ExceptionHandlerAdvice {
     }
 
     protected ExceptionInfo exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
-        logger.error("Bad request argument:[" + req.getRequestURI() + "]", ex);
+        if (ex instanceof IllegalArgumentException
+                || ex instanceof InvalidArgumentException
+                || ex instanceof InvalidStateException) {
+            logger.error("Bad request argument:[" + req.getRequestURI() + "] " + ex.getMessage());
+        } else {
+            logger.error("Bad request argument:[" + req.getRequestURI() + "]", ex);
+        }
 
         if(message == null){
             message = ex.getMessage();

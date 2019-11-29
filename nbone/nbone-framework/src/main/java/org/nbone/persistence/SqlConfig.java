@@ -1,13 +1,14 @@
 package org.nbone.persistence;
 
-import java.util.*;
-
 import lombok.Data;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.mvc.domain.RequestQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.util.SqlUtils;
-import org.omg.CORBA.OBJ_ADAPTER;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author thinking
@@ -64,6 +65,8 @@ public class SqlConfig {
      * 扩展字段名称数组
      */
     private String[] extFields;
+
+    private boolean usedExtField = true;
     /**
      * 默认采用Java字段模式
      */
@@ -92,6 +95,10 @@ public class SqlConfig {
      * 追加条件语句
      */
     private String condition;
+    /**
+     * where 条件字段
+     */
+    private String[] conditionFields;
     /**
      * where 之后的语句 追加[增加]查询条件 或者 group by/order by 子句
      */
@@ -308,6 +315,12 @@ public class SqlConfig {
         return this;
     }
 
+    public SqlConfig usedExtField(boolean usedExtField) {
+        this.usedExtField = usedExtField;
+        return this;
+    }
+
+
     public SqlConfig fieldLevel(FieldLevel fieldLevel) {
         this.fieldLevel = fieldLevel;
         return this;
@@ -337,6 +350,16 @@ public class SqlConfig {
         }else {
             this.condition =  this.condition + " " + appendCondition;
         }
+        return this;
+    }
+
+    public SqlConfig conditionFields(String[] conditionFields) {
+        this.conditionFields = conditionFields;
+        return this;
+    }
+
+    public SqlConfig conditionFields(String conditionField) {
+        this.conditionFields = new String[]{conditionField};
         return this;
     }
 

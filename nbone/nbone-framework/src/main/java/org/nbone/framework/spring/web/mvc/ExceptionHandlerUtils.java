@@ -1,7 +1,8 @@
 package org.nbone.framework.spring.web.mvc;
 
 import org.nbone.core.exception.ExceptionUtils;
-import org.springframework.util.ObjectUtils;
+import org.nbone.core.exception.InvalidArgumentException;
+import org.nbone.core.exception.InvalidStateException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -51,6 +52,9 @@ public class ExceptionHandlerUtils {
     public static String getMessage(HttpServletRequest request, Exception ex) {
         if (isDebug(request) || isTrace(request)) {
             return ExceptionUtils.getStackTrace(ex);
+        }
+        if (ex instanceof InvalidArgumentException || ex instanceof InvalidStateException) {
+            return ex.getMessage();
         }
         return getMessage(ex);
     }

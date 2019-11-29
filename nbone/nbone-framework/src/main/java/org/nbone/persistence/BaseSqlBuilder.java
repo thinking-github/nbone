@@ -1,10 +1,6 @@
 package org.nbone.persistence;
 
-import java.beans.PropertyDescriptor;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.*;
-
+import com.google.common.base.Function;
 import org.nbone.constants.DateConstant;
 import org.nbone.framework.mybatis.util.MyMapperUtils;
 import org.nbone.lang.MathOperation;
@@ -14,9 +10,9 @@ import org.nbone.persistence.annotation.QueryOperation;
 import org.nbone.persistence.enums.JdbcFrameWork;
 import org.nbone.persistence.enums.QueryType;
 import org.nbone.persistence.exception.BuilderSQLException;
-import org.nbone.persistence.mapper.MappingBuilder;
-import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.EntityMapper;
+import org.nbone.persistence.mapper.FieldMapper;
+import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.model.SqlModel;
 import org.nbone.persistence.util.SqlUtils;
 import org.nbone.util.DateFPUtils;
@@ -32,9 +28,11 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.*;
 
-import com.google.common.base.Function;
-
 import javax.servlet.ServletRequest;
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * 根据JPA注解构建sql
@@ -831,20 +829,53 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                 }else {
                     fieldMapper = entityMapper.getFieldMapperByProperty(entry.getKey());
                 }
-                if (fieldMapper == null) {
+                if (fieldMapper == null && sqlConfig.isUsedExtField()) {
                     if(extFields == null){
                         extFields = new HashSet<String>();
                     }
                     extFields.add(entry.getKey());
                     continue;
                 }
-
+                if(fieldMapper == null){
+                    continue;
+                }
                 Class<?> fieldType = fieldMapper.getPropertyType();
                 if (fieldType == Class.class) {
                     continue;
                 }
                 Object fieldValue = entry.getValue();
                 //XXX: value is null or value is ""  break
+                if (fieldValue == null || fieldValue.equals("")) {
+                    //try append SqlOperation in / between
+                    appendCondition(whereSql,fieldMapper,sqlConfig);
+                    continue;
+                }
+                //按照配置追加条件
+                appendCondition(whereSql,fieldValue,fieldMapper,sqlConfig,null);
+            }
+        }
+        else if(object != null && !ObjectUtils.isEmpty(sqlConfig.getConditionFields())){
+            BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
+            boolean dbFieldMode = sqlConfig.isDbFieldMode();
+            for (String conditionField : sqlConfig.getConditionFields()) {
+                FieldMapper fieldMapper;
+                if(dbFieldMode){
+                    fieldMapper = entityMapper.getFieldMapper(conditionField);
+                }else {
+                    fieldMapper = entityMapper.getFieldMapperByProperty(conditionField);
+                }
+                if (fieldMapper == null && sqlConfig.isUsedExtField()) {
+                    if(extFields == null){
+                        extFields = new HashSet<String>();
+                    }
+                    extFields.add(conditionField);
+                    continue;
+                }
+                if(fieldMapper == null){
+                    continue;
+                }
+                String fieldName = fieldMapper.getFieldName();
+                Object fieldValue = bw.getPropertyValue(fieldName);
                 if (fieldValue == null || fieldValue.equals("")) {
                     //try append SqlOperation in / between
                     appendCondition(whereSql,fieldMapper,sqlConfig);
@@ -897,14 +928,17 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                     fieldMapper = entityMapper.getFieldMapperByProperty(queryOperation.getName());
                 }
                 // query for in / between
-                if (fieldValue instanceof Collection || fieldValue.getClass().isArray() || fieldMapper == null) {
+                if (fieldValue instanceof Collection || fieldValue.getClass().isArray()
+                        || (fieldMapper == null && sqlConfig.isUsedExtField())) {
                     if (extFields == null) {
                         extFields = new HashSet<String>();
                     }
                     extFields.add(name);
                     continue;
                 }
-
+                if(fieldMapper == null){
+                    continue;
+                }
                 //按照配置追加条件
                 appendCondition(whereSql, fieldValue, fieldMapper, sqlConfig,queryOperation);
             }
@@ -917,17 +951,19 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         if (StringUtils.hasLength(sqlConfig.getCondition())) {
             whereSql.append(sqlConfig.getCondition()).append(" ");
         }
-        String[] extFieldNames = sqlConfig.getExtFields();
-        if (extFields != null) {
-            if(extFieldNames != null){
-                for (String extField : extFieldNames) {
-                    extFields.add(extField);
+        if (sqlConfig.isUsedExtField()) {
+            String[] extFieldNames = sqlConfig.getExtFields();
+            if (extFields != null) {
+                if (extFieldNames != null) {
+                    for (String extField : extFieldNames) {
+                        extFields.add(extField);
+                    }
                 }
+                extFieldsCondition(object, extFields, entityMapper, whereSql);
+            } else {
+                //扩展属性条件查询 in / between
+                extFieldsCondition(object, extFieldNames, entityMapper, whereSql);
             }
-            extFieldsCondition(object,extFields,entityMapper,whereSql);
-        }else {
-            //扩展属性条件查询 in / between
-            extFieldsCondition(object,extFieldNames, entityMapper,whereSql);
         }
         //设置分组 排序字段
         appendGroupOrder(whereSql,sqlConfig);
@@ -1279,7 +1315,8 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         boolean accessible = field.isAccessible();
         ReflectionUtils.makeAccessible(field);
         Object value  =  ReflectionUtils.getField(field,bean);
-        field.setAccessible(accessible);
+
+        //field.setAccessible(accessible);
         return value;
     }
 
@@ -1423,6 +1460,5 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
         }
         return entityMapper;
     }
-
 
 }

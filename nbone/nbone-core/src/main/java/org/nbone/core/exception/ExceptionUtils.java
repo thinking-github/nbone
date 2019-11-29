@@ -165,7 +165,7 @@ public class ExceptionUtils {
             try {
                 return (Throwable) method.invoke(throwable, ArrayUtils.EMPTY_OBJECT_ARRAY);
             } catch (IllegalAccessException ignored) {
-            } catch (IllegalArgumentException ignored) {
+            } catch (InvalidArgumentException ignored) {
             } catch (InvocationTargetException ignored) {
             }
         return null;
@@ -182,7 +182,7 @@ public class ExceptionUtils {
             try {
                 return (Throwable) field.get(throwable);
             } catch (IllegalAccessException ignored) {
-            } catch (IllegalArgumentException ignored) {
+            } catch (InvalidArgumentException ignored) {
             }
         return null;
     }
@@ -295,7 +295,7 @@ public class ExceptionUtils {
             return;
         }
         if (stream == null) {
-            throw new IllegalArgumentException("The PrintStream must not be null");
+            throw new java.lang.IllegalArgumentException("The PrintStream must not be null");
         }
         String[] trace = getRootCauseStackTrace(throwable);
         for (int i = 0; i < trace.length; i++) {
@@ -309,7 +309,7 @@ public class ExceptionUtils {
             return;
         }
         if (writer == null) {
-            throw new IllegalArgumentException("The PrintWriter must not be null");
+            throw new java.lang.IllegalArgumentException("The PrintWriter must not be null");
         }
         String[] trace = getRootCauseStackTrace(throwable);
         for (int i = 0; i < trace.length; i++) {
@@ -349,7 +349,7 @@ public class ExceptionUtils {
 
     public static void removeCommonFrames(List<?> causeFrames, List<?> wrapperFrames) {
         if ((causeFrames == null) || (wrapperFrames == null)) {
-            throw new IllegalArgumentException("The List must not be null");
+            throw new java.lang.IllegalArgumentException("The List must not be null");
         }
         int causeFrameIndex = causeFrames.size() - 1;
         int wrapperFrameIndex = wrapperFrames.size() - 1;

@@ -141,9 +141,7 @@ public  class BaseServiceDomain<P,Id extends Serializable> extends BaseObject im
 	}
 	
 	protected  void checkBuilded(){
-		if(!builded){
-			builded();
-		}
+
 	}
 	
 	
