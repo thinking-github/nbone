@@ -1,6 +1,8 @@
 package org.nbone.core.exception;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 /**
  *
  * @author chenyicheng
@@ -9,6 +11,7 @@ package org.nbone.core.exception;
  */
 public class ExceptionInfo {
 
+    public final static String MESSAGE_TEMPLATE = "{\"code\": %s,\"message\": \"%s\"}";
     /**
      * 唯一的request id，用于问题定位
      */
@@ -19,6 +22,8 @@ public class ExceptionInfo {
      * logId 唯一的log id，用于问题定位
      */
     private String logId;
+
+    private Object timestamp;
     /**
      * 返回操作成功代码 或者错误代码
      */
@@ -31,12 +36,14 @@ public class ExceptionInfo {
     /**
      * 异常名称
      */
-    private  String exceptionName;
+    private  String exception;
     /**
      * http 错误状态码 默认400
      */
+    @JsonAlias("status")
     private  int statusCode = 400;
 
+    @JsonAlias("path")
     private String url ;
 
 
@@ -77,7 +84,7 @@ public class ExceptionInfo {
         this.code = code;
         this.message = message;
         this.url = url;
-        this.exceptionName = exceptionName;
+        this.exception = exceptionName;
 
     }
 
@@ -86,7 +93,7 @@ public class ExceptionInfo {
         this.message = message;
 
         this.statusCode = statusCode;
-        this.exceptionName = exceptionName;
+        this.exception = exceptionName;
 
     }
 
@@ -97,7 +104,7 @@ public class ExceptionInfo {
         this.statusCode = statusCode;
         this.url = url;
 
-        this.exceptionName = exceptionName;
+        this.exception = exceptionName;
 
     }
 
@@ -127,6 +134,14 @@ public class ExceptionInfo {
         return this;
     }
 
+    public Object getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Object timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public int getCode() {
         return code;
     }
@@ -144,12 +159,12 @@ public class ExceptionInfo {
     }
 
 
-    public String getExceptionName() {
-        return exceptionName;
+    public String getException() {
+        return exception;
     }
 
-    public void setExceptionName(String exceptionName) {
-        this.exceptionName = exceptionName;
+    public void setException(String exception) {
+        this.exception = exception;
     }
 
     public int getStatusCode() {

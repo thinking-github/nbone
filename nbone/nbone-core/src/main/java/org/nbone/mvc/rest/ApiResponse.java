@@ -1,10 +1,7 @@
 package org.nbone.mvc.rest;
 
-
-import java.util.Map;
-
 /**
- * 
+ *
  * @author chenyicheng
  * @version 1.0
  * @since 2018/4/4
@@ -30,9 +27,15 @@ public class ApiResponse<T> {
 	 * logId 唯一的log id，用于问题定位
 	 */
 	private String logId;
-	
+
+	/**
+	 * 时间戳
+	 */
+	private Object timestamp;
+
 	private int code;
 	private String status;
+	private String path ;
 	private String message;
 	private T data;
 
@@ -96,6 +99,13 @@ public class ApiResponse<T> {
 		return this;
 	}
 
+	public Object getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Object timestamp) {
+		this.timestamp = timestamp;
+	}
 
 	public int getCode() {
 		return code;
@@ -111,6 +121,15 @@ public class ApiResponse<T> {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 	public String getMessage() {
 		return message;
 	}

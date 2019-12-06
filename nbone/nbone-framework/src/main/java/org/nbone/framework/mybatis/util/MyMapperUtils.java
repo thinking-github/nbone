@@ -24,6 +24,7 @@ import org.nbone.persistence.annotation.QueryOperation;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.MapperUtils;
 import org.nbone.persistence.mapper.EntityMapper;
+import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.persistence.util.JpaAnnotationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.core.RowMapper;
@@ -167,6 +168,11 @@ public class MyMapperUtils {
 		ResultMap resultMap = getResultMap(namespace,id);
 		if(entityClass == null){
 			entityClass = (Class<E>) resultMap.getType();
+			//
+			EntityMapper<E> entityMapper = MappingBuilder.ME.getEntityCache(entityClass);
+			if(entityMapper != null){
+				return entityMapper;
+			}
 		}
 		String tableName  = getTableName(namespace,entityClass);
 		

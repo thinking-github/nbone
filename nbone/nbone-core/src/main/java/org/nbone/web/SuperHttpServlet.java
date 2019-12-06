@@ -1,14 +1,14 @@
 package org.nbone.web;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.nbone.constants.ContentType;
+import org.nbone.core.exception.ExceptionInfo;
+import org.nbone.util.json.JSONOperUtils;
+import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.nbone.constants.ContentType;
-import org.nbone.util.json.JSONOperUtils;
-import org.springframework.util.Assert;
+import java.io.IOException;
+import java.io.PrintWriter;
 /**
  * 
  * @author thinking
@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
  * @since   2016-04-09
  *
  */
-public abstract class SuperHttpServlet  implements ContentType {
+public abstract class SuperHttpServlet implements ContentType {
 	/**
 	 * 数据转化标识
 	 */
@@ -81,6 +81,17 @@ public abstract class SuperHttpServlet  implements ContentType {
 	
 	protected void sendToClientWithHtml(HttpServletRequest request ,HttpServletResponse response,Object object) throws IOException {
 		this.sendToClient(request, response, object, TEXT_HTML, CHARSET_UTF8, TransformationType_HTML);
+	}
+
+	public static void sendErrorJson(HttpServletRequest request ,HttpServletResponse response,Object object) throws IOException {
+
+
+	}
+
+	public static void sendJson(HttpServletResponse response, int status, String message) throws IOException {
+		response.setContentType(ContentType.APPLICATION_JSON_UTF_8);
+		response.setStatus(status);
+		response.getWriter().write(String.format(ExceptionInfo.MESSAGE_TEMPLATE, status, message));
 	}
 		
 

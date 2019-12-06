@@ -80,14 +80,12 @@ public class ExceptionHandlerAdvice {
      * 非法参数异常/非法状态异常
      */
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
-    @ResponseStatus(HttpStatus.OK)
     public Object baseIllegalException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
         return exception(ex,msg,req,response);
     }
 
     @ExceptionHandler(value = {InvalidArgumentException.class, InvalidStateException.class})
-    @ResponseStatus(HttpStatus.OK)
     public Object invalidArgumentException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
         return exception(ex,msg,req,response);
@@ -141,7 +139,7 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.OK)
     public Object methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(ex);
-        return exception(ex,msg,req,response);
+        return exception(ex,msg,false,req,response);
     }
 
     @ExceptionHandler(value = JsonProcessingException.class)
@@ -159,15 +157,20 @@ public class ExceptionHandlerAdvice {
     }
 
     protected ExceptionInfo exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
+        return exception(ex,message,true,req,response);
+    }
+
+    protected ExceptionInfo exception(Exception ex, String message, boolean recordStack,
+                                      HttpServletRequest req, HttpServletResponse response) {
         if (ex instanceof IllegalArgumentException
                 || ex instanceof InvalidArgumentException
-                || ex instanceof InvalidStateException) {
+                || ex instanceof InvalidStateException || !recordStack) {
             logger.error("Bad request argument:[" + req.getRequestURI() + "] " + ex.getMessage());
         } else {
             logger.error("Bad request argument:[" + req.getRequestURI() + "]", ex);
         }
 
-        if(message == null){
+        if (message == null) {
             message = ex.getMessage();
         }
         String msg = message;

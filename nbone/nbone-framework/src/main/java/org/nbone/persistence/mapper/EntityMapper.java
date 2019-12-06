@@ -1,24 +1,26 @@
 package org.nbone.persistence.mapper;
 
+import org.nbone.persistence.annotation.FieldLevel;
+import org.nbone.persistence.annotation.QueryOperation;
+import org.nbone.persistence.entity.DynamicTableName;
+import org.nbone.persistence.exception.PrimaryKeyException;
+import org.nbone.persistence.sharding.ShardingEntityInfo;
+import org.nbone.persistence.sharding.annotation.ShardingEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.nbone.persistence.annotation.FieldLevel;
-import org.nbone.persistence.annotation.QueryOperation;
-import org.nbone.persistence.entity.DynamicTableName;
-import org.nbone.persistence.exception.PrimaryKeyException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * 描述java对象的数据库映射信息（数据库表的映射、字段的映射）<br>
@@ -51,10 +53,16 @@ public class EntityMapper<T> {
      * 数据库表的名称
      */
     private String  tableName;
-    /**
+	/**
      * 映射实体Bean class  entityName
      */
     private Class<T> entityClass;
+
+	/**
+	 * 分表时使用,可为空
+	 */
+	private ShardingEntityInfo shardingEntityInfo;
+
 	/**
 	 * 启用 select *
 	 */
@@ -121,6 +129,7 @@ public class EntityMapper<T> {
 		this.entityClass = entityClass;
 		this.fieldMappers =  new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
 		this.propertyMappers = new LinkedHashMap<String, FieldMapper>(fieldInitialCapacity);
+        this.shardingEntityInfo = EntityMapper.getShardingTable(entityClass);
 	}
 	
 	public Annotation getTableAnnotation() {
@@ -236,7 +245,10 @@ public class EntityMapper<T> {
                 tableName = getTableName();
             }
 
-        } else {
+        } else if (shardingEntityInfo != null) {
+			tableName = shardingEntityInfo.getTableName(object);
+
+		}else {
             tableName = getTableName();
         }
         return tableName;
@@ -260,6 +272,21 @@ public class EntityMapper<T> {
 		return StringUtils.hasLength(tableName) ? tableName : entityClass.getSimpleName();
 	}
 
+	public static ShardingEntityInfo getShardingTable(Class<?> entityClass) {
+		ShardingEntity shardingEntity = entityClass.getAnnotation(ShardingEntity.class);
+		if (shardingEntity == null) {
+			return null;
+		}
+		String logicTableName = shardingEntity.logicName();
+		String[] joinName = shardingEntity.joinName();
+		String shardingName = shardingEntity.shardingName();
+		String delimiter = shardingEntity.delimiter();
+		if (ObjectUtils.isEmpty(joinName) && StringUtils.isEmpty(shardingName)) {
+			throw new IllegalArgumentException("@ShardingEntity joinName and shardingName at least one has value");
+		}
+		return new ShardingEntityInfo(logicTableName, joinName,shardingName, delimiter);
+	}
+
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
@@ -270,6 +297,14 @@ public class EntityMapper<T> {
 
 	public void setEntityClass(Class<T> entityClass) {
 		this.entityClass = entityClass;
+	}
+
+	public ShardingEntityInfo getShardingEntityInfo() {
+		return shardingEntityInfo;
+	}
+
+	public void setShardingEntityInfo(ShardingEntityInfo shardingEntityInfo) {
+		this.shardingEntityInfo = shardingEntityInfo;
 	}
 
 	public boolean isSelectStar() {

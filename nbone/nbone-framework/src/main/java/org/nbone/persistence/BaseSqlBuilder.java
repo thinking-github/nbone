@@ -508,7 +508,8 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
             sqlConfig = SqlConfig.EMPTY;
         }
 
-        EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(object.getClass());
+        Class<?> entityClass = sqlConfig.getEntityClass() != null ? sqlConfig.getEntityClass() : object.getClass();
+        EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(entityClass);
         StringBuilder countSql = entityMapper.getCountSql(object);
 
         StringBuilder whereSql = getWhereSql(object, entityMapper,sqlConfig);
@@ -1432,33 +1433,27 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
     }
 
     public static <E> EntityMapper<E> buildTableMapper(Class<E> entityClass, String namespace, String id) {
-        Assert.notNull(entityClass, "targetClass is not null.thinking");
         Assert.notNull(namespace, "namespace is not null.thinking");
         Assert.notNull(id, "id is not null.thinking");
         EntityMapper<E> entityMapper;
         //get cache
-        if (MappingBuilder.ME.isTableMappered(entityClass)) {
-            return MappingBuilder.ME.getTableMapper(entityClass);
+        if (entityClass != null) {
+            entityMapper = MappingBuilder.ME.getEntityCache(entityClass);
+            if (entityMapper != null) {
+                return entityMapper;
+            }
         }
-
         synchronized (MappingBuilder.ME) {
             //load
             entityMapper = MyMapperUtils.resultMap2TableMapper(entityClass, namespace, id);
-            MappingBuilder.ME.addTableMapper(entityClass, entityMapper);
+            MappingBuilder.ME.addTableMapper(entityMapper.getEntityClass(), entityMapper);
 
         }
         return entityMapper;
     }
 
     public static <E> EntityMapper<E> buildTableMapper(String namespace, String id) {
-        EntityMapper<E> entityMapper;
-        synchronized (MappingBuilder.ME) {
-            //load
-            entityMapper = MyMapperUtils.resultMap2TableMapper(namespace, id);
-            MappingBuilder.ME.addTableMapper(entityMapper.getEntityClass(), entityMapper);
-
-        }
-        return entityMapper;
+        return buildTableMapper(null,namespace,id);
     }
 
 }

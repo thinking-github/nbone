@@ -48,7 +48,7 @@ public class MappingBuilder {
      * 返回缓存副本
      * @return
      */
-    public synchronized Map<Class<?>, EntityMapper<? extends Object>>  getTableMappers() {
+    public synchronized Map<Class<?>, EntityMapper<? extends Object>>  getEntityMappers() {
 		return new HashMap<Class<?>, EntityMapper<? extends Object>>(entityMapperCache);
 	}
     
@@ -66,11 +66,16 @@ public class MappingBuilder {
      * @param entityClass
      * @return 
      */
-	public <E> boolean isTableMappered(Class<E> entityClass) {
+	public <E> boolean isEntityMapped(Class<E> entityClass) {
     	EntityMapper<E> tm = (EntityMapper<E>) entityMapperCache.get(entityClass);
     	
 		return tm == null ? false : true;
 	}
+
+    public <E> EntityMapper<E> getEntityCache(Class<E> entityClass) {
+        EntityMapper<E> tm = (EntityMapper<E>) entityMapperCache.get(entityClass);
+        return tm;
+    }
 	
 	public <E> MappingBuilder addTableMapper(Class<E> entityClass, EntityMapper<E> entityMapper) {
         entityMapperCache.put(entityClass, entityMapper);
