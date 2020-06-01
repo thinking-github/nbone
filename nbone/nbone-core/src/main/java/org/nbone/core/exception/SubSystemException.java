@@ -51,6 +51,18 @@ public class SubSystemException extends RuntimeException {
         return this;
     }
 
+    public String getSystemName() {
+        return systemName;
+    }
+
+    public Serializable getCode() {
+        return code;
+    }
+
+    public Serializable getRequestId() {
+        return requestId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName());

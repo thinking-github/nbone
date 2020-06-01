@@ -1,17 +1,13 @@
 package org.nbone.util.text;
 
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.FieldPosition;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.nbone.constants.CharsetConstant;
-
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.nbone.constants.CharsetConstant;
+
+import java.io.StringWriter;
+import java.io.Writer;
+import java.text.FieldPosition;
 
 /**
  * @author  thinking
@@ -37,25 +33,33 @@ public class FreemarkerFormat extends BaseFormat implements CharsetConstant {
      * @return
      */
     public static String format(String pattern, Object dataModel) {
-    	FreemarkerFormat temp = new FreemarkerFormat(pattern);
-    	return temp.format(dataModel);
+    	FreemarkerFormat freemarker = new FreemarkerFormat(pattern);
+    	return freemarker.format(dataModel,null);
     }
 
 	@Override
 	public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-		StringBuffer out  = new StringBuffer();
+		StringBuffer out = new StringBuffer();
 		try {
-			
-			 stringLoader.putTemplate(FreemarkerFormat.class.getName(), this.pattern);
-			 Template template = config.getTemplate(FreemarkerFormat.class.getName(), CharsetConstant.CHARSET_UTF8);
-			 Writer writer = new StringWriter();
-			 template.process(obj, writer);
-			 
-			 out.append(writer.toString());
-			 
-		} catch (Exception e) {;
+
+			Object object = stringLoader.findTemplateSource(this.pattern);
+			if (object == null) {
+				stringLoader.putTemplate(this.pattern, this.pattern);
+			}
+
+			Template template = config.getTemplate(this.pattern, CharsetConstant.CHARSET_UTF8);
+			Writer writer = new StringWriter();
+			template.process(obj, writer);
+
+			out.append(writer.toString());
+
+			if (toAppendTo != null) {
+				out.append(toAppendTo);
+			}
+
+		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 		return out;
 	}
 

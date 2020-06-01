@@ -22,7 +22,7 @@ public class JoddFormat  extends BaseFormat{
 	public static String format(String pattern,Object dataModel) {
 		 
 		 JoddFormat joddFormat = new JoddFormat(pattern);
-		return joddFormat.format(dataModel);
+		return joddFormat.format(dataModel,null);
 	 }
 	 
 

@@ -37,8 +37,8 @@ public class VlocityFormat extends BaseFormat implements CharsetConstant {
      * @return
      */
     public static String format(String pattern,Object dataModel) {
-    	VlocityFormat temp = new VlocityFormat(pattern);
-    	return temp.format(dataModel);
+    	VlocityFormat vlocity = new VlocityFormat(pattern);
+    	return vlocity.format(dataModel,null);
     }
     
     /**

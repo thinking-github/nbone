@@ -8,19 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.velocity.VelocityContext;
+import org.junit.Test;
 import org.nbone.test.domain.User;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 public class FormatTest {
 
-	public static void main(String[] args) {
-		 //freemarker();
-		 //velocityFormat();
-		 //springelFormat();
-		 joddFormat();
-		
-	}
-	
-	static void freemarker(){
+	@Test
+	public void freemarker(){
 		 Map<String, Object> ctx = new HashMap<String, Object>();
 		 ctx.put("name", "Freemarker");
 		 ctx.put("date1", (new Date()).toString());
@@ -30,8 +28,9 @@ public class FormatTest {
 	
 		 System.out.println(FreemarkerFormat.format(content, ctx));
 	}
-	
-	static void velocityFormat(){
+
+	@Test
+	public void velocityFormat(){
 		 VelocityContext ctx = new VelocityContext();
 		 ctx.put("name", "velocity");
 		 ctx.put("date1", (new Date()).toString());
@@ -55,7 +54,8 @@ public class FormatTest {
 		}
 		
 	}
-	static void springelFormat(){
+	@Test
+	public void springelFormatTest(){
 		 Map<String, Object> ctx = new HashMap<String, Object>();
 		 ctx.put("name", "SpringelFormat");
 		 ctx.put("date1", (new Date()).toString());
@@ -64,8 +64,26 @@ public class FormatTest {
 		 System.out.println(SpringelFormat.format(content, ctx));
 		 System.out.println(SpringelFormat.format("1+3*2", Long.class));
 	}
-	
-	static void joddFormat(){
+	@Test
+	public void expressionRuleMap() {
+		String expression = "#name=='chen' && #age > 18 && #version > 1000";
+		Map<String, Object> dataModel = new HashMap<>();
+		dataModel.put("name", "chen");
+		dataModel.put("age", 19);
+		dataModel.put("version", 1001);
+
+		StandardEvaluationContext context = new StandardEvaluationContext();
+		context.setVariables((Map<String, Object>) dataModel);
+		ExpressionParser parser = new SpelExpressionParser();
+		Expression exp = parser.parseExpression(expression);
+		Object string = exp.getValue(context);
+		System.out.println(string);
+		Object bool = exp.getValue(context, boolean.class);
+		System.out.println(bool);
+	}
+
+	@Test
+	public void joddFormat(){
 		 Map<String, Object> ctx = new HashMap<String, Object>();
 		 ctx.put("name", "joddFormat");
 		 ctx.put("date1", (new Date()).toString());

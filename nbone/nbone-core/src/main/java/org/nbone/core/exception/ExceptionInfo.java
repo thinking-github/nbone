@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
  */
 public class ExceptionInfo {
 
-    public final static String MESSAGE_TEMPLATE = "{\"code\": %s,\"message\": \"%s\"}";
+    public final static String MESSAGE_TEMPLATE = "{\"code\": %s,\"message\": \"%s\",\"timestamp\": %d}";
     /**
      * 唯一的request id，用于问题定位
      */

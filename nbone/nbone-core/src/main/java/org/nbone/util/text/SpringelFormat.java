@@ -48,7 +48,7 @@ public class SpringelFormat extends BaseFormat {
 	 */
 	public static String format(String pattern, Object dataModel) {
 		SpringelFormat temp = new SpringelFormat(pattern);
-		return temp.format(dataModel);
+		return temp.format(dataModel,null);
 	}
 
 	/**

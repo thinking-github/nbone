@@ -73,22 +73,12 @@ public abstract class BaseObject {
 		return false;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return ToStringUtils.toString(this);
 	}
 	
-	
-	
-	
-	
-	public static void main(String[] args) {
-		BaseObject ss = new BaseObject() {};
-		List<?> sources = new ArrayList<>();
-		ss.copyProperties(sources, BaseObject.class);
-	}
+
 	
 
 }

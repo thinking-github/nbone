@@ -50,6 +50,18 @@ public class ModuleSystemException extends RuntimeException {
         return this;
     }
 
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public Serializable getCode() {
+        return code;
+    }
+
+    public Serializable getRequestId() {
+        return requestId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName());

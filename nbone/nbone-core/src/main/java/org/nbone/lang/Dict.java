@@ -1,5 +1,10 @@
 package org.nbone.lang;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Dict Enum
  */
@@ -34,6 +39,16 @@ public class Dict<T> {
     }
 
 
+    public static <K> List<Dict<K>> from(Map<K, String> map) {
+        if (map == null || map.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Dict<K>> dictList = new ArrayList<Dict<K>>(map.size());
+        for (Map.Entry<?, String> entry : map.entrySet()) {
+            dictList.add(new Dict(entry.getKey(), entry.getValue()));
+        }
+        return dictList;
+    }
 
     public T getCode() {
         return code;

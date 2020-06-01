@@ -88,10 +88,16 @@ public abstract class SuperHttpServlet implements ContentType {
 
 	}
 
+	public static void sendJson(HttpServletResponse response, int status, String message,long timestamp) throws IOException {
+		response.setContentType(ContentType.APPLICATION_JSON_UTF_8);
+		response.setStatus(status);
+		response.getWriter().write(String.format(ExceptionInfo.MESSAGE_TEMPLATE, status, message,timestamp));
+	}
+
 	public static void sendJson(HttpServletResponse response, int status, String message) throws IOException {
 		response.setContentType(ContentType.APPLICATION_JSON_UTF_8);
 		response.setStatus(status);
-		response.getWriter().write(String.format(ExceptionInfo.MESSAGE_TEMPLATE, status, message));
+		response.getWriter().write(String.format(ExceptionInfo.MESSAGE_TEMPLATE, status, message,System.currentTimeMillis()));
 	}
 		
 

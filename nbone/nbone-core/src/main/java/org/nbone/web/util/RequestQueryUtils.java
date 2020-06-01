@@ -101,6 +101,10 @@ public class RequestQueryUtils {
                 return orderBy;
             }
         }
+        Object orderBy = request.getAttribute("orderBy");
+        if(orderBy != null && orderBy instanceof String){
+            return (String) orderBy;
+        }
         return null;
     }
 

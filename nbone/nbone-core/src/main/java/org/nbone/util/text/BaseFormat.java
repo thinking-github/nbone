@@ -31,7 +31,10 @@ public abstract  class BaseFormat extends Format {
     public static String format(String pattern, List<? extends Object> list) {
     	return MessageFormat.format(pattern, list.toArray());
     }
-    
+
+	public String format(Object obj, StringBuffer toAppendTo) {
+		return format(obj, toAppendTo, null).toString();
+	}
     /**
      * 目前只使用第一个参数  (后两个参数用于特殊扩展时使用)
      * @author thinking
