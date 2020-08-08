@@ -1,14 +1,6 @@
 package org.nbone.framework.spring.dao.namedparam;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
-import org.nbone.framework.spring.dao.core.RowMapperWithMapExtractor;
 import org.nbone.framework.spring.data.domain.PageImpl;
-import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.BaseSqlBuilder;
 import org.nbone.persistence.SqlBuilder;
 import org.nbone.persistence.SqlConfig;
@@ -25,6 +17,11 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+
+import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author thinking
@@ -68,6 +65,15 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
         }
     }
 
+    public <T> List<T> query(SqlModel sqlModel, Object object)
+            throws DataAccessException {
+        checkSqlModel(sqlModel);
+        if (object == null) {
+            return jdbcTemplate.query(sqlModel.getSql(), sqlModel.getRowMapper());
+        }
+        return query(sqlModel.getSql(), getSqlParameterSource(object), sqlModel.getRowMapper());
+    }
+
     public <T> List<T> query(SqlModel sqlModel, SqlParameterSource paramSource)
             throws DataAccessException {
         checkSqlModel(sqlModel);
@@ -83,8 +89,37 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
         if (entity == null) {
             return jdbcTemplate.query(sqlModel.getSql(), rse);
         }
-        SqlParameterSource paramSource = new BeanPropertySqlParameterSource(entity);
+        SqlParameterSource paramSource = getSqlParameterSource(entity);
         return query(sqlModel.getSql(), paramSource, rse);
+    }
+
+    public <T> List<T> query(SqlModel sqlModel, Object entity, RowMapper<T> rowMapper)
+            throws DataAccessException {
+        checkSqlModel(sqlModel);
+        if (entity == null) {
+            return jdbcTemplate.query(sqlModel.getSql(), rowMapper);
+        }
+        SqlParameterSource paramSource = getSqlParameterSource(entity);
+        return query(sqlModel.getSql(), paramSource, rowMapper);
+    }
+
+    public <T> SqlParameterSource getSqlParameterSource(Object parameter) {
+        SqlParameterSource paramSource;
+        if (parameter == null) {
+            return null;
+        }
+        if (parameter instanceof Map) {
+            Map<String, ?> paramMap = (Map<String, ?>) parameter;
+            paramSource = new MapSqlParameterSource(paramMap);
+        } else {
+            paramSource = new BeanPropertySqlParameterSource(parameter);
+        }
+        return paramSource;
+    }
+
+    public <T> SqlParameterSource getSqlParameterSource(SqlModel<T> sqlModel) {
+        T parameter = sqlModel.getParameter();
+        return getSqlParameterSource(parameter);
     }
 
     /**
@@ -175,14 +210,7 @@ public class NamedJdbcTemplate extends NamedParameterJdbcTemplate {
     //parameterMap
     @SuppressWarnings("unchecked")
     protected <T> Page<T> processPage(SqlModel<?> sqlModel, int pageNum, int pageSize) {
-        SqlParameterSource paramSource;
-        if (sqlModel.getParameter() instanceof Map) {
-            Map<String, ?> paramMap = (Map<String, ?>) sqlModel.getParameter();
-            paramSource = new MapSqlParameterSource(paramMap);
-        } else {
-            paramSource = new BeanPropertySqlParameterSource(sqlModel.getParameter());
-        }
-
+        SqlParameterSource paramSource = getSqlParameterSource(sqlModel);
         String countSql = sqlModel.getCountSql();
         long count = this.queryForLong(countSql, paramSource);
         List<T> rows = Collections.emptyList();

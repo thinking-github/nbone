@@ -56,11 +56,11 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <K, V> Map<K, V> getMapWithMapKey(Object object, SqlConfig sqlConfig) {
+	public <K, V> Map<K, V> getMapKeyValue(Object object, SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported getMapWithMapKey operation.");
 	}
 	@Override
-	public <K, V> Map<K, V> getMapWithMapKey(SqlConfig sqlConfig) {
+	public <K, V> Map<K, V> getMapKeyValue(SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported getMapWithMapKey operation.");
 	}
 
@@ -135,6 +135,11 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
+	public <T> List<T> getForList(Object object, SqlConfig sqlConfig, String fieldName, Class<T> requiredType) {
+		throw new UnsupportedOperationException("unsupported getForList operation.");
+	}
+
+	@Override
 	public int insert(Object object) {
 		throw new UnsupportedOperationException("unsupported insert operation.");
 	}
@@ -194,6 +199,11 @@ public abstract class BaseSqlSession implements SqlSession {
 
 	@Override
 	public int delete(Object object) {
+		throw new UnsupportedOperationException("unsupported delete operation.");
+	}
+
+	@Override
+	public int delete(SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported delete operation.");
 	}
 

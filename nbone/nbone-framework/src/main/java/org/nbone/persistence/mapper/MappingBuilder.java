@@ -1,5 +1,19 @@
 package org.nbone.persistence.mapper;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
+import org.nbone.persistence.annotation.CreatedTime;
+import org.nbone.persistence.annotation.UpdateTime;
+import org.nbone.persistence.mapper.EntityMapper.ExcludeTransientFieldFilter;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
+
+import javax.persistence.*;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -9,18 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
-import org.nbone.persistence.mapper.EntityMapper.ExcludeTransientFieldFilter;
-import org.springframework.beans.BeanUtils;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
-
 /**
  * Builder Object Relational Mapping
  * @author thinking
@@ -28,11 +30,14 @@ import org.springframework.util.StringUtils;
  */
 @SuppressWarnings("unchecked")
 public class MappingBuilder {
-	
+
+    private static final String HIBERNATE_ANNOTATIONS_CLASS = "org.hibernate.annotations.CreationTimestamp";
+    private static final boolean hibernatePresent = ClassUtils.isPresent(HIBERNATE_ANNOTATIONS_CLASS,
+            MappingBuilder.class.getClassLoader());
 	/**
      * 缓存TableMapper
      */
-    private  Map<Class<?>, EntityMapper<? extends Object>> entityMapperCache = new ConcurrentHashMap<Class<?>, EntityMapper<? extends Object>>(32);
+    private  Map<Class<?>, EntityMapper<?>> entityMapperCache = new ConcurrentHashMap<Class<?>, EntityMapper<?>>(32);
     /**
      * 全局应用程序实例
      */
@@ -46,10 +51,10 @@ public class MappingBuilder {
     
     /**
      * 返回缓存副本
-     * @return
+     * @return map
      */
-    public synchronized Map<Class<?>, EntityMapper<? extends Object>>  getEntityMappers() {
-		return new HashMap<Class<?>, EntityMapper<? extends Object>>(entityMapperCache);
+    public synchronized Map<Class<?>, EntityMapper<?>>  getEntityMappers() {
+		return new HashMap<Class<?>, EntityMapper<?>>(entityMapperCache);
 	}
     
     
@@ -63,13 +68,11 @@ public class MappingBuilder {
 	}
     
     /**是否已经映射
-     * @param entityClass
-     * @return 
+     * @param entityClass  entityClass to mapping
+     * @return  true false
      */
 	public <E> boolean isEntityMapped(Class<E> entityClass) {
-    	EntityMapper<E> tm = (EntityMapper<E>) entityMapperCache.get(entityClass);
-    	
-		return tm == null ? false : true;
+		return entityMapperCache.containsKey(entityClass);
 	}
 
     public <E> EntityMapper<E> getEntityCache(Class<E> entityClass) {
@@ -77,7 +80,7 @@ public class MappingBuilder {
         return tm;
     }
 	
-	public <E> MappingBuilder addTableMapper(Class<E> entityClass, EntityMapper<E> entityMapper) {
+	public <E> MappingBuilder addEntityMapper(Class<E> entityClass, EntityMapper<E> entityMapper) {
         entityMapperCache.put(entityClass, entityMapper);
     	
 		return this;
@@ -87,7 +90,7 @@ public class MappingBuilder {
      * 由传入的entity对象的class构建TableMapper对象，构建好的对象存入缓存中，以后使用时直接从缓存中获取
      * @param <E>
      * 
-     * @param entityClass
+     * @param entityClass entityClass to mapping
      * @return TableMapper
      */
     public  <E> EntityMapper<E> buildEntityMapper(Class<E> entityClass) {
@@ -105,6 +108,7 @@ public class MappingBuilder {
             entityMapper.setTableName(tableName);
 
             List<FieldMapper> primaryKeys = new ArrayList<FieldMapper>(1);
+            Map<String,Column> columnOverride = buildColumnOverride(entityClass);
             //serialVersionUID
             ReflectionUtils.doWithFields(entityClass, new ReflectionUtils.FieldCallback() {
                 @Override
@@ -115,21 +119,34 @@ public class MappingBuilder {
                     FieldMapper fieldMapper = new FieldMapper(fieldName, field.getType(), pd);
                     Annotation[] fieldAnnotations = field.getDeclaredAnnotations();
                     FieldMapper.setFieldProperty(field, fieldMapper);
-
-                    Column column = field.getAnnotation(Column.class);
+                    Column column = null;
+                    if (columnOverride != null) {
+                        column = columnOverride.get(fieldName);
+                    }
+                    if (column == null) {
+                        column = field.getAnnotation(Column.class);
+                    }
                     String dbFieldName;
                     if (column != null) {
                         dbFieldName = column.name();
                     } else {
                         dbFieldName = fieldName;
                     }
-                    fieldMapper.setDbFieldName(dbFieldName);
+                    fieldMapper.setColumnName(dbFieldName);
                     //primary key
                     //List<String> primary;
                     //主键设置
                     if (field.isAnnotationPresent(Id.class)) {
                         fieldMapper.setPrimaryKey(true);
                         primaryKeys.add(fieldMapper);
+                    } else if (isCreatedTime(field)) {
+                        entityMapper.setCreateTime(fieldMapper);
+                    } else if (isUpdateTime(field)) {
+                        entityMapper.setUpdateTime(fieldMapper);
+                    }
+                    
+                    if (isVersion(field)) {
+                        entityMapper.setVersion(fieldMapper);
                     }
                     //fieldMapper.setJdbcType(fieldMapperAnnotation.jdbcType());
 
@@ -152,7 +169,66 @@ public class MappingBuilder {
     public static  <E> EntityMapper<E> getEntityMapper(Class<E> entityClass) {
     	return ME.getTableMapper(entityClass);
     }
-    
-    
+
+
+    public static boolean isCreatedTime(Field field) {
+        if (field.isAnnotationPresent(CreatedTime.class)) {
+            return true;
+        }
+        if (field.isAnnotationPresent(CreatedDate.class)) {
+            return true;
+        }
+        if (hibernatePresent && field.isAnnotationPresent(CreationTimestamp.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isUpdateTime(Field field) {
+        if (field.isAnnotationPresent(UpdateTime.class)) {
+            return true;
+        }
+        if (field.isAnnotationPresent(LastModifiedDate.class)) {
+            return true;
+        }
+        if (hibernatePresent && field.isAnnotationPresent(UpdateTimestamp.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isVersion(Field field) {
+        if (field.isAnnotationPresent(Version.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static <T> Map<String, Column> buildColumnOverride(Class<T> entityClass) {
+        boolean attributeOverride = entityClass.isAnnotationPresent(AttributeOverride.class)
+                || entityClass.isAnnotationPresent(AttributeOverrides.class);
+        if (attributeOverride) {
+            Map<String, Column> columnOverride = new HashMap<String, Column>();
+            AttributeOverride singleOverride = entityClass.getAnnotation(AttributeOverride.class);
+            AttributeOverrides multipleOverrides = entityClass.getAnnotation(AttributeOverrides.class);
+            AttributeOverride[] overrides;
+            if (singleOverride != null) {
+                overrides = new AttributeOverride[]{singleOverride};
+            } else if (multipleOverrides != null) {
+                overrides = multipleOverrides.value();
+            } else {
+                overrides = null;
+            }
+
+            //fill overridden columns
+            if (overrides != null) {
+                for (AttributeOverride depAttr : overrides) {
+                    columnOverride.put(depAttr.name(), depAttr.column());
+                }
+            }
+            return columnOverride;
+        }
+        return null;
+    }
     
 }

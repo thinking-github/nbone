@@ -1,20 +1,18 @@
 package org.nbone.persistence;
 
-import java.util.Collection;
+import org.nbone.mvc.domain.GroupQuery;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 import java.util.Map;
-
-import org.nbone.mvc.domain.GroupQuery;
-import org.nbone.persistence.annotation.FieldLevel;
-import org.springframework.data.domain.Page;
 /**
  * 查询基础接口
  * @author thinking
- * @version 1.0 
+ * @version 1.0
  * @since 2014-08-08
  */
 public interface QueryOperations {
-	
+
 
 	/**
 	 * 根据 entity bean含有参数的属性组装查询条件 hibernate get method(参数默认全部使用 等号 =)
@@ -48,9 +46,9 @@ public interface QueryOperations {
 	 * @param <V>
 	 * @return return map 将返回的List 转换成Map默认使用主键作为map key
 	 */
-	public <K, V> Map<K, V> getMapWithMapKey(Object object, SqlConfig sqlConfig);
+	public <K, V> Map<K, V> getMapKeyValue(Object object, SqlConfig sqlConfig);
 
-	public <K, V> Map<K, V> getMapWithMapKey(SqlConfig sqlConfig);
+	public <K, V> Map<K, V> getMapKeyValue(SqlConfig sqlConfig);
 
 	/**
 	 * 按照实体中不为空的参数查询实体列表(参数默认使用 number use = /String use like)(支持字段查询符号操作 =  > < >= <=  is null is not null)
@@ -59,7 +57,7 @@ public interface QueryOperations {
 	 * @return
 	 */
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig);
-	
+
 	/**
 	 * 按照实体中的参数查询实体列表（特殊情况下不同得实现方式）
 	 * @param object 查询实体参数
@@ -178,14 +176,26 @@ public interface QueryOperations {
 
 	/**
 	 * 根据实体参数查询返回单个字段的列表(比返回整个实体数据提高效率)
-	 * @param object 查询实体参数
-	 * @param fieldName 要返回的单个字段名称 默认采用java property mapping
+	 *
+	 * @param object       查询实体参数
+	 * @param fieldName    要返回的单个字段名称 默认采用java property mapping
 	 * @param requiredType 单个字段的目标类型
-	 * @param afterWhere 追加条件语句 或者 group by /order by 子句 参数可为null 如： and id in(1,2,3,4)
+	 * @param afterWhere   追加条件语句 或者 group by /order by 子句 参数可为null 如： and id in(1,2,3,4)
 	 * @return
 	 */
-	public  <T> List<T> getForList(Object object,String fieldName,Class<T> requiredType,String... afterWhere);
-	
-	
+	public <T> List<T> getForList(Object object, String fieldName, Class<T> requiredType, String... afterWhere);
+
+    /**
+     * 根据实体参数和配置查询返回单个字段的列表(比返回整个实体数据提高效率)
+     *
+     * @param object       查询实体参数 可空
+     * @param sqlConfig    查询配置
+     * @param fieldName    要返回的单个字段名称 默认采用java property mapping
+     * @param requiredType 单个字段的目标类型
+     * @return
+     */
+    public <T> List<T> getForList(Object object, SqlConfig sqlConfig, String fieldName, Class<T> requiredType);
+
+
 
 }

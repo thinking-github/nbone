@@ -3,7 +3,7 @@ package org.nbone.framework.spring.hibernate.dao;
 import java.util.Map;
 
 import org.nbone.mx.datacontrols.datapage.PagerModel;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 @Repository

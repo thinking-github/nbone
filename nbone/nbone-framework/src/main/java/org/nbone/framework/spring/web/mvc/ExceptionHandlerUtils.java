@@ -64,6 +64,12 @@ public class ExceptionHandlerUtils {
         if (message == null) {
             return ex.getClass().getName() + ": message = null";
         }
+        if (ex instanceof InvalidArgumentException || ex instanceof InvalidStateException) {
+            return message;
+        }
+        if (ex instanceof IllegalArgumentException || ex instanceof IllegalStateException) {
+            return message;
+        }
         if (message.length() <= 128) {
             if (message.contains("Exception")) {
                 return message;

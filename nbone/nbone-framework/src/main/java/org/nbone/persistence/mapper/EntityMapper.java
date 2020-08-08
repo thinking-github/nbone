@@ -78,6 +78,27 @@ public class EntityMapper<T> {
 	private Map<String, FieldMapper> propertyMappers;
 
 	/**
+	 * create Time Field
+	 */
+	private FieldMapper createTime;
+	/**
+	 * update Time Field
+	 */
+	private FieldMapper updateTime;
+	/**
+	 * Specifies the version field or property of an entity class that serves as its optimistic lock value.
+	 * <p>
+	 * The version is used to ensure integrity when performing the merge operation and for optimistic concurrency control.
+	 */
+	private FieldMapper version;
+
+	/**
+	 * SQL ordering clause.
+	 * Order a collection using SQL ordering   this expects SQL fragment
+	 */
+	private String orderByClause;
+
+	/**
 	 * 实体类中的扩展字段 用于in 查询 和 between 查询
 	 */
 	private Map<String, QueryOperation> extFields;
@@ -379,6 +400,30 @@ public class EntityMapper<T> {
 		return propertyMappers.get(fieldName).getPropertyDescriptor();
 	}
 
+	public FieldMapper getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(FieldMapper createTime) {
+		this.createTime = createTime;
+	}
+
+	public FieldMapper getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(FieldMapper updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public FieldMapper getVersion() {
+		return version;
+	}
+
+	public void setVersion(FieldMapper version) {
+		this.version = version;
+	}
+
 	public Collection<QueryOperation> getExtFields() {
 		if (extFields == null) {
 			return null;
@@ -483,25 +528,68 @@ public class EntityMapper<T> {
 	 * 查询全部sql
 	 * @return
 	 */
-	public StringBuilder getSelectAllSql(Object object,boolean distinct,String tableName) {
+	public StringBuilder getSelectAllSql(Object object,String[] excludeFields,boolean isDbFieldName,boolean distinct,String tableName) {
 		StringBuilder selectAllSql = new StringBuilder();
 		selectAllSql.append("SELECT ");
 		if (distinct) {
 			selectAllSql.append("DISTINCT ");
 		}
-		selectAllSql.append(selectStar ? "*" : this.getCommaDelimitedColumns()).append(" FROM ");
+		if (excludeFields == null || excludeFields.length == 0) {
+			selectAllSql.append(selectStar ? "*" : this.getCommaDelimitedColumns());
+		} else {
+			StringBuilder fieldNames = new StringBuilder();
+			int count = 0;
+			for (Map.Entry<String, FieldMapper> entry : fieldMappers.entrySet()) {
+				String name;
+				FieldMapper fieldMapper = entry.getValue();
+				if (isDbFieldName) {
+					name = fieldMapper.getColumnName();
+				} else {
+					name = fieldMapper.getFieldName();
+				}
+				if (contains(excludeFields, name)) {
+					continue;
+				}
+				if (count > 0) {
+					fieldNames.append(",");
+				}
+				fieldNames.append(fieldMapper.getColumnName());
+				count++;
+			}
+			selectAllSql.append(fieldNames);
+		}
+		selectAllSql.append(" FROM ");
 		selectAllSql.append(StringUtils.hasLength(tableName) ? tableName : this.getTableName(object));
 		return selectAllSql;
 	}
+
+	public static boolean contains(String[] array, String name) {
+		for (String tt : array) {
+			if (tt.equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
+	 * <ul>
+	 *      <li>1.优先使用自定义查询</li>
+	 *      <li>2.按照字段级别次之</li>
+	 * </ul>
 	 * 根字段返回查询sql 用于按需字段查询
-	 * @param fieldNames
+	 * @param fieldNames 自定义查询字段, 可为空
+	 * @param fieldLevel 按字段级别查询, 可为空
 	 * @param isDbFieldName true为数据库字段名称,false 为Java字段名称
+	 * @param distinct 是否去重操作
+	 * @param tableName 表名称,可为空
 	 * @return
 	 */
-	public StringBuilder getSelectAllSql(Object object,String[] fieldNames,boolean isDbFieldName,boolean distinct) {
+	public StringBuilder getSelectAllSql(Object object,String[] fieldNames,String[] excludeFields,FieldLevel fieldLevel,
+										 boolean isDbFieldName, boolean distinct,String tableName) {
 		if(fieldNames == null || fieldNames.length == 0){
-			return getSelectAllSql(object,distinct,null);
+
+			return getSelectAllSql(object,excludeFields,fieldLevel,isDbFieldName,distinct,tableName);
 		}
 	    StringBuilder selectAllSql = new StringBuilder("SELECT ");
 		if(distinct){
@@ -524,14 +612,15 @@ public class EntityMapper<T> {
 				selectAllSql.append(dbFieldName);
 			}
 		}
-		
-	    selectAllSql.append(" FROM ").append(this.getTableName(object));
+
+	    selectAllSql.append(" FROM ").append(StringUtils.hasLength(tableName) ? tableName : this.getTableName(object));
 		return selectAllSql;
 	}
 	
-	public StringBuilder getSelectAllSql(Object object,FieldLevel fieldLevel,boolean distinct) {
+	public StringBuilder getSelectAllSql(Object object,String[] excludeFields,FieldLevel fieldLevel,
+										 boolean isDbFieldName,boolean distinct,String tableName) {
 		if(fieldLevel == null || fieldLevel == FieldLevel.ALL || !fieldPropertyLoad){
-			return getSelectAllSql(object,distinct,null);
+			return getSelectAllSql(object,excludeFields,isDbFieldName,distinct,tableName);
 		}
 		// query column
 		StringBuilder selectAllSql = new StringBuilder("SELECT ");
@@ -554,17 +643,18 @@ public class EntityMapper<T> {
 			}
 		}
 
-		selectAllSql.append(" FROM ").append(this.getTableName(object));
+		selectAllSql.append(" FROM ").append(StringUtils.hasLength(tableName) ? tableName : this.getTableName(object));
 		return selectAllSql;
 	}
 
 	/**
 	 *   select id,count(id) countNum  from User
 	 */
-	public StringBuilder getGroupSelectAllSql(Object object,String queryColumns) {
+	public StringBuilder getGroupSelectAllSql(Object object,String queryColumns,String tableName) {
 		// query column
 		StringBuilder selectSql = new StringBuilder();
-		selectSql.append("SELECT ").append(queryColumns).append(" FROM ").append(this.getTableName(object));
+		selectSql.append("SELECT ").append(queryColumns).append(" FROM ");
+		selectSql.append(StringUtils.hasLength(tableName) ? tableName : this.getTableName(object));
 		return  selectSql;
 	}
 
@@ -578,16 +668,17 @@ public class EntityMapper<T> {
 		return deleteAllSql;
 	}
 
-	public StringBuilder getCountSql(Object object) {
+	public StringBuilder getCountSql(Object object,String tableName) {
 		StringBuilder countSql = new StringBuilder();
-		countSql.append("select count(1) from ").append(this.getTableName(object));
+		String name = StringUtils.hasLength(tableName) ? tableName : this.getTableName(object);
+		countSql.append("select count(1) from ").append(name);
 		return countSql;
 	}
 
 	
 	public String getSelectSqlWithId() {
 		if(selectSqlWithId == null){
-			StringBuilder querySql= getSelectAllSql(null,false,null);
+			StringBuilder querySql= getSelectAllSql(null,null,false,false,null);
 			String  primaryKey=  getPrimaryKey();
 			if(primaryKey == null){
 				throw new PrimaryKeyException("table name "+this.tableName +" not have primaryKey");

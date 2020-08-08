@@ -1,12 +1,12 @@
 package org.nbone.persistence.mapper;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.annotation.FieldProperty;
 import org.nbone.persistence.enums.JdbcType;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * 字段映射类，用于描述java对象字段和数据库表字段之间的对应关系<br>
@@ -23,7 +23,7 @@ public class FieldMapper {
     /**
      * 数据库表字段名
      */
-    private String dbFieldName;
+    private String columnName;
     /**
      * 是否是数据库表主键
      */
@@ -38,10 +38,11 @@ public class FieldMapper {
     private JdbcType jdbcType;
     
     private FieldLevel fieldLevel = FieldLevel.NORM_VALUE;
-     
-    private  boolean nullable   = true;
-    private  boolean insertable = true;
-    private  boolean updatable  =true;
+
+	private boolean unique     = false;
+    private boolean nullable   = true;
+    private boolean insertable = true;
+    private boolean updatable  = true;
     
     @SuppressWarnings("rawtypes")
     private Class enumClass = null;
@@ -72,14 +73,18 @@ public class FieldMapper {
     }
 
     public String getDbFieldName() {
-    	if(dbFieldName == null || dbFieldName.trim().length()==0){
-    		this.dbFieldName = this.fieldName;
-    	}
-        return dbFieldName;
+		return getColumnName();
     }
 
-    public void setDbFieldName(String dbFieldName) {
-        this.dbFieldName = dbFieldName;
+	public String getColumnName() {
+		if (columnName == null || columnName.trim().length() == 0) {
+			this.columnName = this.fieldName;
+		}
+		return columnName;
+	}
+
+	public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
     public boolean isPrimaryKey() {

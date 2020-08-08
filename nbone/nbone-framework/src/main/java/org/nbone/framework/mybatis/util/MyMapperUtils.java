@@ -15,6 +15,7 @@ import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.nbone.constants.CaseName;
+import org.nbone.core.util.NameFormat;
 import org.nbone.framework.mybatis.MySqlSessionTemplate;
 import org.nbone.framework.spring.dao.config.JdbcComponentConfig;
 import org.nbone.framework.spring.dao.core.EntityPropertyRowMapper;
@@ -65,40 +66,6 @@ public class MyMapperUtils {
 	}
 
 	/**
-	 *  UPPER_CAMEL  --> LOWER_UNDERSCORE / UPPER_UNDERSCORE / LOWER_CAMEL
-	 * @param name
-	 * @param caseName
-	 * @return
-	 */
-	public static String caseFormat(String name ,CaseName caseName){
-		String tableName ;
-		switch (caseName) {
-			case LOWER_UNDERSCORE:
-				tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
-
-				break;
-
-			case UPPER_UNDERSCORE:
-				tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
-
-				break;
-
-			case LOWER_CAMEL:
-				tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
-			
-				break;
-
-
-			default:
-				tableName = name;
-				break;
-		}
-
-		return  tableName;
-
-	}
-
-	/**
 	 * 获取全部有效的 resultMap
  	 */
 	public static  List<ResultMapping> getResultMappings(){
@@ -146,7 +113,7 @@ public class MyMapperUtils {
 			if(tableName == null || tableName.length() == 0){
 				logger.warn(">>>>>"+entityClass.getName()+" Jpa Annotation tableName"+" not setting, use className format.");
 				String className = entityClass.getSimpleName();
-				tableName = caseFormat(className,caseName);
+				tableName = NameFormat.caseFormat(className,caseName);
 			}
 
 			return  tableName;
@@ -213,7 +180,18 @@ public class MyMapperUtils {
 			Field field = ReflectionUtils.findField(entityClass, fieldName);
 			FieldMapper.setFieldProperty(field, fieldMapper);
 
-			fieldMapper.setDbFieldName(dbFieldName);
+			if(MappingBuilder.isCreatedTime(field)){
+				entityMapper.setCreateTime(fieldMapper);
+			}else if (MappingBuilder.isUpdateTime(field)) {
+				entityMapper.setUpdateTime(fieldMapper);
+			}
+
+			if(MappingBuilder.isVersion(field)){
+				entityMapper.setVersion(fieldMapper);
+			}
+
+
+			fieldMapper.setColumnName(dbFieldName);
 			for (String string : primaryList) {
 				if(string != null && string.equals(dbFieldName)){
             		fieldMapper.setPrimaryKey(true);

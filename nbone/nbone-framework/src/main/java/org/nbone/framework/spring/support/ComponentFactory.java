@@ -9,9 +9,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -171,6 +173,17 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 		
 	}
 
+	public static <T> void validate(Validator validator, T object, Class<?>... groups) {
+		Assert.notNull(validator, "beanValidation validator must not be null.");
+		Set<ConstraintViolation<T>> set = validator.validate(object, groups);
+		if (set != null && set.size() > 0) {
+			for (ConstraintViolation<T> constraintViolation : set) {
+				String propertyName = constraintViolation.getPropertyPath().toString();
+				String message = constraintViolation.getMessage();
+				throw new IllegalArgumentException(object.getClass().getName() + " field [" + propertyName + "] " + message);
+			}
+		}
+	}
 	/**
 	 * 实例对象验证
 	 *
@@ -178,22 +191,32 @@ public class ComponentFactory implements ApplicationContextAware,InitializingBea
 	 * @param groups 验证组
 	 * @param <T>
 	 */
-	public static  <T> void validate(T object, Class<?>... groups){
+	public static <T> void validate(T object, Class<?>... groups) {
 		if(object == null){
 			return;
 		}
 		if(validator == null){
 			validator = applicationContext.getBean(Validator.class);
 		}
-		Set<ConstraintViolation<T>> set = validator.validate(object,groups);
-		if(set.size() > 0){
-			for (ConstraintViolation<T> constraintViolation : set) {
-				String propertyName =  constraintViolation.getPropertyPath().toString();
-				String message = constraintViolation.getMessage();
-				throw  new IllegalArgumentException(object.getClass().getName()+" field ["+ propertyName +"] "+message);
-			}
+		validate(validator,object,groups);
+	}
 
-
+	/**
+	 * 实例集合对象验证
+	 *
+	 * @param collection 需要验证的对象集合
+	 * @param groups     验证组
+	 * @param <T>
+	 */
+	public static <T> void validate(Collection<T> collection, Class<?>... groups) {
+		if (CollectionUtils.isEmpty(collection)) {
+			return;
+		}
+		if (validator == null) {
+			validator = applicationContext.getBean(Validator.class);
+		}
+		for (T object : collection) {
+			validate(validator, object, groups);
 		}
 	}
 	//---------------------------------------------------------------------

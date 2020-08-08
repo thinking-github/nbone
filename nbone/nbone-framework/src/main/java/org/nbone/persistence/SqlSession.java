@@ -127,6 +127,14 @@ public interface SqlSession extends QueryOperations{
 	 * @return
 	 */
 	public int deleteByEntity(Object object);
+
+	/**
+	 * 根据 SqlConfig 配置删除数据
+	 *
+	 * @param sqlConfig 参数必填
+	 * @return
+	 */
+	public int delete(SqlConfig sqlConfig);
 	
 	/**
 	 * 单表操作删除一条记录

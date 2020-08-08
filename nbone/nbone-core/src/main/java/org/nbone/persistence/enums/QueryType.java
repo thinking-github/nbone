@@ -3,7 +3,7 @@ package org.nbone.persistence.enums;
 /**
  * @author chenyicheng
  * @version 1.0
- * @since 2019/6/19
+ * @since 2018/6/19
  */
 public enum QueryType {
 

@@ -3,6 +3,9 @@ package org.nbone.web.util;
 import org.nbone.constants.CharsetConstant;
 import org.nbone.constants.ContentType;
 import org.nbone.util.WebIOUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.ClassUtils;
+import org.supercsv.io.AbstractCsvWriter;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -12,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -23,13 +28,16 @@ import java.util.List;
 public class CsvUtils {
 
     public final static  String  ENCODING = "encoding";
+
+    public final static  Class<?>[] PARAMETER_TYPES = {Writer.class,CsvPreference.class};
     /**
      * 标签,国家,语言,产品
      * 卿博士,cn,zh,cat
      * 卿博士熟食,cn,zh,cat
      *
-     * @param request
-     * @param response
+     * @param request    HttpServletRequest
+     * @param response   HttpServletResponse
+     * @param csvWriterClass  csvWriterClass
      * @param csvFileName 文件名称
      * @param dataList    数据列表
      * @param header      文件标题
@@ -38,6 +46,7 @@ public class CsvUtils {
      */
     public static void exportCsv(HttpServletRequest request,
                            HttpServletResponse response,
+                           Class<? extends AbstractCsvWriter> csvWriterClass,
                            String csvFileName,
                            List<?> dataList,
                            String[] header,
@@ -57,7 +66,14 @@ public class CsvUtils {
         }
         OutputStreamWriter writer = new OutputStreamWriter(os, Charset.forName(encode));
 
-        ICsvBeanWriter csvWriter = new CsvBeanWriter(writer, CsvPreference.STANDARD_PREFERENCE);
+        ICsvBeanWriter csvWriter;
+        if(csvWriterClass == null){
+            csvWriter  = new CsvBeanWriter(writer, CsvPreference.STANDARD_PREFERENCE);
+        }else {
+            Constructor<?> csvWriterConstructor = ClassUtils.getConstructorIfAvailable(csvWriterClass, PARAMETER_TYPES);
+            csvWriter = (ICsvBeanWriter) BeanUtils.instantiateClass(csvWriterConstructor,new Object[]{writer,CsvPreference.STANDARD_PREFERENCE});
+        }
+
         csvWriter.writeHeader(header);
         if (nameMapping == null || nameMapping.length == 0) {
             nameMapping = header;
@@ -66,6 +82,16 @@ public class CsvUtils {
             csvWriter.write(item, nameMapping);
         }
         csvWriter.close();
+    }
+
+    public static void exportCsv(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 String csvFileName,
+                                 List<?> dataList,
+                                 String[] header,
+                                 String... nameMapping) throws IOException {
+
+        exportCsv(request,response,null,csvFileName,dataList,header,nameMapping);
     }
 
 }

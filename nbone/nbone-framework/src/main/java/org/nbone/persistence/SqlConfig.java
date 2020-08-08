@@ -6,6 +6,7 @@ import org.nbone.mvc.domain.RequestQuery;
 import org.nbone.persistence.annotation.FieldLevel;
 import org.nbone.persistence.util.SqlUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,16 @@ public class SqlConfig {
      * 字段名称数组,用于按需返回字段
      */
     private String[] fieldNames;
+
+    /**
+     * 字段名称数组,用于排除返回字段
+     */
+    private String[] excludeFields;
+
+    /**
+     * 表名称
+     */
+    private String tableName;
 
     /**
      * @MapKey 将返回的List 转换成Map默认使用主键作为map key
@@ -91,6 +102,11 @@ public class SqlConfig {
      * 第一个条件语句
      */
     private String firstCondition;
+
+    /**
+     * 第一个操作语句 , 和 firstCondition 参数冲突
+     */
+    private SqlOperation firstOperation;
     /**
      * 追加条件语句
      */
@@ -99,6 +115,10 @@ public class SqlConfig {
      * where 条件字段
      */
     private String[] conditionFields;
+    /**
+     * 忽略的 where 条件字段
+     */
+    private List<String> ignoreFields;
     /**
      * where 之后的语句 追加[增加]查询条件 或者 group by/order by 子句
      */
@@ -287,6 +307,24 @@ public class SqlConfig {
         return withFieldNames(new String[]{fieldName, fieldName1, fieldName2});
     }
 
+    public SqlConfig excludeFields(String[] excludeFields) {
+        this.excludeFields = excludeFields;
+        return this;
+    }
+    public SqlConfig excludeFields(String fieldName) {
+        this.excludeFields = new String[]{fieldName};
+        return this;
+    }
+    public SqlConfig excludeFields(String fieldName, String fieldName1) {
+        this.excludeFields = new String[]{fieldName,fieldName1};
+        return this;
+    }
+
+    public SqlConfig tableName(String tableName) {
+        this.tableName = tableName;
+        return this;
+    }
+
     public SqlConfig mapKey(String mapKey) {
         this.mapKey = mapKey;
         return this;
@@ -337,9 +375,21 @@ public class SqlConfig {
     }
 
     public SqlConfig firstCondition(String firstCondition) {
+        if (firstOperation != null) {
+            throw new IllegalArgumentException("already set firstOperation=" + firstOperation.getFieldName());
+        }
         this.firstCondition = firstCondition;
         return this;
     }
+
+    public SqlConfig firstCondition(SqlOperation sqlOperation) {
+        if (firstCondition != null) {
+            throw new IllegalArgumentException("already set firstCondition=" + firstCondition);
+        }
+        this.firstOperation = sqlOperation;
+        return this;
+    }
+
     public SqlConfig condition(String condition) {
         this.condition = condition;
         return this;
@@ -360,6 +410,11 @@ public class SqlConfig {
 
     public SqlConfig conditionFields(String conditionField) {
         this.conditionFields = new String[]{conditionField};
+        return this;
+    }
+
+    public SqlConfig ignoreFields(String... ignoreFields) {
+        this.ignoreFields = Arrays.asList(ignoreFields);
         return this;
     }
 

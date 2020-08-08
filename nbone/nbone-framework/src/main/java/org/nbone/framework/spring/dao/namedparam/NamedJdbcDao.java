@@ -1,27 +1,18 @@
 package org.nbone.framework.spring.dao.namedparam;
 
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletRequest;
-
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.core.RowMapperWithMapExtractor;
 import org.nbone.framework.spring.dao.core.SingleEntityResultSetExtractor;
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
+import org.nbone.mvc.domain.ParentDomain;
 import org.nbone.persistence.*;
 import org.nbone.persistence.enums.JdbcFrameWork;
+import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.MappingBuilder;
-import org.nbone.persistence.mapper.EntityMapper;
 import org.nbone.persistence.model.SqlModel;
+import org.nbone.persistence.util.SqlUtils;
 import org.nbone.web.util.RequestQueryUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -29,19 +20,30 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * 批量保存使用SimpleJdbcDao
  * @author thinking
- * @version 1.0 
+ * @version 1.0
  * @see org.nbone.framework.spring.dao.BaseJdbcDao
  * @see org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
  */
@@ -50,21 +52,21 @@ import org.springframework.util.StringUtils;
 @Lazy
 @SuppressWarnings("unchecked")
 public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlSession, RequestQuery,InitializingBean{
-	
+
 	@Resource(name="baseJdbcDao")
 	private BaseJdbcDao baseJdbcDao;
-	
+
 	@Resource(name="simpleJdbcDao")
 	private BatchSqlSession simpleJdbcDao;
 
 	private JdbcTemplate jdbcTemplate;
 	private NamedJdbcTemplate namedJdbcTemplate;
-	
-	
+
+
 	private SqlBuilder sqlBuilder = new BaseSqlBuilder(JdbcFrameWork.SPRING_JDBC) {
 
-	}; 
-	
+	};
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//代理有时存在问题取不到值
@@ -74,13 +76,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		}
 		this.namedJdbcTemplate = new NamedJdbcTemplate(jdbcTemplate, sqlBuilder);
 	}
-	
+
 
 	@Override
 	public int insert(Object object) {
 		SqlModel<Object> sqlModel = sqlBuilder.insertSelectiveSql(object);
 		checkSqlModel(sqlModel);
-		
+
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
 		return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
@@ -95,7 +97,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public Serializable save(Object object) {
 		SqlModel<Object> sqlModel = sqlBuilder.insertSelectiveSql(object);
 		checkSqlModel(sqlModel);
-		
+
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
 		KeyHolder generatedKeyHolder =  new  GeneratedKeyHolder();
 		namedJdbcTemplate.update(sqlModel.getSql(), paramSource, generatedKeyHolder);
@@ -115,12 +117,12 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int update(Object object) {
-		
+
 		SqlModel<Object> sqlModel = sqlBuilder.updateSql(object,null,null);
 		checkSqlModel(sqlModel);
-		
+
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
-		
+
 		return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
 
@@ -148,42 +150,52 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public void saveOrUpdate(Object object) {
-		
+
 	}
 
 	@Override
 	public int delete(Object object) {
 		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntity(object, true,null);
 		checkSqlModel(sqlModel);
-		
+
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
-		
+
 		return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
-	
+
 
 	@Override
 	public int deleteByEntity(Object object) {
 		SqlModel<Object> sqlModel = sqlBuilder.deleteSqlByEntity(object, false,null);
 		checkSqlModel(sqlModel);
-		
+
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
-		
+
 		return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
 
+	@Override
+	public int delete(SqlConfig sqlConfig) {
+		SqlModel<Object> sqlModel = sqlBuilder.deleteSql(sqlConfig);
+		SqlParameterSource paramSource = namedJdbcTemplate.getSqlParameterSource(sqlModel);
+		if (paramSource != null) {
+			return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
+		} else {
+			return jdbcTemplate.update(sqlModel.getSql());
+		}
+	}
 
 	@Override
 	public int delete(Class<?> clazz, Serializable id,String tableName) {
 		SqlModel<Map<String,?>> sqlModel = sqlBuilder.deleteSqlById(clazz, id,tableName);
 		int row = 0;
 		checkSqlModel(sqlModel);
-		
+
 		row = namedJdbcTemplate.update(sqlModel.getSql(),sqlModel.getParameter());
-		
+
 		return row;
 	}
-	
+
 	@Override
 	public <T> int delete(Class<T> clazz, Object[] ids,String tableName) {
 		SqlModel<T> sqlModel = sqlBuilder.deleteSqlByIds(clazz, ids,tableName);
@@ -227,13 +239,13 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		}
 		return null;
 	}
-	
+
 	@Override
 	public long count(Class<?> clazz,String afterWhere) {
 		SqlModel<?> sqlModel =  sqlBuilder.countSql(clazz,afterWhere);
 		checkSqlModel(sqlModel);
 		Number number = jdbcTemplate.queryForObject(sqlModel.getSql(), Long.class);
-		
+
 		return (number != null ? number.longValue() : 0);
 	}
 
@@ -242,7 +254,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		SqlModel<Object> sqlModel = sqlBuilder.countSql(object,sqlConfig);
 		checkSqlModel(sqlModel);
 		SqlParameterSource parameterSource =  new BeanPropertySqlParameterSource(object);
-		
+
 		Number number = namedJdbcTemplate.queryForObject(sqlModel.getSql(),parameterSource, Long.class);
 		return (number != null ? number.longValue() : 0);
 	}
@@ -256,7 +268,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		List<T> result  = jdbcTemplate.query(sqlModel.getSql(),rowMapper);
 		return result;
 	}
-	
+
 	@Override
 	public <T> List<T> getAll(Class<T> clazz,Collection<?> ids,String tableName) {
 		return getAll(clazz, ids.toArray(),tableName);
@@ -285,7 +297,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public <K, T> Map<K, T> getMapWithMapKey(Object object, SqlConfig sqlConfig) {
+	public <K, T> Map<K, T> getMapKeyValue(Object object, SqlConfig sqlConfig) {
 		String mapKey = sqlConfig != null ? sqlConfig.getMapKey() : null;
 		Class<?> keyType = sqlConfig != null ? sqlConfig.getMapKeyType() : null;
 		String valueName = sqlConfig != null ? sqlConfig.getMapValueName() : null;
@@ -299,9 +311,56 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		return (Map<K, T>) map;
 	}
 	@Override
-	public <K, T> Map<K, T> getMapWithMapKey(SqlConfig sqlConfig) {
-		return getMapWithMapKey(null,sqlConfig);
+	public <K, T> Map<K, T> getMapKeyValue(SqlConfig sqlConfig) {
+		return getMapKeyValue(null,sqlConfig);
 	}
+	public <K, T> Map<K, T> getMapWithMapKey(Object object, SqlConfig sqlConfig){
+		return getMapKeyValue(object,sqlConfig);
+	}
+	public <K, T> Map<K, T> getMapWithMapKey(SqlConfig sqlConfig){
+		return getMapKeyValue(sqlConfig);
+	}
+
+
+	public <T, K> Map<K, String> getParentName(Collection<? extends ParentDomain> entityDomains, Class<T> entityClass,
+											   String idField, String nameField, String tableName) {
+		if (CollectionUtils.isEmpty(entityDomains)) {
+			return Collections.emptyMap();
+		}
+		Set<Serializable> parentIds = new HashSet<>(entityDomains.size());
+		Class<?> idFieldType = null;
+		for (ParentDomain entity : entityDomains) {
+			Serializable pid = entity.getParentId();
+			if (idFieldType == null && pid != null) {
+				idFieldType = pid.getClass();
+			}
+			parentIds.add(pid);
+		}
+		EntityMapper<T> entityMapper = MappingBuilder.ME.getTableMapper(entityClass);
+		FieldMapper fieldMapper = entityMapper.getFieldMapperByProperty(idField);
+	/*	if (idFieldType == null) {
+			idFieldType = fieldMapper.getPropertyType();
+		}
+		if (idFieldType == Serializable.class) {
+			idFieldType = null;
+		}*/
+		String columnName = fieldMapper.getDbFieldName();
+		String in = SqlUtils.in("", columnName, idFieldType, parentIds, true).toString();
+		SqlConfig sqlConfig = SqlConfig.builder(-1).withEntityClass(entityClass)
+				.mapKey(idField).mapKeyType(idFieldType).mapValueName(nameField)
+				.conditionFields(idField)
+				.usedExtField(false)
+				.firstCondition(in);
+		sqlConfig.setTableName(tableName);
+		Map<K, String> map = getMapKeyValue(sqlConfig);
+
+		for (ParentDomain entity : entityDomains) {
+			String parentName = map.get(entity.getParentId());
+			entity.setParentName(parentName);
+		}
+		return map;
+	}
+
 
 	@Override
 	public  <T> List<T> queryForList(Object object,SqlConfig sqlConfig){
@@ -311,7 +370,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	private <T> List<T> list(Object object,SqlConfig sqlConfig){
 		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object,sqlConfig);
 
-		List<T> list = namedJdbcTemplate.query(sqlModel,new BeanPropertySqlParameterSource(object));
+		List<T> list = namedJdbcTemplate.query(sqlModel,object);
 		return list;
 	}
     /**
@@ -359,7 +418,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	public int[] batchUpdate(Object[] objects,String...properties) {
 		return batchUpdate(objects,properties,(String[])null);
 	}
-	
+
 	@Override
 	public int[] batchUpdate(Collection<?> objects,String...properties) {
 		return batchUpdate(objects,properties,(String[])null);
@@ -415,18 +474,18 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		 final List<Serializable> tempids = ids;
 		 final int batchSize = ids.size();
 		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
-			
+
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				ps.setObject(1, tempids.get(i));
 			}
-			
+
 			@Override
 			public int getBatchSize() {
 				return batchSize;
 			}
 		});
-		return rows;	
+		return rows;
 	}
 
 	@Override
@@ -439,12 +498,12 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		 final Serializable[] tempids = ids;
 		 final int batchSize = ids.length;
 		 int[] rows = jdbcTemplate.batchUpdate(sql,new BatchPreparedStatementSetter() {
-			
+
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				ps.setObject(1, tempids[i]);
 			}
-			
+
 			@Override
 			public int getBatchSize() {
 				return batchSize;
@@ -470,7 +529,7 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public  <T> Page<T> findForPage(Object object, int pageNum, int pageSize,SqlConfig sqlConfig) {
-		
+
 		return namedJdbcTemplate.findForPage(object, pageNum, pageSize,sqlConfig);
 	}
 
@@ -503,26 +562,38 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		sqlConfig.setFieldNames(new String[]{fieldName});
 		sqlConfig.setAfterWhere(afterWhere);
 
+		List<T> reuslt  = getForList(object,sqlConfig,null,requiredType);
+		return reuslt;
+	}
+
+	@Override
+	public <T> List<T> getForList(Object object, SqlConfig sqlConfig, String fieldName, Class<T> requiredType) {
+		if (sqlConfig == null) {
+			sqlConfig = new SqlConfig(-1);
+		}
+		if(fieldName != null){
+			sqlConfig.setFieldNames(new String[]{fieldName});
+		}
+
 		SqlModel<Object> sqlModel= sqlBuilder.selectSql(object, sqlConfig);
-		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(object);
-		List<T> reuslt  = namedJdbcTemplate.query(sqlModel.getSql(),paramSource,new RowMapper<T>() {
+		List<T> reuslt  = namedJdbcTemplate.query(sqlModel,object,new RowMapper<T>() {
 
 			@Override
 			public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-				
+
 				//JDK 1.7 add
 				//rs.getObject(1, requiredType);
-				
+
 				T object = (T) rs.getObject(1);
 				return object;
 			}
 		});
-		
-		
+
+
 		return reuslt;
 	}
 
-    /**
+	/**
      * MathOperation is null MathOperation set +
      */
 	@Override
@@ -532,9 +603,9 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 		}
 		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object,property, mathOperation);
 		checkSqlModel(sqlModel);
-		
+
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
-		
+
 		return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
 	}
 

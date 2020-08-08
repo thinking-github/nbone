@@ -1,19 +1,17 @@
 package org.nbone.persistence;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.nbone.lang.MathOperation;
 import org.nbone.mvc.domain.GroupQuery;
 import org.nbone.persistence.exception.BuilderSQLException;
 import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.model.SqlModel;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.servlet.ServletRequest;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 构建ORM映射超级接口
@@ -115,6 +113,15 @@ public interface SqlBuilder {
 	  */
 	SqlModel<Object> deleteSqlByEntity(Object object, boolean primaryKey, String tableName)
 			throws BuilderSQLException;
+
+	/**
+	 * 由传入的sqlConfig 生成delete sql语句
+	 *
+	 * @param sqlConfig sqlConfig
+	 * @return
+	 * @throws BuilderSQLException
+	 */
+	SqlModel<Object> deleteSql(SqlConfig sqlConfig) throws BuilderSQLException;
 	 
 	 /**
 	  * 根据主键Id删除

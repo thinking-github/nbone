@@ -1,9 +1,6 @@
 package org.nbone.persistence.model;
 
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.nbone.context.system.SystemContext;
 import org.nbone.mvc.domain.DomainQuery;
@@ -18,11 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 存储sql的Model
+ *
  * @author thinking
  * @since 2015-12-12
- *
  */
 public class SqlModel<T> {
 
@@ -70,12 +70,24 @@ public class SqlModel<T> {
 		this.sql = sql;
 		this.parameter = parameter;
 	}
-	
+
+	public SqlModel(String sql, EntityMapper<?> entityMapper) {
+		this.sql = sql;
+		this.entityMapper = entityMapper;
+	}
+
 	public SqlModel(String sql, T parameter, EntityMapper<?> entityMapper) {
 		this.sql = sql;
 		this.parameter = parameter;
 		this.entityMapper = entityMapper;
 	}
+
+	public SqlModel(String sql, Object[] parameterArray, EntityMapper<?> entityMapper) {
+		this.sql = sql;
+		this.parameterArray = parameterArray;
+		this.entityMapper = entityMapper;
+	}
+
 	public SqlModel(String sql, T parameter, EntityMapper<?> entityMapper, SqlConfig sqlConfig) {
 		this.sql = sql;
 		this.parameter = parameter;

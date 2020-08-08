@@ -4,17 +4,12 @@
  */
 package org.nbone.web.util;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.net.URLEncoder;
-
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 
 /**
  * http相关信息的操作、获取和管理类
@@ -327,100 +322,6 @@ public class HttpUtil {
 		}
 		String one = address.substring(0, di);
 		return !one.matches("^[-\\+]?\\d+$");
-	}
-
-	/**
-	 * 导出文件到web
-	 * @param request request对象
-	 * @param response response对象
-	 * @param is InputStream输入流
-	 * @param fileName 文件名(包含后缀)
-	 * @throws IOException 抛出文件异常
-	 */
-	public static void exportFile(HttpServletRequest request,HttpServletResponse response, InputStream is,
-			String fileName) throws IOException {
-		if (!(response.isCommitted())){
-			response.reset();
-		}
-		
-		response.setContentType("application/unknown;charset=utf-8");
-		response.setContentType("text/plain");
-
-		//解决火狐文件名乱码问题
-		String agent=request.getHeader("user-agent");
-		if (agent.indexOf("MSIE") != -1) {
-			String temp;
-			temp = URLEncoder.encode(fileName, "UTF-8");
-			if(temp.length()>150){
-				temp=new String(fileName.getBytes("GBK"),"ISO-8859-1");
-			}
-			response.addHeader("Content-Disposition", "attachment; filename=\"" +temp+ "\"");
-		}else{
-			response.addHeader("Content-Disposition", "attachment; filename=\"" + new String(fileName.getBytes("utf-8"),"iso-8859-1") + "\"");
-		}
-		
-		ServletOutputStream outs = response.getOutputStream();
-		BufferedInputStream buf = new BufferedInputStream(is);
-		int readBytes = 0;
-		while ((readBytes = buf.read()) != -1) {
-			outs.write(readBytes);
-		}
-		outs.flush();
-		
-		response.setStatus(200);
-		response.flushBuffer();
-		
-		if (outs != null) {
-			outs.close();
-		}
-		if (buf != null) {
-			buf.close();
-		}
-		if (is != null){
-			is.close();
-		}
-	}
-	
-	/**
-	 * 导出文件到web
-	 * @param request request对象
-	 * @param response response对象
-	 * @param txt 要导出的文本内容
-	 * @param fileName 文件名(包含后缀名)
-	 * @throws IOException 抛出文件异常
-	 */
-	public static void exportFile(HttpServletRequest request,HttpServletResponse response, String txt,
-			String fileName) throws IOException {
-		if (!(response.isCommitted())){
-			response.reset();
-		}
-		
-		response.setContentType("application/unknown;charset=utf-8");
-		response.setContentType("text/plain");
-
-		//解决火狐文件名乱码问题
-		String agent=request.getHeader("user-agent");
-		if (agent.indexOf("MSIE") != -1) {
-			String temp;
-			temp = URLEncoder.encode(fileName, "UTF-8");
-			if(temp.length()>150){
-				temp=new String(fileName.getBytes("GBK"),"ISO-8859-1");
-			}
-			response.addHeader("Content-Disposition", "attachment; filename=\"" +temp+ "\"");
-		}else{
-			response.addHeader("Content-Disposition", "attachment; filename=\"" + new String(fileName.getBytes("utf-8"),"iso-8859-1") + "\"");
-		}
-
-		ServletOutputStream outs = response.getOutputStream();
-		outs.write(txt.getBytes());
-		outs.flush();
-		
-		response.setStatus(200);
-		response.flushBuffer();
-		
-		if (outs != null) {
-			outs.close();
-		}
 	}
 	
 }

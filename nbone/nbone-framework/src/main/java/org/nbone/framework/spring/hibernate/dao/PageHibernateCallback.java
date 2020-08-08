@@ -9,7 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.nbone.framework.hibernate.util.HQueryUtils;
 import org.nbone.mx.datacontrols.datapage.PagerModel;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 
 /**
  * query page  HibernateCallback
@@ -71,7 +71,7 @@ public class PageHibernateCallback implements HibernateCallback<PagerModel<Objec
 
 
 	@Override
-	public PagerModel<Object> doInHibernate(Session session)throws HibernateException, SQLException {
+	public PagerModel<Object> doInHibernate(Session session)throws HibernateException {
 		PagerModel<Object> pm = new PagerModel<Object>();
 		
 		pageSize = pageSize > 0  ? pageSize : pm.getPageSize();

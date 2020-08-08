@@ -36,6 +36,15 @@ public interface FormController<T,Id> {
     boolean updateAction(T entityRequest, HttpServletRequest request);
 
 
+    //detail
+    @ApiOperation(value = "增量修改PATCH", notes = "REST风格,使用Form参数方式请求,比如修改状态、上线下线"
+            , extensions = @Extension(properties = @ExtensionProperty(name = "update", value = "1")))
+    @FormRequestMapping(value = {"", "info"},method = RequestMethod.PATCH)
+    @ResultResponseBody
+    boolean patch(T entityRequest, HttpServletRequest request);
+
+
+
     @ApiOperation(value = "删除",notes = "REST风格,使用PathVariable参数方式请求")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @ResultResponseBody

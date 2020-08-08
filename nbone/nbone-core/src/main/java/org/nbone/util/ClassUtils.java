@@ -35,9 +35,5 @@ public class ClassUtils {
 		return getSmartClassName(clazz.getName());
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(ClassUtils.getSmartClassName(Long.class));
-		System.out.println(getSmartClassName(BigDecimal.class));
-		System.out.println(getSmartClassName("oo.oo"));
-	}
+
 }

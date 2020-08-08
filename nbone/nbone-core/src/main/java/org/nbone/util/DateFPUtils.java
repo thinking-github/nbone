@@ -1,5 +1,12 @@
 package org.nbone.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.nbone.constants.DateConstant;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -9,13 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.nbone.constants.DateConstant;
 
 /**
  * DateFormat and DateParse
@@ -155,6 +155,30 @@ public class DateFPUtils implements DateConstant {
 	// ---------------------------------------------------------------
 	// format Date
 	// ---------------------------------------------------------------
+
+	/**
+	 * 将一个指定的日期转换为默认的格式
+	 *
+	 * @author thinking
+	 * @see #formatDate(Date, String)
+	 */
+	public static String format(long millis) {
+
+		return DateFormatUtils.format(millis, DEFAULT_DATETIME_PATTERN);
+	}
+
+	/**
+	 * 将一个指定的日期格式化成指定的格式
+	 *
+	 * @author thinking
+	 */
+	public static String format(long millis, String pattern) {
+		if (pattern == null || "".equals(pattern.trim())) {
+			pattern = DEFAULT_DATETIME_PATTERN;
+		}
+		return DateFormatUtils.format(millis, pattern);
+	}
+
 
 	/**
 	 * 将一个指定的日期转换为默认的格式

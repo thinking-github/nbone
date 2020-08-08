@@ -161,7 +161,7 @@ public interface ISuper<T,Id extends Serializable> {
 	public List<T> getForList(T object);
 	
 	/**
-	 * getForList(index,"and status != -1"," order by  create_time DESC"); <br>
+	 * getForList(index,"and status != -1"," order by create_time DESC"); <br>
 	 *
 	 * getForList(index," order by  create_time DESC"); <br>
 	 * 按照实体中的参数查询实体列表

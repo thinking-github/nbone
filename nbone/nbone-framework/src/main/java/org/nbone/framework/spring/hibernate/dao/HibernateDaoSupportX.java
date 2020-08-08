@@ -5,8 +5,8 @@ import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 //@Repository
@@ -27,7 +27,7 @@ public class HibernateDaoSupportX extends HibernateDaoSupport {
     /**
      * set SessionFactory
      * @see JdbcDaoSupport#setDataSource(DataSource)
-     * @param dataSource
+     * @param sessionFactory
      */
 	@Resource(name = "sessionFactory")
 	public void setSuperSessionFactory(SessionFactory sessionFactory) {

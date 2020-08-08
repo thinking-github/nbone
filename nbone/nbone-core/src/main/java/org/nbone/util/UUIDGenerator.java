@@ -2,9 +2,9 @@ package org.nbone.util;
 
 import java.util.UUID;
 
-public class UuidGenerator {
+public class UUIDGenerator {
 	
-    protected UuidGenerator() {
+    protected UUIDGenerator() {
     }
 
     public static String generate() {

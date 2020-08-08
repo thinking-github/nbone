@@ -1,10 +1,11 @@
 package org.nbone.persistence;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.nbone.mvc.domain.QueryCondition;
 import org.nbone.persistence.criterion.QueryOperator;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author thinking
@@ -67,9 +68,11 @@ public class SqlOperation implements QueryOperator {
     }
 
     public SqlOperation(String fieldName, Object[] values) {
-        this.fieldName = fieldName;
-        this.value = values;
-        this.operationType = in;
+        this(fieldName,in,values);
+    }
+
+    public <T> SqlOperation(String fieldName, Collection<T> values) {
+       this(fieldName,in,values);
     }
 
     public SqlOperation(String fieldName, String operationType, Object value) {
@@ -80,6 +83,14 @@ public class SqlOperation implements QueryOperator {
 
     public SqlOperation(QueryCondition condition) {
         this(condition.getField(),condition.getRule(),condition.getValue());
+    }
+
+    public static <T> SqlOperation in(String fieldName, Collection<T> values) {
+        return new SqlOperation(fieldName, values);
+    }
+
+    public static <T> SqlOperation notIn(String fieldName, Collection<T> values) {
+        return new SqlOperation(fieldName, not_in, values);
     }
 
     public String getFieldName() {
@@ -110,6 +121,13 @@ public class SqlOperation implements QueryOperator {
         return operationType;
     }
 
+    public String getOperationType(String defaultValue) {
+        if (operationType != null) {
+            return operationType;
+        }
+        return defaultValue;
+    }
+
     public void setOperationType(String operationType) {
         this.operationType = operationType;
     }
@@ -124,7 +142,7 @@ public class SqlOperation implements QueryOperator {
     }
 
     public boolean isBetween() {
-        return between;
+        return between || operationType.equalsIgnoreCase("between");
     }
 
     public void setBetween(boolean between) {

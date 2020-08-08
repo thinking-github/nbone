@@ -1,6 +1,8 @@
 package org.nbone.persistence.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.nbone.persistence.annotation.CreatedTime;
+import org.nbone.persistence.annotation.UpdateTime;
 import org.nbone.validation.groups.Update;
 
 import javax.persistence.Column;
@@ -22,6 +24,7 @@ public class BaseEntity<T,Id extends Serializable> implements Serializable {
      * 实体编号（唯一标识）
      */
     @NotNull(groups = Update.class)
+    @ApiModelProperty(value =  "id")
     @javax.persistence.Id
     protected Id  id;
 
@@ -34,6 +37,7 @@ public class BaseEntity<T,Id extends Serializable> implements Serializable {
 
     @ApiModelProperty(value =  "创建时间",readOnly = true)
     @Column(name = "create_time")
+    @CreatedTime
     protected Date    createTime; // 创建日期
 
     @ApiModelProperty(value =  "更新者")
@@ -42,6 +46,7 @@ public class BaseEntity<T,Id extends Serializable> implements Serializable {
 
     @ApiModelProperty(value =  "更新时间",readOnly = true)
     @Column(name = "update_time")
+    @UpdateTime
     protected Date    updateTime; // 更新日期
 
     @ApiModelProperty(value =  "删除标记",readOnly = true)

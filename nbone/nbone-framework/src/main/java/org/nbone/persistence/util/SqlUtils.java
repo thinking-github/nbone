@@ -1,11 +1,5 @@
 package org.nbone.persistence.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.nbone.persistence.SqlConfig;
 import org.nbone.persistence.SqlOperation;
 import org.nbone.persistence.SqlOperationRange;
@@ -14,6 +8,8 @@ import org.nbone.util.reflect.SimpleTypeMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.*;
+
 /**
  * @author thinking
  * @version 1.0
@@ -21,7 +17,7 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("unused")
 public class SqlUtils {
 
-
+    public static final List<String> PREFIX_LIST = Arrays.asList("AND ", "OR ");
     /**
      * sql 条件列表组合
      *
@@ -37,10 +33,6 @@ public class SqlUtils {
             String upper = null;
             if(appendSql instanceof String){
                  upper  = ((String) appendSql).toUpperCase();
-            }else if (appendSql instanceof  StringBuilder) {
-                upper  = ((StringBuilder) appendSql).toString().toUpperCase();
-            }else if (appendSql instanceof StringBuffer){
-                upper  = ((StringBuffer)  appendSql).toString().toUpperCase();
             }else {
                 upper = appendSql.toString().toUpperCase();
             }
@@ -685,24 +677,5 @@ public class SqlUtils {
         return value;
     }
 
-    public static void main(String[] args) {
-        String ss = "kk,oo";
-        String ss4int = "1,2,3";
-        System.out.println(stringSplit2In("user.id", ss, String.class));
-        System.out.println(stringSplit2In("user.id", ss4int, Integer.class));
-
-        System.out.println(stringSplit2Notin("user.id", ss4int, String.class));
-        System.out.println(stringSplit2Notin("user.id", ss4int, Integer.class));
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        StringBuilder sql = list2NamedIn("id", true, new Object[]{1, 2, 3}, map);
-
-        System.out.println(sql);
-
-        System.out.println(int.class);
-        System.out.println(Integer.class);
-
-
-    }
 
 }

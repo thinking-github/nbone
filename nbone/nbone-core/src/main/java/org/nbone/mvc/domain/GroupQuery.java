@@ -25,7 +25,7 @@ public class GroupQuery {
     /**
      *返回结果集映射类
      */
-    private Class<?> mapClass;
+    private Class<?> mappingClass;
 
 
 
@@ -47,8 +47,8 @@ public class GroupQuery {
         this.orderBy = column;
         return  this;
     }
-    public GroupQuery mapClass(Class<?> mapClass){
-        this.mapClass = mapClass;
+    public GroupQuery mapClass(Class<?> mappingClass){
+        this.mappingClass = mappingClass;
         return  this;
     }
     public GroupQuery queryColumn(String queryColumn){
@@ -122,8 +122,8 @@ public class GroupQuery {
      * 返回映射的类型 实体对象、map
      * @return
      */
-    public Class<?> getMapClass() {
-        return mapClass;
+    public Class<?> getMappingClass() {
+        return mappingClass;
     }
 
 }
