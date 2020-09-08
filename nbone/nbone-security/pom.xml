@@ -5,45 +5,54 @@
   <artifactId>nbone-security</artifactId>
   <name>nbone-security</name>
   <url>http://maven.apache.org</url>
-   
-   
+
+
    <parent>
     <groupId>org.nbone</groupId>
     <artifactId>nbone-parent</artifactId>
     <version>${nbone.version}</version>
     <relativePath>../nbone-parent/pom.xml</relativePath>
   </parent>
- 
- 
-  <properties>
-  </properties>
-  
-  
-  
-  <dependencies>
-  
-	 <dependency>
-	    <groupId>org.springframework.security</groupId>
-	    <artifactId>spring-security-web</artifactId>
-	    <version>3.2.5.RELEASE</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>org.springframework.security</groupId>
-	    <artifactId>spring-security-crypto</artifactId>
-	    <version>3.2.5.RELEASE</version>
-	</dependency>
-	
-    <dependency>
-           <groupId>org.apache.shiro</groupId>
-           <artifactId>shiro-spring</artifactId>
-            <version>1.2.3</version>
-    </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+
+  <properties>
+      <spring.security.version>4.2.3.RELEASE</spring.security.version>
+      <shiro.version>1.4.0</shiro.version>
+  </properties>
+
+
+
+  <dependencies>
+      <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>spring-security-web</artifactId>
+          <version>${spring.security.version}</version>
+          <optional>true</optional>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>spring-security-crypto</artifactId>
+          <version>${spring.security.version}</version>
+          <optional>true</optional>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.shiro</groupId>
+          <artifactId>shiro-spring</artifactId>
+          <version>${shiro.version}</version>
+          <optional>true</optional>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.shiro</groupId>
+          <artifactId>shiro-aspectj</artifactId>
+          <version>${shiro.version}</version>
+          <optional>true</optional>
+      </dependency>
+
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 </project>
