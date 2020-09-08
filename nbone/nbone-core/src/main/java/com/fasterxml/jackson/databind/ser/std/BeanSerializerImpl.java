@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.util.NameTransformer;
-import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.util.Map;
@@ -32,6 +31,11 @@ import java.util.Set;
  *          gen.writeEndObject();
  *      }
  *  }
+ *
+ *
+ *      SimpleModule simpleModule = new SimpleModule();
+ *      simpleModule.addSerializer(Page.class, new PageSerializer());
+ *      objectMapper.registerModule(simpleModule);
  *
  * </pre>
  *
@@ -187,6 +191,45 @@ public class BeanSerializerImpl extends BeanSerializerBase {
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(type, beanSerializerImpl);
+        objectMapper.registerModule(simpleModule);
+        return simpleModule;
+    }
+
+
+    /**
+     * 多个Class 字段映射调整， 且共用一个 mapping  serializedMapping
+     *
+     * @param objectMapper
+     * @param serializedMapping
+     * @param types
+     * @return
+     * @throws JsonMappingException
+     */
+    public static SimpleModule registerModule(ObjectMapper objectMapper, Map<String, String> serializedMapping, Class<?>... types)
+            throws JsonMappingException {
+
+        SimpleModule simpleModule = new SimpleModule();
+        for (Class<?> type : types) {
+            BeanSerializerBase beanSerializerImpl = serializedMapping(objectMapper, type, serializedMapping);
+            simpleModule.addSerializer(type, beanSerializerImpl);
+        }
+        objectMapper.registerModule(simpleModule);
+        return simpleModule;
+    }
+
+
+    /**
+     * 自定义 JsonSerializer解析
+     *
+     * @param objectMapper
+     * @param type
+     * @param jsonSerializer
+     * @param <T>
+     * @return
+     */
+    public static <T> SimpleModule addSerializer(ObjectMapper objectMapper, Class<? extends T> type, JsonSerializer<T> jsonSerializer) {
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(type, jsonSerializer);
         objectMapper.registerModule(simpleModule);
         return simpleModule;
     }

@@ -11,12 +11,12 @@ import java.lang.annotation.*;
  * @author thinking
  * @version 1.0
  * @since 2019-07-20
+ * consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE,
-                consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public @interface FormRequestMapping {
 
     /**

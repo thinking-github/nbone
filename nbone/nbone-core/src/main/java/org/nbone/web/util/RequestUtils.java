@@ -131,15 +131,30 @@ public class RequestUtils {
         }
 
         // 集群环境下负载均衡器的’x-forwarded-for‘的属性值应该设置为on否则只能获得代理服务器的ip不是客户端真实的ip
-        String remoteAddr = request.getHeader("X-Real-IP");
-        String ip = request.getHeader("x-forwarded-for");
+        //String remoteAddr = request.getHeader("X-Real-IP");
+        String ip = null;
+        String ips = request.getHeader("x-forwarded-for");
+        if (ips != null && ips.trim().length() > 0) {
+            String[] array = ips.split(",");
+            ip = array[0].trim();
+        }
+        //apache http
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
+        // WebLogic web server proxy plug-in  WebLogic plugin Enabled
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
-        //XXX:2016-05-08
+        //其他代理服务器
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip.trim())) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        //x-forwarded-for Alias
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        //nginx XXX:2016-05-08
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("X-Real-IP");
         }

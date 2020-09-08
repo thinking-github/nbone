@@ -44,7 +44,8 @@ public class PageRequest {
         if (pageNum != null) {
             return pageNum;
         }
-        return RequestQueryUtils.getPageNum(RequestQueryUtils.getRequest(), PAGE_NUM_NAMES);
+        this.pageNum = RequestQueryUtils.getPageNum(RequestQueryUtils.getRequest(), PAGE_NUM_NAMES);
+        return pageNum;
     }
 
     /**
@@ -69,7 +70,8 @@ public class PageRequest {
         if (pageSize != null) {
             return pageSize;
         }
-        return RequestQueryUtils.getPageSize(RequestQueryUtils.getRequest(), PAGE_SIZE_NAMES);
+        this.pageSize = RequestQueryUtils.getPageSize(RequestQueryUtils.getRequest(), PAGE_SIZE_NAMES);
+        return pageSize;
     }
 
     /**
@@ -81,7 +83,8 @@ public class PageRequest {
         if (orderBy != null) {
             return orderBy;
         }
-        return RequestQueryUtils.getOrderBy(RequestQueryUtils.getRequest(), ORDER_BY_NAMES);
+        this.orderBy = RequestQueryUtils.getOrderBy(RequestQueryUtils.getRequest(), ORDER_BY_NAMES);
+        return orderBy;
     }
 
     public void compatible() {

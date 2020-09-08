@@ -1,23 +1,22 @@
 package org.nbone.framework.mybatis.type;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
+
+import java.sql.*;
 
 /**
  * 将字符串格式的时间:<code>yyyy-mm-dd hh:mm:ss[.f...]</code>转换为JDBC能够识别的类型。</br>
- * 
+ * <p>
  * 1.String format Timestamp to Timestamp <br>
  * 2.Timestamp to String format Timestamp <br>
+ *
  * @author thinking
  * @since 2015-12-12
- * 
  */
+@SuppressWarnings("unused")
+@MappedJdbcTypes({JdbcType.TIMESTAMP, JdbcType.DATE, JdbcType.TIME})
 public class TimestampTypeHanlder extends BaseTypeHandler<String> {
 
     @Override
