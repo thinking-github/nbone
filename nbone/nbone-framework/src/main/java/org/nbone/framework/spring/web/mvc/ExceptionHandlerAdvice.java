@@ -7,6 +7,7 @@ import org.nbone.framework.spring.web.log.domain.ErrorLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.BindException;
@@ -155,6 +156,27 @@ public class ExceptionHandlerAdvice {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
         return exception(ex, msg, req, response);
     }
+
+
+    /**
+     * 持久化数据访问异常
+     *
+     *
+     * @param ex
+     * @param req
+     * @param response
+     * @return
+     */
+    @ExceptionHandler(value = {DataAccessException.class})
+    @ResponseStatus(HttpStatus.OK)
+    public Object dataAccessException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
+        //nested exception is org.apache.ibatis.exceptions.TooManyResultsException:
+        //Expected one result (or null) to be returned by selectOne(), but found: 2
+        String msg = ExceptionHandlerUtils.getMessage(req, ex);
+        return exception(ex, msg, req, response);
+    }
+
+
 
     protected ExceptionInfo exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
         return exception(ex,message,true,req,response);

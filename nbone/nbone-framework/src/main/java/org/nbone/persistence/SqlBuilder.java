@@ -97,10 +97,12 @@ public interface SqlBuilder {
 	  * @param object
 	  * @param  property 计算字段名称 可为空，为空时 参数值不为空且为数字的加入进行数学计算
 	  * @param mathOperation 数学运算类型 {@link MathOperation}
+	  * @param  conditionFields where 条件字段 可为空,默认使用主键
 	  * @return
 	  * @throws BuilderSQLException
 	  */
-	 SqlModel<Object> updateMathOperationSql(Object object,String property,MathOperation mathOperation) throws BuilderSQLException;
+	 SqlModel<Object> updateMathOperationSql(Object object, String property, MathOperation mathOperation, String[] conditionFields)
+			 throws BuilderSQLException;
 
 
 	/**

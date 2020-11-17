@@ -14,6 +14,7 @@ import org.nbone.util.lang.ToStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -171,8 +172,13 @@ public class SqlModel<T> {
 
 			if(sql.contains(" where ") || sql.contains(" WHERE ")){
 				stringBuilder.append(" ").append(appendWhere);
-			}else {
-				stringBuilder.append(" where 1=1 ").append(appendWhere);
+			} else {
+				if (StringUtils.startsWithIgnoreCase(appendWhere, "and ")
+						|| StringUtils.startsWithIgnoreCase(appendWhere, " and ")) {
+					stringBuilder.append(" where 1=1 ").append(appendWhere);
+				} else {
+					stringBuilder.append(" where ").append(appendWhere);
+				}
 			}
 			return stringBuilder;
 		}

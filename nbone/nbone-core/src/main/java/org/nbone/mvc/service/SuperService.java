@@ -138,9 +138,12 @@ public interface SuperService<T,IdType extends Serializable> extends ISuper<T, I
 	 * @param object
 	 * @param property 计算字段名称 可为空，为空时 参数值不为空且为数字的加入进行数学计算
 	 * @param mathOperation
+	 * @param conditionFields 条件字段 可为空,默认使用主键
 	 * @return
 	 * @see org.nbone.persistence.SqlSession#updateMathOperation(Object, String, MathOperation)
 	 */
+	public int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields);
+
 	public int updateMathOperation(Object object,String property, MathOperation mathOperation);
 	
 

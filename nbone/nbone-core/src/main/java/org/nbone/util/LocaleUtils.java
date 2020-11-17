@@ -32,6 +32,11 @@ public class LocaleUtils {
                 countryMap.put(locale.getCountry(), locale.getDisplayCountry(displayLocale));
             }
         }
+        //巴基斯坦
+        if(!countryMap.containsKey("PK")){
+            Locale locale = new Locale("","PK");
+            countryMap.put("PK",locale.getDisplayCountry(displayLocale));
+        }
         return countryMap;
     }
 

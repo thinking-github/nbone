@@ -17,6 +17,13 @@ public interface MonitorReporting {
 
     String PUBLIC_EXECUTION = "execution(public * *(..))";
 
+    //String feign = "@within(org.springframework.cloud.netflix.feign.FeignClient)";
+
+    //String feign = "within(feign.Client+)";
+
+    //String feign_execute = "execution(public * feign.Client+.execute(..))";
+
+
     String MONITOR_EXECUTION = "execution(public * org.nbone.monitor.annotation.Monitor+.*(..))";
     String OR_MONITOR_EXECUTION = " || " + MONITOR_EXECUTION;
 

@@ -501,9 +501,15 @@ public  class BaseServiceDomain<P,Id extends Serializable> extends BaseObject im
 		return namedJdbcDao.getForList(object, fieldName,requiredType);
 	}
 	@Override
+	public int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields) {
+		checkBuilded();
+		return namedJdbcDao.updateMathOperation(object,property, mathOperation,conditionFields);
+	}
+
+	@Override
 	public int updateMathOperation(Object object,String property, MathOperation mathOperation) {
 		checkBuilded();
-		return namedJdbcDao.updateMathOperation(object,property, mathOperation);
+		return namedJdbcDao.updateMathOperation(object,property, mathOperation,null);
 	}
 
 	/**

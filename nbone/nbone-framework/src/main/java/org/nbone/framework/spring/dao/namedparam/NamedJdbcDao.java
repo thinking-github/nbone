@@ -219,8 +219,8 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 	}
 
 	@Override
-	public <T> T getOne(Object object) {
-		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, null);
+	public <T> T getOne(Object object,SqlConfig sqlConfig) {
+		SqlModel<Object> sqlModel = sqlBuilder.selectSql(object, sqlConfig);
 
 		RowMapper<T> rowMapper = (RowMapper<T>) sqlModel.getRowMapper();
 		T bean  = namedJdbcTemplate.query(sqlModel, object, new SingleEntityResultSetExtractor<T>(rowMapper));
@@ -597,11 +597,11 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
      * MathOperation is null MathOperation set +
      */
 	@Override
-	public  int updateMathOperation(Object object,String property, MathOperation mathOperation) {
+	public  int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields) {
 		if(mathOperation == null ){
 			mathOperation = MathOperation.ADD;
 		}
-		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object,property, mathOperation);
+		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object,property, mathOperation,conditionFields);
 		checkSqlModel(sqlModel);
 
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);

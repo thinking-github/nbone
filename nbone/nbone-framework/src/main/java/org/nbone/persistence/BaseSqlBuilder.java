@@ -226,7 +226,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
     }
 
     @Override
-    public SqlModel<Object> updateMathOperationSql(final Object object,String property, final MathOperation mathOperation)
+    public SqlModel<Object> updateMathOperationSql(final Object object,String property, final MathOperation mathOperation, String[] conditionFields)
             throws BuilderSQLException {
         SqlModel<Object> sqlModel = update(object, new Function<EntityMapper<?>, StringBuilder>() {
             @Override
@@ -273,7 +273,7 @@ public abstract class BaseSqlBuilder implements SqlBuilder {
                 }
                 return fieldSql;
             }
-        }, null,null);
+        }, conditionFields,null);
 
         return sqlModel;
 

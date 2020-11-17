@@ -232,7 +232,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public <T> T getOne(Object object) {
+	public <T> T getOne(Object object,SqlConfig sqlConfig) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 
@@ -247,7 +247,7 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
-	public  int updateMathOperation(Object object,String property, MathOperation mathOperation) {
+	public  int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}
 

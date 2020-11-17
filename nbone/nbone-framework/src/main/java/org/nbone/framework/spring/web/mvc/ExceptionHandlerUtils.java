@@ -3,6 +3,7 @@ package org.nbone.framework.spring.web.mvc;
 import org.nbone.core.exception.ExceptionUtils;
 import org.nbone.core.exception.InvalidArgumentException;
 import org.nbone.core.exception.InvalidStateException;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -24,7 +25,7 @@ import static org.nbone.web.util.RequestUtils.isTrace;
  */
 public class ExceptionHandlerUtils {
 
-    public final static String[] JAVA_LONG = {"java.lang.", "java.net."};
+    public final static String[] JAVA_LONG = {"java.lang.", "java.net.","java.sql"};
 
     /**
      * 解析 @Valid 的参数验证异常的消息
@@ -70,6 +71,21 @@ public class ExceptionHandlerUtils {
         if (ex instanceof IllegalArgumentException || ex instanceof IllegalStateException) {
             return message;
         }
+        // DataAccessException / NestedRuntimeException
+        if (ex instanceof NestedRuntimeException) {
+            Throwable cause = ex.getCause();
+            if (cause == null) {
+                return message;
+            }
+            String causeMessage = cause.getMessage();
+            if (causeMessage == null) {
+                return message;
+            }
+
+            return cause.getClass().getSimpleName() + ": " + causeMessage;
+        }
+
+        // limit message  length
         if (message.length() <= 128) {
             if (message.contains("Exception")) {
                 return message;
