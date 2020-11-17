@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
  * @version 1.0
  * @since 2018-12-26
  * @see org.springframework.scheduling.annotation.AnnotationAsyncExecutionInterceptor
+ * @see org.springframework.transaction.interceptor.TransactionInterceptor
  * //@see org.apache.shiro.spring.aop.SpringAnnotationResolver
  */
 public class SpringAnnotationMethodResolver implements AnnotationMethodResolver {
