@@ -219,6 +219,20 @@
 					</execution>
 				</executions>
 			</plugin>-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<configuration>
+							<files>
+								<file>${basedir}/build.properties</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -304,12 +318,12 @@
 		<repository>
 			<id>releases</id>
 			<name>Releases</name>
-			<url>http://public-maven.apuscn.com/nexus/content/repositories/releases/</url>
+			<url>${maven.releases.url}</url>
 		</repository>
 		<snapshotRepository>
-			<id>apus</id>
+			<id>snapshots</id>
 			<name>Snapshots</name>
-			<url>http://public-maven.apuscn.com/nexus/content/repositories/snapshots/</url>
+			<url>${maven.snapshots.url}</url>
 			<layout>default</layout>
 		</snapshotRepository>
 

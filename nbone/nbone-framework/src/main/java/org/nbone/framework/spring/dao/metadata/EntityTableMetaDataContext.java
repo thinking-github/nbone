@@ -11,17 +11,17 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 
 /**
  * <p> spring TableMetaDataContext 方便但效率不高故重新实现 TableMetaDataContext
- * 
+ *
  * @author thinking
- * @version 1.0 
+ * @version 1.0
  * @see org.springframework.jdbc.core.metadata.TableMetaDataContext
  * @since spring 2.5
- * 
+ *
  */
 public class EntityTableMetaDataContext extends TableMetaDataContext {
 
-	
-	
+
+
 	@Override
 	public List<Object> matchInParameterValuesWithInsertColumns(SqlParameterSource parameterSource) {
 		/**
@@ -44,18 +44,18 @@ public class EntityTableMetaDataContext extends TableMetaDataContext {
 			}
 			return values;
 		}
-		
-		
+
+
 		return super.matchInParameterValuesWithInsertColumns(parameterSource);
 	}
 
-	
+
 	@Override
 	public List<Object> matchInParameterValuesWithInsertColumns(Map<String, ?> inParameters) {
 		return super.matchInParameterValuesWithInsertColumns(inParameters);
 	}
 
-	
-	
-	
+
+
+
 }

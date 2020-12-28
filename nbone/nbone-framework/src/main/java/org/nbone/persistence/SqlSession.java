@@ -233,7 +233,10 @@ public interface SqlSession extends QueryOperations{
 	 * @param  property 计算字段名称 可为空，为空时 参数值不为空且为数字的加入进行数学计算
 	 * @param mathOperation
 	 * @param conditionFields  条件字段 可为空,默认使用主键
+	 * @param whereString 更新条件 where sql 语句 例如 and name = chen  可为空，为空时默认使用主键作为条件
 	 */
+	public int updateMathOperation(Object object,String property,MathOperation mathOperation,String[] conditionFields,String whereString);
+
 	public int updateMathOperation(Object object,String property,MathOperation mathOperation,String[] conditionFields);
 
 	

@@ -247,6 +247,11 @@ public abstract class BaseSqlSession implements SqlSession {
 	}
 
 	@Override
+	public int updateMathOperation(Object object, String property, MathOperation mathOperation, String[] conditionFields, String whereString) {
+		throw new UnsupportedOperationException("unsupported  operation.");
+	}
+
+	@Override
 	public  int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields) {
 		throw new UnsupportedOperationException("unsupported  operation.");
 	}

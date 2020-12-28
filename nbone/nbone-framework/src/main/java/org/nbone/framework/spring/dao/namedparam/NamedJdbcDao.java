@@ -411,7 +411,12 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
 
 	@Override
 	public int[] batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch) {
-		return simpleJdbcDao.batchInsert(objects,insertProperties,jdbcBatch);
+		return batchInsert(objects,insertProperties,jdbcBatch,false);
+	}
+
+	@Override
+	public int[] batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch,boolean usedMapping) {
+		return simpleJdbcDao.batchInsert(objects,insertProperties,jdbcBatch,usedMapping);
 	}
 
 	@Override
@@ -597,16 +602,21 @@ public class NamedJdbcDao extends BaseSqlSession implements SqlSession,BatchSqlS
      * MathOperation is null MathOperation set +
      */
 	@Override
-	public  int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields) {
+	public  int updateMathOperation(Object object,String property, MathOperation mathOperation,String[] conditionFields, String whereString) {
 		if(mathOperation == null ){
 			mathOperation = MathOperation.ADD;
 		}
-		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object,property, mathOperation,conditionFields);
+		SqlModel<Object> sqlModel = sqlBuilder.updateMathOperationSql(object,property, mathOperation,conditionFields,whereString);
 		checkSqlModel(sqlModel);
 
 		SqlParameterSource paramSource =  new BeanPropertySqlParameterSource(object);
 
 		return namedJdbcTemplate.update(sqlModel.getSql(), paramSource);
+	}
+
+	@Override
+	public int updateMathOperation(Object object, String property, MathOperation mathOperation, String[] conditionFields) {
+		return updateMathOperation(object,property,mathOperation,conditionFields,null);
 	}
 
 	//---------------ServletRequestQuery----------------

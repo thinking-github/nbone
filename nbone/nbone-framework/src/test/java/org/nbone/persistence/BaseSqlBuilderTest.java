@@ -107,7 +107,7 @@ public class BaseSqlBuilderTest {
 		
 		SqlModel<Object> sqlModel= sqlBuilder.selectSql(object, sqlConfig);
 		
-		SqlModel<Object> sqlModel2 = sqlBuilder.updateMathOperationSql(object,null, MathOperation.ADD,null);
+		SqlModel<Object> sqlModel2 = sqlBuilder.updateMathOperationSql(object,null, MathOperation.ADD,null,null);
 		
 		SqlModel<Object> sqlModel3 = sqlBuilder.countSql(object,sqlConfig);
 		

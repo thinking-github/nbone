@@ -11,7 +11,7 @@ import org.nbone.util.PropertiesUtil;
  */
 public class BizcLogPropsUtil {
 	
-	public static String location = "com/sgcc/hst/logger/hstaopLogger.properties";
+	public static String location = "com/hst/logger/hstaopLogger.properties";
 	
 	public static String getString(String key) {
 		String val = PropertiesUtil.getString(key, location);

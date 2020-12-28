@@ -4,6 +4,7 @@ import org.nbone.core.exception.ExceptionUtils;
 import org.nbone.core.exception.InvalidArgumentException;
 import org.nbone.core.exception.InvalidStateException;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -25,7 +26,7 @@ import static org.nbone.web.util.RequestUtils.isTrace;
  */
 public class ExceptionHandlerUtils {
 
-    public final static String[] JAVA_LONG = {"java.lang.", "java.net.","java.sql"};
+    public final static String[] JAVA_LONG = {"java.lang.", "java.net.", "java.sql"};
 
     /**
      * 解析 @Valid 的参数验证异常的消息
@@ -100,6 +101,17 @@ public class ExceptionHandlerUtils {
         return message;
     }
 
+    public static String getMessage(Throwable e, int maxLength) {
+        String message = e.getMessage();
+        if (StringUtils.isEmpty(message)) {
+            return null;
+        }
+        if (message.length() > maxLength) {
+            message = message.substring(0, maxLength);
+        }
+        return message;
+    }
+
 
     public static String getMessage(BindingResult result) {
         if (result.hasErrors()) {
@@ -115,7 +127,7 @@ public class ExceptionHandlerUtils {
                     String fieldName = fieldError.getField();
                     // Column 'type' cannot be null
                     Object value = fieldError.getRejectedValue();
-                    if(value != null && value.getClass().isArray()){
+                    if (value != null && value.getClass().isArray()) {
                         value = Arrays.toString((Object[]) value);
                     }
                     msg = String.format("field '%s' %s [%s = %s]", fieldName, errorMessage, fieldName, value);

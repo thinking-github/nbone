@@ -43,7 +43,7 @@ public class RabbitMQTest {
                 .deliveryMode(2)
                 .contentEncoding("UTF-8")
                 .build();
-        String json = "{\"action\":\"updateinfo\",\"uid\":90000004,\"data\":{\"upic\":\"http://img.apusapps.com/user/hpic/201708024710466d2a_180x180.jpg\"}}";
+        String json = "{\"action\":\"updateinfo\",\"uid\":90000004,\"data\":{\"upic\":\"http://img.com/user/hpic/201708024710466d2a_180x180.jpg\"}}";
         channel.basicPublish("user_account", "user_account", false, basicProperties, json.getBytes());
 
         System.out.println("----end");

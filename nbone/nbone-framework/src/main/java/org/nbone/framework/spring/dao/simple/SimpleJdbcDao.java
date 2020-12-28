@@ -1,21 +1,12 @@
 package org.nbone.framework.spring.dao.simple;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
 import org.nbone.framework.spring.dao.BaseJdbcDao;
 import org.nbone.framework.spring.dao.core.EntityPropertySqlParameterSource;
 import org.nbone.persistence.BaseSqlSession;
 import org.nbone.persistence.BatchSqlSession;
-import org.nbone.persistence.SqlSession;
-import org.nbone.persistence.mapper.MappingBuilder;
-import org.nbone.persistence.mapper.FieldMapper;
 import org.nbone.persistence.mapper.EntityMapper;
+import org.nbone.persistence.mapper.FieldMapper;
+import org.nbone.persistence.mapper.MappingBuilder;
 import org.nbone.util.PropertyUtil;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -25,6 +16,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * 根据实体方式实现单表的增删改查(目前实现不完善, 请使用NamedJdbcDao)
@@ -42,8 +37,6 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 	
 	private JdbcTemplate jdbcTemplate;
 	
-	private SimpleJdbcInsert simpleJdbcInsert;
-	
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -53,13 +46,13 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 			jdbcTemplate = baseJdbcDao.getSuperJdbcTemplate();
 		}
 		this.jdbcTemplate = jdbcTemplate;
-		this.simpleJdbcInsert  = new SimpleJdbcInsert(jdbcTemplate);
-		
+
 	}
 	
 	@Override
 	public int insert(Object object) {
-		insertProcess(object,null);
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+		insertProcess(simpleJdbcInsert,object,null,false);
 		int row  = simpleJdbcInsert.execute(new EntityPropertySqlParameterSource(object));
 		return row;
 	}
@@ -67,7 +60,7 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
     
 	@Override
 	public int insert(Class<?> entityClass, Map<String, Object> fieldMap) {
-		simpleJdbcInsert.reuse();
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 		EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(entityClass);
 		simpleJdbcInsert.withTableName(entityMapper.getTableName(fieldMap));
 		String primaryKey = entityMapper.getPrimaryKey();
@@ -81,14 +74,16 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 
 	@Override
 	public Serializable save(Object object) {
-		insertProcess(object,null);
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+		insertProcess(simpleJdbcInsert,object,null,false);
 		Number id = simpleJdbcInsert.executeAndReturnKey(new EntityPropertySqlParameterSource(object));
 		return id;
 	}
 
 	@Override
 	public Object add(Object object) {
-		EntityMapper<?> entityMapper = insertProcess(object,null);
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+		EntityMapper<?> entityMapper = insertProcess(simpleJdbcInsert,object,null,false);
 		FieldMapper  primaryKey= entityMapper.getPrimaryKeyFieldMapper();
 		
 		Number num = simpleJdbcInsert.executeAndReturnKey(new EntityPropertySqlParameterSource(object));
@@ -100,17 +95,33 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 		
 		return object;
 	}
-	
-	private EntityMapper<?> insertProcess(Object object, String[] insertProperties){
-		simpleJdbcInsert.reuse();
+
+	/**
+	 * @param object
+	 * @param insertProperties 可为空 ,为空时自动添加字段
+	 * @param usedMapping      true used entity properties mapping db columnNames ;false direct used db column
+	 * @return
+	 */
+	private EntityMapper<?> insertProcess(SimpleJdbcInsert simpleJdbcInsert,Object object, String[] insertProperties,boolean usedMapping){
+
 		EntityMapper<?> entityMapper = MappingBuilder.ME.getTableMapper(object.getClass());
 
 		FieldMapper fieldMapper = entityMapper.getPrimaryKeyFieldMapper();
 		Class<?> cls = fieldMapper.getPropertyType();
 		simpleJdbcInsert.withTableName(entityMapper.getTableName(object));
+
+		Object value = PropertyUtil.getProperty(object, fieldMapper.getFieldName());
+		//XXX：当是数字且为空时使用自动生成主键
+		boolean generatedKeyColumnsUsed = false;
+		if(value == null && (Number.class.isAssignableFrom(cls)
+				|| long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls))){
+			simpleJdbcInsert.usingGeneratedKeyColumns(entityMapper.getPrimaryKeys());
+			generatedKeyColumnsUsed = true;
+		}
+
 		// option insertProperties
 		if(insertProperties != null && insertProperties.length > 0){
-			List<String> columnNames = new ArrayList<String>();
+			List<String> columnNames = new ArrayList<String>(insertProperties.length);
 			for (String insertProperty : insertProperties) {
 				String column = entityMapper.getDbFieldName(insertProperty);
 				if(column != null){
@@ -119,14 +130,12 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 			}
 
 			simpleJdbcInsert.setColumnNames(columnNames);
+		}else {
+			if(usedMapping){
+				simpleJdbcInsert.setColumnNames(entityMapper.getColumnNames(generatedKeyColumnsUsed));
+			}
 		}
 
-		Object value = PropertyUtil.getProperty(object, fieldMapper.getFieldName());
-		//XXX：当是数字且为空时使用自动生成主键
-		if(value == null && (Number.class.isAssignableFrom(cls)
-				|| long.class.isAssignableFrom(cls) || int.class.isAssignableFrom(cls))){
-			simpleJdbcInsert.usingGeneratedKeyColumns(entityMapper.getPrimaryKeys());
-		}
 		return entityMapper;
 	}
 
@@ -138,7 +147,7 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 	
 	@Override
 	public int[] batchInsert(Collection<?> objects,boolean jdbcBatch) {
-		return  batchInsert(objects,null,jdbcBatch);
+		return  batchInsert(objects,null,jdbcBatch,false);
 	}
 
 	@Override
@@ -146,8 +155,10 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 		if(objects == null || objects.length <= 0){
 			return new int[] {0};
 		}
+		// SimpleJdbcInsert 如果复用 多线程使用时 存在并发问题
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.length];
-		insertProcess(objects[0],insertProperties);
+		insertProcess(simpleJdbcInsert,objects[0],insertProperties,false);
 		for (int i = 0; i < objects.length; i++) {
 			batch[i] = new EntityPropertySqlParameterSource(objects[i]);
 		}
@@ -155,28 +166,35 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 		if(jdbcBatch){
 			row  = simpleJdbcInsert.executeBatch(batch);
 		}else {
-			row = dbBatchInsert(batch);
+			row = dbBatchInsert(simpleJdbcInsert,batch);
 		}
 		return row;
 	}
 
 	@Override
 	public int[] batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch) {
+		return batchInsert(objects,insertProperties,jdbcBatch,false);
+	}
+
+	@Override
+	public int[] batchInsert(Collection<?> objects, String[] insertProperties, boolean jdbcBatch,boolean usedMapping) {
 		if(objects == null || objects.size() <= 0){
 			return new int[] {0};
 		}
+		// SimpleJdbcInsert 如果复用 多线程使用时 存在并发问题
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 		EntityPropertySqlParameterSource[] batch = new EntityPropertySqlParameterSource[objects.size()];
 		int index = 0 ;
 		for (Object object : objects) {
 			batch[index] = new EntityPropertySqlParameterSource(object);
 			index ++;
 		}
-		insertProcess(batch[0].getObject(),insertProperties);
+		insertProcess(simpleJdbcInsert,batch[0].getObject(),insertProperties,usedMapping);
 		int[] row;
 		if(jdbcBatch){
 			row  = simpleJdbcInsert.executeBatch(batch);
 		}else {
-			row = dbBatchInsert(batch);
+			row = dbBatchInsert(simpleJdbcInsert,batch);
 		}
 		return row;
 	}
@@ -223,7 +241,7 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
      * @param batch
      * @return
      */
-	private int[] dbBatchInsert(SqlParameterSource... batch){
+	private int[] dbBatchInsert(SimpleJdbcInsert simpleJdbcInsert,SqlParameterSource... batch){
 
         int count = simpleJdbcInsert.dbExecuteBatch(batch);
 

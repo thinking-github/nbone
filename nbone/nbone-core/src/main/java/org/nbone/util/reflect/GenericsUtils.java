@@ -57,11 +57,18 @@ public class GenericsUtils {
             log.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: " + params.length);
             return Object.class;
         }
-        if (!(params[index] instanceof Class)) {
-            log.warn(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
-            return Object.class;
+        Type type = params[index];
+        if ((type instanceof ParameterizedType)) {
+            Type rawType = ((ParameterizedType) type).getRawType();
+            return (Class<?>) rawType;
         }
-        return (Class<?>) params[index];
+
+        if ((type instanceof Class)) {
+            return (Class<?>)type;
+        }
+        //log.warn(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
+        return Object.class;
+
     }
 
 

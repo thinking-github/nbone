@@ -87,6 +87,16 @@ public class EntityPropertySqlParameterSource  extends AbstractSqlParameterSourc
 		return object;
 	}
 
+	private FieldMapper getFieldMapper(String paramName){
+		FieldMapper fieldMapper = dbFieldNameMap.get(paramName);
+		//partition -> `partition`; key -> `key`
+		if (fieldMapper == null && paramName.charAt(0) != '`') {
+			String escapeName = '`' + paramName + '`';
+			fieldMapper = dbFieldNameMap.get(escapeName);
+		}
+		return fieldMapper;
+	}
+
 	private  void check(FieldMapper fieldMapper,String paramName){
 		if(fieldMapper == null){
 			logger.error("table name '{}',columns : {}",entityMapper.getTableName(object),entityMapper.getCommaDelimitedColumns());

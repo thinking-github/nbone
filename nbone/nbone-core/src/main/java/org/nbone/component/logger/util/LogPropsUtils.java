@@ -17,7 +17,7 @@ public class LogPropsUtils {
 	
 	private static final Log logger = LogFactory.getLog(LoggerUtils.class);
 	
-	public static String location = "com/sgcc/hst/logger/Logger.properties";
+	public static String location = "com/hst/logger/Logger.properties";
 	private static Properties properties;
 	private static boolean hasLoad = false;
 

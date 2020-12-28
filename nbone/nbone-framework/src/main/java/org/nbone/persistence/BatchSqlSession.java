@@ -34,15 +34,18 @@ public interface BatchSqlSession extends SqlSession {
 	 * @return
 	 */
 	public int[] batchInsert(Object[] objects,String[] insertProperties,boolean jdbcBatch);
+
+	public int[] batchInsert(Collection<?> objects,String[] insertProperties,boolean jdbcBatch);
 	/**
 	 * 批量添加
 	 * @param objects 实体对象
 	 * @param insertProperties 可选的插入字段（可为空）
 	 * @param jdbcBatch true jdbc batch, false db batch
+	 * @param usedMapping true used entity properties mapping db columnNames ;false direct used db column
 	 *
 	 * @return
 	 */
-	public int[] batchInsert(Collection<?> objects,String[] insertProperties,boolean jdbcBatch);
+	public int[] batchInsert(Collection<?> objects,String[] insertProperties,boolean jdbcBatch,boolean usedMapping);
 	
 	/**
 	 * 批量更新

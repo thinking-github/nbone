@@ -68,6 +68,25 @@ public class ThreadPool {
 
     public static ThreadPoolExecutor makeThreadPool(final int core, final int max,
                                                     long keepAliveTime,
+                                                    final int queueCapacity,
+                                                    final String serverName,
+                                                    RejectedExecutionHandler handler) {
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                core,
+                max,
+                keepAliveTime,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(queueCapacity),
+                new NamedThreadFactory(serverName),
+                handler
+        );        // default maxThreads 200, minThreads 60
+
+        return threadPoolExecutor;
+    }
+
+
+    public static ThreadPoolExecutor makeThreadPool(final int core, final int max,
+                                                    long keepAliveTime,
                                                     BlockingQueue<Runnable> workQueue,
                                                     final String serverName) {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(

@@ -174,13 +174,15 @@ public class SimpleJdbcInsert extends AbstractJdbcInsert implements SimpleJdbcIn
 	private void setParameterValues(PreparedStatement preparedStatement, List<List<Object>> values, int... columnTypes) throws SQLException {
 		int colIndex = 0;
 		for (List<Object> beanValues : values) {
+		    int  columnTypesIndex = 0;
 			for (Object value : beanValues) {
 				colIndex++;
-				if (columnTypes == null || colIndex > columnTypes.length) {
+                columnTypesIndex++;
+				if (columnTypes == null || columnTypesIndex > columnTypes.length) {
 					StatementCreatorUtils.setParameterValue(preparedStatement, colIndex, SqlTypeValue.TYPE_UNKNOWN, value);
 				}
 				else {
-					StatementCreatorUtils.setParameterValue(preparedStatement, colIndex, columnTypes[colIndex - 1], value);
+					StatementCreatorUtils.setParameterValue(preparedStatement, colIndex, columnTypes[columnTypesIndex - 1], value);
 				}
 			}
 

@@ -54,12 +54,13 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
     //XXX：thinking update
 	/** Context used to retrieve and manage database metadata */
 	private final TableMetaDataContext tableMetaDataContext = new EntityTableMetaDataContext();
+	private String[] DEFAULT_GENERATED_KEY_NAMES = new String[0];
 
 	/** List of columns objects to be used in insert statement */
 	private final List<String> declaredColumns = new ArrayList<String>();
 
 	/** The names of the columns holding the generated key */
-	private String[] generatedKeyNames = new String[0];
+	private String[] generatedKeyNames = DEFAULT_GENERATED_KEY_NAMES;
 
 	/**
 	 * Has this operation been compiled? Compilation means at least checking
@@ -78,7 +79,7 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	@Override
 	public synchronized void reuse(){
 		this.compiled = false;
-		this.generatedKeyNames = new String[0];
+		this.generatedKeyNames = DEFAULT_GENERATED_KEY_NAMES;
 		this.insertString = null;
 		this.insertTypes = null;
 		this.declaredColumns.clear();

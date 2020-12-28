@@ -126,7 +126,7 @@ public class WebExceptionResolver extends ExceptionHandlerExceptionResolver {
 
 	  private void initExInfo()
 	  {
-		String CUSTOM_EXCEPTION="default:$serverPath/test/exception.jsp;com.sgcc.uap.test.TestEx,com.sgcc.uap.test.TestEx2:$serverPath/test/exception1.jsp;com.sgcc.uap.test.TestEx3:$serverPath/test/exception2.jsp;showstack:true";
+		String CUSTOM_EXCEPTION="default:$serverPath/test/exception.jsp;com.uap.test.TestEx,com.uap.test.TestEx2:$serverPath/test/exception1.jsp;com.uap.test.TestEx3:$serverPath/test/exception2.jsp;showstack:true";
 
 	    //String exStr = PlatformConfigUtil.getString("CUSTOM_EXCEPTION");
 	    String exStr = CUSTOM_EXCEPTION;

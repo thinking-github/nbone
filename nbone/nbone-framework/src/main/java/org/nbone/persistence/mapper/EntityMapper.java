@@ -502,6 +502,21 @@ public class EntityMapper<T> {
 		return columnNames;
 	}
 
+	public List<String> getColumnNames(boolean generatedKeyColumnsUsed) {
+		if (generatedKeyColumnsUsed) {
+			List<String> columns = new ArrayList<String>(fieldMappers.size());
+			for (FieldMapper fieldMapper : fieldMappers.values()) {
+				if (fieldMapper.isPrimaryKey()) {
+					continue;
+				}
+				columns.add(fieldMapper.getColumnName());
+			}
+			return columns;
+		} else {
+			return Arrays.asList(getColumnNames());
+		}
+	}
+
 
 	public void setColumnNames(String[] columnNames) {
 		this.columnNames = columnNames;

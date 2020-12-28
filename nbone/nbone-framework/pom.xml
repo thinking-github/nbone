@@ -93,6 +93,12 @@
 			<version>${spring-boot.version}</version> </dependency> -->
 
 		<dependency>
+			<groupId>com.timgroup</groupId>
+			<artifactId>java-statsd-client</artifactId>
+			<version>3.1.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-core</artifactId>
 			<version>2.3.34</version>
