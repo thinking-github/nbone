@@ -17,7 +17,7 @@ public class MailDemo {
 		        .addText("A plain text message...");
 		
 		
-		SmtpServer smtpServer = SmtpServer.create("smtp.163.com",25).authenticateWith(user, "12345      # replace with the empty string");
+		SmtpServer smtpServer = SmtpServer.create("smtp.163.com",25).authenticateWith(user, "12345             # replace with the empty string");
     
 	    SendMailSession session = smtpServer.createSession();
 	    session.open();
