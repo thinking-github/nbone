@@ -8,16 +8,16 @@ public class MailDemo {
 	
 	public static void main(String[] args) {
 		
-		String from = "18655166563@163.com";
+		String from = "test@163.com";
 		String user  = from;
 		Email email1 = Email.create()
 		        .from(from)
-		        .to("945077285@qq.com")
+		        .to("test@qq.com")
 		        .subject("Hello!")
 		        .addText("A plain text message...");
 		
 		
-		SmtpServer smtpServer = SmtpServer.create("smtp.163.com",25).authenticateWith(user, "12345             # replace with the empty string");
+		SmtpServer smtpServer = SmtpServer.create("smtp.163.com",25).authenticateWith(user, "test");
     
 	    SendMailSession session = smtpServer.createSession();
 	    session.open();
