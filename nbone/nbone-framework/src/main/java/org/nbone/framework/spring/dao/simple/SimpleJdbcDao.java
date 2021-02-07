@@ -162,6 +162,7 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 		for (int i = 0; i < objects.length; i++) {
 			batch[i] = new EntityPropertySqlParameterSource(objects[i]);
 		}
+		simpleJdbcInsert.compileNonSync();
 		int[] row;
 		if(jdbcBatch){
 			row  = simpleJdbcInsert.executeBatch(batch);
@@ -190,6 +191,7 @@ public class SimpleJdbcDao extends BaseSqlSession implements BatchSqlSession,Ini
 			index ++;
 		}
 		insertProcess(simpleJdbcInsert,batch[0].getObject(),insertProperties,usedMapping);
+		simpleJdbcInsert.compileNonSync();
 		int[] row;
 		if(jdbcBatch){
 			row  = simpleJdbcInsert.executeBatch(batch);

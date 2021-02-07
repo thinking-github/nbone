@@ -1,19 +1,5 @@
 package org.nbone.framework.spring.dao.simple;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nbone.framework.spring.dao.metadata.EntityTableMetaDataContext;
@@ -21,12 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.SqlTypeValue;
-import org.springframework.jdbc.core.StatementCreatorUtils;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.metadata.TableMetaDataContext;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -34,6 +15,10 @@ import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.nativejdbc.NativeJdbcExtractor;
 import org.springframework.util.Assert;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.*;
 
 /**
  * 使用自定义缓存映射的EntityTableMetaDataContext ,增加reuse()方法 
@@ -44,7 +29,7 @@ import org.springframework.util.Assert;
  * @see spring 2.5
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
+public abstract class AbstractJdbcInsert{
 
 	/** Logger available to subclasses */
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -53,7 +38,12 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	private final JdbcTemplate jdbcTemplate;
     //XXX：thinking update
 	/** Context used to retrieve and manage database metadata */
-	private final TableMetaDataContext tableMetaDataContext = new EntityTableMetaDataContext();
+	private  TableMetaDataContext tableMetaDataContext;
+
+	// thinking update
+	/** Cache Context used to retrieve and manage database metadata */
+	private final static Map<String, TableMetaDataContext> cache = new HashMap<>();
+
 	private String[] DEFAULT_GENERATED_KEY_NAMES = new String[0];
 
 	/** List of columns objects to be used in insert statement */
@@ -75,16 +65,6 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	private int[] insertTypes;
 
 	
-	//XXX:thinking add
-	@Override
-	public synchronized void reuse(){
-		this.compiled = false;
-		this.generatedKeyNames = DEFAULT_GENERATED_KEY_NAMES;
-		this.insertString = null;
-		this.insertTypes = null;
-		this.declaredColumns.clear();
-	}
-
 	/**
 	 * Constructor to be used when initializing using a {@link DataSource}.
 	 * @param dataSource the DataSource to be used
@@ -117,11 +97,34 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 		return this.jdbcTemplate;
 	}
 
+	private TableMetaDataContext getTableMetaDataContext(String tableName) {
+		if (this.tableMetaDataContext == null) {
+			this.tableMetaDataContext = cache.get(tableName);
+			if (this.tableMetaDataContext == null) {
+				this.tableMetaDataContext = new EntityTableMetaDataContext(tableName);
+				cache.put(tableName, tableMetaDataContext);
+			}
+		}
+		return this.tableMetaDataContext;
+	}
+
+	private void setTableMetaDataContext(String tableName) {
+		if (this.tableMetaDataContext == null) {
+			this.tableMetaDataContext = cache.get(tableName);
+
+			if (this.tableMetaDataContext == null) {
+				this.tableMetaDataContext = new EntityTableMetaDataContext(tableName);
+				cache.put(tableName, tableMetaDataContext);
+			}
+		}
+
+	}
 	/**
 	 * Set the name of the table for this insert.
 	 */
 	public void setTableName(String tableName) {
 		checkIfConfigurationModificationIsAllowed();
+		setTableMetaDataContext(tableName);
 		this.tableMetaDataContext.setTableName(tableName);
 	}
 
@@ -129,6 +132,9 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	 * Get the name of the table for this insert.
 	 */
 	public String getTableName() {
+		if (tableMetaDataContext == null) {
+			return null;
+		}
 		return this.tableMetaDataContext.getTableName();
 	}
 
@@ -136,6 +142,9 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	 * Set the name of the schema for this insert.
 	 */
 	public void setSchemaName(String schemaName) {
+		if (this.tableMetaDataContext == null) {
+			new IllegalStateException("The table name must be set first.");
+		}
 		checkIfConfigurationModificationIsAllowed();
 		this.tableMetaDataContext.setSchemaName(schemaName);
 	}
@@ -144,6 +153,9 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	 * Get the name of the schema for this insert.
 	 */
 	public String getSchemaName() {
+		if (tableMetaDataContext == null) {
+			return null;
+		}
 		return this.tableMetaDataContext.getSchemaName();
 	}
 
@@ -151,6 +163,9 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	 * Set the name of the catalog for this insert.
 	 */
 	public void setCatalogName(String catalogName) {
+		if (this.tableMetaDataContext == null) {
+			new IllegalStateException("The table name must be set first.");
+		}
 		checkIfConfigurationModificationIsAllowed();
 		this.tableMetaDataContext.setCatalogName(catalogName);
 	}
@@ -159,6 +174,9 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	 * Get the name of the catalog for this insert.
 	 */
 	public String getCatalogName() {
+		if (tableMetaDataContext == null) {
+			return null;
+		}
 		return this.tableMetaDataContext.getCatalogName();
 	}
 
@@ -251,6 +269,10 @@ public abstract class AbstractJdbcInsert  extends AbstractReuseJdbc{
 	 * for example if no DataSource has been provided
 	 */
 	public synchronized final void compile() throws InvalidDataAccessApiUsageException {
+		compileNonSync();
+	}
+
+	public final void compileNonSync() throws InvalidDataAccessApiUsageException {
 		if (!isCompiled()) {
 			if (getTableName() == null) {
 				throw new InvalidDataAccessApiUsageException("Table name is required");

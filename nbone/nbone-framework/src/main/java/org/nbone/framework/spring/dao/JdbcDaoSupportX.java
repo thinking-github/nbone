@@ -5,29 +5,33 @@ import javax.sql.DataSource;
 import org.nbone.context.system.SystemContext;
 import org.nbone.persistence.db.DBAdapter;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 /**
  * @author thinking
- * @version 1.0 
+ * @version 1.0
  */
 public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContextAware {
-	
+
 	private JdbcTemplate newJdbcTemplate;
-	
+
 	private ApplicationContext applicationContext;
-	
+
+	@Value("${nbone.datasource.name:unknown}")
+	private String sourceName;
+
 	public void setNewJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.newJdbcTemplate = jdbcTemplate;
 	}
-	
+
     public JdbcTemplate getNewJdbcTemplate() {
 		return newJdbcTemplate;
 	}
 
-   
+
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
@@ -35,25 +39,29 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 		initApplicationContext();
 	}
 
-	
+
 	 /**
      * set  parent jdbc dataSource
      * @see JdbcDaoSupport#setDataSource(DataSource)
      * @param dataSource
      */
 	protected void initDataSource(){
+		if(!"unknown".equals(sourceName)){
+			DataSource	dataSource = applicationContext.getBean(sourceName, DataSource.class);
+            super.setDataSource(dataSource);
+		}
 		try {
 			JdbcTemplate jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
 			super.setJdbcTemplate(jdbcTemplate);
-			
+
 		} catch (Exception e) {
 			logger.warn("application not config  or config multiple JdbcTemplate.thinking");
-			
+
 			try {
-				
+
 				DataSource dataSource = applicationContext.getBean(DataSource.class);
 				super.setDataSource(dataSource);
-				
+
 			} catch (Exception e2) {
 				logger.warn("application not config or config multiple dataSource.thinking");
 				try {
@@ -63,13 +71,13 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 					logger.warn(e3.getMessage());
 					logger.warn("应用程序无法自动指定数据源,请手工指定数据源.thinking");
 				}
-				
+
 			}
-			
+
 		}
-		
-	} 
-	
+
+	}
+
 	protected void initApplicationContext(){
 		DataSource dataSource = getDataSource();
 		if(dataSource != null){
@@ -81,6 +89,6 @@ public class JdbcDaoSupportX extends JdbcDaoSupport implements ApplicationContex
 			}
 		}
 	}
-	
+
 
 }

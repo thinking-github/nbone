@@ -167,7 +167,9 @@ public class SimpleJdbcInsert extends AbstractJdbcInsert implements SimpleJdbcIn
 					}
 				});
 
-		logger.debug("Executing statement with result of size: " + row);
+		if(logger.isDebugEnabled()){
+			logger.debug("Executing statement with result of size: " + row);
+		}
 		return row;
 	}
 
