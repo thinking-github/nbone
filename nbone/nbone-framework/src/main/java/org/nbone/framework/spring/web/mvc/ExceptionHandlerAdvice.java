@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -83,13 +84,13 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     public Object baseIllegalException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
-        return exception(ex,msg,req,response);
+        return exception(ex,msg,null,req,response);
     }
 
     @ExceptionHandler(value = {InvalidArgumentException.class, InvalidStateException.class})
     public Object invalidArgumentException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
-        return exception(ex,msg,req,response);
+        return exception(ex,msg,null,req,response);
     }
 
 
@@ -103,7 +104,22 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object bindException(BindException ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(ex);
-        return exception(ex,msg,req,response);
+        return exception(ex,msg,null,req,response);
+    }
+
+    /**
+     * 消息转换异常(多数JSON 数据格式不正确)
+     * @param ex
+     * @param req
+     * @param response
+     * @return
+     */
+    @ExceptionHandler(value = HttpMessageConversionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Object messageConversionException(HttpMessageConversionException ex, HttpServletRequest req, HttpServletResponse response) {
+        String detailMessage = ExceptionHandlerUtils.getMessage(ex);
+        String msg = "请求消息数据转化错误,请检查数据格式!";
+        return exception(ex,msg,detailMessage,req,response);
     }
 
     /**
@@ -123,7 +139,7 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object requestException(ServletException ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
-        return exception(ex,msg,req,response);
+        return exception(ex,msg,null,req,response);
     }
     @ExceptionHandler(value = ServletRequestBindingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -140,21 +156,21 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.OK)
     public Object methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(ex);
-        return exception(ex,msg,false,req,response);
+        return exception(ex,msg,null,false,req,response);
     }
 
     @ExceptionHandler(value = JsonProcessingException.class)
     @ResponseStatus(HttpStatus.OK)
     public Object jsonException(JsonProcessingException ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
-        return exception(ex,msg,req,response);
+        return exception(ex,msg,null,req,response);
     }
 
     @ExceptionHandler(value = {ModuleSystemException.class, SubSystemException.class})
     @ResponseStatus(HttpStatus.OK)
     public Object subSystemException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
         String msg = ExceptionHandlerUtils.getMessage(req,ex);
-        return exception(ex, msg, req, response);
+        return exception(ex, msg,null, req, response);
     }
 
 
@@ -173,16 +189,16 @@ public class ExceptionHandlerAdvice {
         //nested exception is org.apache.ibatis.exceptions.TooManyResultsException:
         //Expected one result (or null) to be returned by selectOne(), but found: 2
         String msg = ExceptionHandlerUtils.getMessage(req, ex);
-        return exception(ex, msg, req, response);
+        return exception(ex, msg, null,req, response);
     }
 
 
 
-    protected ExceptionInfo exception(Exception ex, String message, HttpServletRequest req, HttpServletResponse response) {
-        return exception(ex,message,true,req,response);
+    protected ExceptionInfo exception(Exception ex, String message, String detailMessage,HttpServletRequest req, HttpServletResponse response) {
+        return exception(ex,message,detailMessage,true,req,response);
     }
 
-    protected ExceptionInfo exception(Exception ex, String message, boolean recordStack,
+    protected ExceptionInfo exception(Exception ex, String message, String detailMessage,boolean recordStack,
                                       HttpServletRequest req, HttpServletResponse response) {
         if (ex instanceof IllegalArgumentException
                 || ex instanceof InvalidArgumentException
@@ -199,7 +215,7 @@ public class ExceptionHandlerAdvice {
 
         String requestId = getRequestId(req);
         ayncErrorLog(ex, msg, req, response);
-        return new ExceptionInfo(errorCode, msg, ex).requestId(requestId);
+        return new ExceptionInfo(errorCode, msg, ex).requestId(requestId).detailMessage(detailMessage);
     }
 
 

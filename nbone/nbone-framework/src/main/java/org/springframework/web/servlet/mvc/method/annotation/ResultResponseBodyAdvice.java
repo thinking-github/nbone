@@ -36,9 +36,16 @@ public class ResultResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                                   MediaType selectedContentType, Class selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
 
+        doBeforeBodyWrite(body,returnType,selectedContentType,selectedConverterType,request,response);
+
         String resultFlag = request.getHeaders().getFirst(RESULT_HEADER_NAME);
         String clientName = request.getHeaders().getFirst(CLIENT_HEADER_NAME);
         if (body instanceof ExceptionInfo) {
+            ExceptionInfo exceptionInfo = (ExceptionInfo) body;
+            if(StringUtils.isEmpty(exceptionInfo.getLogId())){
+                String logId  = getLogId(request,response);
+                exceptionInfo.setLogId(logId);
+            }
             if (FEIGN_NAME.equals(clientName)) {
                 response.setStatusCode(HttpStatus.BAD_REQUEST);
             }
@@ -53,6 +60,11 @@ public class ResultResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         return result;
     }
 
+    protected void doBeforeBodyWrite(Object body, MethodParameter returnType,
+                                       MediaType selectedContentType, Class selectedConverterType,
+                                       ServerHttpRequest request, ServerHttpResponse response){
+
+    }
     protected Object doBodyWriteInternal(Object body, MethodParameter returnType,
                                          MediaType selectedContentType, Class selectedConverterType,
                                          ServerHttpRequest request, ServerHttpResponse response) {

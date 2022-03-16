@@ -49,7 +49,8 @@ public class ExampleUtils {
                 return;
             }
             // javax.persistence.Transient
-            Field field = FieldUtils.getDeclaredField(clazz, name, true);
+           // Field field = FieldUtils.getDeclaredField(clazz, name, true);
+            Field field = ReflectionUtils.findField(clazz,name);
             if (field != null && field.isAnnotationPresent(Transient.class)) {
                 return;
             }
@@ -94,7 +95,8 @@ public class ExampleUtils {
                 return;
             }
             // javax.persistence.Transient
-            Field field = FieldUtils.getDeclaredField(clazz, name, true);
+            //Field field = FieldUtils.getDeclaredField(clazz, name, true);
+            Field field = ReflectionUtils.findField(clazz,name);
             if (field != null && field.isAnnotationPresent(Transient.class) && !field.isAnnotationPresent(MappedBy.class)) {
                 return;
             }

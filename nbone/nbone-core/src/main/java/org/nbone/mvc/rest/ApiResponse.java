@@ -37,6 +37,10 @@ public class ApiResponse<T> {
 	private String status;
 	private String path ;
 	private String message;
+	/**
+	 * 异常详细信息
+	 */
+	private String detailMessage;
 	private T data;
 
 
@@ -136,6 +140,14 @@ public class ApiResponse<T> {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getDetailMessage() {
+		return detailMessage;
+	}
+
+	public void setDetailMessage(String detailMessage) {
+		this.detailMessage = detailMessage;
 	}
 
 	public T getData() {

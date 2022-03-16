@@ -34,6 +34,11 @@ public class ExceptionInfo {
     private String message;
 
     /**
+     * 异常详细信息
+     */
+    private String detailMessage;
+
+    /**
      * 异常名称
      */
     private  String exception;
@@ -158,6 +163,17 @@ public class ExceptionInfo {
         this.message = message;
     }
 
+    public String getDetailMessage() {
+        return detailMessage;
+    }
+
+    public void setDetailMessage(String detailMessage) {
+        this.detailMessage = detailMessage;
+    }
+    public ExceptionInfo detailMessage(String detailMessage) {
+        this.detailMessage = detailMessage;
+        return this;
+    }
 
     public String getException() {
         return exception;
