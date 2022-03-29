@@ -58,20 +58,11 @@ public class ExceptionInfo {
     }
 
     public ExceptionInfo(int code, String msg) {
-        this.code = code;
-        this.message = msg;
-    }
-
-    public ExceptionInfo(int statusCode, int code, String message) {
-        this.code = code;
-        this.message = message;
-        this.statusCode = statusCode;
+        this(code,msg,null,null);
     }
 
     public ExceptionInfo(int code, String message, int statusCode) {
-        this.code = code;
-        this.message = message;
-        this.statusCode = statusCode;
+        this(code,message,statusCode,null);
     }
 
     public ExceptionInfo(int code, String message, Exception ex) {
@@ -86,31 +77,21 @@ public class ExceptionInfo {
     }
 
     public ExceptionInfo(int code, String message, String url, String exceptionName) {
-        this.code = code;
-        this.message = message;
-        this.url = url;
-        this.exception = exceptionName;
+        this(code,message,400,url,exceptionName);
 
     }
 
     public ExceptionInfo(int code, String message, int statusCode, String exceptionName) {
-        this.code = code;
-        this.message = message;
-
-        this.statusCode = statusCode;
-        this.exception = exceptionName;
-
+        this(code,message,statusCode,null,exceptionName);
     }
 
     public ExceptionInfo(int code, String message, int statusCode, String url, String exceptionName) {
         this.code = code;
         this.message = message;
-
         this.statusCode = statusCode;
         this.url = url;
-
         this.exception = exceptionName;
-
+        this.timestamp = System.currentTimeMillis();
     }
 
     public String getRequestId() {

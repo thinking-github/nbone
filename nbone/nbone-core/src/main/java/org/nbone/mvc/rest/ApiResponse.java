@@ -50,20 +50,15 @@ public class ApiResponse<T> {
 	}
 
 	public ApiResponse(int code, String msg) {
-		this.code = code;
-		this.message = msg;
+		this(code, null, msg, null);
 	}
 
 	public ApiResponse(int code, String msg, T data) {
-		this.code = code;
-		this.message = msg;
-		this.data = data;
+		this(code,null,msg,data);
 	}
 
 	public ApiResponse(int code, String status, String message) {
-		this.code = code;
-		this.status = status;
-		this.message = message;
+		this(code,status,message,null);
 	}
 
 	public ApiResponse(int code, String status, String message, T data) {

@@ -46,6 +46,9 @@ public class ResultResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                 String logId  = getLogId(request,response);
                 exceptionInfo.setLogId(logId);
             }
+            if(exceptionInfo.getTimestamp() == null){
+                exceptionInfo.setTimestamp(System.currentTimeMillis());
+            }
             if (FEIGN_NAME.equals(clientName)) {
                 response.setStatusCode(HttpStatus.BAD_REQUEST);
             }
@@ -73,6 +76,9 @@ public class ResultResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             ApiResponse apiResponse = (ApiResponse) body;
             if(StringUtils.isEmpty(apiResponse.getLogId())){
                 apiResponse.setLogId(logId);
+            }
+            if(apiResponse.getTimestamp() == null){
+                apiResponse.setTimestamp(System.currentTimeMillis());
             }
             return body;
         }
